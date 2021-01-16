@@ -3,7 +3,7 @@ name: Maintenance
 on: workflow_dispatch
 
 jobs:
-  job_1:
+  repository_maintenance:
     runs-on: ubuntu-latest
     steps:
       -
