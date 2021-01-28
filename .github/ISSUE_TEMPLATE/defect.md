@@ -1,10 +1,9 @@
 ---
 name: Defect Report
-about: Create a report to help us improve
+about: Report a problem to help us improve
 title: ''
 labels: defect
 assignees: ''
-
 ---
 
 <!-- Please tag this issue with the appropriate labels before creating. -->
