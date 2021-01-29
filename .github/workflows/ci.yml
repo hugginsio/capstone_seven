@@ -9,9 +9,9 @@ jobs:
     name: NGE – Lint
     runs-on: ubuntu-latest
     steps:
-      uses: actions/checkout@v2
-      uses: actions/setup-node@v2
-      uses: actions/cache@v2
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+    - uses: actions/cache@v2
       env:
         cache-name: cache-node-modules
       with:
@@ -22,16 +22,16 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-      run: npm i
-      run: npm run lint
+    - run: npm i
+    - run: npm run lint
   build:
     name: NG – Production Build
     needs: [lint]
     runs-on: ubuntu-latest
     steps:
-      uses: actions/checkout@v2
-      uses: actions/setup-node@v2
-      uses: actions/cache@v2
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+    - uses: actions/cache@v2
       env:
         cache-name: cache-node-modules
       with:
@@ -42,16 +42,16 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-      run: npm i
-      run: npm run build:prod
+    - run: npm i
+    - run: npm run build:prod
   test:
     name: NGE – Test
     needs: [lint]
     runs-on: ubuntu-latest
     steps:
-      uses: actions/checkout@v2
-      uses: actions/setup-node@v2
-      uses: actions/cache@v2
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+    - uses: actions/cache@v2
       env:
         cache-name: cache-node-modules
       with:
@@ -62,6 +62,6 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-      run: npm i
-      run: npm run test
+    - run: npm i
+    - run: npm run test
       
