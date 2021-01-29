@@ -29,14 +29,14 @@
           },
           "configurations": {
             "dev": {
+              "aot": false,
+              "buildOptimizer": false,
+              "extractLicenses": true,
+              "namedChunks": false,
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
-              "namedChunks": false,
-              "aot": false,
-              "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -45,15 +45,15 @@
               ]
             },
             "web": {
+              "aot": false,
+              "buildOptimizer": false,
+              "extractCss": true,
+              "extractLicenses": true,
+              "namedChunks": false,
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
-              "extractCss": true,
-              "namedChunks": false,
-              "aot": false,
-              "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -105,11 +105,12 @@
         "test": {
           "builder": "@angular-builders/custom-webpack:karma",
           "options": {
+            "karmaConfig": "src/karma.conf.js",
             "main": "src/test.ts",
             "polyfills": "src/polyfills-test.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
             "scripts": [],
+            "sourceMap": false,
+            "tsConfig": "src/tsconfig.spec.json",
             "styles": [
               "src/styles.scss"
             ],
