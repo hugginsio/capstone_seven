@@ -29,7 +29,8 @@ module.exports = function (config) {
       AngularElectron: {
         base: 'Electron',
         flags: [
-          '--remote-debugging-port=9222'
+          '--remote-debugging-port=9222',
+          '--trace-uncaught'
         ],
         browserWindowOptions: {
           webPreferences: {
