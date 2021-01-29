@@ -5,11 +5,12 @@ on:
     branches: [ main ]
 
 jobs:
-  ghci:
+  lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Cache node modules
+      name: Angular production build
+      uses: actions/checkout@v2
+      uses: actions/setup-node@v2
       uses: actions/cache@v2
       env:
         cache-name: cache-node-modules
@@ -21,15 +22,46 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-
-    - name: install
       run: npm i
-
-    - name: nge-lint
       run: npm run lint
-
-    - name: ng-build
+  build:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      name: Angular production build
+      uses: actions/checkout@v2
+      uses: actions/setup-node@v2
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        node-version: '14.15.1'
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+      run: npm i
       run: npm run build:prod
-
-    - name: nge-test
-      run: npm test
+  test:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      name: Angular production build
+      uses: actions/checkout@v2
+      uses: actions/setup-node@v2
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        node-version: '14.15.1'
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+      run: npm i
+      run: npm run test
+      
