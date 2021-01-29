@@ -2,21 +2,16 @@ import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
-let window: BrowserWindow = null;
+let window: BrowserWindow;
 const args = process.argv.slice(1), serve = args.some(val => val === '--serve');
 const isDev = process.env.NODE_ENV === 'development';
 
 function createWindow(): BrowserWindow {
-
-  const electronScreen = screen;
-  const display = electronScreen.getPrimaryDisplay().workAreaSize;
-
-  // Create the browser window.
   window = new BrowserWindow({
-    width: display.width / 2,
-    height: (display.height / 3) * 2,
-    minWidth: display.width / 2,
-    minHeight: (display.height / 3) * 2,
+    width: 1280,
+    height: 884,
+    minWidth: 1280,
+    minHeight: 884,
     resizable: true,
     center: true,
     webPreferences: {
@@ -47,7 +42,7 @@ function createWindow(): BrowserWindow {
   }
 
   window.on('closed', () => {
-    window = null;
+    app.quit();
   });
 
   return window;
@@ -55,7 +50,6 @@ function createWindow(): BrowserWindow {
 
 app.on('ready', () => setTimeout(createWindow, 400));
 
-// Quit when all windows are closed.
 app.on('window-all-closed', () => {
   app.quit();
 });
