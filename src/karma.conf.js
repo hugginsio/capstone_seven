@@ -1,6 +1,8 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/0.13/config/configuration-file.html
 
+process.env.CHROME_BIN = require('puppeteer').executablePath();
+
 module.exports = function (config) {
   config.set({
     basePath: '',
@@ -8,6 +10,7 @@ module.exports = function (config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-electron'),
+      require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
       require('@angular-devkit/build-angular/plugins/karma')
@@ -24,9 +27,9 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    browsers: ['AngularElectron'],
+    browsers: ['Cr6'],
     customLaunchers: {
-      AngularElectron: {
+      NgE: {
         base: 'Electron',
         flags: [
           '--remote-debugging-port=9222'
@@ -39,6 +42,16 @@ module.exports = function (config) {
             enableRemoteModule: true
           }
         }
+      },
+      Cr6: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--disable-extensions',
+          '--disable-site-isolation-trials',
+          '--disable-translate',
+          '--disable-web-security',
+          '--remote-debugging-port=9223'
+        ]
       }
     }
   });

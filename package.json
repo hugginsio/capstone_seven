@@ -21,6 +21,7 @@
     "ng:serve": "ng serve -c web",
     "postinstall": "electron-builder install-app-deps",
     "test": "ng test --watch=false",
+    "test:nge": "ng test --watch=false --browsers NgE",
     "test:watch": "ng test",
     "web": "npm run ng:serve"
   },
@@ -65,6 +66,7 @@
     "jasmine-core": "3.6.0",
     "jasmine-spec-reporter": "6.0.0",
     "karma": "~5.1.0",
+    "karma-chrome-launcher": "3.1.0",
     "karma-coverage-istanbul-reporter": "3.0.3",
     "karma-electron": "6.3.1",
     "karma-jasmine": "4.0.1",
@@ -75,6 +77,7 @@
     "postcss-import": "14.0.0",
     "postcss-loader": "4.2.0",
     "postcss-scss": "3.0.4",
+    "puppeteer": "5.5.0",
     "rxjs": "6.6.3",
     "spectron": "13.0.0",
     "tailwindcss": "2.0.2",
