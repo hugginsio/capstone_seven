@@ -1,9 +1,13 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/app",
-    "module": "es2015",
     "baseUrl": "",
+    "module": "es2015",
+    "outDir": "../out-tsc/app",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
     "types": []
   },
   "include": [
@@ -15,7 +19,7 @@
   ],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
-    "preserveWhitespaces": true
+    "preserveWhitespaces": true,
+    "strictInjectionParameters": true
   }
 }

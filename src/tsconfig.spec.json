@@ -1,8 +1,12 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/spec",
     "module": "commonjs",
+    "noImplicitAny": true,
+    "outDir": "../out-tsc/spec",
+    "removeComments": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
     "types": [
       "jasmine",
       "node"
