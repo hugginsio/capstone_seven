@@ -121,7 +121,8 @@ If the work item needs more information before it can be worked on, add the **ne
 3. Describe the changes made by your PR in the **Description**
 4. Under **Reviewers**, request a code review from two teammates
 5. Click **Projects** and select **Current Work Items**
-6. Click **Linked Issues** and select the work item associated with this PR
+6. Create the pull request
+7. Click **Linked Issues** and select the work item associated with this PR
 
 ## Projects
 You can get an overview of the current state of the project by navigating to our repository, clicking on **Projects**, and selecting **Current Work Items**. This will show you the kanban board that organizes all work items and pull requests into several categories: **New**, **In Development**, **In QA**, **Done**, and **Abandoned**.
