@@ -6,9 +6,9 @@ on:
 
 jobs:
   lint:
+    name: NGE – Lint
     runs-on: ubuntu-latest
     steps:
-      name: Angular production build
       uses: actions/checkout@v2
       uses: actions/setup-node@v2
       uses: actions/cache@v2
@@ -25,10 +25,10 @@ jobs:
       run: npm i
       run: npm run lint
   build:
+    name: NG – Production Build
     needs: [lint]
     runs-on: ubuntu-latest
     steps:
-      name: Angular production build
       uses: actions/checkout@v2
       uses: actions/setup-node@v2
       uses: actions/cache@v2
@@ -45,10 +45,10 @@ jobs:
       run: npm i
       run: npm run build:prod
   test:
+    name: NGE – Test
     needs: [lint]
     runs-on: ubuntu-latest
     steps:
-      name: Angular production build
       uses: actions/checkout@v2
       uses: actions/setup-node@v2
       uses: actions/cache@v2
