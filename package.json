@@ -93,5 +93,8 @@
   },
   "browserslist": [
     "chrome 83"
-  ]
+  ],
+  "build": {
+    "appId": "mastermine"
+  }
 }

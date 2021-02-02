@@ -1,5 +1,6 @@
 {
-  "productName": "capstone-seven",
+  "productName": "Mastermine",
+  "copyright": "Altoid Tree & Co.",
   "directories": {
     "output": "release/"
   },
