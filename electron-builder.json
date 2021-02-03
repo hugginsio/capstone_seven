@@ -1,5 +1,7 @@
 {
-  "productName": "capstone-seven",
+  "productName": "Mastermine",
+  "appId": "mastermine",
+  "copyright": "Altoid Tree & Co.",
   "directories": {
     "output": "release/"
   },
@@ -22,8 +24,15 @@
   "win": {
     "icon": "dist/assets/icons",
     "target": [
-      "portable"
+      "nsis"
     ]
+  },
+  "nsis": {
+    "deleteAppDataOnUninstall": true,
+    "installerLanguages": "en_US",
+    "runAfterFinish": false,
+    "createDesktopShortcut": "always",
+    "menuCategory": true
   },
   "mac": {
     "icon": "dist/assets/icons",

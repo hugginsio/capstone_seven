@@ -96,7 +96,6 @@ Each component in the application follows this structure. For example, the pages
 # Contributing
 
 ## Creating a Work Item
-
 1. Navigate to our repository and click on the **Issues** tab.
 2. Click the button titled **New issue**
 3. Select which type of work item you are creating. There are two types:
@@ -126,3 +125,14 @@ If the work item needs more information before it can be worked on, add the **ne
 
 ## Projects
 You can get an overview of the current state of the project by navigating to our repository, clicking on **Projects**, and selecting **Current Work Items**. This will show you the kanban board that organizes all work items and pull requests into several categories: **New**, **In Development**, **In QA**, **Done**, and **Abandoned**.
+
+## Creating a Release
+1. Create a tag in the command line. It should match the semantic version of the application as found in `package.json`. It should follow this pattern:
+    ```text
+    git tag -a v*
+    ```
+2. Push the tag to the repository.
+    ```text
+    git push v*
+    ```
+3. An Actions run will automatically be triggered. A new [Release](https://github.com/kjhx/capstone_seven/releases) will be created. The runner will build a standalone Windows installer as described in `electron-builder.json` and upload it to the Release.
