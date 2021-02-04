@@ -1,0 +1,30 @@
+# Each line is a file pattern followed by one or more owners.
+
+# Repository Configuration Files
+/.github/ @kjhx
+.gitignore @kjhx
+
+# UI & Graphics
+*.html @kjhx @GPiershale
+*.scss @kjhx @GPiershale
+/src/assets/ @kjhx @GPiershale
+
+# AI Module Directory
+# /src/app/ @jdhat @ccohu
+
+# Core Module Directory
+# /src/app/ @GPiershale @hmargy @jdhat
+
+# Networking Module Directory
+# /src/app/ @ccohu @hmargy
+
+# Install Configuration Files
+/electron-builder.json @kjhx
+/iss/ @kjhx
+
+# Project Configuration Files
+!/package.lock.json
+*.json @kjhx
+*.config.js @kjhx
+*.conf.js @kjhx
+*.webpack.js @kjhx
