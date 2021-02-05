@@ -8,8 +8,6 @@ import { SharedModule } from '../../shared/shared.module';
 
 import { AiService } from './services/ai/ai.service';
 
-import * from './interfaces/game.interfaces';
-
 @NgModule({
   declarations: [GameComponent, AiService],
   imports: [CommonModule, SharedModule, GameRoutingModule]
