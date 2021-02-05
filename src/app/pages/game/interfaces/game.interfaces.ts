@@ -4,8 +4,26 @@ export enum PlayerType {
   'AI'
 }
 
+export enum TileColor {
+  "GREEN",
+  "BLUE",
+  "YELLOW",
+  "RED",
+  "BLANK"
+}
 
-export interface Player {
+export enum Owner {
+  "NONE",
+  "PLAYERONE",
+  "PLAYERTWO"
+}
+
+export enum GameType {
+  "NETWORK",
+  "AI"
+}
+
+/*export interface Player {
   type: PlayerType,
 
   redResources: number,
@@ -22,19 +40,7 @@ export interface Player {
   currentScore: number
 }
 
-export enum TileColor {
-  "GREEN",
-  "BLUE",
-  "YELLOW",
-  "RED",
-  "BLANK"
-}
 
-export enum Owner {
-  "NONE",
-  "PLAYERONE",
-  "PLAYERTWO"
-}
 
 export interface Tile {
   color: TileColor,
@@ -95,11 +101,8 @@ export interface GameBoard {
   branches: Branch[]
 }
 
-export enum GameType {
-  "NETWORK",
-  "AI"
-}
+
 export interface GameMaster {
   gameBoard: GameBoard,
   gameType: GameType
-}
+}*/

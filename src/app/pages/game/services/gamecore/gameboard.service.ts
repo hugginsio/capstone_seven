@@ -7,9 +7,9 @@ import * as interfaces from '../../interfaces/game.interfaces';
 })
 export class GameboardService {
 
-  tiles: interfaces.Tile;
+  /*tiles: interfaces.Tile;
   nodes: interfaces.Node;
-  branches: interfaces.Branch;
+  branches: interfaces.Branch;*/
 
   constructor() {
 
