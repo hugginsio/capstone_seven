@@ -30,17 +30,17 @@ jobs:
     - name: Identify Executable Path
       id: installer
       shell: pwsh
-      run: (gci -file .\release\*.exe).FullName
+      run: echo "::set-output name=filename::$((gci -file .\release\*.exe).FullName)"
 
     - name: Parse Version
       id: version
       shell: pwsh
-      run: (gci -file .\release\*.exe).Name | % {$_.substring($_.length-9, 5) -replace '^[a-z]'}
+      run: echo "::set-output name=version::$((gci -file .\release\*.exe).Name | % {$_.substring($_.length-9, 5) -replace '^[a-z]'})"
 
     - name: Parse Name
-      id: name
+      id: filename
       shell: pwsh
-      run: (gci -file .\release\*.exe).Name
+      run: echo "::set-output name=filename::$((gci -file .\release\*.exe).Name)"
 
     - name: Release
       id: create_release
@@ -60,7 +60,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         asset_path: ${{ steps.installer.outputs.installer }}
-        asset_name: ${{ steps.name.outputs.name }}
+        asset_name: ${{ steps.filename.outputs.filename }}
         asset_content_type: application/vnd.microsoft.portable-executable
         upload_url: ${{ steps.create_release.outputs.upload_url }}
       env:
