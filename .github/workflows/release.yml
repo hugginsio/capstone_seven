@@ -28,7 +28,7 @@ jobs:
     - run: npm run electron:build
     
     - name: Identify Executable Path
-      id: executable
+      id: installer
       shell: pwsh
       run: (gci -file .\release\*.exe).FullName
 
@@ -48,7 +48,7 @@ jobs:
       with:
         draft: false
         prerelease: false
-        release_name: v${{ steps.version.outputs.version }}@${{ github.sha }}
+        release_name: ${{ github.ref }}
         tag_name: ${{ github.ref }}
         body: |
           Release requested by ${{ github.actor }} on commit ${{ github.sha }}.
@@ -58,10 +58,10 @@ jobs:
 
     - name: Upload Artifacts
       uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.executable.outputs.executable }}
+        asset_path: ${{ steps.installer.outputs.installer }}
         asset_name: ${{ steps.name.outputs.name }}
         asset_content_type: application/vnd.microsoft.portable-executable
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
