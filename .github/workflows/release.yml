@@ -30,7 +30,7 @@ jobs:
     - name: Identify Executable Path
       id: installer
       shell: pwsh
-      run: echo "::set-output name=filename::$((gci -file .\release\*.exe).FullName)"
+      run: echo "::set-output name=installer::$((gci -file .\release\*.exe).FullName)"
 
     - name: Parse Version
       id: version
