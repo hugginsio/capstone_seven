@@ -17,6 +17,7 @@
     "electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && npx electron . --serve",
     "electron:serve-tsc": "tsc -p tsconfig.serve.json",
     "lint": "ng lint",
+    "lint:fix": "ng lint --fix",
     "ng": "ng",
     "ng:serve": "ng serve -c web",
     "postinstall": "electron-builder install-app-deps",
