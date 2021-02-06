@@ -6,7 +6,7 @@ import { ElectronService } from '../../../core/services';
 @Component({
   selector: 'app-menu-landing',
   templateUrl: './menu-landing.component.html',
-  styleUrls: ['./menu-landing.component.scss']
+  styleUrls: ['../menu-common.scss']
 })
 export class MenuLandingComponent implements OnInit {
   public readonly appVersion: string = appVersion;

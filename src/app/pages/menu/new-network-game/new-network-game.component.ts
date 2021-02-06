@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-menu-options',
-  templateUrl: './menu-options.component.html',
+  selector: 'app-new-network-game',
+  templateUrl: './new-network-game.component.html',
   styleUrls: ['../menu-common.scss']
 })
-export class MenuOptionsComponent implements OnInit {
+export class NewNetworkGameComponent implements OnInit {
 
   constructor() { }
 

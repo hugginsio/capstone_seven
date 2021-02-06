@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-menu-options',
-  templateUrl: './menu-options.component.html',
+  selector: 'app-menu-help',
+  templateUrl: './menu-help.component.html',
   styleUrls: ['../menu-common.scss']
 })
-export class MenuOptionsComponent implements OnInit {
+export class MenuHelpComponent implements OnInit {
 
   constructor() { }
 
