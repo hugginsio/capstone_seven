@@ -103,3 +103,10 @@ export interface GameMaster {
   gameBoard: GameBoard,
   gameType: GameType
 }
+
+export interface Move {
+  tradedIn:string[],
+  received:string,
+  nodesPlaced:number[],
+  branchesPlaced:number[]
+}
