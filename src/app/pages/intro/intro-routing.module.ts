@@ -1,12 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
-import { LandingComponent } from './landing.component';
+import { IntroTeamComponent } from './team/intro-team.component';
+import { IntroGameComponent } from './game/intro-game.component';
 
 const routes: Routes = [
   {
-    path: 'landing',
-    component: LandingComponent
+    path: 'intro/team',
+    component: IntroTeamComponent
+  },
+  {
+    path: 'intro/game',
+    component: IntroGameComponent
   }
 ];
 
@@ -16,4 +21,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 
-export class LandingRoutingModule {}
+export class IntroRoutingModule {}
