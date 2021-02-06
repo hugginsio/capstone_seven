@@ -1,4 +1,4 @@
-import { PlayerType } from '../interfaces/game.interfaces';
+import { PlayerType } from '../enums/game.enums';
 
 
 // what needs to be private here??

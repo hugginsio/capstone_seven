@@ -1,4 +1,4 @@
-import { TileColor, Owner } from '../interfaces/game.interfaces';
+import { TileColor, Owner } from '../enums/game.enums';
 
 // what all needs to be private and such for this and all the other classes too 
 export class Tile {
@@ -11,54 +11,127 @@ export class Tile {
     
     capturedBy: Owner;
   
-    topLeftNode: number;
-    topRightNode: number;
-    bottomLeftNode: number;
-    bottomRightNode: number;
+    private topLeftNode: number;
+    private topRightNode: number;
+    private bottomLeftNode: number;
+    private bottomRightNode: number;
     
-    topBranch: number;
-    rightBranch: number;
-    bottomBranch: number;
-    leftBranch : number;
+    private topBranch: number;
+    private rightBranch: number;
+    private bottomBranch: number;
+    private leftBranch : number;
 
 
     // having things we will reassign later after randomizing in the constructor??
-    constructor(){
+    constructor(tln: number = -1, trn: number = -1, 
+                bln: number = -1, brn: number = -1,
+                tb: number = -1, rb: number = -1,
+                bb: number = -1, lb: number = -1){
         this.color = TileColor.BLANK;
         this.nodeCount = 0;
         this.maxNodes = 0;      // how to deal with maxNodes if its just the blank... do i set this in the constuctor in general?
         this.isExhausted = false;
         this.capturedBy = Owner.NONE;
 
-        // well i just simply dont know how to deal with the nodes and branches??
+        this.topLeftNode = tln;
+        this.topRightNode = trn;
+        this.bottomLeftNode = bln;
+        this.bottomRightNode = brn;
+
+        this.topBranch = tb;
+        this.rightBranch = rb;
+        this.bottomBranch = bb;
+        this.leftBranch = lb;
     }
 
-    getColor(){
+    getColor(): TileColor {
         return this.color;
     }
 
-    getNodeCount(){
+    getNodeCount(): number {
         return this.nodeCount;
     }
-    setNodeCount(count: number){
+    setNodeCount(count: number): void {
         this.nodeCount = count;
     }
 
-    getMaxNodes(){
+    getMaxNodes(): number {
         return this.maxNodes;
     }
 
-    getIsExhaused(){
+    getIsExhaused(): boolean {
         return this.isExhausted;
     }
-    setIsExhaused(value: boolean){
+    
+    setIsExhaused(value: boolean): void {
         this.isExhausted = value;
     }
 
-    getCapturedBy(){
+    getCapturedBy(): Owner {
         return this.capturedBy;
     }
-    setCapturedBy(newCap: Owner){
+
+    setCapturedBy(newCap: Owner): void {
         this.capturedBy = newCap;
+    }
+
+    // Node
+    getTopLeftNode(): number {
+        return this.topLeftNode;
+    } 
+    setTopLeftNode(n: number): void {
+        this.topLeftNode = n;
+    } 
+    
+    getTopRightNode(): number {
+        return this.topRightNode;
+    }
+    setTopRightNode(n: number): void {
+        this.topRightNode = n;
+    }
+
+
+    getBottomLeftNode(): number {
+        return this.bottomLeftNode;
+    }
+    setBottomLeftNode(n: number): void {
+        this.bottomLeftNode = n;
+    }
+
+    getBottomRightNode(): number {
+        return this.bottomRightNode;
+    }
+    setBottomRightNode(n: number): void {
+        this.bottomRightNode = n;
+    }
+
+
+    // Branch
+    getTopBranch(): number {
+        return this.topBranch;
+    }
+    setTopBranch (n: number): void {
+        this.topBranch = n;
+    }
+
+    getRightBranch(): number {
+        return this.rightBranch;
+    }
+    setRightBranch (n: number): void {
+        this.rightBranch = n;
+    }
+
+    getBottomBranch(): number {
+        return this.bottomBranch;
+    }
+    setBottomBranch (n: number): void {
+        this.bottomBranch = n;
+    }
+
+    getLeftBranch(): number {
+        return this.leftBranch;
+    }
+    setLeftBranch (n: number): void {
+        this.leftBranch = n;
     }
   }
