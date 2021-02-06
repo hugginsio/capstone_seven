@@ -10,8 +10,10 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { IntroModule } from './pages/intro/intro.module';
 import { GameModule } from './pages/game/game.module';
+import { MenuModule } from './pages/menu/menu.module';
 
 import { AppComponent } from './app.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,11 +21,13 @@ import { AppComponent } from './app.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
+    CommonModule,
     CoreModule,
     FormsModule,
     GameModule,
     HttpClientModule,
     IntroModule,
+    MenuModule,
     SharedModule
   ],
   providers: [],

@@ -1,0 +1,5 @@
+@layer components {
+  .menu-btn {
+    @apply p-5 bg-gray-500 border border-gray-700 w-1/3 cursor-pointer hover:bg-gray-600;
+  }
+}

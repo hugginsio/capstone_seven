@@ -2,11 +2,11 @@
   <router-outlet #outlet="outlet"></router-outlet>
 </main>
 
-<!-- in dev, show a reload button -->
-<div class="absolute z-50 bottom-7 left-7" *ngIf="!this.production">
+<!-- in DEV, show a reload button -->
+<div class="absolute z-50 top-1 left-1" *ngIf="!this.production">
   <a href="/">
-    <div class="btn btn-gray">
-      <p>Reload</p>
+    <div class="text-red-500 text-sm">
+      <p>reload</p>
     </div>
   </a>
 </div>
