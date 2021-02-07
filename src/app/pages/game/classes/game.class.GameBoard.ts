@@ -1,11 +1,85 @@
 import { Tile } from './game.class.Tile';
 import { Branch } from './game.class.Branch';
 import { Node } from './game.class.Node';
+import { TileColor, Owner } from '../enums/game.enums';
 
   export class GameBoard {
     tiles: Tile[];
     nodes: Node[];
     branches: Branch[];
+
+
+    randomizeColorsAndMaxNodes(): void { 
+      let tileColorsAndMax = this.shuffleArray(this.getTileColorsAndMax);
+
+      for (let i = 0; i < 13; i++) {
+        this.tiles[i].color = tileColorsAndMax[i].color;
+        this.tiles[i].maxNodes = tileColorsAndMax[i].maxNodes;
+      }
+    }
+
+      /* Randomize array in-place using Durstenfeld shuffle algorithm */
+    shuffleArray(array) {
+      for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+      }
+    }
+
+    getTileColorsAndMax(): Array<Tile>{
+      let colorTilesAndMax = Array<Tile>(13);
+
+      colorTilesAndMax[0].maxNodes = 1;
+      colorTilesAndMax[0].color = TileColor.RED;
+
+      colorTilesAndMax[1].maxNodes = 2;
+      colorTilesAndMax[1].color = TileColor.RED;
+
+      colorTilesAndMax[2].maxNodes = 3;
+      colorTilesAndMax[2].color = TileColor.RED;
+
+      //
+
+      colorTilesAndMax[3].maxNodes = 1;
+      colorTilesAndMax[3].color = TileColor.BLUE;
+
+      colorTilesAndMax[4].maxNodes = 2;
+      colorTilesAndMax[4].color = TileColor.BLUE;
+
+      colorTilesAndMax[5].maxNodes = 3;
+      colorTilesAndMax[5].color = TileColor.BLUE;
+
+      //
+
+      colorTilesAndMax[6].maxNodes = 1;
+      colorTilesAndMax[6].color = TileColor.GREEN;
+
+      colorTilesAndMax[7].maxNodes = 2;
+      colorTilesAndMax[7].color = TileColor.GREEN;
+
+      colorTilesAndMax[8].maxNodes = 3;
+      colorTilesAndMax[8].color = TileColor.GREEN;
+
+      //
+
+      colorTilesAndMax[9].maxNodes = 1;
+      colorTilesAndMax[9].color = TileColor.YELLOW;
+
+      colorTilesAndMax[10].maxNodes = 2;
+      colorTilesAndMax[10].color = TileColor.YELLOW;
+
+      colorTilesAndMax[11].maxNodes = 3;
+      colorTilesAndMax[11].color = TileColor.YELLOW;
+
+      //
+      
+      colorTilesAndMax[12].maxNodes = 0;
+      colorTilesAndMax[12].color = TileColor.BLANK;
+
+      return colorTilesAndMax;
+    }
 
     constructor() {
       this.tiles = new Array<Tile>(13);
@@ -23,7 +97,6 @@ import { Node } from './game.class.Node';
       for (let i = 0; i < 13; i++) {
         this.tiles[i] = new Tile();
       }
-
 
       /* BRANCHES - HARD CODED RELATIONSHIPS
       /
