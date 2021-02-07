@@ -224,10 +224,14 @@ export class ManagerService {
         if (currentPlayer == this.playerOne) {
           this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
           this.playerOne.numNodesPlaced++;
+          this.playerOne.currentScore++;
+
         }
         else {
           this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
           this.playerTwo.numNodesPlaced++;
+          this.playerTwo.currentScore++;
+          
         }
         return true;
     }
@@ -281,7 +285,7 @@ export class ManagerService {
         this.playerOne.greenResources -= 2;
         this.playerOne.yellowResources -= 2;
         this.playerOne.numNodesPlaced++;
-
+        this.playerOne.currentScore++;
       }
       else {
 
@@ -289,7 +293,7 @@ export class ManagerService {
         this.playerTwo.greenResources -= 2;
         this.playerTwo.yellowResources -= 2;
         this.playerTwo.numNodesPlaced++;
-
+        this.playerTwo.currentScore++;
       }
       return true;
     }
@@ -347,11 +351,13 @@ export class ManagerService {
     this.gameBoard.nodes[reverseNode].setOwner(Owner.NONE);
     if (currentPlayer === this.playerOne) {
       this.playerOne.numNodesPlaced--;
+      this.playerOne.currentScore--;
       this.playerOne.yellowResources += 2;
       this.playerOne.greenResources += 2;
     }
     else {
       this.playerTwo.numNodesPlaced--;
+      this.playerTwo.currentScore--;
       this.playerTwo.yellowResources += 2;
       this.playerTwo.greenResources += 2;
     }
@@ -361,9 +367,11 @@ export class ManagerService {
     this.gameBoard.nodes[reverseNode].setOwner(Owner.NONE);
     if (currentPlayer === this.playerOne) {
       this.playerOne.numNodesPlaced--;
+      this.playerOne.currentScore--;
     }
     else {
       this.playerTwo.numNodesPlaced--;
+      this.playerTwo.currentScore--;
     }
   }
 
@@ -384,11 +392,25 @@ export class ManagerService {
   }
 
   endTurn(endPlayer: Player): void { 
-    // did anyone win??
-        // yes ? yay !! 
-        // no ? 
-          // update resources of next player
-    // calls nextTurn
+    if (this.playerOne.currentScore >= 10 ||
+        this.playerTwo.currentScore >= 10) {
+          if (this.playerOne.currentScore > this.playerTwo.currentScore) {
+            // playerOne wins
+          }
+          else {
+            // playerTwo wins
+          }
+        }
+      else {
+        // update resources of next player
+       
+        if (endPlayer === this.playerOne) {
+          this.nextTurn(this.playerTwo);
+        }
+        else {
+          this.nextTurn(this.playerOne);
+        }
+      }     
   }
 
   // clickEvent(event: MouseEvent) {
