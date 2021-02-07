@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { MCTSNode, State, MCTSNodePlaceHolder } from '../../interfaces/ai.interfaces';
 
-@Injectable({
+/*@Injectable({
   providedIn: 'root'
-})
+})*/
 export class MCTSNodeService implements MCTSNode{
   move:string;
   parent:MCTSNode;

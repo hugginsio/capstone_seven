@@ -23,7 +23,7 @@ export class AiService implements MonteCarlo {
 
   makeMCTSNode(state:State):void{
     if(!this.mctsNodes.has(state.hash())){
-      let unexpandedMoves = CoreLogic.getLegalMoves(state).slice();
+      const unexpandedMoves = CoreLogic.getLegalMoves(state).slice();
       
       //TODO: create MCTSNodeService
       //let newMCTSNode = new MCTSNodeService(null, null, state, unexpandedMoves);
