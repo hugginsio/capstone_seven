@@ -36,16 +36,9 @@ export class ManagerService {
 
    startGame(): void {
 
-    let turn = 1;
-    let stack = [];
-
     this.makeInitialPlacements(this.playerOne, false);
-    stack.length = 0;
     this.makeInitialPlacements(this.playerTwo, false);
-    stack.length = 0;
-    turn++;
     this.makeInitialPlacements(this.playerTwo, false);
-    stack.length = 0;
     this.makeInitialPlacements(this.playerOne, false);
 
     this.endTurn(this.playerOne); 
@@ -90,8 +83,89 @@ export class ManagerService {
     }
   }
 
-  makeTrade(currentPlayer:Player) {
-      
+  makeTrade(currentPlayer:Player): void {
+
+      let tradedResources = [];
+
+      if(currentPlayer.hasTraded === false)
+      {
+        clickRed(event: MouseEvent) {
+          if (currentPlayer.redResources > 0 && tradedResources.length <= 3) {
+            tradedResources.push('R');
+            currentPlayer.redResources--;
+          }
+        }
+        clickBlue(event: MouseEvent) {
+          if (currentPlayer.blueResources > 0 && tradedResources.length <= 3) {
+            tradedResources.push('B');
+            currentPlayer.blueResources--;
+          }
+        }
+        clickYellow(event: MouseEvent) {
+          if (currentPlayer.yellowResources > 0 && tradedResources.length <= 3) {
+            tradedResources.push('Y');
+            currentPlayer.yellowResources--;
+          }
+        }
+        clickGreen(event: MouseEvent) {
+          if (currentPlayer.greenResources > 0 && tradedResources.length <= 3) {
+            tradedResources.push('G');
+            currentPlayer.greenResources--;
+          }
+        }
+
+        clickUndoSelectedResource(event: MouseEvent) {
+          if (tradedResources.length > 0) {
+            let selectedResource = event.target.id.subString(1,1) as string;
+            let index = tradedResources.indexOf(selectedResource);
+            if (index != -1) {
+              tradedResources.splice(index, 1);
+              switch (selectedResource) {
+                case 'R':
+                  currentPlayer.redResources++;
+                  break;
+                case 'B':
+                  currentPlayer.blueResources++;
+                  break;
+                case 'Y':
+                  currentPlayer.yellowResources++;
+                  break;
+                case 'G':
+                  currentPlayer.greenResources++;
+                  break;
+                }
+            }
+          }  
+        }
+
+        clickTradeFor(event: MouseEvent) {
+          if(tradedResources.length === 3) {
+            let selectedResource = event.target.id.subString(1,1) as string;
+            let index = tradedResources.indexOf(selectedResource);
+            if(index === -1)
+            {
+              clickConfirmTrade(event: MouseEvent) {
+                switch (selectedResource) {
+                  case 'R':
+                    currentPlayer.redResources++;
+                    break;
+                  case 'B':
+                    currentPlayer.blueResources++;
+                    break;
+                  case 'Y':
+                    currentPlayer.yellowResources++;
+                    break;
+                  case 'G':
+                    currentPlayer.greenResources++;
+                    break;
+                  }
+              }
+            }
+          }
+          
+        }
+
+      }
   }
 
   undoPlacement(piece: string, index: number, currentPlayer: Player){
@@ -103,7 +177,7 @@ export class ManagerService {
     }
   }
    
-  makeInitialPlacements(currentPlayer: Player, legalNodeMove: boolean):void {
+  makeInitialPlacements(currentPlayer: Player, legalNodeMove: boolean): boolean {
 
     let legalBranchMove = false;
     let nodeId;
@@ -138,6 +212,10 @@ export class ManagerService {
     }
     else{
         this.makeInitialPlacements(currentPlayer, false);
+    }
+
+    clickEndTurn (event:MouseEvent){
+      return true;
     }
   }
 
