@@ -1,24 +1,24 @@
 export enum PlayerType {
-  'HUMAN',
-  'NETWORK',
-  'AI'
+  HUMAN = 'HUMAN',
+  NETWORK = 'NETWORK',
+  AI = 'AI'
 }
 
 export enum TileColor {
-  "GREEN",
-  "BLUE",
-  "YELLOW",
-  "RED",
-  "BLANK"
+  GREEN = "GREEN",
+  BLUE = "BLUE",
+  YELLOW = "YELLOW",
+  RED = "RED",
+  BLANK = "BLANK"
 }
 
 export enum Owner {
-  "NONE",
-  "PLAYERONE",
-  "PLAYERTWO"
+  NONE = "NONE",
+  PLAYERONE = "PLAYERONE",
+  PLAYERTWO = "PLAYERTWO"
 }
 
 export enum GameType {
-  "NETWORK",
-  "AI"
+  NETWORK = "NETWORK",
+  AI = "AI"
 }

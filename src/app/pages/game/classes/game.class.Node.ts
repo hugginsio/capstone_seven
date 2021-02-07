@@ -81,18 +81,30 @@ export class Node {
         this.yellowProvided = num;
     }
 
+    getTopBranch(): number {
+        return this.topBranch;
+    }
     setTopBranch(num: number): void {
         this.topBranch = num;
     }
 
+    getRightBranch(): number {
+        return this.rightBranch;
+    }
     setRightBranch(num: number): void {
         this.rightBranch = num;
     }
 
+    getBottomBranch(): number {
+        return this.bottomBranch;
+    }
     setBottomBranch(num: number): void {
         this.bottomBranch = num;
     }
 
+    getLeftBranch(): number {
+        return this.leftBranch;
+    }
     setLeftBranch(num: number): void {
         this.leftBranch = num;
     }
