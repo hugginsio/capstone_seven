@@ -36,54 +36,129 @@ export class ManagerService {
 
    startGame(): void {
 
-    this.makeInitialPlacements(Owner.PLAYERONE);
-    this.makeInitialPlacements(Owner.PLAYERTWO);
-    this.makeInitialPlacements(Owner.PLAYERTWO);
-    this.makeInitialPlacements(Owner.PLAYERONE);
+    let turn = 1;
+    let stack = [];
 
-    this.nextTurn(this.playerTwo);
+    this.makeInitialPlacements(this.playerOne, false);
+    stack.length = 0;
+    this.makeInitialPlacements(this.playerTwo, false);
+    stack.length = 0;
+    turn++;
+    this.makeInitialPlacements(this.playerTwo, false);
+    stack.length = 0;
+    this.makeInitialPlacements(this.playerOne, false);
+
+    this.endTurn(this.playerOne); 
   }
 
   nextTurn(currentPlayer: Player): void { 
+    currentPlayer.hasTraded = false;
+    let stack = [];
+
+    //let obj = {pieceType: 'N', index: 13};
+    //let str = obj.pieceType;
+
     // make moves -- check resources 
+    clickNode(event: MouseEvent) {
+      let nodeId = event.target.id.subString(1,1) as number;
+      if (this.generalNodePlacement(nodeId, currentPlayer)){
+        let obj = {pieceType: 'N', index: nodeId};
+        stack.push(obj);
+      }
+     }
+
+     clickBranch(event: MouseEvent) {
+      let branchId = event.target.id.subString(1,1) as number;
+      if(this.generalBranchPlacement(branchId, currentPlayer)) {
+        let obj = {pieceType: 'B', index: branchId};
+        stack.push(obj);
+      }
+     }
     // take back placements -- reverseNodePlacement and reverseBranchPlacement
+    clickUndo(event: MouseEvent) {
+      let placement = stack.pop();
+      this.undoPlacement(placement.pieceType, placement.index, currentPlayer);
+    }
     // can call trading fuction 
+    clickTrade(event: MouseEvent) {
+      this.makeTrade(currentPlayer);
+    }
     
     // end turn button
-  }
-
-  // lol how da heck we gettin the node and branch selections??
-  makeInitialPlacements(currentPlayer: Owner):void {
-    let nodeNum = 0;
-    let branchNum = 0;
-
-    while(!this.initialNodePlacements(nodeNum, currentPlayer)){
-      // take in new node selection???
-    }
-    while(!this.initialBranchPlacements(nodeNum, branchNum, currentPlayer)){
-      // take in new branch selection???
+    clickEndTurn(event: MouseEvent) {
+      this.endTurn(currentPlayer);
     }
   }
 
-  initialNodePlacements(possibleNode:number, currentPlayer:Owner): boolean { 
+  makeTrade(currentPlayer:Player) {
+      
+  }
+
+  undoPlacement(piece: string, index: number, currentPlayer: Player){
+    if (piece === 'N'){
+      this.reverseNodePlacement(index, currentPlayer);
+    }
+    else {
+      this.reverseBranchPlacement(index, currentPlayer);
+    }
+  }
+   
+  makeInitialPlacements(currentPlayer: Player, legalNodeMove: boolean):void {
+
+    let legalBranchMove = false;
+    let nodeId;
+    let branchId;
+
+    if(!legalNodeMove){
+      clickNode(event: MouseEvent) {
+        nodeId = event.target.id.subString(1,1) as number;
+        legalNodeMove = this.initialNodePlacements(nodeId, currentPlayer);
+        }
+    }
+    if(legalNodeMove){
+      clickBranch(event: MouseEvent) {
+        branchId = event.target.id.subString(1,1) as number;
+        legalBranchMove = this.initialBranchPlacements(nodeId, branchId, currentPlayer);
+       }
+       
+      clickUndo(event: MouseEvent){
+        if (legalBranchMove)
+        {
+          this.reverseInitialBranchPlacement(branchId, currentPlayer)
+          legalBranchMove = false;
+        }
+        else {
+          this.reverseInitialNodePlacement(nodeId, currentPlayer);
+          legalNodeMove = false;
+        }
+      }
+
+       if (!legalBranchMove)
+          this.makeInitialPlacements(currentPlayer, true);
+    }
+    else{
+        this.makeInitialPlacements(currentPlayer, false);
+    }
+  }
+
+  initialNodePlacements(possibleNode:number, currentPlayer:Player): boolean { 
     if (this.gameBoard.nodes[possibleNode].getOwner() === "NONE") {
-        if (currentPlayer == Owner.PLAYERONE) {
+        if (currentPlayer == this.playerOne) {
           this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
+          this.playerOne.numNodesPlaced++;
         }
         else {
           this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
+          this.playerTwo.numNodesPlaced++;
         }
-        // prompt for a branch placement
-        // send node info
         return true;
     }
     else {
-      // prompt for a correct node placement 
       return false;
     }
   }
 
-  initialBranchPlacements(selectedNode:number, possibleBranch:number, currentPlayer:Owner): boolean { 
+  initialBranchPlacements(selectedNode:number, possibleBranch:number, currentPlayer:Player): boolean {
     if (this.gameBoard.branches[possibleBranch].getOwner() === "NONE") {
       if (this.gameBoard.nodes[selectedNode].getTopBranch() === possibleBranch ||
           this.gameBoard.nodes[selectedNode].getLeftBranch() === possibleBranch ||
@@ -91,7 +166,7 @@ export class ManagerService {
           this.gameBoard.nodes[selectedNode].getRightBranch() === possibleBranch
         ) 
       {
-        if (currentPlayer == Owner.PLAYERONE) {
+        if (currentPlayer == this.playerOne) {
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
         }
         else {
@@ -108,19 +183,26 @@ export class ManagerService {
     }
   }
 
-  generalNodePlacement(possibleNode:number, currentPlayer:Owner): boolean {
+  generalNodePlacement(possibleNode:number, currentPlayer:Player): boolean {
     if (this.gameBoard.nodes[possibleNode].getOwner() === "NONE") {
 
-      if (this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getTopBranch()].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getLeftBranch()].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getBottomBranch()].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getRightBranch()].getOwner() === currentPlayer) {
+      let nodeOwner;
+      if (currentPlayer === this.playerOne)
+        nodeOwner = "PLAYERONE";
+      else
+        nodeOwner = "PLAYERTWO";
 
-      if (currentPlayer == Owner.PLAYERONE) {
+      if (this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getTopBranch()].getOwner() === nodeOwner ||
+      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getLeftBranch()].getOwner() === nodeOwner ||
+      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getBottomBranch()].getOwner() === nodeOwner ||
+      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getRightBranch()].getOwner() === nodeOwner) {
+
+      if (currentPlayer == this.playerOne) {
 
         this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
         this.playerOne.greenResources -= 2;
         this.playerOne.yellowResources -= 2;
+        this.playerOne.numNodesPlaced++;
 
       }
       else {
@@ -128,6 +210,7 @@ export class ManagerService {
         this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
         this.playerTwo.greenResources -= 2;
         this.playerTwo.yellowResources -= 2;
+        this.playerTwo.numNodesPlaced++;
 
       }
       return true;
@@ -142,17 +225,23 @@ export class ManagerService {
   }
 }
 
-  generalBranchPlacement(possibleBranch:number, currentPlayer:Owner): boolean {
+  generalBranchPlacement(possibleBranch:number, currentPlayer:Player): boolean {
     if (this.gameBoard.branches[possibleBranch].getOwner() === "NONE") {
 
-      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(1)].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(2)].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(3)].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(4)].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(5)].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(6)].getOwner() === currentPlayer) {
+      let branchOwner;
+      if (currentPlayer === this.playerOne)
+        branchOwner = "PLAYERONE";
+      else
+        branchOwner = "PLAYERTWO";
 
-        if (currentPlayer == Owner.PLAYERONE) {
+      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(1)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(2)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(3)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(4)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(5)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(6)].getOwner() === branchOwner) {
+
+        if (currentPlayer == this.playerOne) {
     
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
           this.playerOne.redResources--;
@@ -176,21 +265,33 @@ export class ManagerService {
     }
   }
 
-  reverseNodePlacement(reverseNode: number, currentPlayer: Owner): void {
+  reverseNodePlacement(reverseNode: number, currentPlayer: Player): void {
     this.gameBoard.nodes[reverseNode].setOwner(Owner.NONE);
-    if (currentPlayer === "PLAYERONE") {
+    if (currentPlayer === this.playerOne) {
+      this.playerOne.numNodesPlaced--;
       this.playerOne.yellowResources += 2;
       this.playerOne.greenResources += 2;
     }
     else {
+      this.playerTwo.numNodesPlaced--;
       this.playerTwo.yellowResources += 2;
       this.playerTwo.greenResources += 2;
     }
   }
 
-  reverseBranchPlacement(reverseBranch: number, currentPlayer: Owner): void {
+  reverseInitialNodePlacement(reverseNode: number, currentPlayer: Player): void {
+    this.gameBoard.nodes[reverseNode].setOwner(Owner.NONE);
+    if (currentPlayer === this.playerOne) {
+      this.playerOne.numNodesPlaced--;
+    }
+    else {
+      this.playerTwo.numNodesPlaced--;
+    }
+  }
+
+  reverseBranchPlacement(reverseBranch: number, currentPlayer: Player): void {
     this.gameBoard.branches[reverseBranch].setOwner(Owner.NONE);
-    if (currentPlayer === "PLAYERONE") {
+    if (currentPlayer === this.playerOne) {
       this.playerOne.redResources++;
       this.playerOne.blueResources++;
     }
@@ -200,11 +301,23 @@ export class ManagerService {
     }
   }
 
-  endTurn(): void { 
+  reverseInitialBranchPlacement(reverseBranch: number, currentPlayer: Player): void {
+    this.gameBoard.branches[reverseBranch].setOwner(Owner.NONE);
+  }
+
+  endTurn(endPlayer: Player): void { 
     // did anyone win??
         // yes ? yay !! 
         // no ? 
           // update resources of next player
     // calls nextTurn
   }
+
+  // clickEvent(event: MouseEvent) {
+  //   const pieceType = event.target.id.subString(0,0);
+  //   const tileId = event.target.id.subString(1,1);
+  //   tiles[tileId];
+  // }
+
+  // <div id="T1" (click)="this.ManagerService.clickTile($event)" />
 }
