@@ -2,20 +2,20 @@ import { State } from './ai.class.State';
 
 
 interface MCTSNodePlaceHolder {
-    move:string,
-    node:MCTSNode
-  }
+  move:string,
+  node:MCTSNode | null
+}
 
 export class MCTSNode {
-  move:string;
-  parent:MCTSNode;
+  move:string | null;
+  parent:MCTSNode | null;
   visits:number;
   wins:number;
   children:Map<string,MCTSNodePlaceHolder>;
   unexpandedMoves:string[];
   state:State;
 
-  constructor(parent:MCTSNode, move:string, state:State, unexpandedMoves:string[]) {
+  constructor(parent:MCTSNode | null, move:string | null, state:State, unexpandedMoves:string[]) {
     this.move = move;
     this.state = state;
 
@@ -55,8 +55,9 @@ export class MCTSNode {
 
   getAllMoves():string[] {
     const result = [];
-    for(const child of this.children.values()){
-      result.push(child.move);
+
+    for(const child in this.children.values()){
+      result.push(child);
     }
 
     return result;
@@ -64,9 +65,9 @@ export class MCTSNode {
 
   getUnexpandedMoves():string[] {
     const result = [];
-    for(const child of this.children.values()){
-      if(child.node === null){
-        result.push(child.move);
+    for(const child in this.children.values()){
+      if(this.children.get(child) === null){
+        result.push(child);
       }
     }
 
@@ -75,8 +76,8 @@ export class MCTSNode {
 
   isFullyExpanded():boolean {
     let result = true;
-    for(const child of this.children.values()){
-      if(child.node === null){
+    for(const child in this.children.values()){
+      if(this.children.get(child) === null){
         result = false;
       }
     }
@@ -93,6 +94,10 @@ export class MCTSNode {
   }
 
   getUCBValue(biasParam:number):number {
-    return (this.wins / this.visits) + Math.sqrt(biasParam * Math.log(this.parent.visits) / this.visits);
+    let visitNumber = 0;
+    if(this.parent !== null){
+      visitNumber = this.parent.visits;
+    }
+    return (this.wins / this.visits) + Math.sqrt(biasParam * Math.log(visitNumber) / this.visits);
   }
 }

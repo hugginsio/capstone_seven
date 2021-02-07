@@ -4,7 +4,7 @@ import { State } from './ai.class.State';
 import { CoreLogic } from '../../util/core-logic.util';
 
 export class MonteCarlo {
-    gameBoard:GameBoard;
+  gameBoard:GameBoard;
   exploreParameter:number;
   mctsNodes:Map<string, MCTSNode>;
 
@@ -20,8 +20,11 @@ export class MonteCarlo {
     if(!this.mctsNodes.has(state.hash())){
       const unexpandedMoves = CoreLogic.getLegalMoves(state).slice();
 
-      let newMCTSNode = new MCTSNode(null, null, state, unexpandedMoves);
+      const newMCTSNode = new MCTSNode(null, null, state, unexpandedMoves);
       this.mctsNodes.set(state.hash(), newMCTSNode);
     }
   }
+
+  
+
 }

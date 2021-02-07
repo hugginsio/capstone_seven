@@ -7,17 +7,17 @@ export class State {
   gameBoard:GameBoard;
   currentPlayer:Player;
 
-  constructor(moveHistory, gameBoard, player) {
+  constructor(moveHistory:string[], gameBoard:GameBoard, player:Player) {
     this.moveHistory = moveHistory;
     this.gameBoard = gameBoard;
     this.currentPlayer = player;
   }
 
   isPlayer(player:Player):boolean {
-      return (player === this.currentPlayer);
+    return (player === this.currentPlayer);
   }
 
   hash():string {
-      return JSON.stringify(this.moveHistory);
+    return JSON.stringify(this.moveHistory);
   }
 }
