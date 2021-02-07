@@ -1,7 +1,7 @@
 import { Tile } from './game.class.Tile';
 import { Branch } from './game.class.Branch';
 import { Node } from './game.class.Node';
-import { TileColor, Owner } from '../enums/game.enums';
+import { TileColor, Owner } from '../../enums/game.enums';
 
   export class GameBoard {
     tiles: Tile[];

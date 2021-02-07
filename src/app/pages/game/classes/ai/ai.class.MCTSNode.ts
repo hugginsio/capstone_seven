@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
+import { State } from './ai.class.State';
 
-import { MCTSNode, State, MCTSNodePlaceHolder } from '../../interfaces/ai.interfaces';
 
-/*@Injectable({
-  providedIn: 'root'
-})*/
-export class MCTSNodeService implements MCTSNode{
+interface MCTSNodePlaceHolder {
+    move:string,
+    node:MCTSNode
+  }
+
+export class MCTSNode {
   move:string;
   parent:MCTSNode;
   visits:number;
@@ -46,7 +47,7 @@ export class MCTSNodeService implements MCTSNode{
       throw new Error("No such move!");
     }
 
-    const childNode = new MCTSNodeService(this,move,childState,unexpandedMoves);
+    const childNode = new MCTSNode(this,move,childState,unexpandedMoves);
     this.children.set(move, {move:move, node:childNode});
 
     return childNode;

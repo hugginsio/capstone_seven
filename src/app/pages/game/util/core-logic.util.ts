@@ -1,7 +1,8 @@
 // Defines helper methods for core game logic
 
 import { State } from "../interfaces/ai.interfaces";
-import { Move } from '../interfaces/game.interfaces';
+
+
 
 export class CoreLogic {
   static getLegalMoves(state:State): string[] {
@@ -9,7 +10,7 @@ export class CoreLogic {
     return [''];
   }
 
-  static moveToString(move:Move):string{
+  /*static moveToString(move:Move):string{
     let result = '';
 
     for(const resource of move.tradedIn){
@@ -61,5 +62,5 @@ export class CoreLogic {
     }
 
     return result;
-  }
+  }*/
 }

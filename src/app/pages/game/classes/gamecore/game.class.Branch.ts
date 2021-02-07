@@ -1,4 +1,4 @@
-import { Owner } from '../enums/game.enums';
+import { Owner } from '../../enums/game.enums';
 
 export class Branch {
     private ownedBy: Owner;
