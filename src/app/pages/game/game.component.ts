@@ -12,4 +12,9 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  clickTile(event: MouseEvent): void {
+    console.log(event);
+    // event.target && console.log(`Clicked tile with ID: ${event.target.id as number}`);
+  }
+
 }
