@@ -4,7 +4,7 @@
 * @kjhx
 
 # Repository Configuration Files
-/.github/ @kjhx
+/.github/** @kjhx
 .gitignore @kjhx
 
 # UI & Graphics
@@ -21,7 +21,7 @@
 # /src/app/pages/game/services/gamecore/** @GPiershale @hmargy @jdhat
 
 # Networking Module Directory
-# /src/app/pages/game/services/networking/ @ccohu @hmargy
+# /src/app/pages/game/services/networking/** @ccohu @hmargy
 
 # Project Configuration Files
 !/package.lock.json
