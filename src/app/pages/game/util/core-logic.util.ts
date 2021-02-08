@@ -1,6 +1,7 @@
 // Defines helper methods for core game logic
 
-import { State } from "../interfaces/ai.interfaces";
+import { State } from '../classes/ai/ai.class.State';
+//import { Player } from '../classes/gamecore/game.class.Player';
 
 
 
@@ -8,6 +9,15 @@ export class CoreLogic {
   static getLegalMoves(state:State): string[] {
     
     return [''];
+  }
+
+  //return 1 if winner, -1 if loser, 0 if draw
+  static determineIfWinner(state:State):number {
+    
+  }
+
+  static nextState(state:State, move:string):State{
+
   }
 
   /*static moveToString(move:Move):string{

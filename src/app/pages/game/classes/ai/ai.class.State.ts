@@ -5,15 +5,15 @@ export class State {
     
   moveHistory:string[];
   gameBoard:GameBoard;
-  currentPlayer:Player;
+  currentPlayer:number;
 
-  constructor(moveHistory:string[], gameBoard:GameBoard, player:Player) {
+  constructor(moveHistory:string[], gameBoard:GameBoard, player:number) {
     this.moveHistory = moveHistory;
     this.gameBoard = gameBoard;
     this.currentPlayer = player;
   }
 
-  isPlayer(player:Player):boolean {
+  isPlayer(player:number):boolean {
     return (player === this.currentPlayer);
   }
 

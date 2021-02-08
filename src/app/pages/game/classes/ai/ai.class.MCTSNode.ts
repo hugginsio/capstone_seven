@@ -8,7 +8,7 @@ interface MCTSNodePlaceHolder {
 
 export class MCTSNode {
   move:string | null;
-  parent:MCTSNode | null;
+  parent:MCTSNode | null ;
   visits:number;
   wins:number;
   children:Map<string,MCTSNodePlaceHolder>;
