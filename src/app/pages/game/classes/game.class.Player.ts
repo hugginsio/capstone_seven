@@ -9,6 +9,11 @@ import { PlayerType } from '../enums/game.enums';
     blueResources: number;
     greenResources: number;
     yellowResources: number;
+
+    redPerTurn: number;
+    bluePerTurn: number;
+    greenPerTurn: number;
+    yellowPerTurn: number;
     
     hasTraded: boolean;
     hasLongestNetwork: boolean;
