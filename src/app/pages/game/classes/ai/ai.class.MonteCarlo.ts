@@ -2,7 +2,7 @@ import { GameBoard } from '../gamecore/game.class.GameBoard';
 import { MCTSNode } from './ai.class.MCTSNode';
 import { State } from './ai.class.State';
 import { CoreLogic } from '../../util/core-logic.util';
-//import { Player } from '../../classes/gamecore/game.class.Player';
+import { Owner } from '../../enums/game.enums';
 
 interface GameStatistics {
   runtime: number,
@@ -51,7 +51,7 @@ export class MonteCarlo {
       this.backPropagate(node,winner);
 
       
-      if(winner === 0){
+      if(winner === Owner.NONE){
         draws++;
       }
       totalSims++;
@@ -141,7 +141,7 @@ export class MonteCarlo {
     return childNode;
   }
 
-  simulate(node:MCTSNode):number{
+  simulate(node:MCTSNode):Owner{
     let state = node.state;
     let winner = CoreLogic.determineIfWinner(state);
 
@@ -155,7 +155,7 @@ export class MonteCarlo {
     return winner;
   }
 
-  backPropagate(node:MCTSNode, winner:number):void{
+  backPropagate(node:MCTSNode, winner:Owner):void{
     while (node !== null){
       node.visits += 1;
 

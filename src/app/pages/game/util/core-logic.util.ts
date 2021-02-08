@@ -1,9 +1,15 @@
 // Defines helper methods for core game logic
 
 import { State } from '../classes/ai/ai.class.State';
-//import { Player } from '../classes/gamecore/game.class.Player';
+import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
+import { Owner } from '../enums/game.enums';
 
-
+interface Move {
+  tradedIn:string[],
+  received:string,
+  nodesPlaced:number[],
+  branchesPlaced:number[]
+}
 
 export class CoreLogic {
   static getLegalMoves(state:State): string[] {
@@ -12,15 +18,32 @@ export class CoreLogic {
   }
 
   //return 1 if winner, -1 if loser, 0 if draw
-  static determineIfWinner(state:State):number {
+  static determineIfWinner(state:State):Owner {
     
   }
 
   static nextState(state:State, move:string):State{
+    const newHistory = state.moveHistory.slice();
+    newHistory.push(move);
+    const newBoard = new GameBoard();
+    newBoard.tiles = state.gameBoard.tiles.slice();
+    newBoard.nodes = state.gameBoard.nodes.slice();
+    newBoard.branches = state.gameBoard.branches.slice();
 
+    //TODO: apply the move to the new board
+
+    let newPlayer;
+    if(state.currentPlayer === Owner.PLAYERONE){
+      newPlayer = Owner.PLAYERTWO;
+    }
+    else{
+      newPlayer = Owner.PLAYERONE;
+    }
+
+    return new State(newHistory, newBoard, newPlayer);
   }
 
-  /*static moveToString(move:Move):string{
+  static moveToString(move:Move):string{
     let result = '';
 
     for(const resource of move.tradedIn){
@@ -72,5 +95,5 @@ export class CoreLogic {
     }
 
     return result;
-  }*/
+  }
 }

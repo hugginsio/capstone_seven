@@ -1,5 +1,5 @@
 import { GameBoard } from '../gamecore/game.class.GameBoard';
-import { Player } from '../gamecore/game.class.Player';
+//import { PlayerType } from '../gamecore/game.class.Player';
 
 export class State {
     

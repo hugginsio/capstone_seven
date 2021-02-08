@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { GameType, Owner } from '../../enums/game.enums';
 
-import { GameBoard } from '../../classes/game.class.GameBoard';
-import { Tile } from '../../classes/game.class.Tile';
-import { Node } from '../../classes/game.class.Node';
-import { Branch } from '../../classes/game.class.Branch';
-import { Player } from '../../classes/game.class.Player';
+import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
+import { Tile } from '../../classes/gamecore/game.class.Tile';
+import { Node } from '../../classes/gamecore/game.class.Node';
+import { Branch } from '../../classes/gamecore/game.class.Branch';
+import { Player } from '../../classes/gamecore/game.class.Player';
 
 
 @Injectable({
