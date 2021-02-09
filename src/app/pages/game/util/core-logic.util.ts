@@ -2,7 +2,7 @@
 
 import { State } from '../classes/ai/ai.class.State';
 import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
-import { Owner } from '../enums/game.enums';
+import { Player } from '../classes/gamecore/game.class.Player';
 
 interface Move {
   tradedIn:string[],
@@ -12,14 +12,26 @@ interface Move {
 }
 
 export class CoreLogic {
-  static getLegalMoves(state:State): string[] {
+
+  getStartingState(player1:Player, player2:Player, gameBoard:GameBoard, currentPlayer:number):State{
+    const newBoard = new GameBoard();
+    newBoard.tiles = gameBoard.tiles.slice();
+    newBoard.nodes = gameBoard.nodes.slice();
+    newBoard.branches = gameBoard.branches.slice();
     
+    return new State([], newBoard, currentPlayer, player1, player2);
+  }
+
+  static getLegalMoves(state:State): string[] {
+    //TODO: write this method
     return [''];
   }
 
-  //return 1 if winner, -1 if loser, 0 if draw
-  static determineIfWinner(state:State):Owner {
-    
+  //return 1 if winner, -1 if loser, 0 if draw, -Infinity if there is no winner yet
+  static determineIfWinner(state:State):number {
+    //TODO: write this method
+
+    return 0;
   }
 
   static nextState(state:State, move:string):State{
@@ -31,16 +43,9 @@ export class CoreLogic {
     newBoard.branches = state.gameBoard.branches.slice();
 
     //TODO: apply the move to the new board
-
-    let newPlayer;
-    if(state.currentPlayer === Owner.PLAYERONE){
-      newPlayer = Owner.PLAYERTWO;
-    }
-    else{
-      newPlayer = Owner.PLAYERONE;
-    }
-
-    return new State(newHistory, newBoard, newPlayer);
+    
+    //currentPlayer is 1 for player 1 and -1 for player 2
+    return new State(newHistory, newBoard, -state.currentPlayer, state.player1, state.player2);
   }
 
   static moveToString(move:Move):string{
@@ -70,7 +75,7 @@ export class CoreLogic {
       }
     }
 
-    return result; //result should be a string formatted like 'R,R,R,Y;8;3,18
+    return result; //result should be a string formatted like 'R,R,R,Y;8;3,18'
   }
 
   static stringToMove(moveString:string):Move{
