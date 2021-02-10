@@ -51,6 +51,10 @@ export class ManagerService {
     // if statement check to see if its local/network/AI
     // if AI then call the AI service
     // call applyMove 
+    // R,R,R,Y;8;3,18 (Trades; Nodes; Branches)
+    // string AIMoveString = ai.service.getMove(board, p1, p2)
+    // Move AIMove = stringToMove(AIMove: string)
+    // gameboard.applyMove(AIMove);
 
     // make moves -- check resources 
     clickNode(event: MouseEvent) {
