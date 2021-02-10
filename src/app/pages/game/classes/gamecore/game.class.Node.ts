@@ -109,16 +109,29 @@ export class Node {
         this.leftBranch = num;
     }
 
+    getTopLeftTile(): number {
+        return this.topLeftTile;
+    }
     setTopLeftTile(num: number): void {
         this.topLeftTile = num;
     }
-    
+
+    getTopRightTile(): number {
+        return this.topRightTile;
+    }
     setTopRightTile(num: number): void {
         this.topRightTile = num;
     }
     
+    getBottomLeftTile(): number {
+        return this.bottomLeftTile;
+    }
     setBottomLeftTile(num: number): void {
         this.bottomLeftTile = num;
+    }
+
+    getBottomRightTile(): number {
+        return this.bottomRightTile;
     }
     setBottomRightTile(num: number): void {
         this.bottomRightTile = num;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GameType, Owner } from '../../enums/game.enums';
+import { GameType, Owner, TileColor } from '../../enums/game.enums';
 
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Tile } from '../../classes/gamecore/game.class.Tile';
@@ -36,54 +36,285 @@ export class ManagerService {
 
    startGame(): void {
 
-    this.makeInitialPlacements(Owner.PLAYERONE);
-    this.makeInitialPlacements(Owner.PLAYERTWO);
-    this.makeInitialPlacements(Owner.PLAYERTWO);
-    this.makeInitialPlacements(Owner.PLAYERONE);
+    this.makeInitialPlacements(this.playerOne, false);
+    this.makeInitialPlacements(this.playerTwo, false);
+    this.makeInitialPlacements(this.playerTwo, false);
+    this.makeInitialPlacements(this.playerOne, false);
 
-    this.nextTurn(this.playerTwo);
+    this.endTurn(this.playerOne); 
   }
 
   nextTurn(currentPlayer: Player): void { 
+    currentPlayer.hasTraded = false;
+    let stack = [];
+
+    // if statement check to see if its local/network/AI
+    // if AI then call the AI service
+    // call applyMove 
+    // R,R,R,Y;8;3,18 (Trades; Nodes; Branches)
+    // string AIMoveString = ai.service.getMove(board, p1, p2)
+    // Move AIMove = stringToMove(AIMove: string)
+    // gameboard.applyMove(AIMove);
+
     // make moves -- check resources 
+    clickNode(event: MouseEvent) {
+      let nodeId = event.target.id.subString(1,1) as number;
+      if (this.generalNodePlacement(nodeId, currentPlayer)){
+        let obj = {pieceType: 'N', index: nodeId};
+        stack.push(obj);
+      }
+     }
+
+     clickBranch(event: MouseEvent) {
+      let branchId = event.target.id.subString(1,1) as number;
+      if(this.generalBranchPlacement(branchId, currentPlayer)) {
+        let obj = {pieceType: 'B', index: branchId};
+        stack.push(obj);
+      }
+     }
     // take back placements -- reverseNodePlacement and reverseBranchPlacement
+    clickUndo(event: MouseEvent) {
+      let placement = stack.pop();
+      this.undoPlacement(placement.pieceType, placement.index, currentPlayer);
+    }
     // can call trading fuction 
+    clickTrade(event: MouseEvent) {
+      this.makeTrade(currentPlayer);
+    }
     
     // end turn button
-  }
-
-  // lol how da heck we gettin the node and branch selections??
-  makeInitialPlacements(currentPlayer: Owner):void {
-    let nodeNum = 0;
-    let branchNum = 0;
-
-    while(!this.initialNodePlacements(nodeNum, currentPlayer)){
-      // take in new node selection???
-    }
-    while(!this.initialBranchPlacements(nodeNum, branchNum, currentPlayer)){
-      // take in new branch selection???
+    clickEndTurn(event: MouseEvent) {
+      this.endTurn(currentPlayer);
     }
   }
 
-  initialNodePlacements(possibleNode:number, currentPlayer:Owner): boolean { 
+  endTurn(endPlayer: Player): void { 
+    let newPlayer;
+    if (this.playerOne.currentScore >= 10 ||
+        this.playerTwo.currentScore >= 10) {
+          if (this.playerOne.currentScore > this.playerTwo.currentScore) {
+            // playerOne wins
+          }
+          else {
+            // playerTwo wins
+          }
+        }
+    else {
+        if (endPlayer === this.playerOne){
+          newPlayer = this.playerTwo;
+        }
+        else {
+          newPlayer = this.playerOne;
+        }
+          // update resources for newPlayer
+          newPlayer.redResources += newPlayer.redPerTurn;
+          newPlayer.blueResources += newPlayer.bluePerTurn;
+          newPlayer.yellowResources += newPlayer.yellowPerTurn;
+          newPlayer.greenResources += newPlayer.greenPerTurn;
+          
+          this.nextTurn(newPlayer);
+    }
+  }  
+
+  makeTrade(currentPlayer:Player): void {
+
+      let tradedResources = [];
+
+      if(currentPlayer.hasTraded === false)
+      {
+        clickRed(event: MouseEvent) {
+          if (currentPlayer.redResources > 0 && tradedResources.length <= 3) {
+            tradedResources.push('R');
+            currentPlayer.redResources--;
+          }
+        }
+        clickBlue(event: MouseEvent) {
+          if (currentPlayer.blueResources > 0 && tradedResources.length <= 3) {
+            tradedResources.push('B');
+            currentPlayer.blueResources--;
+          }
+        }
+        clickYellow(event: MouseEvent) {
+          if (currentPlayer.yellowResources > 0 && tradedResources.length <= 3) {
+            tradedResources.push('Y');
+            currentPlayer.yellowResources--;
+          }
+        }
+        clickGreen(event: MouseEvent) {
+          if (currentPlayer.greenResources > 0 && tradedResources.length <= 3) {
+            tradedResources.push('G');
+            currentPlayer.greenResources--;
+          }
+        }
+
+        clickUndoSelectedResource(event: MouseEvent) {
+          if (tradedResources.length > 0) {
+            let selectedResource = event.target.id.subString(1,1) as string;
+            let index = tradedResources.indexOf(selectedResource);
+            if (index != -1) {
+              tradedResources.splice(index, 1);
+              switch (selectedResource) {
+                case 'R':
+                  currentPlayer.redResources++;
+                  break;
+                case 'B':
+                  currentPlayer.blueResources++;
+                  break;
+                case 'Y':
+                  currentPlayer.yellowResources++;
+                  break;
+                case 'G':
+                  currentPlayer.greenResources++;
+                  break;
+                }
+            }
+          }  
+        }
+
+        clickTradeFor(event: MouseEvent) {
+          if(tradedResources.length === 3) {
+            let selectedResource = event.target.id.subString(1,1) as string;
+            let index = tradedResources.indexOf(selectedResource);
+            if(index === -1)
+            {
+              clickConfirmTrade(event: MouseEvent) {
+                switch (selectedResource) {
+                  case 'R':
+                    currentPlayer.redResources++;
+                    break;
+                  case 'B':
+                    currentPlayer.blueResources++;
+                    break;
+                  case 'Y':
+                    currentPlayer.yellowResources++;
+                    break;
+                  case 'G':
+                    currentPlayer.greenResources++;
+                    break;
+                  }
+              }
+            }
+          }
+          
+        }
+
+      }
+  }
+
+  undoPlacement(piece: string, index: number, currentPlayer: Player){
+    if (piece === 'N'){
+      this.reverseNodePlacement(index, currentPlayer);
+    }
+    else {
+      this.reverseBranchPlacement(index, currentPlayer);
+    }
+  }
+   
+  makeInitialPlacements(currentPlayer: Player, legalNodeMove: boolean): boolean {
+
+    let legalBranchMove = false;
+    let nodeId;
+    let branchId;
+
+    if(!legalNodeMove){
+      clickNode(event: MouseEvent) {
+        nodeId = event.target.id.subString(1,1) as number;
+        legalNodeMove = this.initialNodePlacements(nodeId, currentPlayer);
+        }
+    }
+    if(legalNodeMove){
+      clickBranch(event: MouseEvent) {
+        branchId = event.target.id.subString(1,1) as number;
+        legalBranchMove = this.initialBranchPlacements(nodeId, branchId, currentPlayer);
+       }
+       
+      clickUndo(event: MouseEvent){
+        if (legalBranchMove)
+        {
+          this.reverseInitialBranchPlacement(branchId, currentPlayer)
+          legalBranchMove = false;
+        }
+        else {
+          this.reverseInitialNodePlacement(nodeId, currentPlayer);
+          legalNodeMove = false;
+        }
+      }
+
+       if (!legalBranchMove)
+          this.makeInitialPlacements(currentPlayer, true);
+    }
+    else{
+        this.makeInitialPlacements(currentPlayer, false);
+    }
+
+    clickEndTurn (event:MouseEvent){
+      return true;
+    }
+  }
+
+  initialNodePlacements(possibleNode:number, currentPlayer:Player): boolean { 
     if (this.gameBoard.nodes[possibleNode].getOwner() === "NONE") {
-        if (currentPlayer == Owner.PLAYERONE) {
+
+      if (this.gameBoard.nodes[possibleNode].getTopRightTile() != -1) {
+        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount++;
+        
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount >
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].maxNodes) {
+              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted = true;
+              this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopRightTile(), true);
+            }
+      }
+
+      if (this.gameBoard.nodes[possibleNode].getBottomRightTile() != -1) {
+        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount++;
+        
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount >
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].maxNodes) {
+              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted = true;
+              this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomRightTile(), true);
+            }
+      }
+
+      if (this.gameBoard.nodes[possibleNode].getBottomLeftTile() != -1) {
+        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount++;
+
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount >
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].maxNodes) {
+              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted = true;
+              this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomLeftTile(), true);
+            }
+      }
+      
+      if (this.gameBoard.nodes[possibleNode].getTopLeftTile() != -1) {
+        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount++;
+
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount >
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].maxNodes) {
+              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted = true;
+              this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopLeftTile(), true);
+            }
+      }
+
+        if (currentPlayer == this.playerOne) {
           this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
+          this.playerOne.numNodesPlaced++;
+          this.playerOne.currentScore++;
+
         }
         else {
           this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
+          this.playerTwo.numNodesPlaced++;
+          this.playerTwo.currentScore++;
+          
         }
-        // prompt for a branch placement
-        // send node info
         return true;
     }
     else {
-      // prompt for a correct node placement 
       return false;
     }
   }
 
-  initialBranchPlacements(selectedNode:number, possibleBranch:number, currentPlayer:Owner): boolean { 
+  initialBranchPlacements(selectedNode:number, possibleBranch:number, currentPlayer:Player): boolean {
     if (this.gameBoard.branches[possibleBranch].getOwner() === "NONE") {
       if (this.gameBoard.nodes[selectedNode].getTopBranch() === possibleBranch ||
           this.gameBoard.nodes[selectedNode].getLeftBranch() === possibleBranch ||
@@ -91,7 +322,7 @@ export class ManagerService {
           this.gameBoard.nodes[selectedNode].getRightBranch() === possibleBranch
         ) 
       {
-        if (currentPlayer == Owner.PLAYERONE) {
+        if (currentPlayer == this.playerOne) {
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
         }
         else {
@@ -108,27 +339,78 @@ export class ManagerService {
     }
   }
 
-  generalNodePlacement(possibleNode:number, currentPlayer:Owner): boolean {
+  generalNodePlacement(possibleNode:number, currentPlayer:Player): boolean {
     if (this.gameBoard.nodes[possibleNode].getOwner() === "NONE") {
 
-      if (this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getTopBranch()].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getLeftBranch()].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getBottomBranch()].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getRightBranch()].getOwner() === currentPlayer) {
+      let nodeOwner;
+      if (currentPlayer === this.playerOne)
+        nodeOwner = "PLAYERONE";
+      else
+        nodeOwner = "PLAYERTWO";
 
-      if (currentPlayer == Owner.PLAYERONE) {
+      if (this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getTopBranch()].getOwner() === nodeOwner ||
+      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getLeftBranch()].getOwner() === nodeOwner ||
+      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getBottomBranch()].getOwner() === nodeOwner ||
+      this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getRightBranch()].getOwner() === nodeOwner) {
+
+        // add to nodeCount of tiles and check for if it has been exhaused
+        if (this.gameBoard.nodes[possibleNode].getTopRightTile() != -1) {
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount++;
+          
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount >
+              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].maxNodes) {
+                this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted = true;
+                this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopRightTile(), true);
+              }
+        }
+
+        if (this.gameBoard.nodes[possibleNode].getBottomRightTile() != -1) {
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount++;
+          
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount >
+              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].maxNodes) {
+                this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted = true;
+                this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomRightTile(), true);
+              }
+        }
+
+        if (this.gameBoard.nodes[possibleNode].getBottomLeftTile() != -1) {
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount++;
+
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount >
+              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].maxNodes) {
+                this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted = true;
+                this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomLeftTile(), true);
+              }
+        }
+        
+        if (this.gameBoard.nodes[possibleNode].getTopLeftTile() != -1) {
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount++;
+
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount >
+              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].maxNodes) {
+                this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted = true;
+                this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopLeftTile(), true);
+              }
+        }
+
+      if (currentPlayer == this.playerOne) {
 
         this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
         this.playerOne.greenResources -= 2;
         this.playerOne.yellowResources -= 2;
-
+        this.playerOne.numNodesPlaced++;
+        this.playerOne.currentScore++;
+        
+        
       }
       else {
 
         this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
         this.playerTwo.greenResources -= 2;
         this.playerTwo.yellowResources -= 2;
-
+        this.playerTwo.numNodesPlaced++;
+        this.playerTwo.currentScore++;
       }
       return true;
     }
@@ -142,17 +424,23 @@ export class ManagerService {
   }
 }
 
-  generalBranchPlacement(possibleBranch:number, currentPlayer:Owner): boolean {
+  generalBranchPlacement(possibleBranch:number, currentPlayer:Player): boolean {
     if (this.gameBoard.branches[possibleBranch].getOwner() === "NONE") {
 
-      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(1)].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(2)].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(3)].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(4)].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(5)].getOwner() === currentPlayer ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(6)].getOwner() === currentPlayer) {
+      let branchOwner;
+      if (currentPlayer === this.playerOne)
+        branchOwner = "PLAYERONE";
+      else
+        branchOwner = "PLAYERTWO";
 
-        if (currentPlayer == Owner.PLAYERONE) {
+      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(1)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(2)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(3)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(4)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(5)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(6)].getOwner() === branchOwner) {
+
+        if (currentPlayer == this.playerOne) {
     
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
           this.playerOne.redResources--;
@@ -176,21 +464,145 @@ export class ManagerService {
     }
   }
 
-  reverseNodePlacement(reverseNode: number, currentPlayer: Owner): void {
+  reverseNodePlacement(reverseNode: number, currentPlayer: Player): void {
     this.gameBoard.nodes[reverseNode].setOwner(Owner.NONE);
-    if (currentPlayer === "PLAYERONE") {
+    if (currentPlayer === this.playerOne) {
+      this.playerOne.numNodesPlaced--;
+      this.playerOne.currentScore--;
       this.playerOne.yellowResources += 2;
       this.playerOne.greenResources += 2;
     }
     else {
+      this.playerTwo.numNodesPlaced--;
+      this.playerTwo.currentScore--;
       this.playerTwo.yellowResources += 2;
       this.playerTwo.greenResources += 2;
     }
+
+    if (this.gameBoard.nodes[reverseNode].getTopRightTile() != -1) {
+      this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].nodeCount--;
+      
+      if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].isExhausted) {
+        if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].nodeCount <=
+              this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].maxNodes)
+              {
+                this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].isExhausted = false;
+                this.tileExhaustion(this.gameBoard.nodes[reverseNode].getTopRightTile(), false);
+              }
+      }
+    }
+    
+    if (this.gameBoard.nodes[reverseNode].getTopLeftTile() != -1) {
+      this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].nodeCount--;
+
+      if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].isExhausted) {
+        
+        if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].nodeCount <=
+              this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].maxNodes)
+              {
+                this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].isExhausted = false;
+                this.tileExhaustion(this.gameBoard.nodes[reverseNode].getTopLeftTile(), false);
+              }
+      }
+    }
+
+    if (this.gameBoard.nodes[reverseNode].getBottomRightTile() != -1) {
+      this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].nodeCount--;
+
+      if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].isExhausted) {
+        if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].nodeCount <=
+              this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].maxNodes)
+              {
+                this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].isExhausted = false;
+                this.tileExhaustion(this.gameBoard.nodes[reverseNode].getBottomRightTile(), false);
+              }
+      }
+    }
+
+    if (this.gameBoard.nodes[reverseNode].getBottomLeftTile() != -1) {
+      this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].nodeCount--;
+
+      if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].isExhausted) {
+        
+        if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].nodeCount <=
+              this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].maxNodes)
+              {
+                this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].isExhausted = false;
+                this.tileExhaustion(this.gameBoard.nodes[reverseNode].getBottomLeftTile(), false);
+              }
+      }
+    }
   }
 
-  reverseBranchPlacement(reverseBranch: number, currentPlayer: Owner): void {
+  reverseInitialNodePlacement(reverseNode: number, currentPlayer: Player): void {
+    this.gameBoard.nodes[reverseNode].setOwner(Owner.NONE);
+    if (currentPlayer === this.playerOne) {
+      this.playerOne.numNodesPlaced--;
+      this.playerOne.currentScore--;
+    }
+    else {
+      this.playerTwo.numNodesPlaced--;
+      this.playerTwo.currentScore--;
+    }
+
+    if (this.gameBoard.nodes[reverseNode].getTopRightTile() != -1) {
+      this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].nodeCount--;
+      
+      if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].isExhausted) {
+        if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].nodeCount <=
+              this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].maxNodes)
+              {
+                this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].isExhausted = false;
+                this.tileExhaustion(this.gameBoard.nodes[reverseNode].getTopRightTile(), false);
+              }
+      }
+    }
+    
+    if (this.gameBoard.nodes[reverseNode].getTopLeftTile() != -1) {
+      this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].nodeCount--;
+
+      if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].isExhausted) {
+        
+        if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].nodeCount <=
+              this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].maxNodes)
+              {
+                this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].isExhausted = false;
+                this.tileExhaustion(this.gameBoard.nodes[reverseNode].getTopLeftTile(), false);
+              }
+      }
+    }
+
+    if (this.gameBoard.nodes[reverseNode].getBottomRightTile() != -1) {
+      this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].nodeCount--;
+
+      if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].isExhausted) {
+        if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].nodeCount <=
+              this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].maxNodes)
+              {
+                this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].isExhausted = false;
+                this.tileExhaustion(this.gameBoard.nodes[reverseNode].getBottomRightTile(), false);
+              }
+      }
+    }
+
+    if (this.gameBoard.nodes[reverseNode].getBottomLeftTile() != -1) {
+      this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].nodeCount--;
+
+      if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].isExhausted) {
+        
+        if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].nodeCount <=
+              this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].maxNodes)
+              {
+                this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].isExhausted = false;
+                this.tileExhaustion(this.gameBoard.nodes[reverseNode].getBottomLeftTile(), false);
+              }
+      }
+    }
+  }
+
+  reverseBranchPlacement(reverseBranch: number, currentPlayer: Player): void {
     this.gameBoard.branches[reverseBranch].setOwner(Owner.NONE);
-    if (currentPlayer === "PLAYERONE") {
+    if (currentPlayer === this.playerOne) {
       this.playerOne.redResources++;
       this.playerOne.blueResources++;
     }
@@ -200,11 +612,89 @@ export class ManagerService {
     }
   }
 
-  endTurn(): void { 
-    // did anyone win??
-        // yes ? yay !! 
-        // no ? 
-          // update resources of next player
-    // calls nextTurn
+  reverseInitialBranchPlacement(reverseBranch: number, currentPlayer: Player): void {
+    this.gameBoard.branches[reverseBranch].setOwner(Owner.NONE);
+  }   
+
+  tileExhaustion(tileNum: number, setAsExhausted: boolean): void {
+    // check for whichever nodes are already on the tile and decrement their *color*PerTurn
+    let currentTileColor = this.gameBoard.tiles[tileNum].color;
+    let functionName;
+    if (setAsExhausted){
+      functionName = this.decrementResource;
+    }
+    else{
+      functionName = this.incrementResource;
+    }
+    
+    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
+          functionName(this.playerOne, currentTileColor);
+    }
+    else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
+          functionName(this.playerTwo, currentTileColor);
+    }
+
+    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
+          functionName(this.playerOne, currentTileColor);
+    }
+    else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
+          functionName( this.playerTwo, currentTileColor);
+    }
+
+    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
+          functionName(this.playerOne, currentTileColor);
+    }
+    else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
+          functionName(this.playerTwo, currentTileColor);
+    }
+    
+    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
+          functionName(this.playerOne, currentTileColor);
+    }
+    else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
+          functionName(this.playerTwo, currentTileColor);
+    }
   }
+
+  decrementResource(nodeOwner: Player, currentTileColor: TileColor){
+      switch (currentTileColor){
+        case TileColor.RED:
+          nodeOwner.redPerTurn--;
+          break;
+        case TileColor.BLUE:
+          nodeOwner.bluePerTurn--;
+          break;
+        case TileColor.YELLOW:
+          nodeOwner.yellowPerTurn--;
+          break;
+        case TileColor.GREEN:
+          nodeOwner.greenPerTurn--;
+          break;
+      }
+    }
+
+  incrementResource(nodeOwner: Player, currentTileColor: TileColor){
+      switch (currentTileColor){
+        case TileColor.RED:
+          nodeOwner.redPerTurn++;
+          break;
+        case TileColor.BLUE:
+          nodeOwner.bluePerTurn++;
+          break;
+        case TileColor.YELLOW:
+          nodeOwner.yellowPerTurn++;
+          break;
+        case TileColor.GREEN:
+          nodeOwner.greenPerTurn++;
+          break;
+        }
+  }
+
+  // clickEvent(event: MouseEvent) {
+  //   const pieceType = event.target.id.subString(0,0);
+  //   const tileId = event.target.id.subString(1,1);
+  //   tiles[tileId];
+  // }
+
+  // <div id="T1" (click)="this.ManagerService.clickTile($event)" />
 }
