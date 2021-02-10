@@ -78,9 +78,18 @@ export class CoreLogic {
     newState.currentPlayer = -newState.currentPlayer;
 
     //Next Player gets more resources
-    // if(newState.currentPlayer === 1){
-      
-    // }
+    if(newState.currentPlayer === 1){
+      newState.player1.redResources += newState.player1.redPerTurn;
+      newState.player1.blueResources += newState.player1.bluePerTurn;
+      newState.player1.greenResources += newState.player1.greenPerTurn;
+      newState.player1.yellowResources += newState.player1.yellowPerTurn;
+    }
+    else{
+      newState.player2.redResources += newState.player1.redPerTurn;
+      newState.player2.blueResources += newState.player1.bluePerTurn;
+      newState.player2.greenResources += newState.player1.greenPerTurn;
+      newState.player2.yellowResources += newState.player1.yellowPerTurn;
+    }
     
     
 
@@ -123,6 +132,7 @@ export class CoreLogic {
       gameParts.board.nodes[node].setOwner(owner);
       gameParts.affectedPlayer.greenResources -= 2;
       gameParts.affectedPlayer.yellowResources -=2;
+      gameParts.affectedPlayer.currentScore++;
     }
 
     for(const branch of moveObj.branchesPlaced){
@@ -131,7 +141,9 @@ export class CoreLogic {
       gameParts.affectedPlayer.blueResources --;
     }
 
-    //Need to deal with tile exhaustion and point allocation
+    //captured tile and longest network point allocation
+
+    //Need to deal with tile exhaustion 
 
   }
 

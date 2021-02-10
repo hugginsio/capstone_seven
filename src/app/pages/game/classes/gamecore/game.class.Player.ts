@@ -4,18 +4,23 @@ import { PlayerType } from '../../enums/game.enums';
 // what needs to be private here??
 export class Player {
   type: PlayerType;
-
+  
   redResources: number;
   blueResources: number;
   greenResources: number;
   yellowResources: number;
-  
+
+  redPerTurn: number;
+  bluePerTurn: number;
+  greenPerTurn: number;
+  yellowPerTurn: number;
+   
   hasTraded: boolean;
   hasLongestNetwork: boolean;
-
+  
   numTilesCaptured: number;
   numNodesPlaced: number;
-
+  
   currentScore: number;
 
   constructor() {

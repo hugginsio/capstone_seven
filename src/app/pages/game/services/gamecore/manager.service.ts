@@ -54,7 +54,7 @@ export class ManagerService {
     // R,R,R,Y;8;3,18 (Trades; Nodes; Branches)
     // string AIMoveString = ai.service.getMove(board, p1, p2)
     // Move AIMove = stringToMove(AIMove: string)
-    // gameboard.applyMove(AIMove);
+    // CoreLogic.applyMove(AIMove, {gameBoard, player}, owner);
 
     // make moves -- check resources 
     clickNode(event: MouseEvent) {

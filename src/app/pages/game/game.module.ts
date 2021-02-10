@@ -7,10 +7,10 @@ import { GameComponent } from './game.component';
 import { SharedModule } from '../../shared/shared.module';
 
 import { AiService } from './services/ai/ai.service';
-import { GameboardService } from './services/gamecore/gameboard.service';
+import { ManagerService } from './services/gamecore/manager.service';
 
 @NgModule({
-  declarations: [GameComponent, AiService, GameboardService],
+  declarations: [GameComponent, AiService, ManagerService],
   imports: [CommonModule, SharedModule, GameRoutingModule]
 })
 export class GameModule {}
