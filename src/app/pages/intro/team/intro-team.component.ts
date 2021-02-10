@@ -6,7 +6,8 @@ import { Router } from '@angular/router';
   templateUrl: './intro-team.component.html',
   styleUrls: ['./intro-team.component.scss']
 })
-export class IntroTeamComponent implements OnInit {
+export class IntroTeamComponent implements OnInit, OnDestroy {
+  private introInterval: NodeJS.Timeout;
 
   constructor(
     private readonly routerService: Router
@@ -14,8 +15,13 @@ export class IntroTeamComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Navigating in 3s');
-    setTimeout(() => {
+    this.introInterval = setTimeout(() => {
       this.routerService.navigate(['/intro/game']);
     }, 3000);
+  }
+
+  ngOnDestroy(): void {
+    console.log('Clearing team intro timer.');
+    clearTimeout(this.introInterval);
   }
 }
