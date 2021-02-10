@@ -48,6 +48,10 @@ export class ManagerService {
     currentPlayer.hasTraded = false;
     let stack = [];
 
+    // if statement check to see if its local/network/AI
+    // if AI then call the AI service
+    // call applyMove 
+
     // make moves -- check resources 
     clickNode(event: MouseEvent) {
       let nodeId = event.target.id.subString(1,1) as number;
