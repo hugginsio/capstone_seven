@@ -3,12 +3,18 @@
 import { State } from '../classes/ai/ai.class.State';
 import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
 import { Player } from '../classes/gamecore/game.class.Player';
+import { Owner } from '../enums/game.enums';
 
 interface Move {
   tradedIn:string[],
   received:string,
   nodesPlaced:number[],
   branchesPlaced:number[]
+}
+
+interface ApplyMoveParameter { //should probably be named better
+  board:GameBoard,
+  affectedPlayer:Player
 }
 
 export class CoreLogic {
@@ -29,9 +35,26 @@ export class CoreLogic {
 
   //return 1 if winner, -1 if loser, 0 if draw, -Infinity if there is no winner yet
   static determineIfWinner(state:State):number {
-    //TODO: write this method
+    let result = -Infinity;
 
-    return 0;
+    //Probably need to take into account possible draws with less than ten points
+    if(state.player1.currentScore >= 10 && state.player2.currentScore >= 10){
+      result = 0;
+    }
+
+    if(state.currentPlayer === 1){
+      if(state.player1.currentScore >= 10){
+        result = state.currentPlayer;
+      }
+      
+    }
+    else{
+      if(state.player2.currentScore >= 10){
+        result = state.currentPlayer;
+      }
+    }
+
+    return result;
   }
 
   static nextState(state:State, move:string):State{
@@ -42,10 +65,74 @@ export class CoreLogic {
     newBoard.nodes = state.gameBoard.nodes.slice();
     newBoard.branches = state.gameBoard.branches.slice();
 
-    //TODO: apply the move to the new board
     
+    const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2);
+
+    if(state.currentPlayer === 1){
+      this.applyMove(move, {board:newState.gameBoard,affectedPlayer:newState.player1}, Owner.PLAYERONE);
+    }
+    else{
+      CoreLogic.applyMove(move, {board:newState.gameBoard,affectedPlayer:newState.player2}, Owner.PLAYERTWO);
+    }
+    // figure out how to manage initial move order
+    newState.currentPlayer = -newState.currentPlayer;
+
+    //Next Player gets more resources
+    // if(newState.currentPlayer === 1){
+      
+    // }
+    
+    
+
     //currentPlayer is 1 for player 1 and -1 for player 2
-    return new State(newHistory, newBoard, -state.currentPlayer, state.player1, state.player2);
+    return newState;
+  }
+
+  static applyMove(move:string, gameParts:ApplyMoveParameter, owner:Owner):void{
+
+    const moveObj:Move = CoreLogic.stringToMove(move);
+    for(const resource of moveObj.tradedIn){
+      if(resource === 'G'){
+        gameParts.affectedPlayer.greenResources--;
+      }
+      else if (resource === 'Y'){
+        gameParts.affectedPlayer.yellowResources--;
+      }
+      else if (resource === 'R'){
+        gameParts.affectedPlayer.redResources--;
+      }
+      else if (resource === 'B'){
+        gameParts.affectedPlayer.blueResources--;
+      }
+    }
+
+    if(moveObj.received === 'G'){
+      gameParts.affectedPlayer.greenResources++;
+    }
+    else if (moveObj.received  === 'Y'){
+      gameParts.affectedPlayer.yellowResources++;
+    }
+    else if (moveObj.received  === 'R'){
+      gameParts.affectedPlayer.redResources++;
+    }
+    else if (moveObj.received  === 'B'){
+      gameParts.affectedPlayer.blueResources++;
+    }
+
+    for(const node of moveObj.nodesPlaced){
+      gameParts.board.nodes[node].setOwner(owner);
+      gameParts.affectedPlayer.greenResources -= 2;
+      gameParts.affectedPlayer.yellowResources -=2;
+    }
+
+    for(const branch of moveObj.branchesPlaced){
+      gameParts.board.branches[branch].setOwner(owner);
+      gameParts.affectedPlayer.redResources --;
+      gameParts.affectedPlayer.blueResources --;
+    }
+
+    //Need to deal with tile exhaustion and point allocation
+
   }
 
   static moveToString(move:Move):string{
