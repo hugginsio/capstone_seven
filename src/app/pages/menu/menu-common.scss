@@ -10,4 +10,20 @@
   .input-text {
     @apply appearance-none bg-gray-800 w-full h-full focus:ring-0 border-0 p-5 text-center;
   }
+
+  .submenu-container {
+    @apply w-screen h-screen text-center;
+  }
+
+  .submenu-header {
+    @apply w-full text-5xl font-bold tracking-wide p-10 mb-20 border-b border-gray-500;
+  }
+
+  .submenu-body {
+    @apply flex flex-col items-center justify-center space-y-5 mx-auto;
+  }
+
+  .submenu-footer {
+    @apply flex flex-col items-center justify-center mx-auto w-full p-5 border-t border-gray-500 absolute bottom-0;
+  }
 }
