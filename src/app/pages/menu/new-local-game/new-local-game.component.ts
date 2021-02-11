@@ -6,10 +6,23 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['../menu-common.scss']
 })
 export class NewLocalGameComponent implements OnInit {
+  private versusAi: boolean;
+  public gameModeString: string;
+  public advancedOpts: boolean;
 
-  constructor() { }
+  private readonly pvp = "Player vs. Player";
+  private readonly pva = "Player vs. AI";
 
-  ngOnInit(): void {
+  constructor() {
+    this.versusAi = false;
+    this.gameModeString = this.pvp;
+    this.advancedOpts = false;
   }
 
+  ngOnInit(): void {}
+
+  changeGameMode(): void {
+    this.gameModeString = this.gameModeString === this.pvp ? this.pva : this.pvp;
+    this.versusAi = this.gameModeString === this.pvp ? false : true;
+  }
 }
