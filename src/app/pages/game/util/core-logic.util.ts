@@ -12,20 +12,16 @@ interface Move {
   branchesPlaced:number[]
 }
 
-interface ApplyMoveParameter { //should probably be named better
-  board:GameBoard,
-  affectedPlayer:Player
-}
 
 export class CoreLogic {
 
-  getStartingState(player1:Player, player2:Player, gameBoard:GameBoard, currentPlayer:number):State{
+  static getStartingState(player1:Player, player2:Player, gameBoard:GameBoard, currentPlayer:number):State{
     const newBoard = new GameBoard();
     newBoard.tiles = gameBoard.tiles.slice();
     newBoard.nodes = gameBoard.nodes.slice();
     newBoard.branches = gameBoard.branches.slice();
     
-    return new State([], newBoard, currentPlayer, player1, player2);
+    return new State([], newBoard, currentPlayer, player1, player2,true);
   }
 
   static getLegalMoves(state:State): string[] {
@@ -66,79 +62,87 @@ export class CoreLogic {
     newBoard.branches = state.gameBoard.branches.slice();
 
     
-    const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2);
+    const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2, state.inInitialMoves);
 
     if(state.currentPlayer === 1){
-      this.applyMove(move, {board:newState.gameBoard,affectedPlayer:newState.player1}, Owner.PLAYERONE);
+      CoreLogic.applyMove(move,newState.gameBoard,newState.player1, Owner.PLAYERONE);
     }
     else{
-      CoreLogic.applyMove(move, {board:newState.gameBoard,affectedPlayer:newState.player2}, Owner.PLAYERTWO);
+      CoreLogic.applyMove(move, newState.gameBoard,newState.player2, Owner.PLAYERTWO);
     }
-    // figure out how to manage initial move order
-    newState.currentPlayer = -newState.currentPlayer;
 
-    //Next Player gets more resources
-    if(newState.currentPlayer === 1){
-      newState.player1.redResources += newState.player1.redPerTurn;
-      newState.player1.blueResources += newState.player1.bluePerTurn;
-      newState.player1.greenResources += newState.player1.greenPerTurn;
-      newState.player1.yellowResources += newState.player1.yellowPerTurn;
-    }
-    else{
-      newState.player2.redResources += newState.player1.redPerTurn;
-      newState.player2.blueResources += newState.player1.bluePerTurn;
-      newState.player2.greenResources += newState.player1.greenPerTurn;
-      newState.player2.yellowResources += newState.player1.yellowPerTurn;
-    }
     
-    
-
     //currentPlayer is 1 for player 1 and -1 for player 2
+    if(newState.moveHistory.length !== 2){
+      newState.currentPlayer = -newState.currentPlayer;
+    }
+
+    if(!newState.inInitialMoves){
+    //Next Player gets more resources
+      if(newState.currentPlayer === 1){
+        newState.player1.redResources += newState.player1.redPerTurn;
+        newState.player1.blueResources += newState.player1.bluePerTurn;
+        newState.player1.greenResources += newState.player1.greenPerTurn;
+        newState.player1.yellowResources += newState.player1.yellowPerTurn;
+      }
+      else{
+        newState.player2.redResources += newState.player2.redPerTurn;
+        newState.player2.blueResources += newState.player2.bluePerTurn;
+        newState.player2.greenResources += newState.player2.greenPerTurn;
+        newState.player2.yellowResources += newState.player2.yellowPerTurn;
+      }
+    }
+    
+    if(newState.moveHistory.length === 4){
+      newState.inInitialMoves = false;
+    }
+
+   
     return newState;
   }
 
-  static applyMove(move:string, gameParts:ApplyMoveParameter, owner:Owner):void{
+  static applyMove(move:string, board:GameBoard, affectedPlayer:Player, owner:Owner):void{
 
     const moveObj:Move = CoreLogic.stringToMove(move);
     for(const resource of moveObj.tradedIn){
       if(resource === 'G'){
-        gameParts.affectedPlayer.greenResources--;
+        affectedPlayer.greenResources--;
       }
       else if (resource === 'Y'){
-        gameParts.affectedPlayer.yellowResources--;
+        affectedPlayer.yellowResources--;
       }
       else if (resource === 'R'){
-        gameParts.affectedPlayer.redResources--;
+        affectedPlayer.redResources--;
       }
       else if (resource === 'B'){
-        gameParts.affectedPlayer.blueResources--;
+        affectedPlayer.blueResources--;
       }
     }
 
     if(moveObj.received === 'G'){
-      gameParts.affectedPlayer.greenResources++;
+      affectedPlayer.greenResources++;
     }
     else if (moveObj.received  === 'Y'){
-      gameParts.affectedPlayer.yellowResources++;
+      affectedPlayer.yellowResources++;
     }
     else if (moveObj.received  === 'R'){
-      gameParts.affectedPlayer.redResources++;
+      affectedPlayer.redResources++;
     }
     else if (moveObj.received  === 'B'){
-      gameParts.affectedPlayer.blueResources++;
+      affectedPlayer.blueResources++;
     }
 
     for(const node of moveObj.nodesPlaced){
-      gameParts.board.nodes[node].setOwner(owner);
-      gameParts.affectedPlayer.greenResources -= 2;
-      gameParts.affectedPlayer.yellowResources -=2;
-      gameParts.affectedPlayer.currentScore++;
+      board.nodes[node].setOwner(owner);
+      affectedPlayer.greenResources -= 2;
+      affectedPlayer.yellowResources -=2;
+      affectedPlayer.currentScore++;
     }
 
     for(const branch of moveObj.branchesPlaced){
-      gameParts.board.branches[branch].setOwner(owner);
-      gameParts.affectedPlayer.redResources --;
-      gameParts.affectedPlayer.blueResources --;
+      board.branches[branch].setOwner(owner);
+      affectedPlayer.redResources --;
+      affectedPlayer.blueResources --;
     }
 
     //captured tile and longest network point allocation
