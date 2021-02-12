@@ -14,14 +14,12 @@ export class IntroTeamComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    console.log('Navigating in 3s');
     this.introInterval = setTimeout(() => {
       this.routerService.navigate(['/intro/game']);
     }, 3000);
   }
 
   ngOnDestroy(): void {
-    console.log('Clearing team intro timer.');
     clearTimeout(this.introInterval);
   }
 }
