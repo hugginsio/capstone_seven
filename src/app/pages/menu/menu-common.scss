@@ -1,14 +1,14 @@
 @layer components {
   .menu-btn {
-    @apply p-5 bg-gray-500 border border-gray-700 w-1/3 cursor-pointer hover:bg-gray-600;
+    @apply p-5 bg-gray-600 border-4 border-gray-800 w-1/3 cursor-pointer hover:border-gray-300;
   }
 
   .menu-input {
-    @apply border-4 bg-gray-800 border-gray-500 w-1/3 cursor-text;
+    @apply border-4 bg-gray-900 border-gray-600 w-1/3 cursor-text;
   }
 
   .input-text {
-    @apply appearance-none bg-gray-800 w-full h-full focus:ring-0 border-0 p-5 text-center;
+    @apply appearance-none bg-gray-900 w-full h-full focus:ring-0 border-0 p-5 text-center;
   }
 
   .submenu-container {
@@ -16,7 +16,7 @@
   }
 
   .submenu-header {
-    @apply w-full text-5xl font-bold tracking-wide p-10 mb-20 border-b border-gray-500;
+    @apply w-full text-5xl font-bold tracking-wide p-10 mb-20 border-b border-gray-600;
   }
 
   .submenu-body {
@@ -24,6 +24,6 @@
   }
 
   .submenu-footer {
-    @apply flex flex-col items-center justify-center mx-auto w-full p-5 border-t border-gray-500 absolute bottom-0;
+    @apply flex flex-col items-center justify-center mx-auto w-full p-5 border-t border-gray-600 absolute bottom-0;
   }
 }

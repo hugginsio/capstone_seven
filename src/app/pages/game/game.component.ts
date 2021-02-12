@@ -6,8 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit {
+  public gamePaused: boolean;
 
-  constructor() { }
+  constructor() {
+    this.gamePaused = false;
+  }
 
   ngOnInit(): void {
   }
@@ -17,4 +20,8 @@ export class GameComponent implements OnInit {
     // event.target && console.log(`Clicked tile with ID: ${event.target.id as number}`);
   }
 
+  togglePaused(): void {
+    // Normally would do this in-template but we might need to put more functionality in later.
+    this.gamePaused = !this.gamePaused;
+  }
 }

@@ -8,9 +8,10 @@ import { MenuLandingComponent } from './landing/menu-landing.component';
 import { NewLocalGameComponent } from './new-local-game/new-local-game.component';
 import { NewNetworkGameComponent } from './new-network-game/new-network-game.component';
 import { MenuOptionsComponent } from './options/menu-options.component';
+import { MenuHelpComponent } from './help/menu-help.component';
 
 @NgModule({
-  declarations: [MenuLandingComponent, NewLocalGameComponent, NewNetworkGameComponent, MenuOptionsComponent],
+  declarations: [MenuLandingComponent, NewLocalGameComponent, NewNetworkGameComponent, MenuOptionsComponent, MenuHelpComponent],
   imports: [BrowserModule, CommonModule, SharedModule, MenuRoutingModule]
 })
 export class MenuModule {}

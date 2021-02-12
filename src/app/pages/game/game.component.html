@@ -1,24 +1,32 @@
 <div class="h-screen w-screen overscroll-none text-center">
+  <!-- Top Right Menu Container -->
+  <div class="absolute left-2 top-2">
+    <div class="bg-gray-600 p-3 text-center items-center justify-center cursor-pointer" (click)="togglePaused()">
+      <p>Pause</p>
+    </div>
+  </div>
+  <!-- Pause Modal Container -->
+  <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-50" *ngIf="this.gamePaused">
+    <div class="flex flex-row items-center content-center h-full">
+      <div class="mx-auto flex flex-col spacing-y-5 w-1/3">
+        <p class="text-5xl font-bold tracking-wide p-10">Paused</p>
+        <div class="flex space-x-5 w-full">
+          <div class="menu-btn flex-grow pointer-events-auto" routerLink="/menu/landing">
+            <div>
+              <p>Exit</p>
+            </div>
+          </div>
+          <div class="menu-btn w-full flex-grow pointer-events-auto" (click)="togglePaused()">
+            <div>
+              <p>Resume</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Tiles -->
   <div class="flex flex-row items-center content-center h-full">
-    <!-- <div class="bg-blue-900 flex flex-col flex-grow">
-      <div class="text-center text-xl font-medium w-full mb-3">
-        <p>Player One</p>
-      </div>
-      <div class="text-center">
-        <p>Score: 0</p>
-      </div>
-      <div class="flex flex-col place-self-center space-y-3">
-        <div class="flex flex-row space-x-3">
-          <div class="w-5 h-5 bg-gray-900"></div>
-          <div class="w-5 h-5 bg-gray-900"></div>
-        </div>
-        <div class="flex flex-row space-x-3">
-          <div class="w-5 h-5 bg-gray-900"></div>
-          <div class="w-5 h-5 bg-gray-900"></div>
-        </div>
-      </div>
-    </div> -->
-    <!-- Tiles -->
     <div class="gameboard">
       <div class="tile-container">
         <div id="TX" (click)="clickTile($event)" class="tile"></div>

@@ -9,13 +9,14 @@ export class NewLocalGameComponent implements OnInit {
   private versusAi: boolean;
   public gameModeString: string;
   public advancedOpts: boolean;
+  public boardSeed: string;
 
   private readonly pvp = "Player vs. Player";
   private readonly pva = "Player vs. AI";
 
   constructor() {
     this.versusAi = false;
-    this.gameModeString = this.pvp;
+    this.gameModeString = this.pva;
     this.advancedOpts = false;
   }
 

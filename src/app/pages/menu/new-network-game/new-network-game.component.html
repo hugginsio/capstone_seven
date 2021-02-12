@@ -1,11 +1,38 @@
-<div class="h-screen w-screen overscroll-none text-center">
-  <div class="flex flex-col items-center justify-center space-y-5 mx-auto min-h-full">
-    <div class="p-5 mb-10">
-      <p class="text-5xl font-bold tracking-wide">Multiplayer</p>
-    </div>
-    <div class="menu-btn" routerLink="/menu/landing">
-      <div>
-        <p>Back</p>
+<div class="submenu-container">
+  <div class="submenu-header">
+    <p>Play Multiplayer</p>
+  </div>
+  <div class="submenu-body">
+    <div class="flex flex-col items-center space-y-5">
+      <p>Scanning for games on your local network</p>
+      <div class="animate-bounce">
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
       </div>
     </div>
   </div>
+  <div class="submenu-footer">
+    <div class="flex space-x-5 w-2/3">
+      <div class="menu-btn flex-grow" routerLink="/menu/landing">
+        <div>
+          <p>Back</p>
+        </div>
+      </div>
+      <div class="menu-btn flex-grow">
+        <div>
+          <p>Refresh</p>
+        </div>
+      </div>
+      <div class="menu-btn w-full flex-grow">
+        <div>
+          <p>Host Game</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

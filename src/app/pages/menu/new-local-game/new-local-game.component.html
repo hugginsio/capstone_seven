@@ -15,12 +15,14 @@
     </div>
     <div class="menu-btn" (click)="this.advancedOpts = !this.advancedOpts">
       <div>
-        <p>Advanced Options</p>
+        <p>Advanced Options...</p>
       </div>
     </div>
     <div class="menu-input" *ngIf="advancedOpts">
-      <input type="text" class="input-text" placeholder="Board Seed">
+      <!-- oninput all uppercase credit to https://stackoverflow.com/users/5476516/yehuda-schwartz -->
+      <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed" oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
     </div>
+    <p class="leading-none" *ngIf="advancedOpts">Leave blank for random seed</p>
   </div>
   <div class="submenu-footer">
     <div class="flex space-x-5 w-1/3">
