@@ -240,3 +240,4 @@ src/**/*.js
 /e2e/*.js
 !/e2e/protractor.conf.js
 /e2e/*.map
+.vercel
