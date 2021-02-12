@@ -26,7 +26,75 @@ export class CoreLogic {
 
   static getLegalMoves(state:State): string[] {
     //TODO: write this method
-    return [''];
+    const result:string[] = [];
+    if(state.inInitialMoves){
+      //initial moves
+
+      const nodePlacements = [];
+      /*the initial moves the ai will treat the players as having enough resources
+           for one node and one branch without the ability to trade*/
+      if(state.currentPlayer === 1){
+        state.player1.greenResources = 2;
+        state.player1.yellowResources = 2;
+        state.player1.redResources = 1;
+        state.player1.blueResources = 1;
+      }
+      else{
+        state.player2.greenResources = 2;
+        state.player2.yellowResources = 2;
+        state.player2.redResources = 1;
+        state.player2.blueResources = 1;
+      }
+
+      //get starting move possibilities for player 1
+      for(const node of state.gameBoard.nodes){
+        if(node.getOwner() === Owner.NONE){
+          nodePlacements.push(state.gameBoard.nodes.indexOf(node));
+        }
+      }
+
+      const branchPlacements = [];
+      for(const nodeIndex of nodePlacements){
+        const branchesPerNode = [];
+        if(state.gameBoard.nodes[nodeIndex].getTopBranch() >= 0){
+          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getTopBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getTopBranch());
+          }
+        }
+
+        if(state.gameBoard.nodes[nodeIndex].getRightBranch() >= 0){
+          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getRightBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getRightBranch());
+          }
+        }
+
+        if(state.gameBoard.nodes[nodeIndex].getBottomBranch() >= 0){
+          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getBottomBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getBottomBranch());
+          }
+        }
+
+        if(state.gameBoard.nodes[nodeIndex].getLeftBranch() >= 0){
+          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getLeftBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getLeftBranch());
+          }
+        }
+
+        branchPlacements.push(branchesPerNode);
+      }
+      
+
+      for(const nodeMoveIndex of nodePlacements){
+        for(const branchMoveIndex of branchPlacements[nodeMoveIndex]){
+          result.push(CoreLogic.moveToString({tradedIn:[''],received:'',nodesPlaced:[nodeMoveIndex],branchesPlaced:[branchMoveIndex]}));
+        }
+      }
+
+    }
+    else{
+      //general moves
+    }
+    return result;
   }
 
   //return 1 if winner, -1 if loser, 0 if draw, -Infinity if there is no winner yet
