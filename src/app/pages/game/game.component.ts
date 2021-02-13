@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ClickEvent } from './interfaces/game.interface';
 
 @Component({
   selector: 'app-game',
@@ -12,12 +13,22 @@ export class GameComponent implements OnInit {
     this.gamePaused = false;
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
-  clickTile(event: MouseEvent): void {
-    console.log(event);
-    // event.target && console.log(`Clicked tile with ID: ${event.target.id as number}`);
+  clickPiece(event: ClickEvent): void {
+    const pieceClass = event.target.className.split(' ');
+    const pieceId = event.target.id.slice(1);
+    const pieceType = event.target.id.slice(0, 1) === 'T' ? 'tile' : event.target.id.slice(0, 1) === 'B' ? 'branch' : 'node';
+    if (pieceClass.indexOf('unavailable') !== -1) {
+      // Ignore click event
+      console.log(`Clicked ${pieceType} ${pieceId}, but piece is unavailable.`);
+    } else if (pieceClass.indexOf('available') !== -1) {
+      // Valid click event
+      console.log(`Clicked available ${pieceType} ${pieceId}.`);
+    } else {
+      console.warn(`Click event on ${pieceType} ${pieceId} failed.`);
+      console.warn('Piece class data:', event.target.className);
+    }
   }
 
   togglePaused(): void {
