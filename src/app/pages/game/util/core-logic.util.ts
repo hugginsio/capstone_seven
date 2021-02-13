@@ -3,7 +3,7 @@
 import { State } from '../classes/ai/ai.class.State';
 import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
 import { Player } from '../classes/gamecore/game.class.Player';
-import { Owner } from '../enums/game.enums';
+import { Owner, TileColor } from '../enums/game.enums';
 
 interface Move {
   tradedIn:string[],
@@ -25,7 +25,7 @@ export class CoreLogic {
   }
 
   static getLegalMoves(state:State): string[] {
-    //TODO: write this method
+    
     const result:string[] = [];
     if(state.inInitialMoves){
       //initial moves
@@ -92,8 +92,327 @@ export class CoreLogic {
 
     }
     else{
+
+      let redAvailable:number;
+      let blueAvailable:number;
+      let greenAvailable:number;
+      let yellowAvailable:number;
+      let playerOwner:Owner;
+
+      if(state.currentPlayer === 1){
+        redAvailable = state.player1.redResources;
+        blueAvailable = state.player1.blueResources;
+        greenAvailable = state.player1.greenResources;
+        yellowAvailable = state.player1.yellowResources;
+        playerOwner = Owner.PLAYERONE;
+      }
+      else{
+        redAvailable = state.player2.redResources;
+        blueAvailable = state.player2.blueResources;
+        greenAvailable = state.player2.greenResources;
+        yellowAvailable = state.player2.yellowResources;
+        playerOwner = Owner.PLAYERTWO;
+      }
+
       //general moves
+      //Step 1: trade
+      const redStringArray = [];
+      const blueStringArray = [];
+      const greenStringArray = [];
+      const yellowStringArray = [];
+
+      for(let red = 0; red < redAvailable; red++){
+        redStringArray.push('R');
+      }
+
+      for(let blue = 0; blue < blueAvailable; blue++){
+        blueStringArray.push('B');
+      }
+
+      for(let green = 0; green < greenAvailable; green++){
+        greenStringArray.push('G');
+      }
+
+      for(let yellow = 0; yellow < yellowAvailable; yellow++){
+        yellowStringArray.push('Y');
+      }
+
+
+      //determine possible trades for red
+      const tradeForRed = blueStringArray.slice();
+      tradeForRed.concat(greenStringArray,yellowStringArray);
+      const tradeForRedCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForRed,3));
+
+      //determine possible trades for blue
+      const tradeForBlue = redStringArray.slice();
+      tradeForBlue.concat(greenStringArray,yellowStringArray);
+      const tradeForBlueCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForBlue,3));
+
+      //determine possible trades for green
+      const tradeForGreen = blueStringArray.slice();
+      tradeForGreen.concat(redStringArray,yellowStringArray);
+      const tradeForGreenCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForGreen,3));
+
+      //determine possible trades for yellow
+      const tradeForYellow = blueStringArray.slice();
+      tradeForYellow.concat(greenStringArray,redStringArray);
+      const tradeForYellowCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForYellow,3));
+
+      //apply trades and pick piece locations
+      let redTemp = redAvailable;
+      let blueTemp = blueAvailable;
+      let greenTemp = greenAvailable;
+      let yellowTemp = yellowAvailable;
+
+      for(const trade of tradeForRedCombinations){
+
+        trade.forEach((color)=>{
+          if(color === 'B'){
+            blueTemp--;
+          }
+          else if(color === 'G'){
+            greenTemp--;
+          }
+          else if(color === 'Y'){
+            yellowTemp--;
+          }
+        });
+
+        redTemp++;
+        let possibleBranchIndices:number[] = [];
+        let possibleNodeIndices:number[] = [];
+
+        const numPossibleBranches = Math.floor((redTemp+blueTemp) / 2);
+        const numPossibleNodes = Math.floor((greenTemp+yellowTemp)/4);
+
+        const branchBoard = JSON.parse(JSON.stringify(state.gameBoard));
+        for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
+          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
+        }
+
+        const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
+
+        const nodeBoard = JSON.parse(JSON.stringify(state.gameBoard));
+        for(const branchCombo of possibleBranchCombinations){
+          for(const branchIndex of branchCombo){
+            nodeBoard.branches[branchIndex].setOwner(playerOwner);
+          }
+          for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
+            possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+          }
+
+          const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+          for(const nodeCombo of possibleNodeCombinations){
+            result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+          }
+          
+          for(const branchIndex of branchCombo){
+            nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+          }
+        }
+        redTemp = redAvailable;
+        blueTemp = blueAvailable;
+        greenTemp = greenAvailable;
+        yellowTemp = yellowAvailable;
+      }
+
+      for(const trade of tradeForBlueCombinations){
+
+        trade.forEach((color)=>{
+          if(color === 'R'){
+            redTemp--;
+          }
+          else if(color === 'G'){
+            greenTemp--;
+          }
+          else if(color === 'Y'){
+            yellowTemp--;
+          }
+        });
+
+        blueTemp++;
+        let possibleBranchIndices:number[] = [];
+        let possibleNodeIndices:number[] = [];
+
+        const numPossibleBranches = Math.floor((redTemp+blueTemp) / 2);
+        const numPossibleNodes = Math.floor((greenTemp+yellowTemp)/4);
+
+        const branchBoard = JSON.parse(JSON.stringify(state.gameBoard));
+        for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
+          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
+        }
+
+        const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
+
+        const nodeBoard = JSON.parse(JSON.stringify(state.gameBoard));
+        for(const branchCombo of possibleBranchCombinations){
+          for(const branchIndex of branchCombo){
+            nodeBoard.branches[branchIndex].setOwner(playerOwner);
+          }
+          for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
+            possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+          }
+
+          const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+          for(const nodeCombo of possibleNodeCombinations){
+            result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+          }
+          
+          for(const branchIndex of branchCombo){
+            nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+          }
+        }
+
+        redTemp = redAvailable;
+        blueTemp = blueAvailable;
+        greenTemp = greenAvailable;
+        yellowTemp = yellowAvailable;
+      }
+
+      for(const trade of tradeForGreenCombinations){
+
+        trade.forEach((color)=>{
+          if(color === 'B'){
+            blueTemp--;
+          }
+          else if(color === 'R'){
+            redTemp--;
+          }
+          else if(color === 'Y'){
+            yellowTemp--;
+          }
+        });
+
+        greenTemp++;
+        let possibleBranchIndices:number[] = [];
+        let possibleNodeIndices:number[] = [];
+
+        const numPossibleBranches = Math.floor((redTemp+blueTemp) / 2);
+        const numPossibleNodes = Math.floor((greenTemp+yellowTemp)/4);
+
+        const branchBoard = JSON.parse(JSON.stringify(state.gameBoard));
+        for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
+          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
+        }
+
+        const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
+
+        const nodeBoard = JSON.parse(JSON.stringify(state.gameBoard));
+        for(const branchCombo of possibleBranchCombinations){
+          for(const branchIndex of branchCombo){
+            nodeBoard.branches[branchIndex].setOwner(playerOwner);
+          }
+          for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
+            possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+          }
+
+          const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+          for(const nodeCombo of possibleNodeCombinations){
+            result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+          }
+          
+          for(const branchIndex of branchCombo){
+            nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+          }
+        }
+
+        redTemp = redAvailable;
+        blueTemp = blueAvailable;
+        greenTemp = greenAvailable;
+        yellowTemp = yellowAvailable;
+      }
+
+      for(const trade of tradeForYellowCombinations){
+
+        trade.forEach((color)=>{
+          if(color === 'B'){
+            blueTemp--;
+          }
+          else if(color === 'G'){
+            greenTemp--;
+          }
+          else if(color === 'R'){
+            redTemp--;
+          }
+        });
+
+        yellowTemp++;
+        let possibleBranchIndices:number[] = [];
+        let possibleNodeIndices:number[] = [];
+
+        const numPossibleBranches = Math.floor((redTemp+blueTemp) / 2);
+        const numPossibleNodes = Math.floor((greenTemp+yellowTemp)/4);
+
+        const branchBoard = JSON.parse(JSON.stringify(state.gameBoard));
+        for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
+          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
+        }
+
+        const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
+
+        const nodeBoard = JSON.parse(JSON.stringify(state.gameBoard));
+        for(const branchCombo of possibleBranchCombinations){
+          for(const branchIndex of branchCombo){
+            nodeBoard.branches[branchIndex].setOwner(playerOwner);
+          }
+          for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
+            possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+          }
+
+          const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+          for(const nodeCombo of possibleNodeCombinations){
+            result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+          }
+          
+          for(const branchIndex of branchCombo){
+            nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+          }
+        }
+
+        redTemp = redAvailable;
+        blueTemp = blueAvailable;
+        greenTemp = greenAvailable;
+        yellowTemp = yellowAvailable;
+      }
+
+
     }
+    
+    return result;
+  }
+
+  static getValidNodeIndices(player:Owner, gameBoard:GameBoard):number[]{
+    const result:number[] = [];
+
+    for(const node of gameBoard.nodes){
+      if (node.getOwner() === Owner.NONE && (gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getTopBranch()].getOwner() === player ||
+      gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getLeftBranch()].getOwner() === player ||
+      gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getBottomBranch()].getOwner() === player ||
+      gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getRightBranch()].getOwner() === player)) {
+        result.push(gameBoard.nodes.indexOf(node));
+      }
+    }
+
+    return result;
+  }
+
+  static getValidBranchIndices(player:Owner, gameBoard:GameBoard):number[]{
+    const result:number[] = [];
+
+    for(const branch of gameBoard.branches){
+
+      if (branch.getOwner() === Owner.NONE && (gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(1)].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(2)].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(3)].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(4)].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(5)].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(6)].getOwner() === player)) {
+        result.push(gameBoard.branches.indexOf(branch));
+        branch.setOwner(player);
+      }
+
+    }
+  
     return result;
   }
 
@@ -133,10 +452,10 @@ export class CoreLogic {
     const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2, state.inInitialMoves);
 
     if(state.currentPlayer === 1){
-      CoreLogic.applyMove(move,newState.gameBoard,newState.player1, Owner.PLAYERONE);
+      CoreLogic.applyMove(move,newState,newState.player1, Owner.PLAYERONE);
     }
     else{
-      CoreLogic.applyMove(move, newState.gameBoard,newState.player2, Owner.PLAYERTWO);
+      CoreLogic.applyMove(move, newState,newState.player2, Owner.PLAYERTWO);
     }
 
     
@@ -169,7 +488,7 @@ export class CoreLogic {
     return newState;
   }
 
-  static applyMove(move:string, board:GameBoard, affectedPlayer:Player, owner:Owner):void{
+  static applyMove(move:string, state:State, affectedPlayer:Player, owner:Owner):void{
 
     const moveObj:Move = CoreLogic.stringToMove(move);
     for(const resource of moveObj.tradedIn){
@@ -200,24 +519,136 @@ export class CoreLogic {
       affectedPlayer.blueResources++;
     }
 
-    for(const node of moveObj.nodesPlaced){
-      board.nodes[node].setOwner(owner);
-      affectedPlayer.greenResources -= 2;
-      affectedPlayer.yellowResources -=2;
-      affectedPlayer.currentScore++;
-    }
-
     for(const branch of moveObj.branchesPlaced){
-      board.branches[branch].setOwner(owner);
+      state.gameBoard.branches[branch].setOwner(owner);
       affectedPlayer.redResources --;
       affectedPlayer.blueResources --;
     }
 
+    for(const node of moveObj.nodesPlaced){
+      state.gameBoard.nodes[node].setOwner(owner);
+      affectedPlayer.greenResources -= 2;
+      affectedPlayer.yellowResources -=2;
+      affectedPlayer.currentScore++;
+
+      if (state.gameBoard.nodes[node].getTopRightTile() !== -1) {
+        state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount++;
+        
+        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount >
+            state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].maxNodes) {
+          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].isExhausted = true;
+          CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getTopRightTile(), true);
+        }
+      }
+
+      if (state.gameBoard.nodes[node].getBottomRightTile() !== -1) {
+        state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].nodeCount++;
+        
+        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].nodeCount >
+            state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].maxNodes) {
+          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].isExhausted = true;
+          CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getBottomRightTile(), true);
+        }
+      }
+
+      if (state.gameBoard.nodes[node].getBottomLeftTile() !== -1) {
+        state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].nodeCount++;
+
+        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].nodeCount >
+            state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].maxNodes) {
+          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].isExhausted = true;
+          CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getBottomLeftTile(), true);
+        }
+      }
+      
+      if (state.gameBoard.nodes[node].getTopLeftTile() !== -1) {
+        state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount++;
+
+        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount >
+            state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].maxNodes) {
+          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].isExhausted = true;
+          CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getTopLeftTile(), true);
+        }
+      }
+    }
+
+
+
     //captured tile and longest network point allocation
 
-    //Need to deal with tile exhaustion 
-
   }
+
+  static tileExhaustion(state:State,tileNum: number, setAsExhausted: boolean): void {
+    // check for whichever nodes are already on the tile and decrement their *color*PerTurn
+    const currentTileColor = state.gameBoard.tiles[tileNum].color;
+    let functionName;
+    if (setAsExhausted){
+      functionName = (nodeOwner: Player, currentTileColor: TileColor) => {
+        switch (currentTileColor){
+          case TileColor.RED:
+            nodeOwner.redPerTurn--;
+            break;
+          case TileColor.BLUE:
+            nodeOwner.bluePerTurn--;
+            break;
+          case TileColor.YELLOW:
+            nodeOwner.yellowPerTurn--;
+            break;
+          case TileColor.GREEN:
+            nodeOwner.greenPerTurn--;
+            break;
+        }
+      };
+    }
+    else{
+      functionName = (nodeOwner: Player, currentTileColor: TileColor) =>{
+        switch (currentTileColor){
+          case TileColor.RED:
+            nodeOwner.redPerTurn++;
+            break;
+          case TileColor.BLUE:
+            nodeOwner.bluePerTurn++;
+            break;
+          case TileColor.YELLOW:
+            nodeOwner.yellowPerTurn++;
+            break;
+          case TileColor.GREEN:
+            nodeOwner.greenPerTurn++;
+            break;
+        }
+      };
+    }
+    
+    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
+      functionName(state.player1, currentTileColor);
+    }
+    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
+      functionName(state.player2, currentTileColor);
+    }
+
+    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
+      functionName(state.player1, currentTileColor);
+    }
+    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
+      functionName( state.player2, currentTileColor);
+    }
+
+    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
+      functionName(state.player1, currentTileColor);
+    }
+    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
+      functionName(state.player2, currentTileColor);
+    }
+
+    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
+      functionName(state.player1, currentTileColor);
+    }
+    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
+      functionName(state.player2, currentTileColor);
+    }
+  }
+
+  
 
   static moveToString(move:Move):string{
     let result = '';
@@ -271,5 +702,101 @@ export class CoreLogic {
     }
 
     return result;
+  }
+
+  //https://gist.github.com/axelpale/3118596
+  static kStringCombinations(set:string[], k:number):string[][] {
+    let i, j, combs, head, tailcombs;
+    
+    // There is no way to take e.g. sets of 5 elements from
+    // a set of 4.
+    if (k > set.length || k <= 0) {
+      return [];
+    }
+    
+    // K-sized set has only one K-sized subset.
+    if (k == set.length) {
+      return [set];
+    }
+    
+    // There is N 1-sized subsets in a N-sized set.
+    if (k == 1) {
+      combs = [];
+      for (i = 0; i < set.length; i++) {
+        combs.push([set[i]]);
+      }
+      return combs;
+    }
+    
+    
+    combs = [];
+    for (i = 0; i < set.length - k + 1; i++) {
+      // head is a list that includes only our current element.
+      head = set.slice(i, i + 1);
+      // We take smaller combinations from the subsequent elements
+      tailcombs = CoreLogic.kStringCombinations(set.slice(i + 1), k - 1);
+      // For each (k-1)-combination we join it with the current
+      // and store it to the set of k-combinations.
+      for (j = 0; j < tailcombs.length; j++) {
+        combs.push(head.concat(tailcombs[j]));
+      }
+    }
+    return combs;
+  }
+
+  static kNumberCombinations(set:number[], k:number):number[][] {
+    let i, j, combs, head, tailcombs;
+    
+    // There is no way to take e.g. sets of 5 elements from
+    // a set of 4.
+    if (k > set.length || k <= 0) {
+      return [];
+    }
+    
+    // K-sized set has only one K-sized subset.
+    if (k == set.length) {
+      return [set];
+    }
+    
+    // There is N 1-sized subsets in a N-sized set.
+    if (k == 1) {
+      combs = [];
+      for (i = 0; i < set.length; i++) {
+        combs.push([set[i]]);
+      }
+      return combs;
+    }
+    
+    
+    combs = [];
+    for (i = 0; i < set.length - k + 1; i++) {
+      // head is a list that includes only our current element.
+      head = set.slice(i, i + 1);
+      // We take smaller combinations from the subsequent elements
+      tailcombs = CoreLogic.kNumberCombinations(set.slice(i + 1), k - 1);
+      // For each (k-1)-combination we join it with the current
+      // and store it to the set of k-combinations.
+      for (j = 0; j < tailcombs.length; j++) {
+        combs.push(head.concat(tailcombs[j]));
+      }
+    }
+    return combs;
+  }
+
+  static removeDuplicates(bigArray:string[][]):string[][]{
+    const stringArray = [];
+    for(const item of bigArray){
+      stringArray.push(JSON.stringify(item));
+    }
+
+    const uniqueStringArray = new Set(stringArray);
+    const uniqueArray:string[][] = [];
+    const someFunction = function(val1:string) { 
+      uniqueArray.push(JSON.parse(val1)); 
+    };
+
+    uniqueStringArray.forEach(someFunction);
+    
+    return uniqueArray;
   }
 }
