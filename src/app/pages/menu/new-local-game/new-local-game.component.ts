@@ -8,16 +8,22 @@ import { Component, OnInit } from '@angular/core';
 export class NewLocalGameComponent implements OnInit {
   private versusAi: boolean;
   public gameModeString: string;
+  public aiDifficultyString: string;
   public advancedOpts: boolean;
   public boardSeed: string;
+  public guidedTutorial: boolean;
 
-  private readonly pvp = "Player vs. Player";
-  private readonly pva = "Player vs. AI";
+  public readonly pvp = "Player vs. Player";
+  public readonly pva = "Player vs. AI";
+  public readonly aiEasy = "Easy";
+  public readonly aiMedium = "Medium";
 
   constructor() {
     this.versusAi = false;
     this.gameModeString = this.pva;
+    this.aiDifficultyString = this.aiEasy;
     this.advancedOpts = false;
+    this.guidedTutorial = false;
   }
 
   ngOnInit(): void {}
@@ -25,5 +31,9 @@ export class NewLocalGameComponent implements OnInit {
   changeGameMode(): void {
     this.gameModeString = this.gameModeString === this.pvp ? this.pva : this.pvp;
     this.versusAi = this.gameModeString === this.pvp ? false : true;
+  }
+
+  changeAiDifficulty(): void {
+    this.aiDifficultyString = this.aiDifficultyString === this.aiEasy ? this.aiMedium : this.aiEasy;
   }
 }
