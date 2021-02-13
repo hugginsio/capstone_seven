@@ -9,7 +9,11 @@ module.exports = (isProd) => ({
     content: ['**/*.html']
   },
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'display': 'Pixel Operator'
+      }
+    },
   },
   plugins: [
     require('@tailwindcss/forms')

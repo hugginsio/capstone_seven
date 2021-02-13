@@ -8,6 +8,27 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+// Import custom fonts:
+
+@font-face {
+    font-family: 'Pixel Operator';
+    src: url('assets/font/PixelOperator-Bold.woff2') format('woff2'),
+        url('assets/font/PixelOperator-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Pixel Operator';
+    src: url('assets/font/PixelOperator.woff2') format('woff2'),
+        url('assets/font/PixelOperator.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
 // Global styles:
 
 html {
