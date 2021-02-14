@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Networking } from '../../networking/networkingStart';
 
 @Component({
   selector: 'app-new-network-game',
@@ -11,6 +12,8 @@ export class NewNetworkGameComponent implements OnInit {
 
   ngOnInit(): void {
     // instantiate class here
+    const net = new Networking();
+    net.initialize();
   }
 
 }
