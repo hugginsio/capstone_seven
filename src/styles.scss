@@ -28,7 +28,6 @@
     font-display: swap;
 }
 
-
 // Global styles:
 
 html {
@@ -51,4 +50,10 @@ router-outlet ~ * {
   .btn-gray {
     @apply border border-gray-500 hover:bg-gray-500 text-gray-50;
   }
+}
+
+// Custom Shortcuts
+
+.z-neg {
+  z-index: -99;
 }
