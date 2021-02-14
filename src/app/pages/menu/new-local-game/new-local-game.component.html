@@ -19,7 +19,7 @@
         <p>AI Difficulty: {{ this.aiDifficultyString }}</p>
       </div>
     </div>
-    <div class="menu-btn" (click)="this.guidedTutorial = !this.guidedTutorial">
+    <div class="menu-btn" (click)="changeTutorialSetting()">
       <div>
         <p>Guided Tutorial: {{ this.guidedTutorial ? 'On' : 'Off' }}</p>
       </div>
@@ -42,7 +42,7 @@
           <p>Back</p>
         </div>
       </div>
-      <div class="menu-btn w-full flex-grow" routerLink="/game">
+      <div class="menu-btn w-full flex-grow" (click)="startGame()">
         <div>
           <p>Start Game</p>
         </div>
