@@ -1,5 +1,8 @@
 //
 // Dynamic Classes
+// The preceding slash for background images must be removed for production builds.
+// It will work fine in the browser, but fail to load when packaged in Electron.
+// This is likely an issue with webpack.
 //
 
 // Regular Tiles
