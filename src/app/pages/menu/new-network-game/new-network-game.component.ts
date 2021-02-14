@@ -10,6 +10,7 @@ export class NewNetworkGameComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    // instantiate class here
   }
 
 }
