@@ -1,5 +1,33 @@
 // This file is for global styles only.
+// Editing this file during ng serve will
+// delay hot reload by up to 25sec.
+
+// Import TailwindCSS:
 
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+// Global styles:
+
+html {
+  @apply bg-black text-gray-50;
+}
+
+router-outlet ~ * {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+// Extracted styles:
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md cursor-pointer transition-colors duration-200;
+  }
+
+  .btn-gray {
+    @apply border border-gray-500 hover:bg-gray-500 text-gray-50;
+  }
+}
