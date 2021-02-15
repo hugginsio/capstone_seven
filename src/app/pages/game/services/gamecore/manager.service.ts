@@ -36,6 +36,9 @@ export class ManagerService {
 
    startGame(): void {
 
+    // if statement check to see if its local/network/AI
+    // if AI then call the AI service
+
     this.makeInitialPlacements(this.playerOne, false);
     this.makeInitialPlacements(this.playerTwo, false);
     this.makeInitialPlacements(this.playerTwo, false);
@@ -48,13 +51,12 @@ export class ManagerService {
     currentPlayer.hasTraded = false;
     let stack = [];
 
-    // if statement check to see if its local/network/AI
-    // if AI then call the AI service
+    
     // call applyMove 
     // R,R,R,Y;8;3,18 (Trades; Nodes; Branches)
     // string AIMoveString = ai.service.getMove(board, p1, p2)
     // Move AIMove = stringToMove(AIMove: string)
-    // CoreLogic.applyMove(AIMove, {gameBoard, player}, owner);
+    // gameboard.applyMove(AIMove);
 
     // make moves -- check resources 
     clickNode(event: MouseEvent) {
@@ -89,17 +91,42 @@ export class ManagerService {
   }
 
   endTurn(endPlayer: Player): void { 
-    let newPlayer;
+
+    for (var i = 0; i < endPlayer.ownedBranches.length; i++) {
+      this.checkForLongest(endPlayer, endPlayer.ownedBranches[i]);
+    }
+
+    if ((this.playerOne.currentLongest > this.playerTwo.currentLongest) && this.playerOne.hasLongestNetwork === false) {
+      this.playerOne.hasLongestNetwork = true;
+      this.playerOne.currentScore += 4;
+      if (this.playerTwo.hasLongestNetwork === true) {
+       this.playerTwo.hasLongestNetwork = false;
+       this.playerTwo.currentScore -= 4;
+      }
+    }
+
+    else if ((this.playerTwo.currentLongest > this.playerOne.currentLongest) && this.playerTwo.hasLongestNetwork === false) {
+      this.playerTwo.hasLongestNetwork = true;
+      this.playerTwo.currentScore += 4;
+      if (this.playerOne.hasLongestNetwork === true) {
+       this.playerOne.hasLongestNetwork = false;
+       this.playerOne.currentScore -= 4;
+      }
+    }
+
     if (this.playerOne.currentScore >= 10 ||
         this.playerTwo.currentScore >= 10) {
           if (this.playerOne.currentScore > this.playerTwo.currentScore) {
-            // playerOne wins
+            // playerOne wins (requires UI connection)
           }
           else {
-            // playerTwo wins
+            // playerTwo wins (requires UI connection)
           }
         }
     else {
+
+        let newPlayer;
+
         if (endPlayer === this.playerOne){
           newPlayer = this.playerTwo;
         }
@@ -324,9 +351,11 @@ export class ManagerService {
       {
         if (currentPlayer == this.playerOne) {
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
+          this.playerOne.ownedBranches.push(possibleBranch);
         }
         else {
-          this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
+          this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERTWO);
+          this.playerTwo.ownedBranches.push(possibleBranch);
         }
         return true;
       }
@@ -443,12 +472,14 @@ export class ManagerService {
         if (currentPlayer == this.playerOne) {
     
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
+          this.playerOne.ownedBranches.push(possibleBranch);
           this.playerOne.redResources--;
           this.playerOne.blueResources--;
         }
 
         else {
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERTWO);
+          this.playerTwo.ownedBranches.push(possibleBranch);
           this.playerTwo.redResources--;
           this.playerTwo.blueResources--;
         }
@@ -603,10 +634,12 @@ export class ManagerService {
   reverseBranchPlacement(reverseBranch: number, currentPlayer: Player): void {
     this.gameBoard.branches[reverseBranch].setOwner(Owner.NONE);
     if (currentPlayer === this.playerOne) {
+      this.playerOne.ownedBranches.pop();
       this.playerOne.redResources++;
       this.playerOne.blueResources++;
     }
     else {
+      this.playerTwo.ownedBranches.pop();
       this.playerTwo.redResources++;
       this.playerTwo.blueResources++;
     }
@@ -614,6 +647,13 @@ export class ManagerService {
 
   reverseInitialBranchPlacement(reverseBranch: number, currentPlayer: Player): void {
     this.gameBoard.branches[reverseBranch].setOwner(Owner.NONE);
+    if (currentPlayer == this.playerOne) {
+      this.playerOne.ownedBranches.pop();
+    }
+    else {
+      this.playerTwo.ownedBranches.pop();
+    }
+    
   }   
 
   tileExhaustion(tileNum: number, setAsExhausted: boolean): void {
@@ -688,6 +728,68 @@ export class ManagerService {
           nodeOwner.greenPerTurn++;
           break;
         }
+  }
+
+  checkForLongest(branchOwner: Player, currentBranch: number): void {
+
+    branchOwner.branchScanner.push(currentBranch);
+    branchOwner.currentLength++;
+    
+    if (branchOwner.currentLength > branchOwner.currentLongest) {
+      branchOwner.currentLongest = branchOwner.currentLength;
+    }
+
+    let branch1Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(1)].getOwner();
+    let branch2Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(2)].getOwner();
+    let branch3Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(3)].getOwner();
+    let branch4Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(4)].getOwner();
+    let branch5Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(5)].getOwner();
+    let branch6Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(6)].getOwner();
+
+    if (branchOwner === this.playerOne) {
+
+        if (branch1Owner === "PLAYERONE") {
+          this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(1)]));
+        }
+        if (branch2Owner === "PLAYERONE") {
+          this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(2)]));
+        }
+        if (branch3Owner === "PLAYERONE") {
+          this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(3)]));
+        }
+        if (branch4Owner === "PLAYERONE") {
+          this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(4)]));
+        }
+        if (branch5Owner === "PLAYERONE") {
+          this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(5)]));
+        }
+        if (branch6Owner === "PLAYERONE") {
+          this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(6)]));
+        }
+    }
+
+    else {
+      if (branch1Owner === "PLAYERTWO") {
+        this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(1)]));
+      }
+      if (branch2Owner === "PLAYERTWO") {
+        this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(2)]));
+      }
+      if (branch3Owner === "PLAYERTWO") {
+        this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(3)]));
+      }
+      if (branch4Owner === "PLAYERTWO") {
+        this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(4)]));
+      }
+      if (branch5Owner === "PLAYERTWO") {
+        this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(5)]));
+      }
+      if (branch6Owner === "PLAYERTWO") {
+        this.checkForLongest(branchOwner, Number(this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(6)]));
+      }
+    }
+
+    branchOwner.branchScanner.pop();
   }
 
   // clickEvent(event: MouseEvent) {
