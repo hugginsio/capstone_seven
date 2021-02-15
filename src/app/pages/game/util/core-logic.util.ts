@@ -375,7 +375,39 @@ export class CoreLogic {
         yellowTemp = yellowAvailable;
       }
 
+      
+      const noTrade:string[] = [];
+      let possibleBranchIndices:number[] = [];
+      let possibleNodeIndices:number[] = [];
 
+      const numPossibleBranches = Math.floor((redTemp+blueTemp) / 2);
+      const numPossibleNodes = Math.floor((greenTemp+yellowTemp)/4);
+
+      const branchBoard = JSON.parse(JSON.stringify(state.gameBoard));
+      for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
+        possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
+      }
+
+      const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
+
+      const nodeBoard = JSON.parse(JSON.stringify(state.gameBoard));
+      for(const branchCombo of possibleBranchCombinations){
+        for(const branchIndex of branchCombo){
+          nodeBoard.branches[branchIndex].setOwner(playerOwner);
+        }
+        for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
+          possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+        }
+
+        const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+        for(const nodeCombo of possibleNodeCombinations){
+          result.push(CoreLogic.moveToString({tradedIn:noTrade,received:'',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+        }
+        
+        for(const branchIndex of branchCombo){
+          nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+        }
+      }
     }
     
     return result;
