@@ -12,7 +12,7 @@ export class GameComponent implements OnInit {
 
   constructor() {
     this.gamePaused = false;
-    this.isTrading = true;
+    this.isTrading = false;
   }
 
   ngOnInit(): void { }
