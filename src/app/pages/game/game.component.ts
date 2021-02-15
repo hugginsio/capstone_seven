@@ -8,9 +8,11 @@ import { ClickEvent } from './interfaces/game.interface';
 })
 export class GameComponent implements OnInit {
   public gamePaused: boolean;
+  public isTrading: boolean;
 
   constructor() {
     this.gamePaused = false;
+    this.isTrading = true;
   }
 
   ngOnInit(): void { }
@@ -34,5 +36,15 @@ export class GameComponent implements OnInit {
   togglePaused(): void {
     // Normally would do this in-template but we might need to put more functionality in later.
     this.gamePaused = !this.gamePaused;
+  }
+
+  toggleTrade(): void {
+    // Normally would do this in-template but we might need to put more functionality in later.
+    this.isTrading = !this.isTrading;
+  }
+
+  executeTrade(): void {
+    // Communicate trade to game core
+    this.isTrading = !this.isTrading;
   }
 }

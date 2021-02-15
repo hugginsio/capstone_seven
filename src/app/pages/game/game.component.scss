@@ -201,7 +201,15 @@
   }
 
   .menu-btn {
-    @apply p-5 bg-gray-600 border-4 border-gray-800 w-1/3 cursor-pointer hover:border-gray-300;
+    @apply p-5 bg-gray-600 border-4 border-gray-900 flex-grow cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
+  }
+
+  .menu-btn-light {
+    @apply p-5 bg-gray-900 border-4 border-gray-600 flex-grow cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
+  }
+
+  .resource-button-trade {
+    @apply border-4 border-gray-600 flex-grow hover:border-gray-300 cursor-pointer transition-colors duration-100;
   }
 }
 
