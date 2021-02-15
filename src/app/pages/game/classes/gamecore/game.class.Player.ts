@@ -16,6 +16,8 @@ export class Player {
   yellowPerTurn: number;
    
   hasTraded: boolean;
+
+  currentLongest: number;
   hasLongestNetwork: boolean;
   
   numTilesCaptured: number;
