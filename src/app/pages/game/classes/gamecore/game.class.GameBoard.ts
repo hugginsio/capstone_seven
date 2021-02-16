@@ -10,7 +10,7 @@ export class GameBoard {
 
 
   randomizeColorsAndMaxNodes(): void { 
-    const tileColorsAndMax = this.shuffleArray(this.getTileColorsAndMax);
+    const tileColorsAndMax = this.shuffleArray(this.getTileColorsAndMax());
 
     for (let i = 0; i < 13; i++) {
       this.tiles[i].color = tileColorsAndMax[i].color;
@@ -19,10 +19,10 @@ export class GameBoard {
   }
 
   /* Randomize array in-place using Durstenfeld shuffle algorithm */
-  shuffleArray(array): void {
+  shuffleArray(array: Array<any>): void {
     for (let i = array.length - 1; i > 0; i--) {
-      let j = Math.floor(Math.random() * (i + 1));
-      let temp = array[i];
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = array[i];
       array[i] = array[j];
       array[j] = temp;
     }
@@ -104,209 +104,209 @@ export class GameBoard {
       /
       */
 
-    this.branches[0].setBranch(3, 2);
-    this.branches[0].setBranch(4, 1);
+    this.branches[0].setBranch('branch3', 2);
+    this.branches[0].setBranch('branch4', 1);
 
-    this.branches[1].setBranch(2, 0);
-    this.branches[1].setBranch(3, 4);
-    this.branches[1].setBranch(4, 7);
-    this.branches[1].setBranch(5, 3);
+    this.branches[1].setBranch('branch2', 0);
+    this.branches[1].setBranch('branch3', 4);
+    this.branches[1].setBranch('branch4', 7);
+    this.branches[1].setBranch('branch5', 3);
 
-    this.branches[2].setBranch(3, 5);
-    this.branches[2].setBranch(4, 8);
-    this.branches[2].setBranch(5, 4);
-    this.branches[2].setBranch(6, 0);
+    this.branches[2].setBranch('branch3', 5);
+    this.branches[2].setBranch('branch4', 8);
+    this.branches[2].setBranch('branch5', 4);
+    this.branches[2].setBranch('branch6', 0);
       
-    this.branches[3].setBranch(1, 1);
-    this.branches[3].setBranch(2, 4);
-    this.branches[3].setBranch(3, 7);
-    this.branches[3].setBranch(4, 6);
+    this.branches[3].setBranch('branch1', 1);
+    this.branches[3].setBranch('branch2', 4);
+    this.branches[3].setBranch('branch3', 7);
+    this.branches[3].setBranch('branch4', 6);
 
-    this.branches[4].setBranch(1, 2);
-    this.branches[4].setBranch(2, 5);
-    this.branches[4].setBranch(3, 8);
-    this.branches[4].setBranch(4, 7);
-    this.branches[4].setBranch(5, 3);
-    this.branches[4].setBranch(6, 1);
+    this.branches[4].setBranch('branch1', 2);
+    this.branches[4].setBranch('branch2', 5);
+    this.branches[4].setBranch('branch3', 8);
+    this.branches[4].setBranch('branch4', 7);
+    this.branches[4].setBranch('branch5', 3);
+    this.branches[4].setBranch('branch6', 1);
 
-    this.branches[5].setBranch(3, 9);
-    this.branches[5].setBranch(4, 8);
-    this.branches[5].setBranch(5, 4);
-    this.branches[5].setBranch(6, 2);
+    this.branches[5].setBranch('branch3', 9);
+    this.branches[5].setBranch('branch4', 8);
+    this.branches[5].setBranch('branch5', 4);
+    this.branches[5].setBranch('branch6', 2);
       
-    this.branches[6].setBranch(2, 3);
-    this.branches[6].setBranch(3, 11);
-    this.branches[6].setBranch(4, 16);
-    this.branches[6].setBranch(5, 10);
+    this.branches[6].setBranch('branch2', 3);
+    this.branches[6].setBranch('branch3', 11);
+    this.branches[6].setBranch('branch4', 16);
+    this.branches[6].setBranch('branch5', 10);
 
-    this.branches[7].setBranch(1, 1);
-    this.branches[7].setBranch(2, 4);
-    this.branches[7].setBranch(3, 12);
-    this.branches[7].setBranch(4, 17);
-    this.branches[7].setBranch(5, 11);
-    this.branches[7].setBranch(6, 3);
+    this.branches[7].setBranch('branch1', 1);
+    this.branches[7].setBranch('branch2', 4);
+    this.branches[7].setBranch('branch3', 12);
+    this.branches[7].setBranch('branch4', 17);
+    this.branches[7].setBranch('branch5', 11);
+    this.branches[7].setBranch('branch6', 3);
 
-    this.branches[8].setBranch(1, 2);
-    this.branches[8].setBranch(2, 5);
-    this.branches[8].setBranch(3, 13);
-    this.branches[8].setBranch(4, 18);
-    this.branches[8].setBranch(5, 12);
-    this.branches[8].setBranch(6, 4);
+    this.branches[8].setBranch('branch1', 2);
+    this.branches[8].setBranch('branch2', 5);
+    this.branches[8].setBranch('branch3', 13);
+    this.branches[8].setBranch('branch4', 18);
+    this.branches[8].setBranch('branch5', 12);
+    this.branches[8].setBranch('branch6', 4);
 
-    this.branches[9].setBranch(3, 14);
-    this.branches[9].setBranch(4, 19);
-    this.branches[9].setBranch(5, 13);
-    this.branches[9].setBranch(6, 5);
+    this.branches[9].setBranch('branch3', 14);
+    this.branches[9].setBranch('branch4', 19);
+    this.branches[9].setBranch('branch5', 13);
+    this.branches[9].setBranch('branch6', 5);
       
-    this.branches[10].setBranch(1, 6);
-    this.branches[10].setBranch(2, 11);
-    this.branches[10].setBranch(3, 16);
-    this.branches[10].setBranch(4, 15);
+    this.branches[10].setBranch('branch1', 6);
+    this.branches[10].setBranch('branch2', 11);
+    this.branches[10].setBranch('branch3', 16);
+    this.branches[10].setBranch('branch4', 15);
 
-    this.branches[11].setBranch(1, 7);
-    this.branches[11].setBranch(2, 12);
-    this.branches[11].setBranch(3, 17);
-    this.branches[11].setBranch(4, 16);
-    this.branches[11].setBranch(5, 10);
-    this.branches[11].setBranch(6, 6);
+    this.branches[11].setBranch('branch1', 7);
+    this.branches[11].setBranch('branch2', 12);
+    this.branches[11].setBranch('branch3', 17);
+    this.branches[11].setBranch('branch4', 16);
+    this.branches[11].setBranch('branch5', 10);
+    this.branches[11].setBranch('branch6', 6);
 
-    this.branches[12].setBranch(1, 8);
-    this.branches[12].setBranch(2, 13);
-    this.branches[12].setBranch(3, 18);
-    this.branches[12].setBranch(4, 17);
-    this.branches[12].setBranch(5, 11);
-    this.branches[12].setBranch(6, 7);
+    this.branches[12].setBranch('branch1', 8);
+    this.branches[12].setBranch('branch2', 13);
+    this.branches[12].setBranch('branch3', 18);
+    this.branches[12].setBranch('branch4', 17);
+    this.branches[12].setBranch('branch5', 11);
+    this.branches[12].setBranch('branch6', 7);
 
-    this.branches[13].setBranch(1, 9);
-    this.branches[13].setBranch(2, 14);
-    this.branches[13].setBranch(3, 19);
-    this.branches[13].setBranch(4, 18);
-    this.branches[13].setBranch(5, 12);
-    this.branches[13].setBranch(6, 8);
+    this.branches[13].setBranch('branch1', 9);
+    this.branches[13].setBranch('branch2', 14);
+    this.branches[13].setBranch('branch3', 19);
+    this.branches[13].setBranch('branch4', 18);
+    this.branches[13].setBranch('branch5', 12);
+    this.branches[13].setBranch('branch6', 8);
 
-    this.branches[14].setBranch(3, 20);
-    this.branches[14].setBranch(4, 19);
-    this.branches[14].setBranch(5, 13);
-    this.branches[14].setBranch(6, 9);
+    this.branches[14].setBranch('branch3', 20);
+    this.branches[14].setBranch('branch4', 19);
+    this.branches[14].setBranch('branch5', 13);
+    this.branches[14].setBranch('branch6', 9);
 
-    this.branches[15].setBranch(2, 10);
-    this.branches[15].setBranch(3, 21);
+    this.branches[15].setBranch('branch2', 10);
+    this.branches[15].setBranch('branch3', 21);
 
-    this.branches[16].setBranch(1, 6);
-    this.branches[16].setBranch(2, 11);
-    this.branches[16].setBranch(3, 22);
-    this.branches[16].setBranch(4, 26);
-    this.branches[16].setBranch(5, 21);
-    this.branches[16].setBranch(6, 10);
+    this.branches[16].setBranch('branch1', 6);
+    this.branches[16].setBranch('branch2', 11);
+    this.branches[16].setBranch('branch3', 22);
+    this.branches[16].setBranch('branch4', 26);
+    this.branches[16].setBranch('branch5', 21);
+    this.branches[16].setBranch('branch6', 10);
       
-    this.branches[17].setBranch(1, 7);
-    this.branches[17].setBranch(2, 12);
-    this.branches[17].setBranch(3, 23);
-    this.branches[17].setBranch(4, 27);
-    this.branches[17].setBranch(5, 22);
-    this.branches[17].setBranch(6, 11);
+    this.branches[17].setBranch('branch1', 7);
+    this.branches[17].setBranch('branch2', 12);
+    this.branches[17].setBranch('branch3', 23);
+    this.branches[17].setBranch('branch4', 27);
+    this.branches[17].setBranch('branch5', 22);
+    this.branches[17].setBranch('branch6', 11);
       
-    this.branches[18].setBranch(1, 8);
-    this.branches[18].setBranch(2, 13);
-    this.branches[18].setBranch(3, 24);
-    this.branches[18].setBranch(4, 28);
-    this.branches[18].setBranch(5, 23);
-    this.branches[18].setBranch(6, 12);
+    this.branches[18].setBranch('branch1', 8);
+    this.branches[18].setBranch('branch2', 13);
+    this.branches[18].setBranch('branch3', 24);
+    this.branches[18].setBranch('branch4', 28);
+    this.branches[18].setBranch('branch5', 23);
+    this.branches[18].setBranch('branch6', 12);
 
-    this.branches[19].setBranch(1, 9);
-    this.branches[19].setBranch(2, 14);
-    this.branches[19].setBranch(3, 25);
-    this.branches[19].setBranch(4, 29);
-    this.branches[19].setBranch(5, 24);
-    this.branches[19].setBranch(6, 13);
+    this.branches[19].setBranch('branch1', 9);
+    this.branches[19].setBranch('branch2', 14);
+    this.branches[19].setBranch('branch3', 25);
+    this.branches[19].setBranch('branch4', 29);
+    this.branches[19].setBranch('branch5', 24);
+    this.branches[19].setBranch('branch6', 13);
       
-    this.branches[20].setBranch(5, 25);
-    this.branches[20].setBranch(6, 14);
+    this.branches[20].setBranch('branch5', 25);
+    this.branches[20].setBranch('branch6', 14);
       
-    this.branches[21].setBranch(1, 16);
-    this.branches[21].setBranch(2, 22);
-    this.branches[21].setBranch(3, 26);
-    this.branches[21].setBranch(6, 15);
+    this.branches[21].setBranch('branch1', 16);
+    this.branches[21].setBranch('branch2', 22);
+    this.branches[21].setBranch('branch3', 26);
+    this.branches[21].setBranch('branch6', 15);
 
-    this.branches[22].setBranch(1, 17);
-    this.branches[22].setBranch(2, 23);
-    this.branches[22].setBranch(3, 27);
-    this.branches[22].setBranch(4, 26);
-    this.branches[22].setBranch(5, 21);
-    this.branches[22].setBranch(6, 16);
+    this.branches[22].setBranch('branch1', 17);
+    this.branches[22].setBranch('branch2', 23);
+    this.branches[22].setBranch('branch3', 27);
+    this.branches[22].setBranch('branch4', 26);
+    this.branches[22].setBranch('branch5', 21);
+    this.branches[22].setBranch('branch6', 16);
       
-    this.branches[23].setBranch(1, 18);
-    this.branches[23].setBranch(2, 24);
-    this.branches[23].setBranch(3, 28);
-    this.branches[23].setBranch(4, 27);
-    this.branches[23].setBranch(5, 22);
-    this.branches[23].setBranch(6, 17);
+    this.branches[23].setBranch('branch1', 18);
+    this.branches[23].setBranch('branch2', 24);
+    this.branches[23].setBranch('branch3', 28);
+    this.branches[23].setBranch('branch4', 27);
+    this.branches[23].setBranch('branch5', 22);
+    this.branches[23].setBranch('branch6', 17);
       
-    this.branches[24].setBranch(1, 19);
-    this.branches[24].setBranch(2, 25);
-    this.branches[24].setBranch(3, 29);
-    this.branches[24].setBranch(4, 28);
-    this.branches[24].setBranch(5, 23);
-    this.branches[24].setBranch(6, 18);
+    this.branches[24].setBranch('branch1', 19);
+    this.branches[24].setBranch('branch2', 25);
+    this.branches[24].setBranch('branch3', 29);
+    this.branches[24].setBranch('branch4', 28);
+    this.branches[24].setBranch('branch5', 23);
+    this.branches[24].setBranch('branch6', 18);
       
-    this.branches[25].setBranch(1, 20);
-    this.branches[25].setBranch(4, 29);
-    this.branches[25].setBranch(5, 24);
-    this.branches[25].setBranch(6, 19);
+    this.branches[25].setBranch('branch1', 20);
+    this.branches[25].setBranch('branch4', 29);
+    this.branches[25].setBranch('branch5', 24);
+    this.branches[25].setBranch('branch6', 19);
       
-    this.branches[26].setBranch(1, 16);
-    this.branches[26].setBranch(2, 22);
-    this.branches[26].setBranch(3, 30);
-    this.branches[26].setBranch(6, 21);
+    this.branches[26].setBranch('branch1', 16);
+    this.branches[26].setBranch('branch2', 22);
+    this.branches[26].setBranch('branch3', 30);
+    this.branches[26].setBranch('branch6', 21);
       
-    this.branches[27].setBranch(1, 17);
-    this.branches[27].setBranch(2, 23);
-    this.branches[27].setBranch(3, 31);
-    this.branches[27].setBranch(4, 33);
-    this.branches[27].setBranch(5, 30);
-    this.branches[27].setBranch(6, 22);
+    this.branches[27].setBranch('branch1', 17);
+    this.branches[27].setBranch('branch2', 23);
+    this.branches[27].setBranch('branch3', 31);
+    this.branches[27].setBranch('branch4', 33);
+    this.branches[27].setBranch('branch5', 30);
+    this.branches[27].setBranch('branch6', 22);
       
-    this.branches[28].setBranch(1, 18);
-    this.branches[28].setBranch(2, 24);
-    this.branches[28].setBranch(3, 32);
-    this.branches[28].setBranch(4, 34);
-    this.branches[28].setBranch(5, 31);
-    this.branches[28].setBranch(6, 23);
+    this.branches[28].setBranch('branch1', 18);
+    this.branches[28].setBranch('branch2', 24);
+    this.branches[28].setBranch('branch3', 32);
+    this.branches[28].setBranch('branch4', 34);
+    this.branches[28].setBranch('branch5', 31);
+    this.branches[28].setBranch('branch6', 23);
 
-    this.branches[29].setBranch(1, 19);
-    this.branches[29].setBranch(2, 25);
-    this.branches[29].setBranch(5, 32);
-    this.branches[29].setBranch(6, 24);
+    this.branches[29].setBranch('branch1', 19);
+    this.branches[29].setBranch('branch2', 25);
+    this.branches[29].setBranch('branch5', 32);
+    this.branches[29].setBranch('branch6', 24);
       
-    this.branches[30].setBranch(1, 27);
-    this.branches[30].setBranch(2, 31);
-    this.branches[30].setBranch(3, 33);
-    this.branches[30].setBranch(6, 26);
+    this.branches[30].setBranch('branch1', 27);
+    this.branches[30].setBranch('branch2', 31);
+    this.branches[30].setBranch('branch3', 33);
+    this.branches[30].setBranch('branch6', 26);
       
-    this.branches[31].setBranch(1, 28);
-    this.branches[31].setBranch(2, 32);
-    this.branches[31].setBranch(3, 34);
-    this.branches[31].setBranch(4, 33);
-    this.branches[31].setBranch(5, 30);
-    this.branches[31].setBranch(6, 27);
+    this.branches[31].setBranch('branch1', 28);
+    this.branches[31].setBranch('branch2', 32);
+    this.branches[31].setBranch('branch3', 34);
+    this.branches[31].setBranch('branch4', 33);
+    this.branches[31].setBranch('branch5', 30);
+    this.branches[31].setBranch('branch6', 27);
 
-    this.branches[32].setBranch(1, 29);
-    this.branches[32].setBranch(4, 34);
-    this.branches[32].setBranch(5, 31);
-    this.branches[32].setBranch(6, 28);
+    this.branches[32].setBranch('branch1', 29);
+    this.branches[32].setBranch('branch4', 34);
+    this.branches[32].setBranch('branch5', 31);
+    this.branches[32].setBranch('branch6', 28);
       
-    this.branches[33].setBranch(1, 27);
-    this.branches[33].setBranch(2, 31);
-    this.branches[33].setBranch(3, 35);
-    this.branches[33].setBranch(6, 30);
+    this.branches[33].setBranch('branch1', 27);
+    this.branches[33].setBranch('branch2', 31);
+    this.branches[33].setBranch('branch3', 35);
+    this.branches[33].setBranch('branch6', 30);
       
-    this.branches[34].setBranch(1, 28);
-    this.branches[34].setBranch(2, 32);
-    this.branches[34].setBranch(5, 35);
-    this.branches[34].setBranch(6, 31);
+    this.branches[34].setBranch('branch1', 28);
+    this.branches[34].setBranch('branch2', 32);
+    this.branches[34].setBranch('branch5', 35);
+    this.branches[34].setBranch('branch6', 31);
       
-    this.branches[35].setBranch(1, 34);
-    this.branches[35].setBranch(6, 33);
+    this.branches[35].setBranch('branch1', 34);
+    this.branches[35].setBranch('branch6', 33);
 
     /* TILES - HARD CODED RELATIONSHIPS
       /

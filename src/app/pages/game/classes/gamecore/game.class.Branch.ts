@@ -1,41 +1,44 @@
 import { Owner } from '../../enums/game.enums';
+import { BranchesInterface } from '../../interfaces/game.interface';
 
 export class Branch {
-    private ownedBy: Owner;
+  private ownedBy: Owner;
 
-    private branch1: number;
-    private branch2: number;
-    private branch3: number;
-    private branch4: number;
-    private branch5: number;
-    private branch6: number;
+  private branches: BranchesInterface = {
+    branch1: null,
+    branch2: null,
+    branch3: null,
+    branch4: null,
+    branch5: null,
+    branch6: null
+  };
     
-    // NOTE: branches counted in clockwise fashion beginning at top
+  // NOTE: branches counted in clockwise fashion beginning at top
 
-    constructor(b1: number = -1, b2: number = -1, b3: number = -1, b4: number = -1, b5: number = -1, b6: number = -1) {
-        this.ownedBy = Owner.NONE;
+  constructor(b1 = -1, b2 = -1, b3 = -1, b4 = -1, b5 = -1, b6 = -1) {
+    this.ownedBy = Owner.NONE;
 
-        this.branch1 = b1;
-        this.branch2 = b2;
-        this.branch3 = b3;
-        this.branch4 = b4;
-        this.branch5 = b5;
-        this.branch6 = b6;
+    this.branches.branch1 = b1;
+    this.branches.branch2 = b2;
+    this.branches.branch3 = b3;
+    this.branches.branch4 = b4;
+    this.branches.branch5 = b5;
+    this.branches.branch6 = b6;
 
-    }
+  }
 
-    getOwner(): Owner {
-        return this.ownedBy;
-    }
-    setOwner(newOwner: Owner): void {
-        this.ownedBy = newOwner;
-    }
+  getOwner(): Owner {
+    return this.ownedBy;
+  }
+  setOwner(newOwner: Owner): void {
+    this.ownedBy = newOwner;
+  }
 
-    getBranch(b: number ): number {
-        return this[`branch${b}`];
-    }
+  getBranch(branch: keyof BranchesInterface ): number {
+    return this.branches[branch];
+  }
 
-    setBranch(b: number, newB: number): void {
-        this[`branch${b}`] = newB;
-    }
+  setBranch(branch: keyof BranchesInterface, newB: number): void {
+    this.branches[branch] = newB;
+  }
 }
