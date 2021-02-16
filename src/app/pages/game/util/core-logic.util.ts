@@ -606,7 +606,27 @@ export class CoreLogic {
     }
 
     //longest Network
+    for (let i = 0; i < affectedPlayer.ownedBranches.length; i++) {
+      CoreLogic.checkForLongest(state,affectedPlayer, affectedPlayer.ownedBranches[i]);
+    }
 
+    if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
+      state.player1.hasLongestNetwork = true;
+      state.player1.currentScore += 2;
+      if (state.player2.hasLongestNetwork === true) {
+        state.player2.hasLongestNetwork = false;
+        state.player2.currentScore -= 2;
+      }
+    }
+
+    else if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
+      state.player2.hasLongestNetwork = true;
+      state.player2.currentScore += 2;
+      if (state.player1.hasLongestNetwork === true) {
+        state.player1.hasLongestNetwork = false;
+        state.player1.currentScore -= 2;
+      }
+    }
     
 
     //captured tile 

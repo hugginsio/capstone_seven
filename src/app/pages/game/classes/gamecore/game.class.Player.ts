@@ -17,6 +17,9 @@ export class Player {
    
   hasTraded: boolean;
 
+  ownedBranches: [number];
+  branchScanner: [number];
+  currentLength: number;
   currentLongest: number;
   hasLongestNetwork: boolean;
   
@@ -32,6 +35,9 @@ export class Player {
     this.yellowResources = 0;
 
     this.hasTraded = false;
+
+    this.currentLength = 0;
+    this.currentLongest = 0;
     this.hasLongestNetwork = false;
 
     this.numTilesCaptured = 0;
@@ -40,4 +46,3 @@ export class Player {
     this.currentScore = 0;
   }
 }
- 
