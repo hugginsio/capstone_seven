@@ -1,1 +1,171 @@
-<p>Game</p>
+<div class="h-screen w-screen overscroll-none text-center">
+  <!-- Top Right Menu Container -->
+  <div class="absolute left-2 top-2">
+    <div class="bg-gray-600 p-3 text-center items-center justify-center cursor-pointer" (click)="togglePaused()">
+      <p>Pause</p>
+    </div>
+  </div>
+  <!-- Pause Modal Container -->
+  <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-50" *ngIf="this.gamePaused">
+    <div class="flex flex-row items-center content-center h-full">
+      <div class="mx-auto flex flex-col spacing-y-5 w-1/3">
+        <p class="text-5xl font-bold tracking-wide p-10">Paused</p>
+        <div class="flex space-x-5 w-full">
+          <div class="menu-btn flex-grow pointer-events-auto" routerLink="/menu/landing">
+            <div>
+              <p>Exit</p>
+            </div>
+          </div>
+          <div class="menu-btn w-full flex-grow pointer-events-auto" (click)="togglePaused()">
+            <div>
+              <p>Resume</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Tiles -->
+  <div class="flex flex-row items-center content-center h-full">
+    <div class="gameboard">
+      <div class="tile-container">
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+      </div>
+      <div class="tile-container">
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+      </div>
+      <div class="tile-container">
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+      </div>
+      <div class="tile-container">
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+      </div>
+      <div class="tile-container">
+        <div id="TX" (click)="clickTile($event)" class="tile"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Nodes -->
+<div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 pointer-events-none">
+  <div class="flex flex-row items-center content-center h-full">
+    <div class="mx-auto flex flex-col spacing-y-nodes">
+      <div class="node-container">
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+      </div>
+      <div class="node-container">
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+      </div>
+      <div class="node-container">
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+      </div>
+      <div class="node-container">
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+      </div>
+      <div class="node-container">
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+      </div>
+      <div class="node-container">
+        <div id="NX" class="node"></div>
+        <div id="NX" class="node"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Vertical Branches -->
+<div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 pointer-events-none">
+  <div class="flex flex-row items-center content-center h-full">
+    <div class="mx-auto flex flex-col spacing-y-v-branches">
+      <div class="branch-y-container">
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+      </div>
+      <div class="branch-y-container">
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+      </div>
+      <div class="branch-y-container">
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+      </div>
+      <div class="branch-y-container">
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+      </div>
+      <div class="branch-y-container">
+        <div id="BX" class="branch-y"></div>
+        <div id="BX" class="branch-y"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Horizontal Branches -->
+<div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 pointer-events-none">
+  <div class="flex flex-row items-center content-center h-full">
+    <div class="mx-auto flex flex-col spacing-y-h-branches">
+      <div class="branch-x-container">
+        <div id="BX" class="branch-x"></div>
+      </div>
+      <div class="branch-x-container">
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+      </div>
+      <div class="branch-x-container">
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+      </div>
+      <div class="branch-x-container">
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+      </div>
+      <div class="branch-x-container">
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+        <div id="BX" class="branch-x"></div>
+      </div>
+      <div class="branch-x-container">
+        <div id="BX" class="branch-x"></div>
+      </div>
+    </div>
+  </div>
+</div>

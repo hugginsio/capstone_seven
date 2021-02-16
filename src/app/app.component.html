@@ -1,1 +1,12 @@
-<router-outlet></router-outlet>
+<main [@fadeAnimation]="outlet.isActivated ? outlet.activatedRoute : ''">
+  <router-outlet #outlet="outlet"></router-outlet>
+</main>
+
+<!-- in DEV, show a reload button -->
+<div class="absolute z-50 top-1 left-1" *ngIf="!this.production">
+  <a href="/">
+    <div class="text-red-500 text-sm">
+      <p>reload</p>
+    </div>
+  </a>
+</div>
