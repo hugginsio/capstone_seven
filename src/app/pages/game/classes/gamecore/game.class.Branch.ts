@@ -3,15 +3,7 @@ import { BranchesInterface } from '../../interfaces/game.interface';
 
 export class Branch {
   private ownedBy: Owner;
-
-  private branches: BranchesInterface = {
-    branch1: null,
-    branch2: null,
-    branch3: null,
-    branch4: null,
-    branch5: null,
-    branch6: null
-  };
+  private branches: BranchesInterface;
     
   // NOTE: branches counted in clockwise fashion beginning at top
 
