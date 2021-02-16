@@ -39,3 +39,4 @@ describe('NewLocalGameComponent', () => {
     expect(component.aiDifficultyString).toEqual(component.aiEasy);
   });
 });
+
