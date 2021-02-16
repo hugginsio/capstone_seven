@@ -10,7 +10,7 @@ describe('NewLocalGameComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ NewLocalGameComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -23,3 +23,4 @@ describe('NewLocalGameComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
