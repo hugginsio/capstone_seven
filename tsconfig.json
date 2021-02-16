@@ -9,6 +9,7 @@
     "noImplicitAny": true,
     "outDir": "./dist/out-tsc",
     "removeComments": true,
+    "resolveJsonModule": true,
     "sourceMap": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
