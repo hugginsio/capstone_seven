@@ -21,12 +21,19 @@ export class Tile {
   private bottomBranch: number;
   private leftBranch : number;
 
+  private topTile: number;
+  private rightTile: number;
+  private bottomTile: number;
+  private leftTile: number;
+
 
   // having things we will reassign later after randomizing in the constructor??
   constructor(tln = -1, trn = -1, 
               bln = -1, brn = -1,
               tb = -1, rb = -1,
-              bb = -1, lb = -1){
+              bb = -1, lb = -1,
+              tt = -1, rt = -1,
+              bt = -1, lt = -1){
     this.color = TileColor.BLANK;
     this.nodeCount = 0;
     this.maxNodes = 0;      // how to deal with maxNodes if its just the blank... do i set this in the constuctor in general?
@@ -42,6 +49,11 @@ export class Tile {
     this.rightBranch = rb;
     this.bottomBranch = bb;
     this.leftBranch = lb;
+
+    this.topTile = tt;
+    this.rightTile = rt;
+    this.bottomTile = bt;
+    this.leftTile = lt;
   }
 
   getColor(): TileColor {
@@ -133,5 +145,38 @@ export class Tile {
   }
   setLeftBranch (n: number): void {  
     this.leftBranch = n;
+  }
+
+  // Tile
+  getTopTile(): number {
+    return this.topTile;
+  }
+
+  setTopTile (n: number): void {
+    this.topTile = n;
+  }
+
+  getRightTile(): number {
+    return this.rightTile;
+  }
+
+  setRightTile (n: number): void {
+    this.rightTile = n;
+  }
+
+  getBottomTile(): number {
+    return this.bottomTile;
+  }
+
+  setBottomTile (n: number): void {
+    this.bottomTile = n;
+  }
+
+  getLeftTile(): number {
+    return this.leftTile;
+  }
+
+  setLeftTile (n: number): void {
+    this.leftTile = n;
   }
 }
