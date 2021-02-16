@@ -5,6 +5,7 @@ import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
 import { Player } from '../classes/gamecore/game.class.Player';
 import { Owner, TileColor } from '../enums/game.enums';
 
+
 interface Move {
   tradedIn:string[],
   received:string,
@@ -433,12 +434,12 @@ export class CoreLogic {
 
     for(const branch of gameBoard.branches){
 
-      if (branch.getOwner() === Owner.NONE && (gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(1)].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(2)].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(3)].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(4)].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(5)].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(6)].getOwner() === player)) {
+      if (branch.getOwner() === Owner.NONE && (gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch1')].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch2')].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch3')].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch4')].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch5')].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch6')].getOwner() === player)) {
         result.push(gameBoard.branches.indexOf(branch));
         branch.setOwner(player);
       }
@@ -604,9 +605,11 @@ export class CoreLogic {
       }
     }
 
+    //longest Network
 
+    
 
-    //captured tile and longest network point allocation
+    //captured tile 
 
   }
 
@@ -680,7 +683,67 @@ export class CoreLogic {
     }
   }
 
-  
+  static checkForLongest(state:State, branchOwner: Player, currentBranch: number): void {
+
+    branchOwner.branchScanner.push(currentBranch);
+    branchOwner.currentLength++;
+    
+    if (branchOwner.currentLength > branchOwner.currentLongest) {
+      branchOwner.currentLongest = branchOwner.currentLength;
+    }
+
+    const branch1Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch1')].getOwner();
+    const branch2Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch2')].getOwner();
+    const branch3Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch3')].getOwner();
+    const branch4Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch4')].getOwner();
+    const branch5Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch5')].getOwner();
+    const branch6Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch6')].getOwner();
+
+    if (branchOwner === state.player1) {
+
+      if (branch1Owner === Owner.PLAYERONE) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch1')]));
+      }
+      if (branch2Owner === Owner.PLAYERONE) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch2')]));
+      }
+      if (branch3Owner === Owner.PLAYERONE) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch3')]));
+      }
+      if (branch4Owner === Owner.PLAYERONE) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch4')]));
+      }
+      if (branch5Owner === Owner.PLAYERONE) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch5')]));
+      }
+      if (branch6Owner === Owner.PLAYERONE) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch6')]));
+      }
+    }
+
+    else {
+      if (branch1Owner === Owner.PLAYERTWO) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch1')]));
+      }
+      if (branch2Owner === Owner.PLAYERTWO) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch2')]));
+      }
+      if (branch3Owner === Owner.PLAYERTWO) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch3')]));
+      }
+      if (branch4Owner === Owner.PLAYERTWO) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch4')]));
+      }
+      if (branch5Owner === Owner.PLAYERTWO) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch5')]));
+      }
+      if (branch6Owner === Owner.PLAYERTWO) {
+        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch6')]));
+      }
+    }
+
+    branchOwner.branchScanner.pop();
+  }
 
   static moveToString(move:Move):string{
     let result = '';

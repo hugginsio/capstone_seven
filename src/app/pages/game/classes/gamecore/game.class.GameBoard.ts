@@ -10,8 +10,9 @@ export class GameBoard {
 
 
   randomizeColorsAndMaxNodes(): void { 
-    const tileColorsAndMax = this.shuffleArray(this.getTileColorsAndMax());
-
+    const tileColorsAndMax = this.getTileColorsAndMax();
+    this.shuffleArray(tileColorsAndMax);
+    
     for (let i = 0; i < 13; i++) {
       this.tiles[i].color = tileColorsAndMax[i].color;
       this.tiles[i].maxNodes = tileColorsAndMax[i].maxNodes;
