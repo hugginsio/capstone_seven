@@ -873,18 +873,3 @@ export class ManagerService {
     return captured;
   }
 }
-
-  // checkForCaptures()
-  // 1. Any instant failures?
-  //    - opponent has a branch adjacent to tile being examined
-  //    - empty branch position adjacent to tile with no more tiles extended in direction of branch
-  //  QUESTION: will tiles need to have access to other tiles?
-
-
-  // clickEvent(event: MouseEvent) {
-  //   const pieceType = event.target.id.subString(0,0);
-  //   const tileId = event.target.id.subString(1,1);
-  //   tiles[tileId];
-  // }
-
-  // <div id="T1" (click)="this.ManagerService.clickTile($event)" />
