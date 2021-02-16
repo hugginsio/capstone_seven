@@ -462,12 +462,12 @@ export class ManagerService {
       else
         branchOwner = "PLAYERTWO";
 
-      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(1)].getOwner() === branchOwner ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(2)].getOwner() === branchOwner ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(3)].getOwner() === branchOwner ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(4)].getOwner() === branchOwner ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(5)].getOwner() === branchOwner ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(6)].getOwner() === branchOwner) {
+      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch1')].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch2')].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch3')].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch4')].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch5')].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch6')].getOwner() === branchOwner) {
 
         if (currentPlayer == this.playerOne) {
     
