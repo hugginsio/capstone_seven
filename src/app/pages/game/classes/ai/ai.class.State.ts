@@ -10,6 +10,8 @@ export class State {
   player2:Player;
 
   inInitialMoves:boolean;
+
+  tilesBeingChecked:number[];
   
 
   constructor(moveHistory:string[], gameBoard:GameBoard, player:number, player1:Player, player2:Player, inInitialMoves:boolean) {
@@ -19,6 +21,7 @@ export class State {
     this.player1 = player1;
     this.player2 = player2;
     this.inInitialMoves = inInitialMoves;
+    this.tilesBeingChecked = [];
   }
 
   isPlayer(player:number):boolean {

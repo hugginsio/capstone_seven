@@ -496,6 +496,9 @@ export class CoreLogic {
     if(newState.moveHistory.length !== 2){
       newState.currentPlayer = -newState.currentPlayer;
     }
+    if(newState.moveHistory.length === 4){
+      newState.inInitialMoves = false;
+    }
 
     if(!newState.inInitialMoves){
     //Next Player gets more resources
@@ -513,9 +516,7 @@ export class CoreLogic {
       }
     }
     
-    if(newState.moveHistory.length === 4){
-      newState.inInitialMoves = false;
-    }
+
 
    
     return newState;
@@ -610,26 +611,38 @@ export class CoreLogic {
       CoreLogic.checkForLongest(state,affectedPlayer, affectedPlayer.ownedBranches[i]);
     }
 
-    if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
-      state.player1.hasLongestNetwork = true;
-      state.player1.currentScore += 2;
-      if (state.player2.hasLongestNetwork === true) {
-        state.player2.hasLongestNetwork = false;
-        state.player2.currentScore -= 2;
+    if(affectedPlayer === state.player1){
+      if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
+        state.player1.hasLongestNetwork = true;
+        state.player1.currentScore += 2;
+        if (state.player2.hasLongestNetwork === true) {
+          state.player2.hasLongestNetwork = false;
+          state.player2.currentScore -= 2;
+        }
+      }
+    }else{
+      if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
+        state.player2.hasLongestNetwork = true;
+        state.player2.currentScore += 2;
+        if (state.player1.hasLongestNetwork === true) {
+          state.player1.hasLongestNetwork = false;
+          state.player1.currentScore -= 2;
+        }
       }
     }
 
-    else if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
-      state.player2.hasLongestNetwork = true;
-      state.player2.currentScore += 2;
-      if (state.player1.hasLongestNetwork === true) {
-        state.player1.hasLongestNetwork = false;
-        state.player1.currentScore -= 2;
-      }
-    }
     
+   
 
-    //captured tile 
+    //captured tile need to work on this
+    const numTilesAlreadyCaptured = affectedPlayer.numTilesCaptured;
+
+    for (let  i = 0; i < state.gameBoard.tiles.length; i++) {
+      if(this.checkForCaptures(state,affectedPlayer, i)){
+        affectedPlayer.numTilesCaptured++;
+      } 
+    }
+    affectedPlayer.currentScore += affectedPlayer.numTilesCaptured - numTilesAlreadyCaptured;
 
   }
 
@@ -763,6 +776,76 @@ export class CoreLogic {
     }
 
     branchOwner.branchScanner.pop();
+  }
+
+  static checkForCaptures(state:State, capturer: Player, checkTile: number): boolean {
+
+    let captured = true;
+
+    // prevents infinite recursion
+    if (state.tilesBeingChecked.includes(checkTile)) {
+      return captured;
+    }
+
+    let currentPlayer;
+    let otherPlayer;
+
+    const currentTile = state.gameBoard.tiles[checkTile];
+    const tileTopBranch = state.gameBoard.branches[currentTile.getTopBranch()];
+    const tileRightBranch = state.gameBoard.branches[currentTile.getRightBranch()];
+    const tileBottomBranch = state.gameBoard.branches[currentTile.getBottomBranch()];
+    const tileLeftBranch = state.gameBoard.branches[currentTile.getLeftBranch()];
+
+    if (capturer === state.player1) {
+      currentPlayer = "PLAYERONE";
+      otherPlayer = "PLAYERTWO";
+    }
+    else {
+      currentPlayer = "PLAYERTWO";
+      otherPlayer = "PLAYERONE";
+    }
+
+    // checks first instant fail condition: opponent has claimed any branches surrounding tile being checked
+    if (tileTopBranch.getOwner() === otherPlayer ||
+             tileRightBranch.getOwner() === otherPlayer ||
+             tileBottomBranch.getOwner() === otherPlayer ||
+             tileLeftBranch.getOwner() === otherPlayer) {
+      captured = false;
+    }
+    // checks second instant fail condition: no other tile present next to one of current tile's empty-branch sides
+    else if ((tileTopBranch.getOwner() === "NONE" && currentTile.getTopTile() === -1 ) ||
+             (tileRightBranch.getOwner() === "NONE" && currentTile.getRightTile() === -1 ) ||
+             (tileBottomBranch.getOwner() === "NONE" && currentTile.getBottomTile() === -1 ) ||
+             (tileLeftBranch.getOwner() === "NONE" && currentTile.getLeftTile() === -1 )) {
+      captured = false;
+    }
+    // begins recursive calls checking for multi-tile capture
+    else {
+      state.tilesBeingChecked.push(checkTile);
+
+      if (tileTopBranch.getOwner() === "NONE") {
+        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getTopTile()) === false) {
+          captured = false;
+        }
+      }
+      if (tileRightBranch.getOwner() === "NONE") {
+        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getRightTile()) === false) {
+          captured = false;
+        }
+      }
+      if (tileBottomBranch.getOwner() === "NONE") {
+        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getBottomTile()) === false) {
+          captured = false;
+        }
+      }
+      if (tileLeftBranch.getOwner() === "NONE") {
+        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getLeftTile()) === false) {
+          captured = false;
+        }
+      }
+   
+    }
+    return captured;
   }
 
   static moveToString(move:Move):string{
