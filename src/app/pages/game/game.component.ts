@@ -32,7 +32,7 @@ export class GameComponent implements OnInit {
     const boardSeed = this.storageService.fetch('board-seed');
     if ( boardSeed === '!random' || boardSeed === 'undefined') {
       this.gameManager.createBoard(true);
-      console.log(this.gameManager.gameBoard);
+      console.log(this.gameManager.getBoard());
     } else {
       // create gameboard with user defined seed
     }
@@ -42,31 +42,31 @@ export class GameComponent implements OnInit {
     let result = '';
     switch (piece) {
       case 'T':
-        if (this.gameManager.gameBoard.tiles[id].color === "BLANK") {
+        if (this.gameManager.getBoard().tiles[id].color === "BLANK") {
           result += 'unavailable ';
         }
 
-        result += `tile-${this.gameManager.gameBoard.tiles[id].color}`;
+        result += `tile-${this.gameManager.getBoard().tiles[id].color}`;
 
-        if (this.gameManager.gameBoard.tiles[id].isExhausted) {
+        if (this.gameManager.getBoard().tiles[id].isExhausted) {
           result += '-exhausted';
           break;
         }
 
-        if (this.gameManager.gameBoard.tiles[id].capturedBy !== 'NONE') {
-          result += `-capture-${this.gameManager.gameBoard.tiles[id].capturedBy === 'PLAYERONE' ? 'orange' : 'purple'}`;
+        if (this.gameManager.getBoard().tiles[id].capturedBy !== 'NONE') {
+          result += `-capture-${this.gameManager.getBoard().tiles[id].capturedBy === 'PLAYERONE' ? 'orange' : 'purple'}`;
           break;
         }
 
-        if (this.gameManager.gameBoard.tiles[id].maxNodes !== 0) {
-          result += `-${this.gameManager.gameBoard.tiles[id].maxNodes}`;
+        if (this.gameManager.getBoard().tiles[id].maxNodes !== 0) {
+          result += `-${this.gameManager.getBoard().tiles[id].maxNodes}`;
         }
 
         break;
 
       case 'N':
-        if (this.gameManager.gameBoard.nodes[id].getOwner() !== 'NONE') {
-          result += `node-${this.gameManager.gameBoard.nodes[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}`;
+        if (this.gameManager.getBoard().nodes[id].getOwner() !== 'NONE') {
+          result += `node-${this.gameManager.getBoard().nodes[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}`;
         }
 
         break;

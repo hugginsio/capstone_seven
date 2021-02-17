@@ -13,7 +13,7 @@ import { Player } from '../../classes/gamecore/game.class.Player';
 })
 export class ManagerService {
 
-  public gameBoard: GameBoard;
+  private gameBoard: GameBoard;
   private playerOne: Player;
   private playerTwo: Player;
   private gameType: GameType;
@@ -24,6 +24,10 @@ export class ManagerService {
     this.gameBoard = new GameBoard();
     this.playerOne = new Player();
     this.playerTwo = new Player();
+  }
+
+  getBoard(): GameBoard {
+    return this.gameBoard;
   }
 
   createBoard(random: boolean): void {
