@@ -17,8 +17,8 @@ export class Player {
    
   hasTraded: boolean;
 
-  ownedBranches: [number];
-  branchScanner: [number];
+  ownedBranches: number[];
+  branchScanner: number[];
   currentLength: number;
   currentLongest: number;
   hasLongestNetwork: boolean;
@@ -34,11 +34,18 @@ export class Player {
     this.greenResources = 0;
     this.yellowResources = 0;
 
+    this.redPerTurn = 0;
+    this.bluePerTurn = 0;
+    this.greenPerTurn = 0;
+    this.yellowPerTurn = 0;
+
     this.hasTraded = false;
 
     this.currentLength = 0;
     this.currentLongest = 0;
     this.hasLongestNetwork = false;
+    this.ownedBranches = [];
+    this.branchScanner = [];
 
     this.numTilesCaptured = 0;
     this.numNodesPlaced = 0;

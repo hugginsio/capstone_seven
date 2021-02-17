@@ -418,11 +418,24 @@ export class CoreLogic {
     const result:number[] = [];
 
     for(const node of gameBoard.nodes){
-      if (node.getOwner() === Owner.NONE && (gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getTopBranch()].getOwner() === player ||
-      gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getLeftBranch()].getOwner() === player ||
-      gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getBottomBranch()].getOwner() === player ||
-      gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getRightBranch()].getOwner() === player)) {
-        result.push(gameBoard.nodes.indexOf(node));
+
+      if (node.getOwner() === Owner.NONE){
+        if (gameBoard.nodes[gameBoard.nodes.indexOf(node)].getTopBranch() !== -1 &&
+          gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getTopBranch()].getOwner() === player) {
+          result.push(gameBoard.nodes.indexOf(node));
+        }
+        else if (gameBoard.nodes[gameBoard.nodes.indexOf(node)].getRightBranch() !== -1 &&
+        gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getRightBranch()].getOwner() === player) {
+          result.push(gameBoard.nodes.indexOf(node));
+        } 
+        else if (gameBoard.nodes[gameBoard.nodes.indexOf(node)].getBottomBranch() !== -1 &&
+        gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getBottomBranch()].getOwner() === player) {
+          result.push(gameBoard.nodes.indexOf(node));
+        } 
+        else if (gameBoard.nodes[gameBoard.nodes.indexOf(node)].getLeftBranch() !== -1 &&
+        gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getLeftBranch()].getOwner() === player) {
+          result.push(gameBoard.nodes.indexOf(node));
+        } 
       }
     }
 
@@ -434,14 +447,37 @@ export class CoreLogic {
 
     for(const branch of gameBoard.branches){
 
-      if (branch.getOwner() === Owner.NONE && (gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch1')].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch2')].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch3')].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch4')].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch5')].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch6')].getOwner() === player)) {
-        result.push(gameBoard.branches.indexOf(branch));
-        branch.setOwner(player);
+      if (branch.getOwner() === Owner.NONE){
+        if(gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch1') !== -1 &&
+          gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch1')].getOwner() === player){
+          result.push(gameBoard.branches.indexOf(branch));
+          branch.setOwner(player);
+        } 
+        else if(gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch2') !== -1 &&
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch2')].getOwner() === player){
+          result.push(gameBoard.branches.indexOf(branch));
+          branch.setOwner(player);
+        } 
+        else if(gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch3') !== -1 &&
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch3')].getOwner() === player){
+          result.push(gameBoard.branches.indexOf(branch));
+          branch.setOwner(player);
+        } 
+        else if(gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch4') !== -1 &&
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch4')].getOwner() === player){
+          result.push(gameBoard.branches.indexOf(branch));
+          branch.setOwner(player);
+        } 
+        else if(gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch5') !== -1 &&
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch5')].getOwner() === player){
+          result.push(gameBoard.branches.indexOf(branch));
+          branch.setOwner(player);
+        } 
+        else if(gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch6') !== -1 &&
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch6')].getOwner() === player){
+          result.push(gameBoard.branches.indexOf(branch));
+          branch.setOwner(player);
+        } 
       }
 
     }
@@ -568,16 +604,52 @@ export class CoreLogic {
       if (state.gameBoard.nodes[node].getTopRightTile() !== -1) {
         state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount++;
         
+        if(!state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].isExhausted){
+          switch (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].color){
+            case TileColor.RED:
+              affectedPlayer.redPerTurn++;
+              break;
+            case TileColor.BLUE:
+              affectedPlayer.bluePerTurn++;
+              break;
+            case TileColor.YELLOW:
+              affectedPlayer.yellowPerTurn++;
+              break;
+            case TileColor.GREEN:
+              affectedPlayer.greenPerTurn++;
+              break;
+          }
+        }
+
         if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount >
             state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].maxNodes) {
           state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].isExhausted = true;
           CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getTopRightTile(), true);
         }
+        
       }
 
       if (state.gameBoard.nodes[node].getBottomRightTile() !== -1) {
         state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].nodeCount++;
         
+        if(!state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].isExhausted){
+          switch (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].color){
+            case TileColor.RED:
+              affectedPlayer.redPerTurn++;
+              break;
+            case TileColor.BLUE:
+              affectedPlayer.bluePerTurn++;
+              break;
+            case TileColor.YELLOW:
+              affectedPlayer.yellowPerTurn++;
+              break;
+            case TileColor.GREEN:
+              affectedPlayer.greenPerTurn++;
+              break;
+          }
+        }
+
+
         if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].nodeCount >
             state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].maxNodes) {
           state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].isExhausted = true;
@@ -588,6 +660,24 @@ export class CoreLogic {
       if (state.gameBoard.nodes[node].getBottomLeftTile() !== -1) {
         state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].nodeCount++;
 
+        if(!state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].isExhausted){
+          switch (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].color){
+            case TileColor.RED:
+              affectedPlayer.redPerTurn++;
+              break;
+            case TileColor.BLUE:
+              affectedPlayer.bluePerTurn++;
+              break;
+            case TileColor.YELLOW:
+              affectedPlayer.yellowPerTurn++;
+              break;
+            case TileColor.GREEN:
+              affectedPlayer.greenPerTurn++;
+              break;
+          }
+        }
+
+
         if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].nodeCount >
             state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].maxNodes) {
           state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].isExhausted = true;
@@ -597,6 +687,24 @@ export class CoreLogic {
       
       if (state.gameBoard.nodes[node].getTopLeftTile() !== -1) {
         state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount++;
+
+        if(!state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].isExhausted){
+          switch (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].color){
+            case TileColor.RED:
+              affectedPlayer.redPerTurn++;
+              break;
+            case TileColor.BLUE:
+              affectedPlayer.bluePerTurn++;
+              break;
+            case TileColor.YELLOW:
+              affectedPlayer.yellowPerTurn++;
+              break;
+            case TileColor.GREEN:
+              affectedPlayer.greenPerTurn++;
+              break;
+          }
+        }
+
 
         if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount >
             state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].maxNodes) {
@@ -725,32 +833,70 @@ export class CoreLogic {
       branchOwner.currentLongest = branchOwner.currentLength;
     }
 
-    const branch1Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch1')].getOwner();
-    const branch2Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch2')].getOwner();
-    const branch3Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch3')].getOwner();
-    const branch4Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch4')].getOwner();
-    const branch5Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch5')].getOwner();
-    const branch6Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch6')].getOwner();
+    let branch1Owner:Owner;
+    let branch2Owner:Owner;
+    let branch3Owner:Owner;
+    let branch4Owner:Owner;
+    let branch5Owner:Owner;
+    let branch6Owner:Owner;
+
+    if(state.gameBoard.branches[currentBranch].getBranch('branch1') !== -1){
+      branch1Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch1')].getOwner();
+    }
+    else{
+      branch1Owner = Owner.NONE;
+    }
+    if(state.gameBoard.branches[currentBranch].getBranch('branch2') !== -1){
+      branch2Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch2')].getOwner();
+    }
+    else{
+      branch2Owner = Owner.NONE;
+    }
+    if(state.gameBoard.branches[currentBranch].getBranch('branch3') !== -1){
+      branch3Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch3')].getOwner();
+    }
+    else{
+      branch3Owner = Owner.NONE;
+    }
+    if(state.gameBoard.branches[currentBranch].getBranch('branch4') !== -1){
+      branch4Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch4')].getOwner();
+    }
+    else{
+      branch4Owner = Owner.NONE;
+    }
+    if(state.gameBoard.branches[currentBranch].getBranch('branch5') !== -1){
+      branch5Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch5')].getOwner();
+    }
+    else{
+      branch5Owner = Owner.NONE;
+    }
+    if(state.gameBoard.branches[currentBranch].getBranch('branch6') !== -1){
+      branch6Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch6')].getOwner();
+    }
+    else{
+      branch6Owner = Owner.NONE;
+    }
+   
 
     if (branchOwner === state.player1) {
 
       if (branch1Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch1')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch1'));
       }
       if (branch2Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch2')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch2'));
       }
       if (branch3Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch3')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch3'));
       }
       if (branch4Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch4')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch4'));
       }
       if (branch5Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch5')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch5'));
       }
       if (branch6Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch6')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch6'));
       }
     }
 
@@ -850,29 +996,38 @@ export class CoreLogic {
 
   static moveToString(move:Move):string{
     let result = '';
+    
 
     for(const resource of move.tradedIn){
       result += resource + ',';
     }
-    result += move.received + ';';
+
+    if(move.received === ''){
+      result += ';';
+    }
+    else{
+      result += move.received + ';';
+    }
 
     for(const node of move.nodesPlaced){
       result += node.toString();
 
-      if(node !== move.nodesPlaced[-1]){
+      if(node !== move.nodesPlaced[move.nodesPlaced.length-1]){
         result += ',';
       }
       else{
         result += ';';
       }
     }
+    if(move.nodesPlaced.length === 0){
+      result += ';';
+    }
 
     for(const branch of move.branchesPlaced){
-      result += branch.toString();
-
-      if(branch !== move.branchesPlaced[-1]){
+      if(move.branchesPlaced.indexOf(branch) !== 0){
         result += ',';
       }
+      result += branch.toString();
     }
 
     return result; //result should be a string formatted like 'R,R,R,Y;8;3,18'
@@ -884,20 +1039,37 @@ export class CoreLogic {
     const moveSections = moveString.split(';');
 
     const trade = moveSections[0].split(',');
-    result.tradedIn.push(trade[0]);
-    result.tradedIn.push(trade[1]);
-    result.tradedIn.push(trade[2]);
-    result.received = trade[3];
-
-    const nodes = moveSections[1].split(',');
-    for(const node of nodes){
-      result.nodesPlaced.push(parseInt(node));
+    if(trade.length > 0 && trade[0] !== ''){
+      result.tradedIn.push(trade[0]);
+      result.tradedIn.push(trade[1]);
+      result.tradedIn.push(trade[2]);
+      result.received = trade[3];
+    }
+    else{
+      result.tradedIn = [];
+      result.received = '';
     }
 
-    const branches = moveSections[2].split(',');
-    for(const branch of branches){
-      result.branchesPlaced.push(parseInt(branch));
+   
+    if(moveSections[1] !== ''){
+      const nodes = moveSections[1].split(',');
+        
+      for(const node of nodes){
+        result.nodesPlaced.push(parseInt(node));
+      }
+
     }
+    
+  
+    if(moveSections[2] !== ''){
+      const branches = moveSections[2].split(',');
+
+      for(const branch of branches){
+        result.branchesPlaced.push(parseInt(branch));
+      }
+
+    }
+
 
     return result;
   }
