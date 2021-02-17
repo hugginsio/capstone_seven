@@ -32,6 +32,11 @@ export class GameBoard {
   getTileColorsAndMax(): Array<Tile>{
     const colorTilesAndMax = Array<Tile>(13);
 
+    for (let i = 0; i < colorTilesAndMax.length; i++) {
+      colorTilesAndMax[i] = new Tile();
+      
+    }
+
     colorTilesAndMax[0].maxNodes = 1;
     colorTilesAndMax[0].color = TileColor.RED;
 
