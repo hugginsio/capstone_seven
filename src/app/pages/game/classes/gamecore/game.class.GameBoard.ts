@@ -18,13 +18,15 @@ export class GameBoard {
   }
 
   /* Randomize array in-place using Durstenfeld shuffle algorithm */
-  shuffleArray(array: Array<any>): void {
+  shuffleArray(array: Array<any>): Array<any> {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       const temp = array[i];
       array[i] = array[j];
       array[j] = temp;
     }
+
+    return array;
   }
 
   getTileColorsAndMax(): Array<Tile>{
