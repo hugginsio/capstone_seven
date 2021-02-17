@@ -13,7 +13,7 @@ import { Player } from '../../classes/gamecore/game.class.Player';
 })
 export class ManagerService {
 
-  private gameBoard: GameBoard;
+  public gameBoard: GameBoard;
   private playerOne: Player;
   private playerTwo: Player;
   private gameType: GameType;

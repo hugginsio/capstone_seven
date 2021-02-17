@@ -143,11 +143,11 @@
 
 @layer components {
   .available {
-    @apply cursor-pointer border-2 border-transparent hover:border-gray-300 transition-colors duration-300;
+    @apply cursor-pointer border-4 border-transparent hover:border-gray-300 transition-colors duration-300;
   }
 
   .unavailable {
-    @apply cursor-default border border-gray-600;
+    @apply cursor-default;
   }
 
   .occupied {
@@ -181,7 +181,7 @@
   }
 
   .node {
-    @apply w-7 h-7 pointer-events-auto rounded-full;
+    @apply w-7 h-7 pointer-events-auto rounded-full border-transparent;
   }
 
   .branch-y-container {

@@ -24,11 +24,11 @@ export class AppComponent {
     console.log(`Environment: ${AppConfig.environment} / ${this.electronService.isElectron ? 'ELECTRON' : 'BROWSER'}`);
 
     // Game defaults
-    // We set these in the app component so that they are always created on startup
+    // We set these in the app component so that they are always created on startup, regardless of page
     this.storageService.setContext('game');
     this.storageService.store('mode', 'pva');
     this.storageService.store('ai-difficulty', 'easy');
     this.storageService.store('guided-tutorial', 'false');
-    this.storageService.update('board-seed', 'random');
+    this.storageService.update('board-seed', '!random');
   }
 }

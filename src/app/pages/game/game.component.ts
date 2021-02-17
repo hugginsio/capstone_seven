@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
 import { ClickEvent } from './interfaces/game.interface';
+import { ManagerService } from './services/gamecore/manager.service';
 
 @Component({
   selector: 'app-game',
@@ -9,13 +11,73 @@ import { ClickEvent } from './interfaces/game.interface';
 export class GameComponent implements OnInit {
   public gamePaused: boolean;
   public isTrading: boolean;
+  public gameOver: boolean;
+  public gameOverText: string;
 
-  constructor() {
+  constructor(
+    private readonly gameManager: ManagerService,
+    private readonly storageService: LocalStorageService
+  ) {
+    // Set defaults for modal triggers
     this.gamePaused = false;
     this.isTrading = false;
+    this.gameOver = false;
+    this.gameOverText = "Victory!";
+
+    this.storageService.setContext('game');
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    // Fetch the board seed set in memory
+    const boardSeed = this.storageService.fetch('board-seed');
+    if ( boardSeed === '!random' || boardSeed === 'undefined') {
+      this.gameManager.createBoard(true);
+      console.log(this.gameManager.gameBoard);
+    } else {
+      // create gameboard with user defined seed
+    }
+  }
+
+  assemblePieceClass(piece: 'T' | 'N' | 'B', id: number): string {
+    let result = '';
+    switch (piece) {
+      case 'T':
+        if (this.gameManager.gameBoard.tiles[id].color === "BLANK") {
+          result += 'unavailable ';
+        }
+
+        result += `tile-${this.gameManager.gameBoard.tiles[id].color}`;
+
+        if (this.gameManager.gameBoard.tiles[id].isExhausted) {
+          result += '-exhausted';
+          break;
+        }
+
+        if (this.gameManager.gameBoard.tiles[id].capturedBy !== 'NONE') {
+          result += `-capture-${this.gameManager.gameBoard.tiles[id].capturedBy === 'PLAYERONE' ? 'orange' : 'purple'}`;
+          break;
+        }
+
+        if (this.gameManager.gameBoard.tiles[id].maxNodes !== 0) {
+          result += `-${this.gameManager.gameBoard.tiles[id].maxNodes}`;
+        }
+
+        break;
+
+      case 'N':
+        if (this.gameManager.gameBoard.nodes[id].getOwner() !== 'NONE') {
+          result += `node-${this.gameManager.gameBoard.nodes[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}`;
+        }
+
+        break;
+    
+      default:
+        break;
+    }
+
+    result = result.toLowerCase();
+    return result;
+  }
 
   clickPiece(event: ClickEvent): void {
     const pieceClass = event.target.className.split(' ');
