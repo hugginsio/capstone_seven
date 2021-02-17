@@ -112,19 +112,19 @@ export class ManagerService {
 
     if ((this.playerOne.currentLongest > this.playerTwo.currentLongest) && this.playerOne.hasLongestNetwork === false) {
       this.playerOne.hasLongestNetwork = true;
-      this.playerOne.currentScore += 4;
+      this.playerOne.currentScore += 2;
       if (this.playerTwo.hasLongestNetwork === true) {
         this.playerTwo.hasLongestNetwork = false;
-        this.playerTwo.currentScore -= 4;
+        this.playerTwo.currentScore -= 2;
       }
     }
 
     else if ((this.playerTwo.currentLongest > this.playerOne.currentLongest) && this.playerTwo.hasLongestNetwork === false) {
       this.playerTwo.hasLongestNetwork = true;
-      this.playerTwo.currentScore += 4;
+      this.playerTwo.currentScore += 2;
       if (this.playerOne.hasLongestNetwork === true) {
         this.playerOne.hasLongestNetwork = false;
-        this.playerOne.currentScore -= 4;
+        this.playerOne.currentScore -= 2;
       }
     }
 
