@@ -98,7 +98,9 @@ export class ManagerService {
   endTurn(endPlayer: Player): void { 
 
     for (let i = 0; i < this.gameBoard.tiles.length; i++) {
-      this.checkForCaptures(endPlayer, i); // FIXME: Seems like a similar error to what Daniel described on Twist
+      if (this.checkForCaptures(endPlayer, i)) {
+        endPlayer.numTilesCaptured++;
+      }
     }
 
     // empties tilesBeingChecked for next function call
