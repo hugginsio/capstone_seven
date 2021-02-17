@@ -8,7 +8,6 @@ export class GameBoard {
   nodes: Node[];
   branches: Branch[];
 
-
   randomizeColorsAndMaxNodes(): void { 
     const tileColorsAndMax = this.getTileColorsAndMax();
     this.shuffleArray(tileColorsAndMax);
@@ -323,6 +322,7 @@ export class GameBoard {
     this.tiles[0].setRightBranch(2);
     this.tiles[0].setBottomBranch(4);
     this.tiles[0].setLeftBranch(1);
+    this.tiles[0].setBottomTile(2);
 
     this.tiles[1].setTopLeftNode(2);
     this.tiles[1].setTopRightNode(3);
@@ -332,6 +332,8 @@ export class GameBoard {
     this.tiles[1].setRightBranch(7);
     this.tiles[1].setBottomBranch(11);
     this.tiles[1].setLeftBranch(6);
+    this.tiles[1].setRightTile(2);
+    this.tiles[1].setBottomTile(5);
 
     this.tiles[2].setTopLeftNode(3);
     this.tiles[2].setTopRightNode(4);
@@ -341,6 +343,10 @@ export class GameBoard {
     this.tiles[2].setRightBranch(8);
     this.tiles[2].setBottomBranch(12);
     this.tiles[2].setLeftBranch(7);
+    this.tiles[2].setTopTile(0);
+    this.tiles[2].setRightTile(3);
+    this.tiles[2].setBottomTile(6);
+    this.tiles[2].setLeftTile(1);
 
     this.tiles[3].setTopLeftNode(4);
     this.tiles[3].setTopRightNode(5);
@@ -350,6 +356,8 @@ export class GameBoard {
     this.tiles[3].setRightBranch(9);
     this.tiles[3].setBottomBranch(13);
     this.tiles[3].setLeftBranch(8);
+    this.tiles[3].setBottomTile(7);
+    this.tiles[3].setLeftTile(2);
 
     this.tiles[4].setTopLeftNode(6);
     this.tiles[4].setTopRightNode(7);
@@ -359,6 +367,7 @@ export class GameBoard {
     this.tiles[4].setRightBranch(16);
     this.tiles[4].setBottomBranch(21);
     this.tiles[4].setLeftBranch(15);
+    this.tiles[4].setRightTile(5);
 
     this.tiles[5].setTopLeftNode(7);
     this.tiles[5].setTopRightNode(8);
@@ -368,6 +377,10 @@ export class GameBoard {
     this.tiles[5].setRightBranch(17);
     this.tiles[5].setBottomBranch(22);
     this.tiles[5].setLeftBranch(16);
+    this.tiles[5].setTopTile(1);
+    this.tiles[5].setRightTile(6);
+    this.tiles[5].setBottomTile(9);
+    this.tiles[5].setLeftTile(4);
 
     this.tiles[6].setTopLeftNode(8);
     this.tiles[6].setTopRightNode(9);
@@ -377,6 +390,10 @@ export class GameBoard {
     this.tiles[6].setRightBranch(18);
     this.tiles[6].setBottomBranch(23);
     this.tiles[6].setLeftBranch(17);
+    this.tiles[6].setTopTile(2);
+    this.tiles[6].setRightTile(7);
+    this.tiles[6].setBottomTile(10);
+    this.tiles[6].setLeftTile(5);
 
     this.tiles[7].setTopLeftNode(9);
     this.tiles[7].setTopRightNode(10);
@@ -386,6 +403,10 @@ export class GameBoard {
     this.tiles[7].setRightBranch(19);
     this.tiles[7].setBottomBranch(24);
     this.tiles[7].setLeftBranch(18);
+    this.tiles[7].setTopTile(3);
+    this.tiles[7].setRightTile(8);
+    this.tiles[7].setBottomTile(11);
+    this.tiles[7].setLeftTile(6);
 
     this.tiles[8].setTopLeftNode(10);
     this.tiles[8].setTopRightNode(11);
@@ -395,6 +416,7 @@ export class GameBoard {
     this.tiles[8].setRightBranch(20);
     this.tiles[8].setBottomBranch(25);
     this.tiles[8].setLeftBranch(19);
+    this.tiles[8].setLeftTile(7);
 
     this.tiles[9].setTopLeftNode(13);
     this.tiles[9].setTopRightNode(14);
@@ -404,6 +426,8 @@ export class GameBoard {
     this.tiles[9].setRightBranch(27);
     this.tiles[9].setBottomBranch(30);
     this.tiles[9].setLeftBranch(26);
+    this.tiles[9].setTopTile(5);
+    this.tiles[9].setRightTile(10);
 
     this.tiles[10].setTopLeftNode(14);
     this.tiles[10].setTopRightNode(15);
@@ -413,6 +437,10 @@ export class GameBoard {
     this.tiles[10].setRightBranch(28);
     this.tiles[10].setBottomBranch(31);
     this.tiles[10].setLeftBranch(27);
+    this.tiles[10].setTopTile(6);
+    this.tiles[10].setRightTile(11);
+    this.tiles[10].setBottomTile(12);
+    this.tiles[10].setLeftTile(9);
 
     this.tiles[11].setTopLeftNode(15);
     this.tiles[11].setTopRightNode(16);
@@ -422,6 +450,8 @@ export class GameBoard {
     this.tiles[11].setRightBranch(29);
     this.tiles[11].setBottomBranch(32);
     this.tiles[11].setLeftBranch(28);
+    this.tiles[11].setTopTile(7);
+    this.tiles[11].setLeftTile(10);
 
     this.tiles[12].setTopLeftNode(19);
     this.tiles[12].setTopRightNode(20);
@@ -431,6 +461,7 @@ export class GameBoard {
     this.tiles[12].setRightBranch(34);
     this.tiles[12].setBottomBranch(35);
     this.tiles[12].setLeftBranch(33);
+    this.tiles[12].setTopTile(10);
 
     /* NODES - HARD CODED RELATIONSHIPS
       /

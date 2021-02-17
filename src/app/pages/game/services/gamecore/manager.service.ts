@@ -18,6 +18,8 @@ export class ManagerService {
   private playerTwo: Player;
   private gameType: GameType;
 
+  private tilesBeingChecked: [number];
+
   constructor() {
     this.gameBoard = new GameBoard();
     this.playerOne = new Player();
@@ -91,6 +93,15 @@ export class ManagerService {
   }
 
   endTurn(endPlayer: Player): void { 
+
+    for (var i = 0; i < this.gameBoard.tiles.length; i++) {
+      this.checkForCaptures(endPlayer, this.gameBoard.tiles[i]); // FIXME: Seems like a similar error to what Daniel described on Twist
+    }
+
+    // empties tilesBeingChecked for next function call
+    for (var i = 0; i < this.tilesBeingChecked.length; i++) {
+      this.tilesBeingChecked.pop();
+    }
 
     for (var i = 0; i < endPlayer.ownedBranches.length; i++) {
       this.checkForLongest(endPlayer, endPlayer.ownedBranches[i]);
@@ -792,11 +803,73 @@ export class ManagerService {
     branchOwner.branchScanner.pop();
   }
 
-  // clickEvent(event: MouseEvent) {
-  //   const pieceType = event.target.id.subString(0,0);
-  //   const tileId = event.target.id.subString(1,1);
-  //   tiles[tileId];
-  // }
+  checkForCaptures(capturer: Player, checkTile: number): boolean {
 
-  // <div id="T1" (click)="this.ManagerService.clickTile($event)" />
+    let captured = true;
+
+    // prevents infinite recursion
+    if (this.tilesBeingChecked.includes(checkTile)) {
+      return captured;
+    }
+
+    let currentPlayer;
+    let otherPlayer;
+
+    let currentTile = this.gameBoard.tiles[checkTile];
+    let tileTopBranch = this.gameBoard.branches[currentTile.getTopBranch()];
+    let tileRightBranch = this.gameBoard.branches[currentTile.getRightBranch()];
+    let tileBottomBranch = this.gameBoard.branches[currentTile.getBottomBranch()];
+    let tileLeftBranch = this.gameBoard.branches[currentTile.getLeftBranch()];
+
+    if (capturer === this.playerOne) {
+      currentPlayer = "PLAYERONE";
+      otherPlayer = "PLAYERTWO";
+    }
+    else {
+      currentPlayer = "PLAYERTWO";
+      otherPlayer = "PLAYERONE";
+    }
+
+    // checks first instant fail condition: opponent has claimed any branches surrounding tile being checked
+    if (tileTopBranch.getOwner() === otherPlayer ||
+             tileRightBranch.getOwner() === otherPlayer ||
+             tileBottomBranch.getOwner() === otherPlayer ||
+             tileLeftBranch.getOwner() === otherPlayer) {
+                captured = false;
+             }
+    // checks second instant fail condition: no other tile present next to one of current tile's empty-branch sides
+    else if ((tileTopBranch.getOwner() === "NONE" && currentTile.getTopTile() === -1 ) ||
+             (tileRightBranch.getOwner() === "NONE" && currentTile.getRightTile() === -1 ) ||
+             (tileBottomBranch.getOwner() === "NONE" && currentTile.getBottomTile() === -1 ) ||
+             (tileLeftBranch.getOwner() === "NONE" && currentTile.getLeftTile() === -1 )) {
+              captured = false;
+    }
+    // begins recursive calls checking for multi-tile capture
+    else {
+      this.tilesBeingChecked.push(checkTile);
+
+      if (tileTopBranch.getOwner() === "NONE") {
+        if (this.checkForCaptures(capturer, currentTile.getTopTile()) === false) {
+          captured = false;
+        }
+      }
+      if (tileRightBranch.getOwner() === "NONE") {
+        if (this.checkForCaptures(capturer, currentTile.getRightTile()) === false) {
+          captured = false;
+        }
+      }
+      if (tileBottomBranch.getOwner() === "NONE") {
+        if (this.checkForCaptures(capturer, currentTile.getBottomTile()) === false) {
+          captured = false;
+        }
+      }
+      if (tileLeftBranch.getOwner() === "NONE") {
+        if (this.checkForCaptures(capturer, currentTile.getLeftTile()) === false) {
+          captured = false;
+        }
+      }
+   
+    }
+    return captured;
+  }
 }
