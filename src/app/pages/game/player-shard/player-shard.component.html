@@ -1,0 +1,26 @@
+<div class="border-2 border-transparent">
+  <p>Player Name</p>
+  <p>Player Type</p>
+  <p>Score: {{ playerDetail?.currentScore }}</p>
+  <p>Network: {{ playerDetail?.currentLength }}</p>
+  <div class="flex flex-col space-y-3 w-full place-items-center">
+    <div class="flex space-x-3">
+      <p>R: {{ playerDetail?.redResources }}</p>
+      <p>G: {{ playerDetail?.greenResources }}</p>
+    </div>
+    <div class="flex space-x-3">
+      <p>B: {{ playerDetail?.blueResources }}</p>
+      <p>Y: {{ playerDetail?.yellowResources }}</p>
+    </div>
+  </div>
+  <!-- These should only be visible if the player is both local and human -->
+  <div class="flex space-x-3 text-center"
+    *ngIf="true">
+    <div class="p-3 pointer-events-auto cursor-pointer" (click)="triggerTrading()">
+      Trading
+    </div>
+    <div class="p-3 pointer-events-auto cursor-pointer">
+      End Turn
+    </div>
+  </div>
+</div>

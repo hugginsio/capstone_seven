@@ -1,4 +1,5 @@
 <div class="h-screen w-screen overscroll-none text-center">
+
   <!-- Top Right Menu Container -->
   <div class="absolute left-3 top-3 flex space-x-3">
     <div class="bg-gray-600 p-3 text-center items-center justify-center cursor-pointer" (click)="togglePaused()">
@@ -8,6 +9,7 @@
       <p>Trade</p>
     </div>
   </div>
+
   <!-- Pause Modal Container -->
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-50" *ngIf="this.gamePaused">
     <div class="flex flex-row items-center content-center h-full">
@@ -28,6 +30,7 @@
       </div>
     </div>
   </div>
+
   <!-- Trade Modal Container -->
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-50" *ngIf="this.isTrading">
     <div class="flex flex-row items-center content-center h-full">
@@ -86,6 +89,7 @@
       </div>
     </div>
   </div>
+
   <!-- Game Over Modal Container -->
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-50" *ngIf="this.gameOver">
     <div class="flex flex-row items-center content-center h-full">
@@ -122,146 +126,160 @@
       </div>
     </div>
   </div>
+
+  <!-- Player Shards Container -->
+  <div class="h-screen w-screen overscroll-none text-center absolute top-0 pointer-events-none right-0 z-50">
+    <div class="absolute bottom-3 left-3">
+      <app-player-shard [playerDetail]="this.gameManager.getPlayerOne()" [tradingSubject]="this.tradingSubject"></app-player-shard>
+    </div>
+    <div class="absolute bottom-3 right-3">
+      <app-player-shard [playerDetail]="this.gameManager.getPlayerTwo()" [tradingSubject]="this.tradingSubject"></app-player-shard>
+    </div>
+  </div>
+
   <!-- Tiles -->
-  <div class="flex flex-row items-center content-center h-full">
+  <div class="flex flex-row items-center content-center h-full justify-between">
     <div class="gameboard">
       <div class="tile-container">
-        <div id="T0" (click)="clickPiece($event)" class="tile available" [ngClass]="assemblePieceClass('T', 0)"></div>
+        <div id="T0" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 0)"></div>
       </div>
       <div class="tile-container">
-        <div id="T1" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 1)"></div>
-        <div id="T2" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 2)"></div>
-        <div id="T3" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 3)"></div>
+        <div id="T1" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 1)"></div>
+        <div id="T2" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 2)"></div>
+        <div id="T3" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 3)"></div>
       </div>
       <div class="tile-container">
-        <div id="T4" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 4)"></div>
-        <div id="T5" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 5)"></div>
-        <div id="T6" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 6)"></div>
-        <div id="T7" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 7)"></div>
-        <div id="T8" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 8)"></div>
+        <div id="T4" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 4)"></div>
+        <div id="T5" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 5)"></div>
+        <div id="T6" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 6)"></div>
+        <div id="T7" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 7)"></div>
+        <div id="T8" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 8)"></div>
       </div>
       <div class="tile-container">
-        <div id="T9" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 9)"></div>
-        <div id="T10" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 10)"></div>
-        <div id="T11" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 11)"></div>
+        <div id="T9" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 9)"></div>
+        <div id="T10" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 10)"></div>
+        <div id="T11" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 11)"></div>
       </div>
       <div class="tile-container">
-        <div id="T12" (click)="clickPiece($event)" class="tile unavailable" [ngClass]="assemblePieceClass('T', 12)"></div>
+        <div id="T12" (click)="clickPiece($event)" class="tile" [ngClass]="assemblePieceClass('T', 12)"></div>
       </div>
     </div>
   </div>
 </div>
+
 <!-- Nodes -->
 <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 pointer-events-none">
   <div class="flex flex-row items-center content-center h-full">
     <div class="mx-auto flex flex-col spacing-y-nodes">
       <div class="node-container">
-        <div id="N0" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 0)"></div>
-        <div id="N1" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 1)"></div>
+        <div id="N0" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 0)"></div>
+        <div id="N1" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 1)"></div>
       </div>
       <div class="node-container">
-        <div id="N2" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 2)"></div>
-        <div id="N3" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 3)"></div>
-        <div id="N4" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 4)"></div>
-        <div id="N5" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 5)"></div>
+        <div id="N2" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 2)"></div>
+        <div id="N3" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 3)"></div>
+        <div id="N4" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 4)"></div>
+        <div id="N5" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 5)"></div>
       </div>
       <div class="node-container">
-        <div id="N6" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 6)"></div>
-        <div id="N7" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 7)"></div>
-        <div id="N8" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 8)"></div>
-        <div id="N9" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 9)"></div>
-        <div id="N10" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 10)"></div>
-        <div id="N11" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 11)"></div>
+        <div id="N6" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 6)"></div>
+        <div id="N7" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 7)"></div>
+        <div id="N8" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 8)"></div>
+        <div id="N9" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 9)"></div>
+        <div id="N10" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 10)"></div>
+        <div id="N11" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 11)"></div>
       </div>
       <div class="node-container">
-        <div id="N12" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 12)"></div>
-        <div id="N13" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 13)"></div>
-        <div id="N14" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 14)"></div>
-        <div id="N15" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 15)"></div>
-        <div id="N16" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 16)"></div>
-        <div id="N17" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 17)"></div>
+        <div id="N12" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 12)"></div>
+        <div id="N13" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 13)"></div>
+        <div id="N14" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 14)"></div>
+        <div id="N15" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 15)"></div>
+        <div id="N16" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 16)"></div>
+        <div id="N17" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 17)"></div>
       </div>
       <div class="node-container">
-        <div id="N18" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 18)"></div>
-        <div id="N19" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 19)"></div>
-        <div id="N20" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 20)"></div>
-        <div id="N21" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 21)"></div>
+        <div id="N18" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 18)"></div>
+        <div id="N19" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 19)"></div>
+        <div id="N20" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 20)"></div>
+        <div id="N21" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 21)"></div>
       </div>
       <div class="node-container">
-        <div id="N22" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 22)"></div>
-        <div id="N23" (click)="clickPiece($event)" class="node unavailable" [ngClass]="assemblePieceClass('N', 23)"></div>
+        <div id="N22" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 22)"></div>
+        <div id="N23" (click)="clickPiece($event)" class="node" [ngClass]="assemblePieceClass('N', 23)"></div>
       </div>
     </div>
   </div>
 </div>
+
 <!-- Vertical Branches -->
 <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 pointer-events-none">
   <div class="flex flex-row items-center content-center h-full">
     <div class="mx-auto flex flex-col spacing-y-v-branches">
       <div class="branch-y-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B1" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 1)"></div>
+        <div id="B2" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 2)"></div>
       </div>
       <div class="branch-y-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B6" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 6)"></div>
+        <div id="B7" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 7)"></div>
+        <div id="B8" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 8)"></div>
+        <div id="B9" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 9)"></div>
       </div>
       <div class="branch-y-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B15" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 15)"></div>
+        <div id="B16" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 16)"></div>
+        <div id="B17" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 17)"></div>
+        <div id="B18" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 18)"></div>
+        <div id="B19" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 19)"></div>
+        <div id="B20" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 20)"></div>
       </div>
       <div class="branch-y-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B26" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 26)"></div>
+        <div id="B27" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 27)"></div>
+        <div id="B28" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 28)"></div>
+        <div id="B29" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 29)"></div>
       </div>
       <div class="branch-y-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-y unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B33" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 33)"></div>
+        <div id="B34" (click)="clickPiece($event)" class="branch-y" [ngClass]="assemblePieceClass('BY', 34)"></div>
       </div>
     </div>
   </div>
 </div>
+
 <!-- Horizontal Branches -->
 <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 pointer-events-none">
   <div class="flex flex-row items-center content-center h-full">
     <div class="mx-auto flex flex-col spacing-y-h-branches">
       <div class="branch-x-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B0" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 0)"></div>
       </div>
       <div class="branch-x-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B3" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 3)"></div>
+        <div id="B4" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 4)"></div>
+        <div id="B5" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 5)"></div>
       </div>
       <div class="branch-x-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B10" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 10)"></div>
+        <div id="B11" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 11)"></div>
+        <div id="B12" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 12)"></div>
+        <div id="B13" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 13)"></div>
+        <div id="B14" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 14)"></div>
       </div>
       <div class="branch-x-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B21" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 21)"></div>
+        <div id="B22" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 22)"></div>
+        <div id="B23" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 23)"></div>
+        <div id="B24" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 24)"></div>
+        <div id="B25" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 25)"></div>
       </div>
       <div class="branch-x-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B30" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 30)"></div>
+        <div id="B31" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 31)"></div>
+        <div id="B32" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 32)"></div>
       </div>
       <div class="branch-x-container">
-        <div id="BX" (click)="clickPiece($event)" class="branch-x unavailable" [ngClass]="assemblePieceClass('B', X)"></div>
+        <div id="B35" (click)="clickPiece($event)" class="branch-x" [ngClass]="assemblePieceClass('BX', 35)"></div>
       </div>
     </div>
   </div>

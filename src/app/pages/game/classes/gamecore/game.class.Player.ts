@@ -17,8 +17,8 @@ export class Player {
    
   hasTraded: boolean;
 
-  ownedBranches: [number];
-  branchScanner: [number];
+  ownedBranches: Array<number>;
+  branchScanner: Array<number>;
   currentLength: number;
   currentLongest: number;
   hasLongestNetwork: boolean;
@@ -35,6 +35,8 @@ export class Player {
     this.yellowResources = 0;
 
     this.hasTraded = false;
+
+    this.ownedBranches = [];
 
     this.currentLength = 0;
     this.currentLongest = 0;
