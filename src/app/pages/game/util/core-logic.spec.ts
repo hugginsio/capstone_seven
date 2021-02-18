@@ -196,41 +196,63 @@ describe('CoreLogic', () => {
     });
   });
 
-  // describe('check for longest network', ()=>{
-  //   it('should identify that player 1 has the longest network',()=>{
-  //     const gameBoard = new GameBoard();
-  //     gameBoard.branches[12].setOwner(Owner.PLAYERONE);
-  //     gameBoard.branches[17].setOwner(Owner.PLAYERONE);
-  //     gameBoard.branches[13].setOwner(Owner.PLAYERONE);
-  //     gameBoard.branches[19].setOwner(Owner.PLAYERONE);
-  //     gameBoard.branches[23].setOwner(Owner.PLAYERONE);
-  //     gameBoard.branches[28].setOwner(Owner.PLAYERONE);
+  describe('check for longest network', ()=>{
+    it('should identify that player 1 has the longest network',()=>{
+      const gameBoard = new GameBoard();
+      gameBoard.branches[12].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[17].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[13].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[19].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[23].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[28].setOwner(Owner.PLAYERONE);
 
-  //     const player1 = new Player();
-  //     const player2 = new Player();
+      const player1 = new Player();
+      const player2 = new Player();
       
-  //     player1.ownedBranches.push(12);
-  //     player1.ownedBranches.push(13);
-  //     player1.ownedBranches.push(17);
-  //     player1.ownedBranches.push(19);
-  //     player1.ownedBranches.push(23);
-  //     player1.ownedBranches.push(28);
+      player1.ownedBranches.push(12);
+      player1.ownedBranches.push(13);
+      player1.ownedBranches.push(17);
+      player1.ownedBranches.push(19);
+      player1.ownedBranches.push(23);
+      player1.ownedBranches.push(28);
 
 
 
-  //     const state = new State([],gameBoard,1,player1,player2, false);
+      const state = new State([],gameBoard,1,player1,player2, false);
 
       
 
-  //     for (let i = 0; i < state.player1.ownedBranches.length; i++) {
-  //       CoreLogic.checkForLongest(state,state.player1, state.player1.ownedBranches[i]);
-  //     }
+      for (let i = 0; i < state.player1.ownedBranches.length; i++) {
+        state.player1.currentLength = 0;
+        CoreLogic.checkForLongest(state,state.player1, state.player1.ownedBranches[i]);
+      }
 
-  //     expect(state.player1.hasLongestNetwork).toBeTrue();
-  //     expect(state.player1.currentLongest).toEqual(7);
+
+    
+      if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
+        state.player1.hasLongestNetwork = true;
+        state.player1.currentScore += 2;
+        if (state.player2.hasLongestNetwork === true) {
+          state.player2.hasLongestNetwork = false;
+          state.player2.currentScore -= 2;
+        }
+      }
+    
+      /*if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
+        state.player2.hasLongestNetwork = true;
+        state.player2.currentScore += 2;
+        if (state.player1.hasLongestNetwork === true) {
+          state.player1.hasLongestNetwork = false;
+          state.player1.currentScore -= 2;
+        }
+      }*/
       
-  //   });
-  // });
+
+      expect(state.player1.hasLongestNetwork).toBeTrue();
+      expect(state.player1.currentLongest).toEqual(6);
+      
+    });
+  });
 
   describe('detemine if winner', ()=>{
     it('should identify that player 1 is the winner',()=>{
@@ -346,6 +368,8 @@ describe('CoreLogic', () => {
       player1.greenResources = 2;
       player2.yellowResources = 5;
 
+      player1.ownedBranches = [12,13,9];
+
       player1.currentScore++;
 
       const moveString = 'Y,Y,Y,R;8;8,18';
@@ -357,14 +381,14 @@ describe('CoreLogic', () => {
       expect(state.gameBoard.nodes[8].getOwner()).toEqual(Owner.PLAYERONE);
       expect(state.gameBoard.branches[8].getOwner()).toEqual(Owner.PLAYERONE);
       expect(state.gameBoard.branches[18].getOwner()).toEqual(Owner.PLAYERONE);
-      expect(state.player1.currentScore).toEqual(2);
+      expect(state.player1.currentScore).toEqual(4);
       expect(state.player1.numTilesCaptured).toEqual(0);
 
       
     });
   });
 
-  describe('Apply move with capture', ()=>{
+  describe('Apply move with capture and longest network', ()=>{
     it('should apply move string to current state',()=>{
       const gameBoard = new GameBoard();
       gameBoard.branches[12].setOwner(Owner.PLAYERONE);
@@ -389,6 +413,8 @@ describe('CoreLogic', () => {
       player1.greenResources = 2;
       player2.yellowResources = 5;
 
+      player1.ownedBranches = [12,13,18,23];
+
       player1.currentScore++;
 
       const moveString = 'Y,Y,Y,R;8;8,17';
@@ -400,8 +426,11 @@ describe('CoreLogic', () => {
       expect(state.gameBoard.nodes[8].getOwner()).toEqual(Owner.PLAYERONE);
       expect(state.gameBoard.branches[8].getOwner()).toEqual(Owner.PLAYERONE);
       expect(state.gameBoard.branches[18].getOwner()).toEqual(Owner.PLAYERONE);
-      expect(state.player1.currentScore).toEqual(3);
+      expect(state.player1.currentScore).toEqual(5);
       expect(state.player1.numTilesCaptured).toEqual(1);
+      expect(state.player1.hasLongestNetwork).toBeTrue();
+      expect(state.player1.currentLongest).toEqual(6);
+
 
       
     });

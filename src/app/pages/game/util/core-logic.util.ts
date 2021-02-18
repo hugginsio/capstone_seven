@@ -591,10 +591,11 @@ export class CoreLogic {
 
     for(const branch of moveObj.branchesPlaced){
       state.gameBoard.branches[branch].setOwner(owner);
+      affectedPlayer.ownedBranches.push(branch);
       affectedPlayer.redResources --;
       affectedPlayer.blueResources --;
     }
-
+    console.log(affectedPlayer.ownedBranches);
     for(const node of moveObj.nodesPlaced){
       state.gameBoard.nodes[node].setOwner(owner);
       affectedPlayer.greenResources -= 2;
@@ -663,29 +664,30 @@ export class CoreLogic {
     }
 
     //longest Network
-    // for (let i = 0; i < affectedPlayer.ownedBranches.length; i++) {
-    //   CoreLogic.checkForLongest(state,affectedPlayer, affectedPlayer.ownedBranches[i]);
-    // }
+    for (let i = 0; i < affectedPlayer.ownedBranches.length; i++) {
+      affectedPlayer.currentLength = 0;
+      CoreLogic.checkForLongest(state,affectedPlayer, state.player1.ownedBranches[i]);
+    }
 
-    // if(affectedPlayer === state.player1){
-    //   if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
-    //     state.player1.hasLongestNetwork = true;
-    //     state.player1.currentScore += 2;
-    //     if (state.player2.hasLongestNetwork === true) {
-    //       state.player2.hasLongestNetwork = false;
-    //       state.player2.currentScore -= 2;
-    //     }
-    //   }
-    // }else{
-    //   if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
-    //     state.player2.hasLongestNetwork = true;
-    //     state.player2.currentScore += 2;
-    //     if (state.player1.hasLongestNetwork === true) {
-    //       state.player1.hasLongestNetwork = false;
-    //       state.player1.currentScore -= 2;
-    //     }
-    //   }
-    // }
+    if(state.currentPlayer === 1){
+      if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
+        state.player1.hasLongestNetwork = true;
+        state.player1.currentScore += 2;
+        if (state.player2.hasLongestNetwork === true) {
+          state.player2.hasLongestNetwork = false;
+          state.player2.currentScore -= 2;
+        }
+      }
+    }else{
+      if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
+        state.player2.hasLongestNetwork = true;
+        state.player2.currentScore += 2;
+        if (state.player1.hasLongestNetwork === true) {
+          state.player1.hasLongestNetwork = false;
+          state.player1.currentScore -= 2;
+        }
+      }
+    }
 
     
    
@@ -809,6 +811,10 @@ export class CoreLogic {
 
   static checkForLongest(state:State, branchOwner: Player, currentBranch: number): void {
 
+    if (branchOwner.branchScanner.includes(currentBranch) === true) {
+      return;
+    }
+
     branchOwner.branchScanner.push(currentBranch);
     branchOwner.currentLength++;
     
@@ -904,7 +910,7 @@ export class CoreLogic {
       }
     }
 
-    branchOwner.branchScanner.pop();
+    //branchOwner.branchScanner.pop();
   }
 
   static checkForCaptures(state:State, capturer: Player, checkTile: number): boolean {
