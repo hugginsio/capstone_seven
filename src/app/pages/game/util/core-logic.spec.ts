@@ -122,6 +122,36 @@ describe('CoreLogic', () => {
 
 
   //Check for captures test
+  describe('check for 0 captures', ()=>{
+    it('should identify that no tile has been captured',()=>{
+      const gameBoard = new GameBoard();
+      gameBoard.branches[12].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[13].setOwner(Owner.PLAYERONE);
+      gameBoard.nodes[9].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[19].setOwner(Owner.PLAYERTWO);
+      gameBoard.branches[8].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[18].setOwner(Owner.PLAYERONE);
+
+      const player1 = new Player();
+      const player2 = new Player();
+      
+      const state = new State([],gameBoard,1,player1,player2, false);
+ 
+      const captures = [];
+
+      /*for (let  i = 0; i < state.gameBoard.tiles.length; i++) {
+        captures.push(CoreLogic.checkForCaptures(state,state.player1, i));
+      }*/
+
+
+      const answer = CoreLogic.checkForCaptures(state,state.player1, 12); 
+      expect(answer).toBeFalse();  
+      
+      //tiles that failed test: 
+      
+    });
+  });
+
   describe('check for 1 capture', ()=>{
     it('should identify that the tile has been captured',()=>{
       const gameBoard = new GameBoard();
@@ -295,19 +325,86 @@ describe('CoreLogic', () => {
     });
   });
 
-  // describe('tile exhaustion', ()=>{
-  //   it('determines if the top right tile is exhausted',()=>{
-  //     const gameBoard = new GameBoard();
+  describe('Apply move', ()=>{
+    it('should apply move string to current state',()=>{
+      const gameBoard = new GameBoard();
+      gameBoard.branches[12].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[13].setOwner(Owner.PLAYERONE);
+      gameBoard.nodes[9].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[19].setOwner(Owner.PLAYERTWO);
 
-  //     const player1 = new Player();
-  //     const player2 = new Player();
+      const player1 = new Player();
+      const player2 = new Player();
 
+      player1.redPerTurn = 2;
+      player1.bluePerTurn = 2;
+      player1.greenPerTurn = 2;
+      player2.yellowPerTurn = 2;
 
-  //     const state = new State([],gameBoard,1,player1,player2, false);
+      player1.redResources = 1;
+      player1.blueResources = 2;
+      player1.greenResources = 2;
+      player2.yellowResources = 5;
 
-  //     const nodesPlaced = [];
+      player1.currentScore++;
 
-  //   });
-  // });
+      const moveString = 'Y,Y,Y,R;8;8,18';
+
+      const state = new State([],gameBoard,1,player1,player2,false);
+
+      CoreLogic.applyMove(moveString,state,state.player1,Owner.PLAYERONE);
+
+      expect(state.gameBoard.nodes[8].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(state.gameBoard.branches[8].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(state.gameBoard.branches[18].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(state.player1.currentScore).toEqual(2);
+      expect(state.player1.numTilesCaptured).toEqual(0);
+
+      
+    });
+  });
+
+  describe('Apply move with capture', ()=>{
+    it('should apply move string to current state',()=>{
+      const gameBoard = new GameBoard();
+      gameBoard.branches[12].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[13].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[23].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[18].setOwner(Owner.PLAYERONE);
+
+      
+      gameBoard.nodes[9].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[19].setOwner(Owner.PLAYERTWO);
+
+      const player1 = new Player();
+      const player2 = new Player();
+
+      player1.redPerTurn = 2;
+      player1.bluePerTurn = 2;
+      player1.greenPerTurn = 2;
+      player2.yellowPerTurn = 2;
+
+      player1.redResources = 1;
+      player1.blueResources = 2;
+      player1.greenResources = 2;
+      player2.yellowResources = 5;
+
+      player1.currentScore++;
+
+      const moveString = 'Y,Y,Y,R;8;8,17';
+
+      const state = new State([],gameBoard,1,player1,player2,false);
+
+      CoreLogic.applyMove(moveString,state,state.player1,Owner.PLAYERONE);
+
+      expect(state.gameBoard.nodes[8].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(state.gameBoard.branches[8].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(state.gameBoard.branches[18].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(state.player1.currentScore).toEqual(3);
+      expect(state.player1.numTilesCaptured).toEqual(1);
+
+      
+    });
+  });
 
 });

@@ -605,20 +605,7 @@ export class CoreLogic {
         state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount++;
         
         if(!state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].isExhausted){
-          switch (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].color){
-            case TileColor.RED:
-              affectedPlayer.redPerTurn++;
-              break;
-            case TileColor.BLUE:
-              affectedPlayer.bluePerTurn++;
-              break;
-            case TileColor.YELLOW:
-              affectedPlayer.yellowPerTurn++;
-              break;
-            case TileColor.GREEN:
-              affectedPlayer.greenPerTurn++;
-              break;
-          }
+          CoreLogic.incrementResource(affectedPlayer,state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].color);
         }
 
         if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount >
@@ -633,20 +620,7 @@ export class CoreLogic {
         state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].nodeCount++;
         
         if(!state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].isExhausted){
-          switch (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].color){
-            case TileColor.RED:
-              affectedPlayer.redPerTurn++;
-              break;
-            case TileColor.BLUE:
-              affectedPlayer.bluePerTurn++;
-              break;
-            case TileColor.YELLOW:
-              affectedPlayer.yellowPerTurn++;
-              break;
-            case TileColor.GREEN:
-              affectedPlayer.greenPerTurn++;
-              break;
-          }
+          CoreLogic.incrementResource(affectedPlayer,state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].color);
         }
 
 
@@ -661,20 +635,7 @@ export class CoreLogic {
         state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].nodeCount++;
 
         if(!state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].isExhausted){
-          switch (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].color){
-            case TileColor.RED:
-              affectedPlayer.redPerTurn++;
-              break;
-            case TileColor.BLUE:
-              affectedPlayer.bluePerTurn++;
-              break;
-            case TileColor.YELLOW:
-              affectedPlayer.yellowPerTurn++;
-              break;
-            case TileColor.GREEN:
-              affectedPlayer.greenPerTurn++;
-              break;
-          }
+          CoreLogic.incrementResource(affectedPlayer,state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].color);
         }
 
 
@@ -689,20 +650,7 @@ export class CoreLogic {
         state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount++;
 
         if(!state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].isExhausted){
-          switch (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].color){
-            case TileColor.RED:
-              affectedPlayer.redPerTurn++;
-              break;
-            case TileColor.BLUE:
-              affectedPlayer.bluePerTurn++;
-              break;
-            case TileColor.YELLOW:
-              affectedPlayer.yellowPerTurn++;
-              break;
-            case TileColor.GREEN:
-              affectedPlayer.greenPerTurn++;
-              break;
-          }
+          CoreLogic.incrementResource(affectedPlayer,state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].color);
         }
 
 
@@ -715,43 +663,44 @@ export class CoreLogic {
     }
 
     //longest Network
-    for (let i = 0; i < affectedPlayer.ownedBranches.length; i++) {
-      CoreLogic.checkForLongest(state,affectedPlayer, affectedPlayer.ownedBranches[i]);
-    }
+    // for (let i = 0; i < affectedPlayer.ownedBranches.length; i++) {
+    //   CoreLogic.checkForLongest(state,affectedPlayer, affectedPlayer.ownedBranches[i]);
+    // }
 
-    if(affectedPlayer === state.player1){
-      if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
-        state.player1.hasLongestNetwork = true;
-        state.player1.currentScore += 2;
-        if (state.player2.hasLongestNetwork === true) {
-          state.player2.hasLongestNetwork = false;
-          state.player2.currentScore -= 2;
-        }
-      }
-    }else{
-      if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
-        state.player2.hasLongestNetwork = true;
-        state.player2.currentScore += 2;
-        if (state.player1.hasLongestNetwork === true) {
-          state.player1.hasLongestNetwork = false;
-          state.player1.currentScore -= 2;
-        }
-      }
-    }
+    // if(affectedPlayer === state.player1){
+    //   if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
+    //     state.player1.hasLongestNetwork = true;
+    //     state.player1.currentScore += 2;
+    //     if (state.player2.hasLongestNetwork === true) {
+    //       state.player2.hasLongestNetwork = false;
+    //       state.player2.currentScore -= 2;
+    //     }
+    //   }
+    // }else{
+    //   if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
+    //     state.player2.hasLongestNetwork = true;
+    //     state.player2.currentScore += 2;
+    //     if (state.player1.hasLongestNetwork === true) {
+    //       state.player1.hasLongestNetwork = false;
+    //       state.player1.currentScore -= 2;
+    //     }
+    //   }
+    // }
 
     
    
-
+    
     //captured tile need to work on this
-    const numTilesAlreadyCaptured = affectedPlayer.numTilesCaptured;
+    let numberTilesCapturedAtEndOfTurn = 0;
 
     for (let  i = 0; i < state.gameBoard.tiles.length; i++) {
-      if(this.checkForCaptures(state,affectedPlayer, i)){
-        affectedPlayer.numTilesCaptured++;
+      state.tilesBeingChecked =[];
+      if(CoreLogic.checkForCaptures(state,affectedPlayer, i)){
+        numberTilesCapturedAtEndOfTurn++;
       } 
     }
-    affectedPlayer.currentScore += affectedPlayer.numTilesCaptured - numTilesAlreadyCaptured;
-
+    affectedPlayer.currentScore += numberTilesCapturedAtEndOfTurn - affectedPlayer.numTilesCaptured;
+    affectedPlayer.numTilesCaptured = numberTilesCapturedAtEndOfTurn;
   }
 
   static tileExhaustion(state:State,tileNum: number, setAsExhausted: boolean): void {
@@ -821,6 +770,40 @@ export class CoreLogic {
     }
     else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
       functionName(state.player2, currentTileColor);
+    }
+  }
+
+  static decrementResource(nodeOwner: Player, currentTileColor: TileColor):void{
+    switch (currentTileColor){
+      case TileColor.RED:
+        nodeOwner.redPerTurn--;
+        break;
+      case TileColor.BLUE:
+        nodeOwner.bluePerTurn--;
+        break;
+      case TileColor.YELLOW:
+        nodeOwner.yellowPerTurn--;
+        break;
+      case TileColor.GREEN:
+        nodeOwner.greenPerTurn--;
+        break;
+    }
+  }
+
+  static incrementResource(nodeOwner: Player, currentTileColor: TileColor): void {
+    switch (currentTileColor){
+      case TileColor.RED:
+        nodeOwner.redPerTurn++;
+        break;
+      case TileColor.BLUE:
+        nodeOwner.bluePerTurn++;
+        break;
+      case TileColor.YELLOW:
+        nodeOwner.yellowPerTurn++;
+        break;
+      case TileColor.GREEN:
+        nodeOwner.greenPerTurn++;
+        break;
     }
   }
 
@@ -943,12 +926,12 @@ export class CoreLogic {
     const tileLeftBranch = state.gameBoard.branches[currentTile.getLeftBranch()];
 
     if (capturer === state.player1) {
-      currentPlayer = "PLAYERONE";
-      otherPlayer = "PLAYERTWO";
+      currentPlayer = Owner.PLAYERONE;
+      otherPlayer = Owner.PLAYERTWO;
     }
     else {
-      currentPlayer = "PLAYERTWO";
-      otherPlayer = "PLAYERONE";
+      currentPlayer = Owner.PLAYERTWO;
+      otherPlayer = Owner.PLAYERONE;
     }
 
     // checks first instant fail condition: opponent has claimed any branches surrounding tile being checked
@@ -969,28 +952,29 @@ export class CoreLogic {
     else {
       state.tilesBeingChecked.push(checkTile);
 
-      if (tileTopBranch.getOwner() === "NONE") {
+      if (tileTopBranch.getOwner() === Owner.NONE) {
         if (CoreLogic.checkForCaptures(state,capturer, currentTile.getTopTile()) === false) {
           captured = false;
         }
       }
-      if (tileRightBranch.getOwner() === "NONE") {
+      if (tileRightBranch.getOwner() === Owner.NONE) {
         if (CoreLogic.checkForCaptures(state,capturer, currentTile.getRightTile()) === false) {
           captured = false;
         }
       }
-      if (tileBottomBranch.getOwner() === "NONE") {
+      if (tileBottomBranch.getOwner() === Owner.NONE) {
         if (CoreLogic.checkForCaptures(state,capturer, currentTile.getBottomTile()) === false) {
           captured = false;
         }
       }
-      if (tileLeftBranch.getOwner() === "NONE") {
+      if (tileLeftBranch.getOwner() === Owner.NONE) {
         if (CoreLogic.checkForCaptures(state,capturer, currentTile.getLeftTile()) === false) {
           captured = false;
         }
       }
    
     }
+
     return captured;
   }
 
