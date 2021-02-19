@@ -11,5 +11,7 @@ module.exports = (isProd) => ({
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms')
+  ],
 });

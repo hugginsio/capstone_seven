@@ -401,12 +401,12 @@ export class CoreLogic {
 
     for(const branch of gameBoard.branches){
 
-      if (branch.getOwner() === Owner.NONE && (gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(1)].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(2)].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(3)].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(4)].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(5)].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch(6)].getOwner() === player)) {
+      if (branch.getOwner() === Owner.NONE && (gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch1')].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch2')].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch3')].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch4')].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch5')].getOwner() === player ||
+        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch6')].getOwner() === player)) {
         result.push(gameBoard.branches.indexOf(branch));
         branch.setOwner(player);
       }

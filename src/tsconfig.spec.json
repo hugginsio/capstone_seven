@@ -5,6 +5,7 @@
     "noImplicitAny": true,
     "outDir": "../out-tsc/spec",
     "removeComments": true,
+    "resolveJsonModule": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "types": [

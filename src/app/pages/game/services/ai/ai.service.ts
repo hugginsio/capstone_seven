@@ -14,15 +14,13 @@ export class AiService {
   mcts: MonteCarlo;
   explorationParameter:number;
   currentState:State;
-  difficulty:string;
+  // difficulty:string; TODO
 
-  constructor(gameBoard:GameBoard, player1:Player,player2:Player, difficulty:string) {
+  constructor(gameBoard:GameBoard, player1:Player,player2:Player) {
     this.explorationParameter = 1.41;
     this.mcts = new MonteCarlo(gameBoard, this.explorationParameter);
 
     this.currentState = CoreLogic.getStartingState(player1, player2,gameBoard,1);
-    
-    this.difficulty = difficulty;
   }
 
   getMove(previousMove:string):string{

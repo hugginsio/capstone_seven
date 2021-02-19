@@ -127,8 +127,8 @@
           "options": {
             "eslintConfig": ".eslintrc.json",
             "lintFilePatterns": [
-              "src/**.ts",
-              "electron/main.ts"
+              "src/**/*.ts",
+              "electron/**/*.ts"
             ]
           }
         }
@@ -143,7 +143,7 @@
           "options": {
             "eslintConfig": ".eslintrc.json",
             "lintFilePatterns": [
-              "e2e/**.ts"
+              "e2e/**/*.ts"
             ]
           }
         }
