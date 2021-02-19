@@ -1,3 +1,4 @@
+import { executablePath } from 'puppeteer';
 import { State } from '../classes/ai/ai.class.State';
 import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
 import { Player } from '../classes/gamecore/game.class.Player';
@@ -137,7 +138,7 @@ describe('CoreLogic', () => {
       
       const state = new State([],gameBoard,1,player1,player2, false);
  
-      const captures = [];
+      
 
       /*for (let  i = 0; i < state.gameBoard.tiles.length; i++) {
         captures.push(CoreLogic.checkForCaptures(state,state.player1, i));
@@ -433,6 +434,91 @@ describe('CoreLogic', () => {
 
 
       
+    });
+  });
+
+  describe('Next State Initial Moves', ()=>{
+    it('should progress the state through the four initial moves',()=>{
+
+      const gameBoard = new GameBoard();
+      const player1 = new Player();
+      const player2 = new Player();
+
+      const turn1 = new State([],gameBoard,1,player1,player2,true);
+      const firstMoveString = ';9;18';
+
+      const turn2 = CoreLogic.nextState(turn1,firstMoveString);
+
+      expect(turn2.gameBoard.nodes[9].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(turn2.gameBoard.branches[18].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(turn2.currentPlayer).toEqual(-1);
+
+      const secondMoveString = ';14;23';
+
+      const turn3 = CoreLogic.nextState(turn2,secondMoveString);
+
+      expect(turn3.gameBoard.nodes[14].getOwner()).toEqual(Owner.PLAYERTWO);
+      expect(turn3.gameBoard.branches[23].getOwner()).toEqual(Owner.PLAYERTWO);
+      expect(turn3.currentPlayer).toEqual(-1);
+
+      const thirdMoveString = ';4;4';
+
+      const turn4 = CoreLogic.nextState(turn3,thirdMoveString);
+
+      expect(turn4.gameBoard.nodes[4].getOwner()).toEqual(Owner.PLAYERTWO);
+      expect(turn4.gameBoard.branches[4].getOwner()).toEqual(Owner.PLAYERTWO);
+      expect(turn4.currentPlayer).toEqual(1);
+
+      const fourthMoveString = ';16;24';
+
+      const afterFinalInitialTurn = CoreLogic.nextState(turn4,fourthMoveString);
+
+      expect(afterFinalInitialTurn.gameBoard.nodes[16].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(afterFinalInitialTurn.gameBoard.branches[24].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(afterFinalInitialTurn.currentPlayer).toEqual(-1);
+      expect(afterFinalInitialTurn.inInitialMoves).toBeFalse();
+
+
+    });
+  });
+
+  describe('Next State conventional moves', ()=>{
+    it('should progress the state through conventional moves',()=>{
+
+      const gameBoard = new GameBoard();
+      const player1 = new Player();
+      const player2 = new Player();
+
+      player1.redResources = 2;
+      player1.blueResources = 1;
+      player1.greenPerTurn = 3;
+      player1.yellowResources = 4;
+
+      const start = new State(['G,Y,Y,B;9;18,28','G,Y,Y,B;9;18,28','G,Y,Y,B;9;18,28','G,Y,Y,B;9;18,28'],gameBoard,1,player1,player2,false);
+      const firstMoveString = 'G,Y,Y,B;9;18,28';
+
+      const turn1 = CoreLogic.nextState(start,firstMoveString);
+
+      expect(turn1.gameBoard.nodes[9].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(turn1.gameBoard.branches[18].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(turn1.gameBoard.branches[28].getOwner()).toEqual(Owner.PLAYERONE);
+      expect(turn1.currentPlayer).toEqual(-1);
+      expect(turn1.player1.ownedBranches).toContain(18);
+
+      player2.redResources = 2;
+      player2.blueResources = 1;
+      player2.greenPerTurn = 4;
+      player2.yellowResources = 1;
+
+      const secondMoveString = 'G,G,R,Y;14;23';
+
+      const turn2 = CoreLogic.nextState(turn1,secondMoveString);
+
+      expect(turn2.gameBoard.nodes[14].getOwner()).toEqual(Owner.PLAYERTWO);
+      expect(turn2.gameBoard.branches[23].getOwner()).toEqual(Owner.PLAYERTWO);
+      expect(turn2.currentPlayer).toEqual(1);
+
+
     });
   });
 

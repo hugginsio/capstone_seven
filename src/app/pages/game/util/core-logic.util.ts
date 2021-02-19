@@ -592,10 +592,10 @@ export class CoreLogic {
     for(const branch of moveObj.branchesPlaced){
       state.gameBoard.branches[branch].setOwner(owner);
       affectedPlayer.ownedBranches.push(branch);
-      affectedPlayer.redResources --;
-      affectedPlayer.blueResources --;
+      affectedPlayer.redResources--;
+      affectedPlayer.blueResources--;
     }
-    console.log(affectedPlayer.ownedBranches);
+
     for(const node of moveObj.nodesPlaced){
       state.gameBoard.nodes[node].setOwner(owner);
       affectedPlayer.greenResources -= 2;
@@ -664,9 +664,12 @@ export class CoreLogic {
     }
 
     //longest Network
+
     for (let i = 0; i < affectedPlayer.ownedBranches.length; i++) {
       affectedPlayer.currentLength = 0;
-      CoreLogic.checkForLongest(state,affectedPlayer, state.player1.ownedBranches[i]);
+     
+      CoreLogic.checkForLongest(state,affectedPlayer, affectedPlayer.ownedBranches[i]);
+      
     }
 
     if(state.currentPlayer === 1){
@@ -692,7 +695,7 @@ export class CoreLogic {
     
    
     
-    //captured tile need to work on this
+    //captured tile 
     let numberTilesCapturedAtEndOfTurn = 0;
 
     for (let  i = 0; i < state.gameBoard.tiles.length; i++) {
@@ -867,7 +870,7 @@ export class CoreLogic {
     }
    
 
-    if (branchOwner === state.player1) {
+    if (state.currentPlayer === 1) {
 
       if (branch1Owner === Owner.PLAYERONE) {
         CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch1'));
@@ -891,22 +894,22 @@ export class CoreLogic {
 
     else {
       if (branch1Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch1')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch1'));
       }
       if (branch2Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch2')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch2'));
       }
       if (branch3Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch3')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch3'));
       }
       if (branch4Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch4')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch4'));
       }
       if (branch5Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch5')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch5'));
       }
       if (branch6Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, Number(state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch6')]));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch6'));
       }
     }
 
@@ -1045,7 +1048,9 @@ export class CoreLogic {
       const nodes = moveSections[1].split(',');
         
       for(const node of nodes){
-        result.nodesPlaced.push(parseInt(node));
+        if(parseInt(node) !== undefined){
+          result.nodesPlaced.push(parseInt(node));
+        }
       }
 
     }
@@ -1055,7 +1060,9 @@ export class CoreLogic {
       const branches = moveSections[2].split(',');
 
       for(const branch of branches){
-        result.branchesPlaced.push(parseInt(branch));
+        if(parseInt(branch) !== undefined){
+          result.branchesPlaced.push(parseInt(branch));
+        }
       }
 
     }
