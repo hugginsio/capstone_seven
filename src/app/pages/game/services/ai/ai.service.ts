@@ -35,6 +35,19 @@ export class AiService {
 
     return result;
   }
+
+  randomAIMove(previousMove:string):string{
+    const newState = CoreLogic.nextState(this.currentState, previousMove);
+
+    
+    const moves = CoreLogic.getLegalMoves(newState);
+    const resultIndex = Math.floor(Math.random()*moves.length);
+    const result = moves[resultIndex];
+
+    this.currentState = CoreLogic.nextState(newState, result);
+
+    return result;
+  }
 }
 
 

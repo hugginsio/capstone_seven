@@ -583,4 +583,17 @@ describe('CoreLogic', () => {
     });
   });
 
+  describe('Get starting state', ()=>{
+    it('should set and return the state for the start of the game',()=>{
+
+      const gameBoard = new GameBoard();
+      const player1 = new Player();
+      const player2 = new Player();
+
+      const startingState = CoreLogic.getStartingState(player1,player2,gameBoard,1);
+
+      console.log(startingState);
+    });
+  });
+
 });
