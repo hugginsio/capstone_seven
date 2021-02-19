@@ -137,18 +137,12 @@ describe('CoreLogic', () => {
       const player2 = new Player();
       
       const state = new State([],gameBoard,1,player1,player2, false);
- 
-      
-
-      /*for (let  i = 0; i < state.gameBoard.tiles.length; i++) {
-        captures.push(CoreLogic.checkForCaptures(state,state.player1, i));
-      }*/
 
 
       const answer = CoreLogic.checkForCaptures(state,state.player1, 12); 
       expect(answer).toBeFalse();  
       
-      //tiles that failed test: 
+      
       
     });
   });
@@ -320,7 +314,7 @@ describe('CoreLogic', () => {
       const gameBoard = new GameBoard();
       gameBoard.branches[12].setOwner(Owner.PLAYERONE);
 
-      const answer = CoreLogic.getValidBranchIndices(Owner.PLAYERONE,gameBoard);
+      const answer = CoreLogic.getValidBranchIndices(Owner.PLAYERONE,gameBoard,1);
 
       expect(answer).toContain(7);
       expect(answer).toContain(8);
@@ -517,6 +511,73 @@ describe('CoreLogic', () => {
       expect(turn2.gameBoard.nodes[14].getOwner()).toEqual(Owner.PLAYERTWO);
       expect(turn2.gameBoard.branches[23].getOwner()).toEqual(Owner.PLAYERTWO);
       expect(turn2.currentPlayer).toEqual(1);
+
+
+    });
+  });
+
+  describe('Get legal moves for initial turn', ()=>{
+    it('should get all legal moves for the first turn',()=>{
+
+      const gameBoard = new GameBoard();
+      const player1 = new Player();
+      const player2 = new Player();
+
+      const state = new State([],gameBoard,1,player1,player2,true);
+
+      const moves = CoreLogic.getLegalMoves(state);
+      //console.log(moves);
+
+
+    });
+  });
+
+  describe('Get legal moves for initial turn 2', ()=>{
+    it('should get all legal moves for the second turn',()=>{
+
+      const gameBoard = new GameBoard();
+      const player1 = new Player();
+      const player2 = new Player();
+      gameBoard.nodes[3].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[4].setOwner(Owner.PLAYERONE);
+
+
+      const state = new State([],gameBoard,-1,player1,player2,true);
+
+      const moves = CoreLogic.getLegalMoves(state);
+      //console.log(moves);
+
+
+    });
+  });
+
+  describe('Get legal moves for regular turn', ()=>{
+    it('should get all legal moves for a regular turn',()=>{
+
+      const gameBoard = new GameBoard();
+      const player1 = new Player();
+      const player2 = new Player();
+      gameBoard.nodes[3].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[4].setOwner(Owner.PLAYERONE);
+
+      gameBoard.nodes[8].setOwner(Owner.PLAYERTWO);
+      gameBoard.branches[12].setOwner(Owner.PLAYERTWO);
+      gameBoard.nodes[14].setOwner(Owner.PLAYERTWO);
+      gameBoard.branches[17].setOwner(Owner.PLAYERTWO);
+
+      gameBoard.nodes[15].setOwner(Owner.PLAYERONE);
+      gameBoard.branches[24].setOwner(Owner.PLAYERONE);
+
+      player2.redResources = 2;
+      player2.blueResources = 2;
+      player2.greenResources = 4;
+      player2.yellowResources = 1;
+
+      const state = new State([],gameBoard,-1,player1,player2,false);
+
+      const moves = CoreLogic.getLegalMoves(state);
+      console.log(moves);
+      console.log(moves.length);
 
 
     });
