@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, dialog } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -41,6 +41,23 @@ function createWindow(): BrowserWindow {
       slashes: true
     }));
   }
+
+  window.on('close', (event) => {
+    event.preventDefault();
+    dialog.showMessageBox({
+      type: 'warning',
+      buttons: ['Cancel', 'Quit'],
+      title: 'Warning',
+      message: 'Are you sure you want to quit?',
+      cancelId: 0,
+      defaultId: 1,
+      noLink: true
+    }).then((val) => {
+      if (val.response === 1) {
+        app.exit();
+      }
+    });
+  });
 
   window.on('closed', () => {
     app.quit();
