@@ -247,7 +247,7 @@ export class CoreLogic {
         branchBoard.nodes = state.gameBoard.nodes.slice();
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
-          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard,numPossibleBranches);
+          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
         }
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
@@ -342,7 +342,7 @@ export class CoreLogic {
         branchBoard.nodes = state.gameBoard.nodes.slice();
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
-          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard,numPossibleBranches);
+          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
         }
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
@@ -438,7 +438,7 @@ export class CoreLogic {
         branchBoard.nodes = state.gameBoard.nodes.slice();
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
-          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard,numPossibleBranches);
+          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
         }
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
@@ -534,7 +534,7 @@ export class CoreLogic {
         branchBoard.nodes = state.gameBoard.nodes.slice();
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
-          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard,numPossibleBranches);
+          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
         }
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
@@ -615,7 +615,7 @@ export class CoreLogic {
       branchBoard.nodes = state.gameBoard.nodes.slice();
 
       for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
-        possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard,numPossibleBranches);
+        possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
       }
 
       const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
@@ -647,6 +647,10 @@ export class CoreLogic {
           nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
         }
       }
+    }
+
+    if(result.length === 0){
+      result.push(';;');
     }
     
     return result;
@@ -680,7 +684,7 @@ export class CoreLogic {
     return result;
   }
 
-  static getValidBranchIndices(player:Owner, gameBoard:GameBoard, numBranchesToBePlaced:number):number[]{
+  static getValidBranchIndices(player:Owner, gameBoard:GameBoard):number[]{
     const result:number[] = [];
     
 
@@ -715,6 +719,7 @@ export class CoreLogic {
       }
 
     }
+
   
     return result;
   }
@@ -755,10 +760,10 @@ export class CoreLogic {
     const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2, state.inInitialMoves);
 
     if(state.currentPlayer === 1){
-      CoreLogic.applyMove(move,newState,newState.player1, Owner.PLAYERONE);
+      CoreLogic.applyMove(move,newState,state.currentPlayer, Owner.PLAYERONE);
     }
     else{
-      CoreLogic.applyMove(move, newState,newState.player2, Owner.PLAYERTWO);
+      CoreLogic.applyMove(move, newState,state.currentPlayer, Owner.PLAYERTWO);
     }
 
     
@@ -792,7 +797,14 @@ export class CoreLogic {
     return newState;
   }
 
-  static applyMove(move:string, state:State, affectedPlayer:Player, owner:Owner):void{
+  static applyMove(move:string, state:State, currentPlayer:number, owner:Owner):void{
+    let affectedPlayer:Player;
+    if(currentPlayer === 1){
+      affectedPlayer = state.player1;
+    }
+    else{
+      affectedPlayer = state.player2;
+    }
 
     const moveObj:Move = CoreLogic.stringToMove(move);
     for(const resource of moveObj.tradedIn){
@@ -835,6 +847,7 @@ export class CoreLogic {
       affectedPlayer.greenResources -= 2;
       affectedPlayer.yellowResources -=2;
       affectedPlayer.currentScore++;
+      affectedPlayer.numNodesPlaced++;
 
       if (state.gameBoard.nodes[node].getTopRightTile() !== -1) {
         state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount++;
@@ -902,7 +915,7 @@ export class CoreLogic {
     for (let i = 0; i < affectedPlayer.ownedBranches.length; i++) {
       affectedPlayer.currentLength = 0;
      
-      CoreLogic.checkForLongest(state,affectedPlayer, affectedPlayer.ownedBranches[i]);
+      CoreLogic.checkForLongest(state,state.currentPlayer, affectedPlayer.ownedBranches[i]);
       
     }
 
@@ -934,7 +947,7 @@ export class CoreLogic {
 
     for (let  i = 0; i < state.gameBoard.tiles.length; i++) {
       state.tilesBeingChecked =[];
-      if(CoreLogic.checkForCaptures(state,affectedPlayer, i)){
+      if(CoreLogic.checkForCaptures(state,state.currentPlayer, i)){
         numberTilesCapturedAtEndOfTurn++;
       } 
     }
@@ -950,16 +963,24 @@ export class CoreLogic {
       functionName = (nodeOwner: Player, currentTileColor: TileColor) => {
         switch (currentTileColor){
           case TileColor.RED:
-            nodeOwner.redPerTurn--;
+            if(nodeOwner.redPerTurn > 0){
+              nodeOwner.redPerTurn--;
+            }
             break;
           case TileColor.BLUE:
-            nodeOwner.bluePerTurn--;
+            if(nodeOwner.bluePerTurn > 0){
+              nodeOwner.bluePerTurn--;
+            }
             break;
           case TileColor.YELLOW:
-            nodeOwner.yellowPerTurn--;
+            if(nodeOwner.yellowPerTurn > 0){
+              nodeOwner.yellowPerTurn--;
+            }
             break;
           case TileColor.GREEN:
-            nodeOwner.greenPerTurn--;
+            if(nodeOwner.greenPerTurn > 0){
+              nodeOwner.greenPerTurn--;
+            }
             break;
         }
       };
@@ -1015,16 +1036,24 @@ export class CoreLogic {
   static decrementResource(nodeOwner: Player, currentTileColor: TileColor):void{
     switch (currentTileColor){
       case TileColor.RED:
-        nodeOwner.redPerTurn--;
+        if(nodeOwner.redPerTurn > 0){
+          nodeOwner.redPerTurn--;
+        }
         break;
       case TileColor.BLUE:
-        nodeOwner.bluePerTurn--;
+        if(nodeOwner.bluePerTurn > 0){
+          nodeOwner.bluePerTurn--;
+        }
         break;
       case TileColor.YELLOW:
-        nodeOwner.yellowPerTurn--;
+        if(nodeOwner.yellowPerTurn > 0){
+          nodeOwner.yellowPerTurn--;
+        }
         break;
       case TileColor.GREEN:
-        nodeOwner.greenPerTurn--;
+        if(nodeOwner.greenPerTurn > 0){
+          nodeOwner.greenPerTurn--;
+        }
         break;
     }
   }
@@ -1046,7 +1075,14 @@ export class CoreLogic {
     }
   }
 
-  static checkForLongest(state:State, branchOwner: Player, currentBranch: number): void {
+  static checkForLongest(state:State, currentPlayer: number, currentBranch: number): void {
+    let branchOwner:Player;
+    if(currentPlayer === 1){
+      branchOwner = state.player1;
+    }
+    else{
+      branchOwner = state.player2;
+    }
 
     if (branchOwner.branchScanner.includes(currentBranch) === true) {
       return;
@@ -1107,51 +1143,57 @@ export class CoreLogic {
     if (state.currentPlayer === 1) {
 
       if (branch1Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch1'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch1'));
       }
       if (branch2Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch2'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch2'));
       }
       if (branch3Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch3'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch3'));
       }
       if (branch4Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch4'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch4'));
       }
       if (branch5Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch5'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch5'));
       }
       if (branch6Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch6'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch6'));
       }
     }
 
     else {
       if (branch1Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch1'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch1'));
       }
       if (branch2Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch2'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch2'));
       }
       if (branch3Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch3'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch3'));
       }
       if (branch4Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch4'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch4'));
       }
       if (branch5Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch5'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch5'));
       }
       if (branch6Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch6'));
+        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch6'));
       }
     }
 
     //branchOwner.branchScanner.pop();
   }
 
-  static checkForCaptures(state:State, capturer: Player, checkTile: number): boolean {
-
+  static checkForCaptures(state:State, current:number, checkTile: number): boolean {
+    let capturer:Player;
+    if(current === 1){
+      capturer = state.player1;
+    }
+    else{
+      capturer = state.player2;
+    }
     let captured = true;
 
     // prevents infinite recursion
@@ -1196,22 +1238,22 @@ export class CoreLogic {
       state.tilesBeingChecked.push(checkTile);
 
       if (tileTopBranch.getOwner() === Owner.NONE) {
-        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getTopTile()) === false) {
+        if (CoreLogic.checkForCaptures(state,state.currentPlayer, currentTile.getTopTile()) === false) {
           captured = false;
         }
       }
       if (tileRightBranch.getOwner() === Owner.NONE) {
-        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getRightTile()) === false) {
+        if (CoreLogic.checkForCaptures(state,state.currentPlayer, currentTile.getRightTile()) === false) {
           captured = false;
         }
       }
       if (tileBottomBranch.getOwner() === Owner.NONE) {
-        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getBottomTile()) === false) {
+        if (CoreLogic.checkForCaptures(state,state.currentPlayer, currentTile.getBottomTile()) === false) {
           captured = false;
         }
       }
       if (tileLeftBranch.getOwner() === Owner.NONE) {
-        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getLeftTile()) === false) {
+        if (CoreLogic.checkForCaptures(state,state.currentPlayer, currentTile.getLeftTile()) === false) {
           captured = false;
         }
       }
@@ -1257,6 +1299,10 @@ export class CoreLogic {
       result += branch.toString();
     }
 
+    if(result === ''){
+      result = ';;';
+    }
+
     return result; //result should be a string formatted like 'R,R,R,Y;8;3,18'
   }
 
@@ -1264,43 +1310,49 @@ export class CoreLogic {
     const result:Move = {tradedIn:[],received:'',nodesPlaced:[],branchesPlaced:[]};
 
     const moveSections = moveString.split(';');
-
-    const trade = moveSections[0].split(',');
-    if(trade.length > 0 && trade[0] !== ''){
-      result.tradedIn.push(trade[0]);
-      result.tradedIn.push(trade[1]);
-      result.tradedIn.push(trade[2]);
-      result.received = trade[3];
-    }
-    else{
+    if(moveSections.length === 0){
       result.tradedIn = [];
       result.received = '';
+      result.nodesPlaced = [];
+      result.branchesPlaced = [];
     }
-
-   
-    if(moveSections[1] !== ''){
-      const nodes = moveSections[1].split(',');
-        
-      for(const node of nodes){
-        if(parseInt(node) !== undefined){
-          result.nodesPlaced.push(parseInt(node));
-        }
+    else{
+      const trade = moveSections[0].split(',');
+      if(trade.length > 0 && trade[0] !== ''){
+        result.tradedIn.push(trade[0]);
+        result.tradedIn.push(trade[1]);
+        result.tradedIn.push(trade[2]);
+        result.received = trade[3];
+      }
+      else{
+        result.tradedIn = [];
+        result.received = '';
       }
 
-    }
     
-  
-    if(moveSections[2] !== ''){
-      const branches = moveSections[2].split(',');
-
-      for(const branch of branches){
-        if(parseInt(branch) !== undefined){
-          result.branchesPlaced.push(parseInt(branch));
+      if(moveSections[1] !== ''){
+        const nodes = moveSections[1].split(',');
+          
+        for(const node of nodes){
+          if(parseInt(node) !== undefined){
+            result.nodesPlaced.push(parseInt(node));
+          }
         }
+
       }
+      
+    
+      if(moveSections[2] !== ''){
+        const branches = moveSections[2].split(',');
 
+        for(const branch of branches){
+          if(parseInt(branch) !== undefined){
+            result.branchesPlaced.push(parseInt(branch));
+          }
+        }
+
+      }
     }
-
 
     return result;
   }

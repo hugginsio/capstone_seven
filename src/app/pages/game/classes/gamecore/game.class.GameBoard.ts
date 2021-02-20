@@ -9,9 +9,8 @@ export class GameBoard {
   branches: Branch[];
 
   randomizeColorsAndMaxNodes(): void { 
-    const tileColorsAndMax = this.getTileColorsAndMax();
-    this.shuffleArray(tileColorsAndMax);
-    
+    const tileColorsAndMax = this.shuffleArray(this.getTileColorsAndMax());
+
     for (let i = 0; i < 13; i++) {
       this.tiles[i].color = tileColorsAndMax[i].color;
       this.tiles[i].maxNodes = tileColorsAndMax[i].maxNodes;
@@ -19,62 +18,74 @@ export class GameBoard {
   }
 
   /* Randomize array in-place using Durstenfeld shuffle algorithm */
-  shuffleArray(array: Array<any>): void {
+  shuffleArray(array: Array<any>): Array<any> {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       const temp = array[i];
       array[i] = array[j];
       array[j] = temp;
     }
+
+    return array;
   }
 
   getTileColorsAndMax(): Array<Tile>{
-    const colorTilesAndMax = Array<Tile>(13);
+    const colorTilesAndMax = new Array<Tile>(13);
 
+    colorTilesAndMax[0] = new Tile();
     colorTilesAndMax[0].maxNodes = 1;
     colorTilesAndMax[0].color = TileColor.RED;
 
+    colorTilesAndMax[1] = new Tile();
     colorTilesAndMax[1].maxNodes = 2;
     colorTilesAndMax[1].color = TileColor.RED;
 
+    colorTilesAndMax[2] = new Tile();
     colorTilesAndMax[2].maxNodes = 3;
     colorTilesAndMax[2].color = TileColor.RED;
 
     //
-
+    colorTilesAndMax[3] = new Tile();
     colorTilesAndMax[3].maxNodes = 1;
     colorTilesAndMax[3].color = TileColor.BLUE;
 
+    colorTilesAndMax[4] = new Tile();
     colorTilesAndMax[4].maxNodes = 2;
     colorTilesAndMax[4].color = TileColor.BLUE;
 
+    colorTilesAndMax[5] = new Tile();
     colorTilesAndMax[5].maxNodes = 3;
     colorTilesAndMax[5].color = TileColor.BLUE;
 
     //
-
+    colorTilesAndMax[6] = new Tile();
     colorTilesAndMax[6].maxNodes = 1;
     colorTilesAndMax[6].color = TileColor.GREEN;
 
+    colorTilesAndMax[7] = new Tile();
     colorTilesAndMax[7].maxNodes = 2;
     colorTilesAndMax[7].color = TileColor.GREEN;
 
+    colorTilesAndMax[8] = new Tile();
     colorTilesAndMax[8].maxNodes = 3;
     colorTilesAndMax[8].color = TileColor.GREEN;
 
     //
-
+    colorTilesAndMax[9] = new Tile();
     colorTilesAndMax[9].maxNodes = 1;
     colorTilesAndMax[9].color = TileColor.YELLOW;
 
+    colorTilesAndMax[10] = new Tile();
     colorTilesAndMax[10].maxNodes = 2;
     colorTilesAndMax[10].color = TileColor.YELLOW;
 
+    colorTilesAndMax[11] = new Tile();
     colorTilesAndMax[11].maxNodes = 3;
     colorTilesAndMax[11].color = TileColor.YELLOW;
 
     //
       
+    colorTilesAndMax[12] = new Tile();
     colorTilesAndMax[12].maxNodes = 0;
     colorTilesAndMax[12].color = TileColor.BLANK;
 

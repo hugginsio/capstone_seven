@@ -68,6 +68,13 @@ describe('CoreLogic', () => {
     });
   });
 
+  describe('string to move empty', ()=>{
+    it('should convert a string representation of a move to an object',()=>{
+      const answer = CoreLogic.stringToMove(';;');
+      expect(answer).toEqual({tradedIn:[],received:'',nodesPlaced:[],branchesPlaced:[]});
+    });
+  });
+
   describe('kStringCombinations for red', ()=>{
     it('should output combinations of k number from an array of strings', ()=>{
       const resources = ['B','G','Y'];
@@ -139,7 +146,7 @@ describe('CoreLogic', () => {
       const state = new State([],gameBoard,1,player1,player2, false);
 
 
-      const answer = CoreLogic.checkForCaptures(state,state.player1, 12); 
+      const answer = CoreLogic.checkForCaptures(state,state.currentPlayer, 12); 
       expect(answer).toBeFalse();  
       
       
@@ -160,7 +167,7 @@ describe('CoreLogic', () => {
       
       const state = new State([],gameBoard,1,player1,player2, false);
 
-      const answer = CoreLogic.checkForCaptures(state,player1,6);
+      const answer = CoreLogic.checkForCaptures(state,state.currentPlayer,6);
 
       expect(answer).toBeTrue();
       
@@ -182,8 +189,8 @@ describe('CoreLogic', () => {
       
       const state = new State([],gameBoard,1,player1,player2, false);
 
-      const answer1 = CoreLogic.checkForCaptures(state,player1,6);
-      const answer2 = CoreLogic.checkForCaptures(state,player1,7);
+      const answer1 = CoreLogic.checkForCaptures(state,state.currentPlayer,6);
+      const answer2 = CoreLogic.checkForCaptures(state,state.currentPlayer,7);
 
       expect(answer1).toBeTrue();
       expect(answer2).toBeTrue();
@@ -219,7 +226,7 @@ describe('CoreLogic', () => {
 
       for (let i = 0; i < state.player1.ownedBranches.length; i++) {
         state.player1.currentLength = 0;
-        CoreLogic.checkForLongest(state,state.player1, state.player1.ownedBranches[i]);
+        CoreLogic.checkForLongest(state,state.currentPlayer, state.player1.ownedBranches[i]);
       }
 
 
@@ -314,7 +321,7 @@ describe('CoreLogic', () => {
       const gameBoard = new GameBoard();
       gameBoard.branches[12].setOwner(Owner.PLAYERONE);
 
-      const answer = CoreLogic.getValidBranchIndices(Owner.PLAYERONE,gameBoard,1);
+      const answer = CoreLogic.getValidBranchIndices(Owner.PLAYERONE,gameBoard);
 
       expect(answer).toContain(7);
       expect(answer).toContain(8);
@@ -371,7 +378,7 @@ describe('CoreLogic', () => {
 
       const state = new State([],gameBoard,1,player1,player2,false);
 
-      CoreLogic.applyMove(moveString,state,state.player1,Owner.PLAYERONE);
+      CoreLogic.applyMove(moveString,state,state.currentPlayer,Owner.PLAYERONE);
 
       expect(state.gameBoard.nodes[8].getOwner()).toEqual(Owner.PLAYERONE);
       expect(state.gameBoard.branches[8].getOwner()).toEqual(Owner.PLAYERONE);
@@ -416,7 +423,7 @@ describe('CoreLogic', () => {
 
       const state = new State([],gameBoard,1,player1,player2,false);
 
-      CoreLogic.applyMove(moveString,state,state.player1,Owner.PLAYERONE);
+      CoreLogic.applyMove(moveString,state,state.currentPlayer,Owner.PLAYERONE);
 
       expect(state.gameBoard.nodes[8].getOwner()).toEqual(Owner.PLAYERONE);
       expect(state.gameBoard.branches[8].getOwner()).toEqual(Owner.PLAYERONE);
@@ -576,8 +583,8 @@ describe('CoreLogic', () => {
       const state = new State([],gameBoard,-1,player1,player2,false);
 
       const moves = CoreLogic.getLegalMoves(state);
-      console.log(moves);
-      console.log(moves.length);
+      //console.log(moves);
+      //console.log(moves.length);
 
 
     });
@@ -592,7 +599,7 @@ describe('CoreLogic', () => {
 
       const startingState = CoreLogic.getStartingState(player1,player2,gameBoard,1);
 
-      console.log(startingState);
+      //console.log(startingState);
     });
   });
 

@@ -26,25 +26,53 @@ export class AiService {
   }
 
   getMove(previousMove:string):string{
+    console.log('before first next state');
     const newState = CoreLogic.nextState(this.currentState, previousMove);
 
     this.mcts.runSearch(newState, 5);
     const result = this.mcts.calculateBestMove(newState,'max');
 
+    console.log(result);
+    console.log('Before last next state');
     this.currentState = CoreLogic.nextState(newState, result);
 
     return result;
   }
 
-  randomAIMove(previousMove:string):string{
-    const newState = CoreLogic.nextState(this.currentState, previousMove);
+  randomAIFirstMove():string{
+    
+    //console.log(this.currentState);
+    //console.log(newState);
+
+    const moves = CoreLogic.getLegalMoves(this.currentState);
+    //console.log(moves);
+    //console.log(moves.length);
+    const resultIndex = Math.floor(Math.random()*moves.length);
+    //console.log(resultIndex);
+    const result = moves[resultIndex];
+    //console.log(result);
+
+    const newState = CoreLogic.nextState(this.currentState, result);
+    this.currentState = newState;//CoreLogic.nextState(this.currentState, result);
+
+    return result;
+  }
+
+  randomAIMove(move:string):string{
+    //const newState = CoreLogic.nextState(this.currentState, move);
+    //console.log(this.currentState);
+    //console.log(newState);
+
+    const moves = CoreLogic.getLegalMoves(this.currentState);
+    //console.log(moves);
+    //console.log(moves.length);
+    const resultIndex = Math.floor(Math.random()*moves.length);
+    //console.log(resultIndex);
+    const result = moves[resultIndex];
+    //console.log(result);
 
     
-    const moves = CoreLogic.getLegalMoves(newState);
-    const resultIndex = Math.floor(Math.random()*moves.length);
-    const result = moves[resultIndex];
-
-    this.currentState = CoreLogic.nextState(newState, result);
+    this.currentState = CoreLogic.nextState(this.currentState, result);
 
     return result;
   }

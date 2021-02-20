@@ -12,22 +12,25 @@ interface GameStatistics {
 export class MonteCarlo {
   gameBoard:GameBoard;
   exploreParameter:number;
-  mctsNodes:Map<string, MCTSNode>;
+  mctsNodeKeys:string[];
+  mctsNodeValues:MCTSNode[];
 
   constructor(gameBoard:GameBoard, exploreParameter:number) { 
     this.gameBoard = gameBoard;
     this.exploreParameter = exploreParameter;
 
-    this.mctsNodes = new Map();
+    this.mctsNodeKeys = [];
+    this.mctsNodeValues = [];
     
   }
 
   makeMCTSNode(state:State):void{
-    if(!this.mctsNodes.has(state.hash())){
-      const unexpandedMoves = CoreLogic.getLegalMoves(state).slice();
-
+    if(!this.mctsNodeKeys.includes(state.hash())){
+      const unexpandedMoves = CoreLogic.getLegalMoves(state);
+      
       const newMCTSNode = new MCTSNode(null, null, state, unexpandedMoves);
-      this.mctsNodes.set(state.hash(), newMCTSNode);
+      this.mctsNodeKeys.push(state.hash());
+      this.mctsNodeValues.push(newMCTSNode);
     }
   }
 
@@ -40,6 +43,7 @@ export class MonteCarlo {
 
     while (Date.now() < end){
       let node = this.selectMCTSNode(state);
+      
       let winner = CoreLogic.determineIfWinner(node.state);
 
       if(!node.isLeaf() && winner === -Infinity){
@@ -62,14 +66,14 @@ export class MonteCarlo {
   calculateBestMove(state:State, policy:string):string{
     this.makeMCTSNode(state);
 
-    if (this.mctsNodes.get(state.hash()) === null ||
-        this.mctsNodes.get(state.hash()) === undefined ||
-        !this.mctsNodes.get(state.hash())?.isFullyExpanded()){
+    if (this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())] === null ||
+        this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())] === undefined ||
+        !this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())].isFullyExpanded()){
         
       throw new Error("Not enough information!");
     }
 
-    const node = this.mctsNodes.get(state.hash());
+    const node = this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())];
     const allMoves = node?.getAllMoves();
     let bestMove = '';
 
@@ -81,7 +85,7 @@ export class MonteCarlo {
       let max = -Infinity;
 
       for(const move of allMoves){
-        const childNode = node?.getChildNode(move);
+        const childNode = node.childrenValues[node.childrenKeys.indexOf(move)].node;
         if(childNode?.visits as number > max){
           bestMove = move;
           max = childNode?.visits as number;
@@ -92,7 +96,7 @@ export class MonteCarlo {
       let max = -Infinity;
 
       for(const move of allMoves){
-        const childNode = node?.getChildNode(move);
+        const childNode = node.childrenValues[node.childrenKeys.indexOf(move)].node;
         const visits = childNode?.visits as number;
         const wins = childNode?.wins as number;
         const ratio =  wins / visits;
@@ -107,7 +111,7 @@ export class MonteCarlo {
   }
 
   selectMCTSNode(state:State):MCTSNode{
-    let node = this.mctsNodes.get(state.hash());
+    let node = this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())];
     if(node === undefined){
       throw new Error("Node undefined");
     }
@@ -124,6 +128,7 @@ export class MonteCarlo {
       }
       node = node.getChildNode(bestMove as string);
     }
+    //console.log(node);
     return node;
   }
 
@@ -131,11 +136,15 @@ export class MonteCarlo {
     const moves = node.getUnexpandedMoves();
     const index = Math.floor(Math.random() * moves.length);
     const move = moves[index];
+    /*console.log(moves);
+    console.log(index);
+    console.log(move);*/
 
     const childState = CoreLogic.nextState(node.state, move);
     const childUnexpandedMoves = CoreLogic.getLegalMoves(childState);
     const childNode = node.expand(move, childState,childUnexpandedMoves);
-    this.mctsNodes.set(childState.hash(), childNode);
+    this.mctsNodeKeys.push(childState.hash());
+    this.mctsNodeValues.push(childNode);
 
     return childNode;
   }
@@ -146,6 +155,8 @@ export class MonteCarlo {
 
     while(winner === -Infinity){
       const moves = CoreLogic.getLegalMoves(state);
+      //console.log(state);
+      //console.log(moves);
       const move = moves[Math.floor(Math.random() * moves.length)];
       state = CoreLogic.nextState(state, move);
       winner = CoreLogic.determineIfWinner(state);    
