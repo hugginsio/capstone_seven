@@ -27,51 +27,44 @@ export class AiService {
 
   getMove(previousMove:string):string{
     console.log('before first next state');
-    const newState = CoreLogic.nextState(this.currentState, previousMove);
+    this.currentState = CoreLogic.nextState(this.currentState, previousMove);
 
-    this.mcts.runSearch(newState, 5);
-    const result = this.mcts.calculateBestMove(newState,'max');
+    const stats = this.mcts.runSearch(this.currentState, 6);
+    
+    console.log(stats);
+    const result = this.mcts.calculateBestMove(this.currentState,'max');
 
     console.log(result);
     console.log('Before last next state');
-    this.currentState = CoreLogic.nextState(newState, result);
+    this.currentState = CoreLogic.nextState(this.currentState, result);
 
     return result;
   }
 
   randomAIFirstMove():string{
-    
-    //console.log(this.currentState);
-    //console.log(newState);
 
     const moves = CoreLogic.getLegalMoves(this.currentState);
-    //console.log(moves);
-    //console.log(moves.length);
+
     const resultIndex = Math.floor(Math.random()*moves.length);
-    //console.log(resultIndex);
+ 
     const result = moves[resultIndex];
-    //console.log(result);
+
 
     const newState = CoreLogic.nextState(this.currentState, result);
-    this.currentState = newState;//CoreLogic.nextState(this.currentState, result);
+    this.currentState = newState;
 
     return result;
   }
 
   randomAIMove(move:string):string{
-    //const newState = CoreLogic.nextState(this.currentState, move);
-    //console.log(this.currentState);
-    //console.log(newState);
+    this.currentState = CoreLogic.nextState(this.currentState, move);
 
     const moves = CoreLogic.getLegalMoves(this.currentState);
-    //console.log(moves);
-    //console.log(moves.length);
-    const resultIndex = Math.floor(Math.random()*moves.length);
-    //console.log(resultIndex);
-    const result = moves[resultIndex];
-    //console.log(result);
 
-    
+    const resultIndex = Math.floor(Math.random()*moves.length);
+
+    const result = moves[resultIndex];
+
     this.currentState = CoreLogic.nextState(this.currentState, result);
 
     return result;

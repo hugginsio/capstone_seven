@@ -494,6 +494,7 @@ describe('CoreLogic', () => {
       player1.blueResources = 1;
       player1.greenPerTurn = 3;
       player1.yellowResources = 4;
+      const startTime = Date.now();
 
       const start = new State(['G,Y,Y,B;9;18,28','G,Y,Y,B;9;18,28','G,Y,Y,B;9;18,28','G,Y,Y,B;9;18,28'],gameBoard,1,player1,player2,false);
       const firstMoveString = 'G,Y,Y,B;9;18,28';
@@ -505,6 +506,7 @@ describe('CoreLogic', () => {
       expect(turn1.gameBoard.branches[28].getOwner()).toEqual(Owner.PLAYERONE);
       expect(turn1.currentPlayer).toEqual(-1);
       expect(turn1.player1.ownedBranches).toContain(18);
+      console.log(turn1.player1.ownedBranches);
 
       player2.redResources = 2;
       player2.blueResources = 1;
@@ -514,6 +516,8 @@ describe('CoreLogic', () => {
       const secondMoveString = 'G,G,R,Y;14;23';
 
       const turn2 = CoreLogic.nextState(turn1,secondMoveString);
+      const endTime = Date.now() - startTime;
+      console.log('next state',endTime);
 
       expect(turn2.gameBoard.nodes[14].getOwner()).toEqual(Owner.PLAYERTWO);
       expect(turn2.gameBoard.branches[23].getOwner()).toEqual(Owner.PLAYERTWO);
@@ -582,10 +586,13 @@ describe('CoreLogic', () => {
 
       const state = new State([],gameBoard,-1,player1,player2,false);
 
+      const start = Date.now();
+
       const moves = CoreLogic.getLegalMoves(state);
       //console.log(moves);
       //console.log(moves.length);
-
+      const end = Date.now() - start;
+      console.log('get moves',end);
 
     });
   });

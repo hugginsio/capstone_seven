@@ -763,7 +763,7 @@ export class CoreLogic {
       CoreLogic.applyMove(move,newState,state.currentPlayer, Owner.PLAYERONE);
     }
     else{
-      CoreLogic.applyMove(move, newState,state.currentPlayer, Owner.PLAYERTWO);
+      CoreLogic.applyMove(move,newState,state.currentPlayer, Owner.PLAYERTWO);
     }
 
     

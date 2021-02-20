@@ -2,8 +2,7 @@ import { Owner } from '../../enums/game.enums';
 import { State } from './ai.class.State';
 
 
-interface MCTSNodePlaceHolder {
-  move:string,
+interface MCTSNodeInterface {
   node:MCTSNode | null
 }
 
@@ -13,7 +12,7 @@ export class MCTSNode {
   visits:number;
   wins:number;
   childrenKeys:string[];
-  childrenValues:MCTSNodePlaceHolder[];
+  childrenValues:MCTSNodeInterface[];
 
   state:State;
 
@@ -32,7 +31,7 @@ export class MCTSNode {
     //console.log(unexpandedMoves);
     for(let i = 0; i < unexpandedMoves.length; i++){
       this.childrenKeys.push(unexpandedMoves[i]);
-      this.childrenValues.push({move:unexpandedMoves[i], node:null});
+      this.childrenValues.push({node:null});
     }
     //console.log(this.childrenKeys, this.childrenValues);
   }
@@ -57,7 +56,7 @@ export class MCTSNode {
 
     const childNode = new MCTSNode(this,move,childState,unexpandedMoves);
     this.childrenKeys.push(move);
-    this.childrenValues.push({move:move, node:childNode});
+    this.childrenValues.push({node:childNode});
 
     return childNode;
   }
