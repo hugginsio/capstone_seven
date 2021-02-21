@@ -5,9 +5,11 @@
     <div class="bg-gray-600 p-3 text-center items-center justify-center cursor-pointer" (click)="togglePaused()">
       <p>Pause</p>
     </div>
-    <div class="bg-gray-600 p-3 text-center items-center justify-center cursor-pointer" (click)="toggleTrade()">
-      <p>Trade</p>
-    </div>
+  </div>
+
+  <!-- Top Information Container -->
+  <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 z-50 mt-3 pointer-events-none">
+    <p class="p-3">{{ this.gameManager.getCurrentPlayerEnum() }}'s Turn</p>
   </div>
 
   <!-- Pause Modal Container -->
@@ -40,16 +42,22 @@
           <p class="font-normal">Trades can only be executed once per turn.</p>
           <p>Trade any three for one.</p>
           <div class="flex space-x-3">
-            <div class="resource-button-trade">
+            <div class="text-center w-full pt-3"
+              *ngIf="this.gameManager.getCurrentPlayer().redResources === 0 &&
+              this.gameManager.getCurrentPlayer().greenResources === 0 &&
+              this.gameManager.getCurrentPlayer().blueResources === 0 && this.gameManager.getCurrentPlayer().yellowResources === 0">
+              <p>You have no resources to trade.</p>
+            </div>
+            <div class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().redResources > 0">
               <img src="/assets/game/Resource-Red.png" class="w-full h-full" />
             </div>
-            <div class="resource-button-trade">
+            <div class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().greenResources > 0">
               <img src="/assets/game/Resource-Green.png" class="w-full h-full" />
             </div>
-            <div class="resource-button-trade">
+            <div class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().blueResources > 0">
               <img src="/assets/game/Resource-Blue.png" class="w-full h-full" />
             </div>
-            <div class="resource-button-trade">
+            <div class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().yellowResources > 0">
               <img src="/assets/game/Resource-Yellow.png" class="w-full h-full" />
             </div>
           </div>
@@ -128,12 +136,12 @@
   </div>
 
   <!-- Player Shards Container -->
-  <div class="h-screen w-screen overscroll-none text-center absolute top-0 pointer-events-none right-0 z-50">
+  <div class="h-screen w-screen overscroll-none text-center absolute top-0 pointer-events-none right-0 z-40">
     <div class="absolute bottom-3 left-3">
-      <app-player-shard [playerDetail]="this.gameManager.getPlayerOne()" [tradingSubject]="this.tradingSubject"></app-player-shard>
+      <app-player-shard [playerDetail]="this.gameManager.getPlayerOne()" [actionSubject]="this.commLink" [playerName]="'Player One'"></app-player-shard>
     </div>
     <div class="absolute bottom-3 right-3">
-      <app-player-shard [playerDetail]="this.gameManager.getPlayerTwo()" [tradingSubject]="this.tradingSubject"></app-player-shard>
+      <app-player-shard [playerDetail]="this.gameManager.getPlayerTwo()" [actionSubject]="this.commLink" [playerName]="'Player Two'"></app-player-shard>
     </div>
   </div>
 

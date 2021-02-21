@@ -1,6 +1,8 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Player } from '../classes/gamecore/game.class.Player';
+import { CommPackage } from '../interfaces/game.interface';
+import { CommCode } from '../interfaces/game.enum';
 
 @Component({
   selector: 'app-player-shard',
@@ -10,8 +12,8 @@ import { Player } from '../classes/gamecore/game.class.Player';
 export class PlayerShardComponent implements OnInit, OnChanges {
 
   @Input() playerDetail: Player;
-  @Input() tradingSubject: Subject<boolean>;
-  // @Input() endingTurn: Subject<boolean>;
+  @Input() playerName: string;
+  @Input() actionSubject: Subject<CommPackage>;
 
   constructor() { }
 
@@ -21,7 +23,18 @@ export class PlayerShardComponent implements OnInit, OnChanges {
     console.log(this.playerDetail);
   }
 
+  generateMessage(action: CommCode): CommPackage {
+    return {
+      code: action,
+      player: this.playerDetail 
+    };
+  }
+
   triggerTrading(): void {
-    this.tradingSubject.next(true);
+    this.actionSubject.next(this.generateMessage(CommCode.IS_TRADING));
+  }
+
+  triggerEndTurn(): void {
+    this.actionSubject.next(this.generateMessage(CommCode.END_TURN));
   }
 }

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
-import { Node } from './classes/gamecore/game.class.Node';
-import { ClickEvent } from './interfaces/game.interface';
+import { Player } from './classes/gamecore/game.class.Player';
+import { CommCode } from './interfaces/game.enum';
+import { ClickEvent, CommPackage } from './interfaces/game.interface';
 import { ManagerService } from './services/gamecore/manager.service';
 
 @Component({
@@ -15,8 +16,9 @@ export class GameComponent implements OnInit {
   public isTrading: boolean;
   public gameOver: boolean;
   public gameOverText: string;
+  private winningPlayer: Player;
 
-  private tradingSubject = new Subject<boolean>();
+  private readonly commLink = new Subject<CommPackage>();
 
   constructor(
     private readonly gameManager: ManagerService,
@@ -42,11 +44,33 @@ export class GameComponent implements OnInit {
       this.gameManager.createBoard(true);
     }
 
-    this.tradingSubject.subscribe(status => {
-      if (status) {
-        this.isTrading = true;
-      } else {
-        this.isTrading = false;
+    // Subscribe to own communications link
+    this.commLink.subscribe(message => {
+      const status = message.code;
+
+      // Check which player sent the message before we run player-centric commands
+      if (this.gameManager.getCurrentPlayer() === message.player) {
+        if (status === CommCode.IS_TRADING) {
+          this.isTrading = true;
+        } else if (status === CommCode.END_TURN) {
+          this.gameManager.endTurn(this.gameManager.getCurrentPlayer());
+        } else if (status === CommCode.END_GAME) {
+          this.gameOverText = `${this.gameManager.getCurrentPlayerEnum()} Won!`;
+          this.gameOver = true;
+        }
+      }
+    });
+
+    // Subscribe to gamemanager commlink
+    this.gameManager.commLink.subscribe(message => {
+      const status = message.code;
+      const player = message.player;
+      const magic = message.magic;
+
+      if (status === CommCode.END_GAME && player && magic) {
+        this.gameOverText = `${magic} Won!`;
+        this.winningPlayer = player;
+        this.gameOver = true;
       }
     });
   }
@@ -118,8 +142,6 @@ export class GameComponent implements OnInit {
     const pieceClass = event.target.className.split(' ');
     const pieceId = +event.target.id.slice(1);
     const pieceType = event.target.id.slice(0, 1) === 'T' ? 'tile' : event.target.id.slice(0, 1) === 'B' ? 'branch' : 'node';
-
-    console.log(player);
     
     if (pieceClass.indexOf('unavailable') !== -1) {
       console.warn(`Clicked ${pieceType} ${pieceId}, but piece is unavailable.`);
@@ -153,8 +175,12 @@ export class GameComponent implements OnInit {
           let relatedNode = -1;
           this.gameManager.getBoard().nodes.forEach(el => {
             // Need to double check that we're verifying the correct node here prior to placement
+            // Possible defect: allows placing next to original node
             if (el.getOwner() === this.gameManager.getCurrentPlayerEnum()) {
-              relatedNode = this.gameManager.getBoard().nodes.indexOf(el);
+              if (el.getTopBranch() === pieceId || el.getRightBranch() === pieceId || el.getBottomBranch() === pieceId || el.getLeftBranch() === pieceId) {
+                relatedNode = this.gameManager.getBoard().nodes.indexOf(el);
+                return;
+              }
             }
           });
 
@@ -169,7 +195,7 @@ export class GameComponent implements OnInit {
       console.warn('Piece class data:', event.target.className);
     }
 
-    console.warn(this.gameManager.getBoard());
+    // console.warn(this.gameManager.getBoard());
   }
 
   togglePaused(): void {
@@ -179,12 +205,10 @@ export class GameComponent implements OnInit {
 
   toggleTrade(): void {
     this.isTrading = false;
-    this.tradingSubject.next(false);
   }
 
   executeTrade(): void {
     // Communicate trade to game core
     this.isTrading = false;
-    this.tradingSubject.next(false);
   }
 }

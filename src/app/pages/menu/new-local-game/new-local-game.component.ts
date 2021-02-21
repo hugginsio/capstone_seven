@@ -23,7 +23,7 @@ export class NewLocalGameComponent implements OnInit {
     private readonly storageService: LocalStorageService,
     private readonly routerService: Router
   ) {
-    this.gameModeString = this.pva;
+    this.gameModeString = this.pvp;
     this.aiDifficultyString = this.aiEasy;
     this.advancedOpts = false;
     this.guidedTutorial = false;
