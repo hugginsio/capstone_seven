@@ -57,3 +57,7 @@ router-outlet ~ * {
 .z-neg {
   z-index: -99;
 }
+
+.z-inf {
+  z-index: 99;
+}

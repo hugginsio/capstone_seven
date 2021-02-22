@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
 import { Player } from './classes/gamecore/game.class.Player';
@@ -21,6 +22,7 @@ export class GameComponent implements OnInit {
   private readonly commLink = new Subject<CommPackage>();
 
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     private readonly gameManager: ManagerService,
     private readonly storageService: LocalStorageService
   ) {
@@ -34,6 +36,9 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // ✨ ANIMATIONS ✨
+    this.scrollToBottom();
+
     // Fetch the board seed set in memory
     const boardSeed = this.storageService.fetch('board-seed');
     if (boardSeed === '!random' || boardSeed === 'undefined') {
@@ -212,5 +217,18 @@ export class GameComponent implements OnInit {
   executeTrade(): void {
     // Communicate trade to game core
     this.isTrading = false;
+  }
+
+  scrollToBottom() {
+    (function smoothscroll() {
+      const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      if (currentScroll > 0) {
+        window.requestAnimationFrame(smoothscroll);
+        window.scrollTo(0, currentScroll - (currentScroll / 8));
+      } else if (currentScroll === 0) {
+        // fade to black
+        console.log('fade');
+      }
+    })();
   }
 }

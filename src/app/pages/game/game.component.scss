@@ -267,3 +267,16 @@
   --tw-bg-opacity: 0.7;
   background-color: rgba(0, 0, 0, var(--tw-bg-opacity));
 }
+
+.bg-1 {
+  background: url('/assets/game/locations/bg1.png') no-repeat;
+  background-size: cover;
+  image-rendering: pixelated;
+  opacity: 0.75;
+}
+
+.teleporter-bg-1 {
+  background: url('/assets/game/locations/teleporter-bg1.png');
+  image-rendering: pixelated;
+  opacity: 1;
+}
