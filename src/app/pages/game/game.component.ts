@@ -107,7 +107,7 @@ export class GameComponent implements OnInit {
         if (this.gameManager.getBoard().nodes[id].getOwner() !== 'NONE') {
           result += `node-${this.gameManager.getBoard().nodes[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}`;
         } else {
-          result += 'available';
+          result += 'available node-blank';
         }
 
         break;
@@ -116,7 +116,7 @@ export class GameComponent implements OnInit {
         if (this.gameManager.getBoard().branches[id].getOwner() !== 'NONE') {
           result += `branch-${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-x`;
         } else {
-          result += 'available';
+          result += 'available branch-blank-x';
         }
 
         break;
@@ -125,7 +125,7 @@ export class GameComponent implements OnInit {
         if (this.gameManager.getBoard().branches[id].getOwner() !== 'NONE') {
           result += `branch-${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-y`;
         } else {
-          result += 'available';
+          result += 'available branch-blank-y';
         }
 
         break;

@@ -129,6 +129,14 @@
   background: url('/assets/game/Purple-Branch.png') no-repeat center;
 }
 
+.branch-blank-x {
+  background: url('/assets/game/Blank-Branch-Horizontal.png') no-repeat center;
+}
+
+.branch-blank-y {
+  background: url('/assets/game/Blank-Branch.png') no-repeat center;
+}
+
 // Nodes
 
 .node-orange {
@@ -137,6 +145,10 @@
 
 .node-purple {
   background: url('/assets/game/Purple-Node.png') no-repeat center;
+}
+
+.node-blank {
+  background: url('/assets/game/Blank-Node.png') no-repeat center;
 }
 
 // Utilities
@@ -181,7 +193,7 @@
   }
 
   .node {
-    @apply w-7 h-7 pointer-events-auto rounded-full border-transparent;
+    @apply w-7 h-7 pointer-events-auto rounded-lg border-transparent;
   }
 
   .branch-y-container {
