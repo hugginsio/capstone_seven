@@ -55,7 +55,8 @@ export class GameComponent implements OnInit {
         } else if (status === CommCode.END_TURN) {
           this.gameManager.endTurn(this.gameManager.getCurrentPlayer());
         } else if (status === CommCode.END_GAME) {
-          this.gameOverText = `${this.gameManager.getCurrentPlayerEnum()} Won!`;
+          this.gameOverText = `${this.gameManager.getCurrentPlayerEnum()} Victorious!`;
+          this.winningPlayer = this.gameManager.getCurrentPlayer();
           this.gameOver = true;
         }
       }

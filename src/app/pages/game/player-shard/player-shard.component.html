@@ -19,14 +19,14 @@
   <div class="flex flex-col space-y-3 pt-3 text-center"
     *ngIf="true">
     <div class="flex space-x-3">
-      <div class="button-light" (click)="triggerUndo()">
+      <div class="button" [ngClass]="getDynamicClass()" (click)="triggerUndo()">
         Undo
       </div>
-      <div class="button-light" (click)="triggerTrading()">
+      <div class="button" [ngClass]="getDynamicClass()" (click)="triggerTrading()">
         Trade
       </div>
     </div>
-    <div class="button-light" (click)="triggerEndTurn()">
+    <div class="button" [ngClass]="getDynamicClass()" (click)="triggerEndTurn()">
       End Turn
     </div>
   </div>

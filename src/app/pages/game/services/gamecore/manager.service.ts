@@ -64,6 +64,7 @@ export class ManagerService {
   }
 
   getCurrentPlayerEnum(): Owner {
+    // console.warn(this.currentPlayer);
     return this.currentPlayer;
   }
 

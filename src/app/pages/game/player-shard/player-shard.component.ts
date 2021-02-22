@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Player } from '../classes/gamecore/game.class.Player';
 import { CommPackage } from '../interfaces/game.interface';
@@ -9,18 +9,19 @@ import { CommCode } from '../interfaces/game.enum';
   templateUrl: './player-shard.component.html',
   styleUrls: ['./player-shard.component.scss']
 })
-export class PlayerShardComponent implements OnInit, OnChanges {
+export class PlayerShardComponent implements OnInit {
 
   @Input() playerDetail: Player;
   @Input() playerName: string;
+  @Input() currentPlayer: boolean;
   @Input() actionSubject: Subject<CommPackage>;
 
   constructor() { }
 
   ngOnInit(): void { }
 
-  ngOnChanges(): void {
-    console.log(this.playerDetail);
+  getDynamicClass(): string {
+    return this.currentPlayer ? 'button-std' : 'button-disabled';
   }
 
   generateMessage(action: CommCode): CommPackage {
