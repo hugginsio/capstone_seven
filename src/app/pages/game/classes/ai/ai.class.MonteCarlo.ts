@@ -36,7 +36,7 @@ export class MonteCarlo {
       else{
         move = null;
       }
-      console.log(move);
+      //console.log(move);
       const newMCTSNode = new MCTSNode(null, move, state, unexpandedMoves);
       this.mctsNodeKeys.push(state.hash());
       this.mctsNodeValues.push(newMCTSNode);
@@ -83,16 +83,14 @@ export class MonteCarlo {
       //console.log(this.mctsNodeKeys.indexOf(state.hash()));
       //console.log(this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())]);
       //console.log(this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())].getUnexpandedMoves());
-      console.log(this.mctsNodeKeys.length, this.mctsNodeValues.length);
-      console.log(this.mctsNodeKeys[0],this.mctsNodeKeys[1]);
-      console.log(this.mctsNodeValues[0],this.mctsNodeValues[1]);
+      /*console.log(this.mctsNodeKeys.length, this.mctsNodeValues.length);
+      console.log(this.mctsNodeKeys);
+      console.log(this.mctsNodeValues[0],this.mctsNodeValues[1]);*/
 
       throw new Error("Not enough information!");
     }
-    console.log(this.mctsNodeKeys.length, this.mctsNodeValues.length);
-    for(const item of this.mctsNodeKeys){
-      console.log(item);
-    }
+    // console.log(this.mctsNodeKeys.length, this.mctsNodeValues.length);
+    // console.log(this.mctsNodeKeys);
     const node = this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())];
     const allMoves = node?.getAllMoves();
     let bestMove = ';;';
@@ -139,7 +137,7 @@ export class MonteCarlo {
     if(node === undefined){
       throw new Error("Node undefined");
     }
-    while(node?.isFullyExpanded && !node.isLeaf){
+    while(node?.isFullyExpanded() && !node.isLeaf()){
       const moves = node.getAllMoves();
       let bestMove;
       let bestUCBValue = -Infinity;

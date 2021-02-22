@@ -6,6 +6,7 @@ import { Owner } from '../../enums/game.enums';
 import { AiService } from './ai.service';
 
 
+
 describe('AiService', () => {
   const gameBoard = new GameBoard();
   gameBoard.randomizeColorsAndMaxNodes();
@@ -15,12 +16,30 @@ describe('AiService', () => {
   const ai = new AiService(gameBoard,player1,player2,'easy');
 
   describe('Play full random Game', ()=>{
-    it('should get a move chosen randomly',()=>{
+    fit('should get a move chosen randomly',()=>{
       let weHaveAWinner = false;
-      
+      const start = Date.now();
       while(!weHaveAWinner){
+        //console.log(ai.currentState.moveHistory);
         const chosenMove = ai.randomAIFirstMove();
-        console.log(chosenMove);
+
+        console.log({
+          player1:{
+            score:player1.currentScore, 
+            nodes:player1.numNodesPlaced,
+            hasLongestNetwork:player1.hasLongestNetwork,
+            playersLongestNetwork:player1.currentLongest,
+            numberOfTilesCaptured:player1.numTilesCaptured},
+          player2:{
+            score:player2.currentScore, 
+            nodes:player2.numNodesPlaced,
+            hasLongestNetwork:player2.hasLongestNetwork,
+            playersLongestNetwork:player2.currentLongest,
+            numberOfTilesCaptured:player2.numTilesCaptured},
+          moveJustplayed:chosenMove});
+        
+      
+
         if(ai.currentState.player1.currentScore >= 10){
           console.log('Player 1 Wins!');
           weHaveAWinner = true;
@@ -30,6 +49,8 @@ describe('AiService', () => {
           weHaveAWinner = true;
         }
       }
+
+      console.log('time elapsed',Date.now() - start);
 
     });
   });
@@ -46,9 +67,9 @@ describe('AiService', () => {
   describe('Get Monte Carlo Move', ()=>{
     it('should get a move chosen by the Monte Carlo Search Tree',()=>{
 
-      // ai.currentState.currentPlayer = -1;
-      // const chosenMove = ai.getMove(';3;4');
-      // console.log(chosenMove);
+      ai.currentState.currentPlayer = -1;
+      const chosenMove = ai.getMove(';3;4');
+      console.log(chosenMove);
 
     });
   });

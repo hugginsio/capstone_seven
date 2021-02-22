@@ -728,10 +728,7 @@ export class CoreLogic {
   static determineIfWinner(state:State):number {
     let result = -Infinity;
 
-    //Probably need to take into account possible draws with less than ten points
-    if(state.player1.currentScore >= 10 && state.player2.currentScore >= 10){
-      result = 0;
-    }
+
 
     if(state.currentPlayer === 1){
       if(state.player1.currentScore >= 10){
@@ -757,16 +754,18 @@ export class CoreLogic {
     newBoard.branches = state.gameBoard.branches.slice();
 
     
+
     const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2, state.inInitialMoves);
 
     if(state.currentPlayer === 1){
-      CoreLogic.applyMove(move,newState,state.currentPlayer, Owner.PLAYERONE);
+      CoreLogic.applyMove(move,newState,newState.currentPlayer, Owner.PLAYERONE);
     }
     else{
-      CoreLogic.applyMove(move,newState,state.currentPlayer, Owner.PLAYERTWO);
+      CoreLogic.applyMove(move,newState,newState.currentPlayer, Owner.PLAYERTWO);
     }
 
-    
+
+
     //currentPlayer is 1 for player 1 and -1 for player 2
     if(newState.moveHistory.length !== 2){
       newState.currentPlayer = -newState.currentPlayer;
@@ -911,37 +910,46 @@ export class CoreLogic {
     }
 
     //longest Network
-
+    //console.log(affectedPlayer.ownedBranches.length);
     for (let i = 0; i < affectedPlayer.ownedBranches.length; i++) {
       affectedPlayer.currentLength = 0;
-     
-      CoreLogic.checkForLongest(state,state.currentPlayer, affectedPlayer.ownedBranches[i]);
+      affectedPlayer.branchScanner = [];
+    
+      CoreLogic.checkForLongest(state,affectedPlayer, affectedPlayer.ownedBranches[i]);
+      //console.log('currentlength',affectedPlayer.currentLength);
+      //console.log('currentlongest',affectedPlayer.currentLongest);
       
     }
+    
 
-    if(state.currentPlayer === 1){
-      if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
-        state.player1.hasLongestNetwork = true;
-        state.player1.currentScore += 2;
-        if (state.player2.hasLongestNetwork === true) {
-          state.player2.hasLongestNetwork = false;
-          state.player2.currentScore -= 2;
-        }
-      }
-    }else{
-      if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
-        state.player2.hasLongestNetwork = true;
-        state.player2.currentScore += 2;
-        if (state.player1.hasLongestNetwork === true) {
-          state.player1.hasLongestNetwork = false;
-          state.player1.currentScore -= 2;
-        }
+    if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
+      state.player1.hasLongestNetwork = true;
+      state.player1.currentScore += 2;
+      if (state.player2.hasLongestNetwork === true) {
+        state.player2.hasLongestNetwork = false;
+        state.player2.currentScore -= 2;
       }
     }
 
-    
-   
-    
+    else if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
+      state.player2.hasLongestNetwork = true;
+      state.player2.currentScore += 2;
+      if (state.player1.hasLongestNetwork === true) {
+        state.player1.hasLongestNetwork = false;
+        state.player1.currentScore -= 2;
+      }
+    }
+    else if(state.player1.currentLongest === state.player2.currentLongest){
+      if(state.player1.hasLongestNetwork){
+        state.player1.hasLongestNetwork = false;
+        state.player1.currentScore -= 2;
+      }
+      if(state.player2.hasLongestNetwork){
+        state.player2.hasLongestNetwork = false;
+        state.player2.currentScore -= 2;
+      }
+    }
+  
     //captured tile 
     let numberTilesCapturedAtEndOfTurn = 0;
 
@@ -949,10 +957,12 @@ export class CoreLogic {
       state.tilesBeingChecked =[];
       if(CoreLogic.checkForCaptures(state,state.currentPlayer, i)){
         numberTilesCapturedAtEndOfTurn++;
+        //CoreLogic.tileExhaustion(state,i, false);
       } 
     }
     affectedPlayer.currentScore += numberTilesCapturedAtEndOfTurn - affectedPlayer.numTilesCaptured;
     affectedPlayer.numTilesCaptured = numberTilesCapturedAtEndOfTurn;
+    
   }
 
   static tileExhaustion(state:State,tileNum: number, setAsExhausted: boolean): void {
@@ -1075,14 +1085,7 @@ export class CoreLogic {
     }
   }
 
-  static checkForLongest(state:State, currentPlayer: number, currentBranch: number): void {
-    let branchOwner:Player;
-    if(currentPlayer === 1){
-      branchOwner = state.player1;
-    }
-    else{
-      branchOwner = state.player2;
-    }
+  static checkForLongest(state:State, branchOwner: Player, currentBranch: number): void {
 
     if (branchOwner.branchScanner.includes(currentBranch) === true) {
       return;
@@ -1143,43 +1146,43 @@ export class CoreLogic {
     if (state.currentPlayer === 1) {
 
       if (branch1Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch1'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch1'));
       }
       if (branch2Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch2'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch2'));
       }
       if (branch3Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch3'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch3'));
       }
       if (branch4Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch4'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch4'));
       }
       if (branch5Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch5'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch5'));
       }
       if (branch6Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch6'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch6'));
       }
     }
 
     else {
       if (branch1Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch1'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch1'));
       }
       if (branch2Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch2'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch2'));
       }
       if (branch3Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch3'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch3'));
       }
       if (branch4Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch4'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch4'));
       }
       if (branch5Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch5'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch5'));
       }
       if (branch6Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, state.currentPlayer, state.gameBoard.branches[currentBranch].getBranch('branch6'));
+        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch6'));
       }
     }
 
