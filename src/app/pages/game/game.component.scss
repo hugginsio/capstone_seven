@@ -201,11 +201,11 @@
   }
 
   .menu-btn {
-    @apply p-5 bg-gray-600 border-4 border-gray-900 flex-grow cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
+    @apply p-3 bg-gray-600 border-4 border-gray-900 flex-grow cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
   }
 
   .menu-btn-light {
-    @apply p-5 bg-gray-900 border-4 border-gray-600 flex-grow cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
+    @apply p-3 bg-gray-900 border-4 border-gray-600 flex-grow cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
   }
 
   .resource-button-trade {

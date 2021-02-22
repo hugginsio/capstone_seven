@@ -1,0 +1,9 @@
+@layer components {
+  .button {
+    @apply p-3 pointer-events-auto cursor-pointer bg-gray-600 items-center border-4 border-gray-900 hover:border-gray-300 focus:outline-none transition-colors duration-100;
+  }
+
+  .button-light {
+    @apply p-3 pointer-events-auto cursor-pointer bg-gray-900 items-center border-4 border-gray-600 hover:border-gray-300 focus:outline-none transition-colors duration-100;
+  }
+}

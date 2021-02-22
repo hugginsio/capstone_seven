@@ -68,6 +68,7 @@ export class GameComponent implements OnInit {
       const magic = message.magic;
 
       if (status === CommCode.END_GAME && player && magic) {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         this.gameOverText = `${magic} Won!`;
         this.winningPlayer = player;
         this.gameOver = true;
@@ -97,7 +98,7 @@ export class GameComponent implements OnInit {
         }
 
         if (this.gameManager.getBoard().tiles[id].maxNodes !== 0) {
-          result += `-${this.gameManager.getBoard().tiles[id].maxNodes}`;
+          result += `-${this.gameManager.getBoard().tiles[id].maxNodes.toString()}`;
         }
 
         break;

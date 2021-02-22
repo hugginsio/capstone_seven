@@ -37,4 +37,8 @@ export class PlayerShardComponent implements OnInit, OnChanges {
   triggerEndTurn(): void {
     this.actionSubject.next(this.generateMessage(CommCode.END_TURN));
   }
+
+  triggerUndo(): void {
+    // this.actionSubject.next(this.generateMessage(CommCode.END_TURN));
+  }
 }

@@ -16,12 +16,17 @@
     </div>
   </div>
   <!-- These should only be visible if the player is both local and human -->
-  <div class="flex space-x-3 text-center"
+  <div class="flex flex-col space-y-3 pt-3 text-center"
     *ngIf="true">
-    <div class="p-3 pointer-events-auto cursor-pointer" (click)="triggerTrading()">
-      Trading
+    <div class="flex space-x-3">
+      <div class="button-light" (click)="triggerUndo()">
+        Undo
+      </div>
+      <div class="button-light" (click)="triggerTrading()">
+        Trade
+      </div>
     </div>
-    <div class="p-3 pointer-events-auto cursor-pointer" (click)="triggerEndTurn()">
+    <div class="button-light" (click)="triggerEndTurn()">
       End Turn
     </div>
   </div>

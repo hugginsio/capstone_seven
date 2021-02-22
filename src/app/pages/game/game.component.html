@@ -2,7 +2,7 @@
 
   <!-- Top Right Menu Container -->
   <div class="absolute left-3 top-3 flex space-x-3">
-    <div class="bg-gray-600 p-3 text-center items-center justify-center cursor-pointer" (click)="togglePaused()">
+    <div class="menu-btn p-3" (click)="togglePaused()">
       <p>Pause</p>
     </div>
   </div>
@@ -18,7 +18,7 @@
       <div class="mx-auto flex flex-col spacing-y-5 w-1/3">
         <p class="text-5xl font-bold tracking-wide p-5">Paused</p>
         <div class="flex space-x-5 w-full">
-          <div class="menu-btn w-1/3 pointer-events-auto" routerLink="/menu/landing">
+          <div class="menu-btn-light w-1/3 pointer-events-auto" routerLink="/menu/landing">
             <div>
               <p>Exit</p>
             </div>

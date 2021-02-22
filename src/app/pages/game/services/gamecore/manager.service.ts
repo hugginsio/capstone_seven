@@ -155,6 +155,9 @@ export class ManagerService {
         endPlayer.numTilesCaptured++;
         this.gameBoard.tiles[i].setCapturedBy(this.getCurrentPlayerEnum());
       }
+
+      // empty tilesBeingChecked before looping
+      this.tilesBeingChecked.splice(0, this.tilesBeingChecked.length);
     }
 
     // empties tilesBeingChecked for next function call
