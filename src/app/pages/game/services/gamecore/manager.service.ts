@@ -167,9 +167,13 @@ export class ManagerService {
     }
 
     for (let i = 0; i < endPlayer.ownedBranches.length; i++) {
-      this.checkForLongest(endPlayer, endPlayer.ownedBranches[i]);
+      endPlayer.currentLength = 0;
+      endPlayer.branchScanner = [];
+    
+      this.checkForLongest(endPlayer, endPlayer.ownedBranches[i]);      
     }
-
+    
+    // If player One just got the longest network
     if ((this.playerOne.currentLongest > this.playerTwo.currentLongest) && this.playerOne.hasLongestNetwork === false) {
       this.playerOne.hasLongestNetwork = true;
       this.playerOne.currentScore += 2;
@@ -177,12 +181,25 @@ export class ManagerService {
         this.playerTwo.hasLongestNetwork = false;
         this.playerTwo.currentScore -= 2;
       }
-    } else if ((this.playerTwo.currentLongest > this.playerOne.currentLongest) && this.playerTwo.hasLongestNetwork === false) {
+    } 
+    // If Player Two just got the Longest network
+    else if ((this.playerTwo.currentLongest > this.playerOne.currentLongest) && this.playerTwo.hasLongestNetwork === false) {
       this.playerTwo.hasLongestNetwork = true;
       this.playerTwo.currentScore += 2;
       if (this.playerOne.hasLongestNetwork === true) {
         this.playerOne.hasLongestNetwork = false;
         this.playerOne.currentScore -= 2;
+      }
+    }
+    //If the longest network for each player is equal in size
+    else if(this.playerOne.currentLongest === this.playerTwo.currentLongest){
+      if(this.playerOne.hasLongestNetwork){
+        this.playerOne.hasLongestNetwork = false;
+        this.playerOne.currentScore -= 2;
+      }
+      if(this.playerTwo.hasLongestNetwork){
+        this.playerTwo.hasLongestNetwork = false;
+        this.playerTwo.currentScore -= 2;
       }
     }
 
@@ -744,7 +761,7 @@ export class ManagerService {
 
   checkForLongest(branchOwner: Player, currentBranch: number): void {
 
-    if (branchOwner.branchScanner.includes(currentBranch) === false) {
+    if (branchOwner.branchScanner.includes(currentBranch) === true) {
       return;
     }
 
@@ -836,7 +853,7 @@ export class ManagerService {
       }
     }
 
-    branchOwner.branchScanner.pop();
+    //branchOwner.branchScanner.pop();
   }
 
   checkForCaptures(capturer: Player, checkTile: number): boolean {
