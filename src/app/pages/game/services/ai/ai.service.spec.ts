@@ -16,7 +16,7 @@ describe('AiService', () => {
   const ai = new AiService(gameBoard,player1,player2,'easy');
 
   describe('Play full random Game', ()=>{
-    fit('should get a move chosen randomly',()=>{
+    it('should get a move chosen randomly',()=>{
       let weHaveAWinner = false;
       const start = Date.now();
       while(!weHaveAWinner){
@@ -65,10 +65,12 @@ describe('AiService', () => {
   });
 
   describe('Get Monte Carlo Move', ()=>{
-    it('should get a move chosen by the Monte Carlo Search Tree',()=>{
+    fit('should get a move chosen by the Monte Carlo Search Tree',()=>{
 
       ai.currentState.currentPlayer = -1;
+      const start = Date.now();
       const chosenMove = ai.getMove(';3;4');
+      console.log(Date.now() - start);
       console.log(chosenMove);
 
     });

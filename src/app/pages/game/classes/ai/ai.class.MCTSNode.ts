@@ -55,8 +55,8 @@ export class MCTSNode {
     }
 
     const childNode = new MCTSNode(this,move,childState,unexpandedMoves);
-    this.childrenKeys.push(move);
-    this.childrenValues.push({node:childNode});
+    const index = this.childrenKeys.indexOf(move);
+    this.childrenValues[index] = {node:childNode};
 
     return childNode;
   }
@@ -98,7 +98,7 @@ export class MCTSNode {
     if(this.childrenKeys. length < 1){
       result = true;
     }
- 
+
 
     return result;
   }

@@ -10,7 +10,6 @@ interface GameStatistics {
 }
 
 
-
 export class MonteCarlo {
   gameBoard:GameBoard;
   exploreParameter:number;
@@ -132,6 +131,9 @@ export class MonteCarlo {
   }
 
   selectMCTSNode(state:State):MCTSNode{
+    //console.log(state.hash());
+    //console.log(this.mctsNodeKeys.indexOf(state.hash()));
+    //console.log(this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())]);
     let node = this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())];
     //console.log(node);
     if(node === undefined){

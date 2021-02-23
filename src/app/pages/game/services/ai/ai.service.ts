@@ -15,7 +15,7 @@ export class AiService {
   explorationParameter:number;
   currentState:State;
   difficulty:string;
-
+  
   constructor(gameBoard:GameBoard, player1:Player,player2:Player, difficulty:string) {
     this.explorationParameter = 1.41;
     this.mcts = new MonteCarlo(gameBoard, this.explorationParameter);
@@ -26,16 +26,15 @@ export class AiService {
   }
 
   getMove(previousMove:string):string{
-    console.log('before first next state');
+    //console.log('before first next state');
     this.currentState = CoreLogic.nextState(this.currentState, previousMove);
 
-    const stats = this.mcts.runSearch(this.currentState, 5);
+    const stats = this.mcts.runSearch(this.currentState, 6);
     
     console.log(stats);
     const result = this.mcts.calculateBestMove(this.currentState,'max');
 
-    console.log(result);
-    console.log('Before last next state');
+    //console.log('Before last next state');
     this.currentState = CoreLogic.nextState(this.currentState, result);
 
     return result;
