@@ -10,7 +10,7 @@ describe('LandingComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ GameComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

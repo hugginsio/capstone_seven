@@ -1,0 +1,31 @@
+# Each line is a file pattern followed by one or more owners.
+
+# Unmatched Files
+* @kjhx
+
+# Repository Configuration Files
+/.github/** @kjhx
+.gitignore @kjhx
+
+# UI & Graphics
+*.html @kjhx @GPiershale
+*.scss @kjhx @GPiershale
+/src/assets/** @kjhx @GPiershale
+
+# AI Module Directory
+# /src/app/pages/game/classes/ai/** @jdhat @ccohu
+# /src/app/pages/game/services/ai/** @jdhat @ccohu
+
+# Core Module Directory
+# /src/app/pages/game/classes/gamecore/** @GPiershale @hmargy @jdhat
+# /src/app/pages/game/services/gamecore/** @GPiershale @hmargy @jdhat
+
+# Networking Module Directory
+# /src/app/pages/game/services/networking/** @ccohu @hmargy
+
+# Project Configuration Files
+!/package.lock.json
+*.json @kjhx
+*.config.js @kjhx
+*.conf.js @kjhx
+*.webpack.js @kjhx

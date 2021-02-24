@@ -6,6 +6,7 @@
     "outDir": "../out-tsc/app",
     "noImplicitAny": true,
     "removeComments": true,
+    "resolveJsonModule": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "types": []
