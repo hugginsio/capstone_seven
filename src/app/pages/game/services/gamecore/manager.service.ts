@@ -148,12 +148,14 @@ export class ManagerService {
           }
         }
         endPlayer.numTilesCaptured++;
+        endPlayer.currentScore++;
       }
       else {
         // allows for reversing of captured tiles to exhausted tile state
-        if(this.gameBoard.tiles[i].capturedBy != otherOwner) {
-          this.gameBoard.tiles[i].setCapturedBy("NONE");  // <-------------------------------------------------------------------------------------------FIXME: absolutely no idea
+        if (this.gameBoard.tiles[i].capturedBy != otherOwner) {
+          this.gameBoard.tiles[i].setCapturedBy(Owner.NONE);
           if (this.gameBoard.tiles[i].capturedBy != currentTileOwner) {
+            endPlayer.numTilesCaptured--;
             endPlayer.currentScore--;
             if (this.gameBoard.tiles[i].passivelyExhausted){
               this.gameBoard.tiles[i].activelyExhausted = true;
@@ -201,6 +203,7 @@ export class ManagerService {
       this.checkForLongest(endPlayer, endPlayer.ownedBranches[i]);
     }
 
+    // updates scores and player data regarding hasLongestNetwork
     if ((this.playerOne.currentLongest > this.playerTwo.currentLongest) && this.playerOne.hasLongestNetwork === false) {
       this.playerOne.hasLongestNetwork = true;
       this.playerOne.currentScore += 2;
@@ -216,6 +219,17 @@ export class ManagerService {
       if (this.playerOne.hasLongestNetwork === true) {
         this.playerOne.hasLongestNetwork = false;
         this.playerOne.currentScore -= 2;
+      }
+    }
+
+    else if (this.playerOne.currentLongest === this.playerTwo.currentLongest) {
+      if (this.playerOne.hasLongestNetwork === true) {
+        this.playerOne.hasLongestNetwork = false;
+        this.playerOne.currentScore -= 2;
+      }
+      else if (this.playerTwo.hasLongestNetwork === true) {
+        this.playerTwo.hasLongestNetwork = false;
+        this.playerTwo.currentScore -= 2;
       }
     }
 
@@ -675,12 +689,12 @@ export class ManagerService {
       else
         branchOwner = "PLAYERTWO";
 
-      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch1')].getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch2')].getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch3')].getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch4')].getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch5')].getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch6')].getOwner() === branchOwner) {
+      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(1)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(2)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(3)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(4)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(5)].getOwner() === branchOwner ||
+      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(6)].getOwner() === branchOwner) {
 
         if (currentPlayer == this.playerOne) {
     
@@ -878,46 +892,69 @@ export class ManagerService {
   }   
 
   tileExhaustion(tileNum: number, setAsExhausted: boolean): void {
-    // check for whichever nodes are already on the tile and decrement their *color*PerTurn
+    // check for whichever nodes are already on the tile and decrement/increment their *color*PerTurn
     const currentTileColor = this.gameBoard.tiles[tileNum].color;
-    let functionName;
-    if (setAsExhausted){
-      // gonna disable ESLint here and assume this works
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      functionName = this.decrementResource;
-    }
-    else{
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      functionName = this.incrementResource;
-    }
     
-    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(this.playerOne, currentTileColor);
-    }
-    else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName(this.playerTwo, currentTileColor);
+    if (setAsExhausted) {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
+        this.decrementResource(this.playerOne, currentTileColor);
+      }
+      else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
+        this.decrementResource(this.playerTwo, currentTileColor);
+      }
+  
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
+        this.decrementResource(this.playerOne, currentTileColor);
+      }
+      else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
+        this.decrementResource( this.playerTwo, currentTileColor);
+      }
+  
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
+        this.decrementResource(this.playerOne, currentTileColor);
+      }
+      else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
+        this.decrementResource(this.playerTwo, currentTileColor);
+      }
+      
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
+        this.decrementResource(this.playerOne, currentTileColor);
+      }
+      else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
+        this.decrementResource(this.playerTwo, currentTileColor);
+      }
     }
 
-    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(this.playerOne, currentTileColor);
-    }
-    else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName( this.playerTwo, currentTileColor);
-    }
-
-    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(this.playerOne, currentTileColor);
-    }
-    else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName(this.playerTwo, currentTileColor);
+    else {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
+        this.incrementResource(this.playerOne, currentTileColor);
+      }
+      else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
+        this.incrementResource(this.playerTwo, currentTileColor);
+      }
+  
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
+        this.incrementResource(this.playerOne, currentTileColor);
+      }
+      else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
+        this.incrementResource( this.playerTwo, currentTileColor);
+      }
+  
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
+        this.incrementResource(this.playerOne, currentTileColor);
+      }
+      else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
+        this.incrementResource(this.playerTwo, currentTileColor);
+      }
+      
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
+        this.incrementResource(this.playerOne, currentTileColor);
+      }
+      else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
+        this.incrementResource(this.playerTwo, currentTileColor);
+      }
     }
     
-    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(this.playerOne, currentTileColor);
-    }
-    else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName(this.playerTwo, currentTileColor);
-    }
   }
 
   decrementResource(nodeOwner: Player, currentTileColor: TileColor): void {
@@ -979,70 +1016,70 @@ export class ManagerService {
       branchOwner.currentLongest = branchOwner.currentLength;
     }
 
-    if (this.gameBoard.branches[currentBranch].getBranch('branch1') != -1) {
-      branch1Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch1')].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch(1) != -1) {
+      branch1Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(1)].getOwner();
     }
 
-    if (this.gameBoard.branches[currentBranch].getBranch('branch2') != -1) {
-      branch2Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch2')].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch(2) != -1) {
+      branch2Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(2)].getOwner();
     }
     
-    if (this.gameBoard.branches[currentBranch].getBranch('branch3') != -1) {
-      branch3Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch3')].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch(3) != -1) {
+      branch3Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(3)].getOwner();
     }
 
-    if (this.gameBoard.branches[currentBranch].getBranch('branch4') != -1) {
-      branch4Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch4')].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch(4) != -1) {
+      branch4Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(4)].getOwner();
     }
 
-    if (this.gameBoard.branches[currentBranch].getBranch('branch5') != -1) {
-      branch5Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch5')].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch(5) != -1) {
+      branch5Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(5)].getOwner();
     }
     
-    if (this.gameBoard.branches[currentBranch].getBranch('branch6') != -1) {
-      branch6Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch6')].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch(6) != -1) {
+      branch6Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(6)].getOwner();
     }
     
     if (branchOwner === this.playerOne) {
 
       if (branch1Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch1'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(1));
       }
       if (branch2Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch2'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(2));
       }
       if (branch3Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch3'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(3));
       }
       if (branch4Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch4'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(4));
       }
       if (branch5Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch5'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(5));
       }
       if (branch6Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch6'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(6));
       }
     }
 
     else {
       if (branch1Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch1'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(1));
       }
       if (branch2Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch2'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(2));
       }
       if (branch3Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch3'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(3));
       }
       if (branch4Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch4'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(4));
       }
       if (branch5Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch5'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(5));
       }
       if (branch6Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch6'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(6));
       }
     }
 
