@@ -7,7 +7,8 @@ export class Tile {
   nodeCount: number;
   maxNodes: number;
 
-  isExhausted: boolean;
+  activelyExhausted: boolean;
+  passivelyExhausted: boolean;
 
   capturedBy: Owner;
 
@@ -37,7 +38,9 @@ export class Tile {
     this.color = TileColor.BLANK;
     this.nodeCount = 0;
     this.maxNodes = 0;      // how to deal with maxNodes if its just the blank... do i set this in the constuctor in general?
-    this.isExhausted = false;
+    this.activelyExhausted = false;
+    this.passivelyExhausted = false;
+    
     this.capturedBy = Owner.NONE;
 
     this.topLeftNode = tln;
@@ -71,13 +74,6 @@ export class Tile {
     return this.maxNodes;
   }
 
-  getIsExhaused(): boolean {
-    return this.isExhausted;
-  }
-
-  setIsExhaused(value: boolean): void {
-    this.isExhausted = value;
-  }
 
   getCapturedBy(): Owner {
     return this.capturedBy;
