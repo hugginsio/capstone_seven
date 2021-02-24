@@ -17,13 +17,13 @@ export class GameComponent implements OnInit {
   public isTrading: boolean;
   public gameOver: boolean;
   public gameOverText: string;
-  private winningPlayer: Player;
+  public winningPlayer: Player;
 
-  private readonly commLink = new Subject<CommPackage>();
+  public readonly commLink = new Subject<CommPackage>();
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private readonly gameManager: ManagerService,
+    public readonly gameManager: ManagerService,
     private readonly storageService: LocalStorageService
   ) {
     // Set defaults for modal triggers
@@ -37,7 +37,7 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     // ✨ ANIMATIONS ✨
-    this.scrollToBottom();
+    // this.scrollToBottom();
 
     // Fetch the board seed set in memory
     const boardSeed = this.storageService.fetch('board-seed');
@@ -219,9 +219,9 @@ export class GameComponent implements OnInit {
     this.isTrading = false;
   }
 
-  scrollToBottom() {
+  scrollToBottom(): void {
     (function smoothscroll() {
-      const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const currentScroll = document.documentElement.scrollTop || document.body.scrollTop; // TODO: find bottom variables
       if (currentScroll > 0) {
         window.requestAnimationFrame(smoothscroll);
         window.scrollTo(0, currentScroll - (currentScroll / 8));

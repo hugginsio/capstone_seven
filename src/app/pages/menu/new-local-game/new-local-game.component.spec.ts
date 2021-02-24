@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { NewLocalGameComponent } from './new-local-game.component';
 
 describe('NewLocalGameComponent', () => {
@@ -8,6 +8,7 @@ describe('NewLocalGameComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [ RouterTestingModule ],
       declarations: [ NewLocalGameComponent ]
     })
       .compileComponents();
@@ -24,11 +25,11 @@ describe('NewLocalGameComponent', () => {
   });
 
   it('changeGameMode should flip game modes', () => {
-    // Assumes vs AI is the default mode.
-    component.changeGameMode();
-    expect(component.gameModeString).toEqual(component.pvp);
+    // Assumes PVP as default.
     component.changeGameMode();
     expect(component.gameModeString).toEqual(component.pva);
+    component.changeGameMode();
+    expect(component.gameModeString).toEqual(component.pvp);
   });
 
   it('changeAiDifficulty should flip AI difficulty', () => {
