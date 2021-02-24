@@ -675,12 +675,12 @@ export class ManagerService {
       else
         branchOwner = "PLAYERTWO";
 
-      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(1)].getOwner() === branchOwner ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(2)].getOwner() === branchOwner ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(3)].getOwner() === branchOwner ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(4)].getOwner() === branchOwner ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(5)].getOwner() === branchOwner ||
-      this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch(6)].getOwner() === branchOwner) {
+      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch1')].getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch2')].getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch3')].getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch4')].getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch5')].getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch6')].getOwner() === branchOwner) {
 
         if (currentPlayer == this.playerOne) {
     
@@ -979,70 +979,70 @@ export class ManagerService {
       branchOwner.currentLongest = branchOwner.currentLength;
     }
 
-    if (this.gameBoard.branches[currentBranch].getBranch(1) != -1) {
-      branch1Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(1)].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch('branch1') != -1) {
+      branch1Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch1')].getOwner();
     }
 
-    if (this.gameBoard.branches[currentBranch].getBranch(2) != -1) {
-      branch2Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(2)].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch('branch2') != -1) {
+      branch2Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch2')].getOwner();
     }
     
-    if (this.gameBoard.branches[currentBranch].getBranch(3) != -1) {
-      branch3Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(3)].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch('branch3') != -1) {
+      branch3Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch3')].getOwner();
     }
 
-    if (this.gameBoard.branches[currentBranch].getBranch(4) != -1) {
-      branch4Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(4)].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch('branch4') != -1) {
+      branch4Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch4')].getOwner();
     }
 
-    if (this.gameBoard.branches[currentBranch].getBranch(5) != -1) {
-      branch5Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(5)].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch('branch5') != -1) {
+      branch5Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch5')].getOwner();
     }
     
-    if (this.gameBoard.branches[currentBranch].getBranch(6) != -1) {
-      branch6Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch(6)].getOwner();
+    if (this.gameBoard.branches[currentBranch].getBranch('branch6') != -1) {
+      branch6Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch6')].getOwner();
     }
     
     if (branchOwner === this.playerOne) {
 
       if (branch1Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(1));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch1'));
       }
       if (branch2Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(2));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch2'));
       }
       if (branch3Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(3));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch3'));
       }
       if (branch4Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(4));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch4'));
       }
       if (branch5Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(5));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch5'));
       }
       if (branch6Owner === "PLAYERONE") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(6));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch6'));
       }
     }
 
     else {
       if (branch1Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(1));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch1'));
       }
       if (branch2Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(2));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch2'));
       }
       if (branch3Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(3));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch3'));
       }
       if (branch4Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(4));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch4'));
       }
       if (branch5Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(5));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch5'));
       }
       if (branch6Owner === "PLAYERTWO") {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch(6));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch6'));
       }
     }
 
