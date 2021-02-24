@@ -10,7 +10,7 @@ describe('PlayerShardComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ PlayerShardComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
