@@ -17,8 +17,8 @@ export class Player {
    
   hasTraded: boolean;
 
-  ownedBranches: [number];
-  branchScanner: [number];
+  ownedBranches: Array<number>;
+  branchScanner: Array<number>;
   currentLength: number;
   currentLongest: number;
   hasLongestNetwork: boolean;
@@ -29,12 +29,20 @@ export class Player {
   currentScore: number;
 
   constructor() {
-    this.redResources = 0;
-    this.blueResources = 0;
-    this.greenResources = 0;
-    this.yellowResources = 0;
+    this.redResources = 1;
+    this.blueResources = 1;
+    this.greenResources = 2;
+    this.yellowResources = 2;
+
+    this.redPerTurn = 0;
+    this.bluePerTurn = 0;
+    this.greenPerTurn = 0;
+    this.yellowPerTurn = 0;
 
     this.hasTraded = false;
+
+    this.ownedBranches = [];
+    this.branchScanner = [];
 
     this.currentLength = 0;
     this.currentLongest = 0;
