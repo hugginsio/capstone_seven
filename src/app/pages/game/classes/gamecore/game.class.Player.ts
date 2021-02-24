@@ -1,7 +1,7 @@
 import { PlayerType } from '../../enums/game.enums';
 
 
-// what needs to be private here??
+
 export class Player {
   type: PlayerType;
   
@@ -33,6 +33,11 @@ export class Player {
     this.blueResources = 0;
     this.greenResources = 0;
     this.yellowResources = 0;
+
+    this.redPerTurn = 0;
+    this.bluePerTurn = 0;
+    this.greenPerTurn = 0;
+    this.yellowPerTurn = 0;
 
     this.hasTraded = false;
 
