@@ -6,8 +6,8 @@ export class Tile {
   nodeCount: number;
   maxNodes: number;
 
-  activelyExhausted: boolean;
-  passivelyExhausted: boolean;
+  isExhausted: boolean;
+  //passivelyExhausted: boolean;
 
   capturedBy: Owner;
 

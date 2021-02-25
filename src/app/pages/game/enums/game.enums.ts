@@ -20,5 +20,6 @@ export enum Owner {
 
 export enum GameType {
   NETWORK = "NETWORK",
-  AI = "AI"
+  AI = "AI",
+  HUMAN = "LOCAL"
 }

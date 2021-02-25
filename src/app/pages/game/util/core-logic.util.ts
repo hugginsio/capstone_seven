@@ -536,7 +536,7 @@ export class CoreLogic {
         
         if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount >
             state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].maxNodes) {
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].activelyExhausted = true;
+          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].isExhausted = true;
           CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getTopRightTile(), true);
         }
       }
@@ -546,7 +546,7 @@ export class CoreLogic {
         
         if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].nodeCount >
             state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].maxNodes) {
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].activelyExhausted = true;
+          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].isExhausted = true;
           CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getBottomRightTile(), true);
         }
       }
@@ -556,7 +556,7 @@ export class CoreLogic {
 
         if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].nodeCount >
             state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].maxNodes) {
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].activelyExhausted = true;
+          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].isExhausted = true;
           CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getBottomLeftTile(), true);
         }
       }
@@ -566,7 +566,7 @@ export class CoreLogic {
 
         if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount >
             state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].maxNodes) {
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].activelyExhausted = true;
+          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].isExhausted = true;
           CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getTopLeftTile(), true);
         }
       }
