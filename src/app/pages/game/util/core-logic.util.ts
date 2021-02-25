@@ -1,5 +1,6 @@
 // Defines helper methods for core game logic
 
+
 import { State } from '../classes/ai/ai.class.State';
 import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
 import { Player } from '../classes/gamecore/game.class.Player';
@@ -21,31 +22,21 @@ export class CoreLogic {
     newBoard.tiles = gameBoard.tiles.slice();
     newBoard.nodes = gameBoard.nodes.slice();
     newBoard.branches = gameBoard.branches.slice();
+    const clonedPlayer1 = CoreLogic.clonePlayer(player1);
+    const clonedPlayer2 = CoreLogic.clonePlayer(player2);
     
-    return new State([], newBoard, currentPlayer, player1, player2,true);
+    return new State([], newBoard, currentPlayer, clonedPlayer1, clonedPlayer2,true);
   }
 
   static getLegalMoves(state:State): string[] {
     
     const result:string[] = [];
+    //console.log(state.inInitialMoves);
+    
     if(state.inInitialMoves){
       //initial moves
 
       const nodePlacements = [];
-      /*the initial moves the ai will treat the players as having enough resources
-           for one node and one branch without the ability to trade*/
-      if(state.currentPlayer === 1){
-        state.player1.greenResources = 2;
-        state.player1.yellowResources = 2;
-        state.player1.redResources = 1;
-        state.player1.blueResources = 1;
-      }
-      else{
-        state.player2.greenResources = 2;
-        state.player2.yellowResources = 2;
-        state.player2.redResources = 1;
-        state.player2.blueResources = 1;
-      }
 
       //get starting move possibilities for player 1
       for(const node of state.gameBoard.nodes){
@@ -724,23 +715,33 @@ export class CoreLogic {
     return result;
   }
 
-  //return 1 if winner, -1 if loser, 0 if draw, -Infinity if there is no winner yet
+  //return 1 if player 1 is the winner, -1 if Player 2 is the winner, 0  if there is no winner yet
   static determineIfWinner(state:State):number {
-    let result = -Infinity;
+    let result = 0;
 
+    //console.log(state.currentPlayer,state.player1,state.player2);
 
-
-    if(state.currentPlayer === 1){
-      if(state.player1.currentScore >= 10){
-        result = state.currentPlayer;
-      }
-      
+    if(state.player1.currentScore >= 10){
+      result = 1;
     }
-    else{
-      if(state.player2.currentScore >= 10){
-        result = state.currentPlayer;
+    else if(state.player2.currentScore >= 10){
+      result = -1;
+    }
+    else if(!state.inInitialMoves){
+      if(state.currentPlayer === 1 && (state.player1.redResources === 0 && state.player1.redPerTurn === 0 &&
+        state.player1.blueResources === 0 && state.player1.bluePerTurn === 0 && 
+        state.player1.greenResources === 0 && state.player1.greenPerTurn === 0 &&
+        state.player1.yellowResources === 0 && state.player1.yellowPerTurn === 0)){
+        result = -1;
+      }
+      else if(state.currentPlayer === -1 && (state.player2.redResources === 0 && state.player2.redPerTurn === 0 &&
+      state.player2.blueResources === 0 && state.player2.bluePerTurn === 0 && 
+      state.player2.greenResources === 0 && state.player2.greenPerTurn === 0 &&
+      state.player2.yellowResources === 0 && state.player2.yellowPerTurn === 0)){
+        result = 1;
       }
     }
+    
 
     return result;
   }
@@ -752,16 +753,15 @@ export class CoreLogic {
     newBoard.tiles = state.gameBoard.tiles.slice();
     newBoard.nodes = state.gameBoard.nodes.slice();
     newBoard.branches = state.gameBoard.branches.slice();
-
-    
+   
 
     const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2, state.inInitialMoves);
 
     if(state.currentPlayer === 1){
-      CoreLogic.applyMove(move,newState,newState.currentPlayer, Owner.PLAYERONE);
+      CoreLogic.applyMove(move,newState,newState.player1, Owner.PLAYERONE);
     }
     else{
-      CoreLogic.applyMove(move,newState,newState.currentPlayer, Owner.PLAYERTWO);
+      CoreLogic.applyMove(move,newState,newState.player2, Owner.PLAYERTWO);
     }
 
 
@@ -796,16 +796,12 @@ export class CoreLogic {
     return newState;
   }
 
-  static applyMove(move:string, state:State, currentPlayer:number, owner:Owner):void{
-    let affectedPlayer:Player;
-    if(currentPlayer === 1){
-      affectedPlayer = state.player1;
-    }
-    else{
-      affectedPlayer = state.player2;
-    }
-
+  static applyMove(move:string, state:State, affectedPlayer:Player, owner:Owner):void{
+    
     const moveObj:Move = CoreLogic.stringToMove(move);
+    //console.log(moveObj);
+
+    //console.log(affectedPlayer);
     for(const resource of moveObj.tradedIn){
       if(resource === 'G'){
         affectedPlayer.greenResources--;
@@ -834,19 +830,30 @@ export class CoreLogic {
       affectedPlayer.blueResources++;
     }
 
+    //console.log(affectedPlayer);
+
     for(const branch of moveObj.branchesPlaced){
       state.gameBoard.branches[branch].setOwner(owner);
       affectedPlayer.ownedBranches.push(branch);
-      affectedPlayer.redResources--;
-      affectedPlayer.blueResources--;
+      if(!state.inInitialMoves){
+        affectedPlayer.redResources--;
+        affectedPlayer.blueResources--;
+      }
+      
     }
 
     for(const node of moveObj.nodesPlaced){
       state.gameBoard.nodes[node].setOwner(owner);
-      affectedPlayer.greenResources -= 2;
-      affectedPlayer.yellowResources -=2;
+      if(!state.inInitialMoves){
+        affectedPlayer.greenResources -= 2;
+        affectedPlayer.yellowResources -=2;
+      }
+      
       affectedPlayer.currentScore++;
       affectedPlayer.numNodesPlaced++;
+
+
+      
 
       if (state.gameBoard.nodes[node].getTopRightTile() !== -1) {
         state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount++;
@@ -899,7 +906,6 @@ export class CoreLogic {
         if(!state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].isExhausted){
           CoreLogic.incrementResource(affectedPlayer,state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].color);
         }
-
 
         if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount >
             state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].maxNodes) {
@@ -964,6 +970,8 @@ export class CoreLogic {
     affectedPlayer.numTilesCaptured = numberTilesCapturedAtEndOfTurn;
     
   }
+
+  
 
   static tileExhaustion(state:State,tileNum: number, setAsExhausted: boolean): void {
     // check for whichever nodes are already on the tile and decrement their *color*PerTurn
@@ -1266,6 +1274,7 @@ export class CoreLogic {
     return captured;
   }
 
+ 
   static moveToString(move:Move):string{
     let result = '';
     
@@ -1454,5 +1463,34 @@ export class CoreLogic {
     uniqueStringArray.forEach(someFunction);
     
     return uniqueArray;
+  }
+
+  static clonePlayer(player:Player):Player{
+    const result = new Player();
+
+    result.redResources = player.redResources;
+    result.blueResources = player.blueResources;
+    result.greenResources = player.greenResources;
+    result.yellowResources = player.yellowResources;
+
+    result.redPerTurn = player.redPerTurn;
+    result.bluePerTurn = player.bluePerTurn;
+    result.greenPerTurn = player.greenPerTurn;
+    result.yellowPerTurn = player.yellowPerTurn;
+
+    result.hasTraded = player.hasTraded;
+
+    result.currentLength = player.currentLength;
+    result.currentLongest = player.currentLongest;
+    result.hasLongestNetwork = player.hasLongestNetwork;
+    result.ownedBranches = player.ownedBranches.slice();
+    result.branchScanner = player.branchScanner.slice();
+
+    result.numTilesCaptured = player.numTilesCaptured;
+    result.numNodesPlaced = player.numNodesPlaced;
+
+    result.currentScore = player.currentScore;
+
+    return result;
   }
 }

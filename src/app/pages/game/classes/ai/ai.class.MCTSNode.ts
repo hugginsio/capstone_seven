@@ -38,7 +38,9 @@ export class MCTSNode {
 
   getChildNode(move:string):MCTSNode{
     const child = this.childrenValues[this.childrenKeys.indexOf(move)];
-
+    //console.log(move);
+    //console.log(this.childrenKeys.indexOf(move));
+    //console.log(this.childrenValues[this.childrenKeys.indexOf(move)]);
     if(child === undefined){
       throw new Error("There is no such move!");
     }
@@ -95,9 +97,31 @@ export class MCTSNode {
   isLeaf():boolean {
     let result = false;
     
-    if(this.childrenKeys. length < 1){
+
+    if(!this.state.inInitialMoves && 
+      (this.state.player1.redResources === 0 && this.state.player1.redPerTurn === 0 &&
+      this.state.player1.blueResources === 0 && this.state.player1.bluePerTurn === 0 && 
+      this.state.player1.greenResources === 0 && this.state.player1.greenPerTurn === 0 &&
+      this.state.player1.yellowResources === 0 && this.state.player1.yellowPerTurn === 0) &&
+      (this.state.player2.redResources === 0 && this.state.player2.redPerTurn === 0 &&
+        this.state.player2.blueResources === 0 && this.state.player2.bluePerTurn === 0 && 
+        this.state.player2.greenResources === 0 && this.state.player2.greenPerTurn === 0 &&
+        this.state.player2.yellowResources === 0 && this.state.player2.yellowPerTurn === 0)){
       result = true;
+
     }
+    // else{
+    //   if (this.state.currentPlayer === 1){
+    //     if(this.state.player1.currentScore >= 10){
+    //       result = true;
+    //     }
+    //   }
+    //   else {
+    //     if(this.state.player2.currentScore >= 10){
+    //       result = true;
+    //     }
+    //   }
+    // }
 
 
     return result;

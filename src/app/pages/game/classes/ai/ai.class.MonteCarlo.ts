@@ -2,11 +2,11 @@ import { GameBoard } from '../gamecore/game.class.GameBoard';
 import { MCTSNode } from './ai.class.MCTSNode';
 import { State } from './ai.class.State';
 import { CoreLogic } from '../../util/core-logic.util';
+import { state } from '@angular/animations';
 
 interface GameStatistics {
   runtime: number,
-  simulations: number,
-  draws: number
+  simulations: number
 }
 
 
@@ -45,7 +45,7 @@ export class MonteCarlo {
   runSearch(state:State, timeout = 3):GameStatistics{
     this.makeMCTSNode(state);
 
-    let draws = 0;
+    
     let totalSims = 0;
     const end = Date.now() + timeout * 1000;
 
@@ -54,21 +54,21 @@ export class MonteCarlo {
       
       let winner = CoreLogic.determineIfWinner(node.state);
 
-      if(!node.isLeaf() && winner === -Infinity){
+      if(!node.isLeaf() && winner === 0){
         node = this.expand(node);
         winner = this.simulate(node);
       }
 
       this.backPropagate(node,winner);
 
-      
-      if(winner === 0){
-        draws++;
-      }
       totalSims++;
+
+
+      
+
     }
 
-    return {runtime: timeout, simulations:totalSims, draws:draws};
+    return {runtime: timeout, simulations:totalSims};
   }
 
   calculateBestMove(state:State, policy:string):string{
@@ -177,13 +177,17 @@ export class MonteCarlo {
     let state = node.state;
     let winner = CoreLogic.determineIfWinner(state);
 
-    while(winner === -Infinity){
+    //console.log(state.currentPlayer,state.player1,state.player2);
+    while(winner === 0){
       const moves = CoreLogic.getLegalMoves(state);
       //console.log(state);
       //console.log(moves);
       const move = moves[Math.floor(Math.random() * moves.length)];
       state = CoreLogic.nextState(state, move);
-      winner = CoreLogic.determineIfWinner(state);    
+      winner = CoreLogic.determineIfWinner(state);  
+     
+      console.log(state);
+        
     }
 
     return winner;
@@ -196,6 +200,7 @@ export class MonteCarlo {
       if(node.state.isPlayer(-winner)){
         node.wins += 1;
       }
+      
       node = node.parent as MCTSNode;
     }
   }

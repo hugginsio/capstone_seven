@@ -1,4 +1,3 @@
-import { executablePath } from 'puppeteer';
 import { State } from '../classes/ai/ai.class.State';
 import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
 import { Player } from '../classes/gamecore/game.class.Player';
@@ -369,7 +368,10 @@ describe('CoreLogic', () => {
 
   describe('Apply move', ()=>{
     it('should apply move string to current state',()=>{
+      console.log('Apply Move');
+
       const gameBoard = new GameBoard();
+      gameBoard.randomizeColorsAndMaxNodes();
       gameBoard.branches[12].setOwner(Owner.PLAYERONE);
       gameBoard.branches[13].setOwner(Owner.PLAYERONE);
       gameBoard.nodes[9].setOwner(Owner.PLAYERONE);
@@ -378,15 +380,15 @@ describe('CoreLogic', () => {
       const player1 = new Player();
       const player2 = new Player();
 
-      player1.redPerTurn = 2;
-      player1.bluePerTurn = 2;
-      player1.greenPerTurn = 2;
-      player2.yellowPerTurn = 2;
+      // player1.redPerTurn = 2;
+      // player1.bluePerTurn = 2;
+      // player1.greenPerTurn = 2;
+      // player2.yellowPerTurn = 2;
 
       player1.redResources = 1;
       player1.blueResources = 2;
       player1.greenResources = 2;
-      player2.yellowResources = 5;
+      player1.yellowResources = 5;
 
       player1.ownedBranches = [12,13,9];
 
@@ -394,15 +396,16 @@ describe('CoreLogic', () => {
 
       const moveString = 'Y,Y,Y,R;8;8,18';
 
-      const state = new State([],gameBoard,1,player1,player2,false);
+      const state = new State(['','','',''],gameBoard,1,player1,player2,false);
 
-      CoreLogic.applyMove(moveString,state,state.currentPlayer,Owner.PLAYERONE);
+      CoreLogic.applyMove(moveString,state,state.player1,Owner.PLAYERONE);
 
       expect(state.gameBoard.nodes[8].getOwner()).toEqual(Owner.PLAYERONE);
       expect(state.gameBoard.branches[8].getOwner()).toEqual(Owner.PLAYERONE);
       expect(state.gameBoard.branches[18].getOwner()).toEqual(Owner.PLAYERONE);
       expect(state.player1.currentScore).toEqual(4);
       expect(state.player1.numTilesCaptured).toEqual(0);
+      console.log(state.player1.redPerTurn,state.player1.bluePerTurn,state.player1.greenPerTurn,state.player1.yellowPerTurn);
 
       
     });
@@ -411,6 +414,7 @@ describe('CoreLogic', () => {
   describe('Apply move with capture and longest network', ()=>{
     it('should apply move string to current state',()=>{
       const gameBoard = new GameBoard();
+      gameBoard.randomizeColorsAndMaxNodes();
       gameBoard.branches[12].setOwner(Owner.PLAYERONE);
       gameBoard.branches[13].setOwner(Owner.PLAYERONE);
       gameBoard.branches[23].setOwner(Owner.PLAYERONE);
@@ -441,7 +445,7 @@ describe('CoreLogic', () => {
 
       const state = new State([],gameBoard,1,player1,player2,false);
 
-      CoreLogic.applyMove(moveString,state,state.currentPlayer,Owner.PLAYERONE);
+      CoreLogic.applyMove(moveString,state,state.player1,Owner.PLAYERONE);
 
       expect(state.gameBoard.nodes[8].getOwner()).toEqual(Owner.PLAYERONE);
       expect(state.gameBoard.branches[8].getOwner()).toEqual(Owner.PLAYERONE);
@@ -458,7 +462,7 @@ describe('CoreLogic', () => {
 
   describe('Next State Initial Moves', ()=>{
     it('should progress the state through the four initial moves',()=>{
-
+      console.log('Next State Initital Moves');
       const gameBoard = new GameBoard();
       const player1 = new Player();
       const player2 = new Player();
@@ -492,9 +496,9 @@ describe('CoreLogic', () => {
 
       const afterFinalInitialTurn = CoreLogic.nextState(turn4,fourthMoveString);
 
-      console.log(afterFinalInitialTurn.player1.ownedBranches);
-      console.log(afterFinalInitialTurn.gameBoard.branches[18].getOwner());
-      console.log(afterFinalInitialTurn.gameBoard.branches[24].getOwner());
+      //console.log(afterFinalInitialTurn.player1.ownedBranches);
+      //console.log(afterFinalInitialTurn.gameBoard.branches[18].getOwner());
+      //console.log(afterFinalInitialTurn.gameBoard.branches[24].getOwner());
 
       expect(afterFinalInitialTurn.gameBoard.nodes[16].getOwner()).toEqual(Owner.PLAYERONE);
       expect(afterFinalInitialTurn.gameBoard.branches[24].getOwner()).toEqual(Owner.PLAYERONE);
@@ -503,6 +507,12 @@ describe('CoreLogic', () => {
       expect(afterFinalInitialTurn.player1.hasLongestNetwork).toBeTrue();
       expect(afterFinalInitialTurn.player1.currentLongest).toEqual(2);
       expect(afterFinalInitialTurn.player2.currentLongest).toEqual(1);
+
+
+      console.log(player1);
+      console.log(afterFinalInitialTurn.player1);
+      console.log(player2);
+      console.log(afterFinalInitialTurn.player2);
 
 
     });
@@ -517,9 +527,9 @@ describe('CoreLogic', () => {
 
       player1.redResources = 2;
       player1.blueResources = 1;
-      player1.greenPerTurn = 3;
+      player1.greenResources = 3;
       player1.yellowResources = 4;
-      const startTime = Date.now();
+      //const startTime = Date.now();
 
       const start = new State(['G,Y,Y,B;9;18,28','G,Y,Y,B;9;18,28','G,Y,Y,B;9;18,28','G,Y,Y,B;9;18,28'],gameBoard,1,player1,player2,false);
       const firstMoveString = 'G,Y,Y,B;9;18,28';
@@ -531,23 +541,30 @@ describe('CoreLogic', () => {
       expect(turn1.gameBoard.branches[28].getOwner()).toEqual(Owner.PLAYERONE);
       expect(turn1.currentPlayer).toEqual(-1);
       expect(turn1.player1.ownedBranches).toContain(18);
-      console.log(turn1.player1.ownedBranches);
+      
 
-      player2.redResources = 2;
-      player2.blueResources = 1;
-      player2.greenPerTurn = 4;
-      player2.yellowResources = 1;
+      turn1.player2.redResources = 2;
+      turn1.player2.blueResources = 1;
+      turn1.player2.greenResources = 4;
+      turn1.player2.yellowResources = 1;
 
       const secondMoveString = 'G,G,R,Y;14;23';
 
       const turn2 = CoreLogic.nextState(turn1,secondMoveString);
-      const endTime = Date.now() - startTime;
-      console.log('next state',endTime);
+      //const endTime = Date.now() - startTime;
+      //console.log('next state',endTime);
 
       expect(turn2.gameBoard.nodes[14].getOwner()).toEqual(Owner.PLAYERTWO);
       expect(turn2.gameBoard.branches[23].getOwner()).toEqual(Owner.PLAYERTWO);
       expect(turn2.currentPlayer).toEqual(1);
 
+      console.log(player1);
+      console.log(turn1.player1);
+      console.log(turn2.player1);
+
+      console.log(player2);
+      console.log(turn1.player2);
+      console.log(turn2.player2);
 
     });
   });
@@ -562,7 +579,7 @@ describe('CoreLogic', () => {
       const state = new State([],gameBoard,1,player1,player2,true);
 
       const moves = CoreLogic.getLegalMoves(state);
-      //console.log(moves);
+      console.log(moves);
 
 
     });
@@ -634,5 +651,4 @@ describe('CoreLogic', () => {
       //console.log(startingState);
     });
   });
-
 });
