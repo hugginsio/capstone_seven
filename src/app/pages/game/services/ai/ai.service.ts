@@ -27,12 +27,7 @@ export class AiService {
 
   getAIFirstMove():string{
 
-    const stats = this.mcts.runSearch(this.currentState, 5.95);
-
-    //console.log(this.currentState);
-    
-    console.log(stats);
-    const result = this.mcts.calculateBestMove(this.currentState,'max');
+    const result = this.mcts.selectMove(this.currentState);
 
     
 
@@ -45,10 +40,7 @@ export class AiService {
     //console.log('before first next state');
     this.currentState = CoreLogic.nextState(this.currentState, previousMove);
 
-    const stats = this.mcts.runSearch(this.currentState, 5.8);
-    
-    console.log(stats);
-    const result = this.mcts.calculateBestMove(this.currentState,'max');
+    const result = this.mcts.selectMove(this.currentState);
 
     //console.log('Before last next state');
     this.currentState = CoreLogic.nextState(this.currentState, result);

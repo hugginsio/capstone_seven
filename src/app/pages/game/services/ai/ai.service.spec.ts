@@ -104,7 +104,7 @@ describe('AiService', () => {
     });
   });
 
-  describe('Get First Monte Carlo Move', ()=>{
+  fdescribe('Get First Monte Carlo Move', ()=>{
     it('should get a move chosen by the Monte Carlo Search Tree for the first move',()=>{
 
       const gameBoard = new GameBoard();

@@ -604,6 +604,29 @@ describe('CoreLogic', () => {
     });
   });
 
+  describe('Get legal moves for initial turns cloned', ()=>{
+    it('should get all legal moves for the first cloned turn',()=>{
+
+      const gameBoard = new GameBoard();
+      const player1 = new Player();
+      const player2 = new Player();
+
+      const state = new State([],gameBoard,1,player1,player2,true);
+
+      const clonedState = state.cloneState();
+
+      const moves = CoreLogic.getLegalMoves(state);
+      console.log(moves);
+
+      const clonedMoves = CoreLogic.getLegalMoves(clonedState);
+      console.log(clonedMoves);
+
+      
+
+
+    });
+  });
+
   describe('Get legal moves for regular turn', ()=>{
     it('should get all legal moves for a regular turn',()=>{
 

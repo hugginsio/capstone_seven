@@ -4,6 +4,9 @@
 import { State } from '../classes/ai/ai.class.State';
 import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
 import { Player } from '../classes/gamecore/game.class.Player';
+import { Tile } from '../classes/gamecore/game.class.Tile';
+import { Branch } from '../classes/gamecore/game.class.Branch';
+import { Node } from '../classes/gamecore/game.class.Node';
 import { Owner, TileColor } from '../enums/game.enums';
 
 
@@ -18,10 +21,7 @@ interface Move {
 export class CoreLogic {
 
   static getStartingState(player1:Player, player2:Player, gameBoard:GameBoard, currentPlayer:number):State{
-    const newBoard = new GameBoard();
-    newBoard.tiles = gameBoard.tiles.slice();
-    newBoard.nodes = gameBoard.nodes.slice();
-    newBoard.branches = gameBoard.branches.slice();
+    const newBoard = CoreLogic.cloneGameBoard(gameBoard);
     const clonedPlayer1 = CoreLogic.clonePlayer(player1);
     const clonedPlayer2 = CoreLogic.clonePlayer(player2);
     
@@ -37,7 +37,7 @@ export class CoreLogic {
       //initial moves
 
       const nodePlacements = [];
-
+      
       //get starting move possibilities for player 1
       for(const node of state.gameBoard.nodes){
         if(node.getOwner() === Owner.NONE){
@@ -232,10 +232,7 @@ export class CoreLogic {
 
         
 
-        const branchBoard = new GameBoard();
-        branchBoard.tiles = state.gameBoard.tiles.slice();
-        branchBoard.branches = state.gameBoard.branches.slice();
-        branchBoard.nodes = state.gameBoard.nodes.slice();
+        const branchBoard = CoreLogic.cloneGameBoard(state.gameBoard);
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
           possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
@@ -243,10 +240,7 @@ export class CoreLogic {
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
 
-        const nodeBoard = new GameBoard();
-        nodeBoard.tiles = state.gameBoard.tiles.slice();
-        nodeBoard.branches = state.gameBoard.branches.slice();
-        nodeBoard.nodes = state.gameBoard.nodes.slice();
+        const nodeBoard = CoreLogic.cloneGameBoard(state.gameBoard);
 
         for(const branchCombo of possibleBranchCombinations){
           for(const branchIndex of branchCombo){
@@ -327,10 +321,7 @@ export class CoreLogic {
 
         
 
-        const branchBoard = new GameBoard();
-        branchBoard.tiles = state.gameBoard.tiles.slice();
-        branchBoard.branches = state.gameBoard.branches.slice();
-        branchBoard.nodes = state.gameBoard.nodes.slice();
+        const branchBoard = CoreLogic.cloneGameBoard(state.gameBoard);
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
           possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
@@ -338,10 +329,7 @@ export class CoreLogic {
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
 
-        const nodeBoard = new GameBoard();
-        nodeBoard.tiles = state.gameBoard.tiles.slice();
-        nodeBoard.branches = state.gameBoard.branches.slice();
-        nodeBoard.nodes = state.gameBoard.nodes.slice();
+        const nodeBoard = CoreLogic.cloneGameBoard(state.gameBoard);
 
         for(const branchCombo of possibleBranchCombinations){
           for(const branchIndex of branchCombo){
@@ -423,10 +411,7 @@ export class CoreLogic {
 
         
 
-        const branchBoard = new GameBoard();
-        branchBoard.tiles = state.gameBoard.tiles.slice();
-        branchBoard.branches = state.gameBoard.branches.slice();
-        branchBoard.nodes = state.gameBoard.nodes.slice();
+        const branchBoard = CoreLogic.cloneGameBoard(state.gameBoard);
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
           possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
@@ -434,10 +419,7 @@ export class CoreLogic {
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
 
-        const nodeBoard = new GameBoard();
-        nodeBoard.tiles = state.gameBoard.tiles.slice();
-        nodeBoard.branches = state.gameBoard.branches.slice();
-        nodeBoard.nodes = state.gameBoard.nodes.slice();
+        const nodeBoard = CoreLogic.cloneGameBoard(state.gameBoard);
 
         for(const branchCombo of possibleBranchCombinations){
           for(const branchIndex of branchCombo){
@@ -519,10 +501,7 @@ export class CoreLogic {
 
         
 
-        const branchBoard = new GameBoard();
-        branchBoard.tiles = state.gameBoard.tiles.slice();
-        branchBoard.branches = state.gameBoard.branches.slice();
-        branchBoard.nodes = state.gameBoard.nodes.slice();
+        const branchBoard = CoreLogic.cloneGameBoard(state.gameBoard);
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
           possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
@@ -530,10 +509,7 @@ export class CoreLogic {
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
 
-        const nodeBoard = new GameBoard();
-        nodeBoard.tiles = state.gameBoard.tiles.slice();
-        nodeBoard.branches = state.gameBoard.branches.slice();
-        nodeBoard.nodes = state.gameBoard.nodes.slice();
+        const nodeBoard = CoreLogic.cloneGameBoard(state.gameBoard);
 
         for(const branchCombo of possibleBranchCombinations){
           for(const branchIndex of branchCombo){
@@ -600,10 +576,7 @@ export class CoreLogic {
 
       
 
-      const branchBoard = new GameBoard();
-      branchBoard.tiles = state.gameBoard.tiles.slice();
-      branchBoard.branches = state.gameBoard.branches.slice();
-      branchBoard.nodes = state.gameBoard.nodes.slice();
+      const branchBoard = CoreLogic.cloneGameBoard(state.gameBoard);
 
       for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
         possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
@@ -611,10 +584,7 @@ export class CoreLogic {
 
       const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
 
-      const nodeBoard = new GameBoard();
-      nodeBoard.tiles = state.gameBoard.tiles.slice();
-      nodeBoard.branches = state.gameBoard.branches.slice();
-      nodeBoard.nodes = state.gameBoard.nodes.slice();
+      const nodeBoard = CoreLogic.cloneGameBoard(state.gameBoard);
 
       for(const branchCombo of possibleBranchCombinations){
         for(const branchIndex of branchCombo){
@@ -749,10 +719,7 @@ export class CoreLogic {
   static nextState(state:State, move:string):State{
     const newHistory = state.moveHistory.slice();
     newHistory.push(move);
-    const newBoard = new GameBoard();
-    newBoard.tiles = state.gameBoard.tiles.slice();
-    newBoard.nodes = state.gameBoard.nodes.slice();
-    newBoard.branches = state.gameBoard.branches.slice();
+    const newBoard = CoreLogic.cloneGameBoard(state.gameBoard);
    
 
     const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2, state.inInitialMoves);
@@ -1492,5 +1459,97 @@ export class CoreLogic {
     result.currentScore = player.currentScore;
 
     return result;
+  }
+
+  static cloneGameBoard(gameBoard:GameBoard):GameBoard{
+    const clonedGameBoard = new GameBoard();
+
+    const clonedTiles:Tile[] = [];
+    for(let i = 0; i < gameBoard.tiles.length; i++){
+      clonedTiles.push(CoreLogic.cloneTile(gameBoard.tiles[i]));
+    }
+
+    const clonedNodes:Node[] = [];
+    for(let i = 0; i < gameBoard.nodes.length; i++){
+      clonedNodes.push(CoreLogic.cloneNode(gameBoard.nodes[i]));
+    }
+
+    const clonedBranches:Branch[] = [];
+    for(let i = 0; i < gameBoard.branches.length; i++){
+      clonedBranches.push(CoreLogic.cloneBranch(gameBoard.branches[i]));
+    }
+
+    clonedGameBoard.tiles = clonedTiles;
+    clonedGameBoard.nodes = clonedNodes;
+    clonedGameBoard.branches = clonedBranches;
+
+    return clonedGameBoard;
+
+  }
+
+  static cloneTile(tile:Tile):Tile{
+
+    const clonedTile = new Tile();
+
+    clonedTile.color = tile.color;
+    clonedTile.isExhausted = tile.isExhausted;
+    clonedTile.maxNodes = tile.maxNodes;
+    clonedTile.nodeCount = tile.nodeCount;
+
+    clonedTile.setTopLeftNode(tile.getTopLeftNode());
+    clonedTile.setTopRightNode(tile.getTopRightNode());
+    clonedTile.setBottomLeftNode(tile.getBottomLeftNode());
+    clonedTile.setBottomRightNode(tile.getBottomRightNode());
+
+    clonedTile.setTopBranch(tile.getTopBranch());
+    clonedTile.setLeftBranch(tile.getLeftBranch());
+    clonedTile.setBottomBranch(tile.getBottomBranch());
+    clonedTile.setRightBranch(tile.getRightBranch());
+
+    clonedTile.setTopTile(tile.getTopTile());
+    clonedTile.setLeftTile(tile.getLeftTile());
+    clonedTile.setBottomTile(tile.getBottomTile());
+    clonedTile.setRightTile(tile.getRightTile());
+
+    return clonedTile;
+
+  }
+
+  static cloneBranch(branch:Branch):Branch{
+    const clonedBranch = new Branch();
+
+    clonedBranch.setOwner(branch.getOwner());
+
+    clonedBranch.setBranch("branch1",branch.getBranch("branch1"));
+    clonedBranch.setBranch("branch2",branch.getBranch("branch2"));
+    clonedBranch.setBranch("branch3",branch.getBranch("branch3"));
+    clonedBranch.setBranch("branch4",branch.getBranch("branch4"));
+    clonedBranch.setBranch("branch5",branch.getBranch("branch5"));
+    clonedBranch.setBranch("branch6",branch.getBranch("branch6"));
+
+    return clonedBranch;
+  }
+
+  static cloneNode(node:Node):Node{
+    const clonedNode = new Node();
+
+    clonedNode.setOwner(node.getOwner());
+    
+    clonedNode.setRedProvided(node.getRedProvided());
+    clonedNode.setBlueProvided(node.getBlueProvided());
+    clonedNode.setGreenProvided(node.getGreenProvided());
+    clonedNode.setYellowProvided(node.getYellowProvided());
+
+    clonedNode.setTopBranch(node.getTopBranch());
+    clonedNode.setLeftBranch(node.getLeftBranch());
+    clonedNode.setBottomBranch(node.getBottomBranch());
+    clonedNode.setRightBranch(node.getRightBranch());
+
+    clonedNode.setTopLeftTile(node.getTopLeftTile());
+    clonedNode.setTopRightTile(node.getTopRightTile());
+    clonedNode.setBottomRightTile(node.getBottomRightTile());
+    clonedNode.setBottomLeftTile(node.getBottomLeftTile());
+
+    return clonedNode;
   }
 }
