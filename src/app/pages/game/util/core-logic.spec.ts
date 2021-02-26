@@ -651,4 +651,21 @@ describe('CoreLogic', () => {
       //console.log(startingState);
     });
   });
+
+  describe('Clone GameBoard', ()=>{
+    it('should Clone the gameboard',()=>{
+
+      const gameBoard = new GameBoard();
+      gameBoard.randomizeColorsAndMaxNodes();
+
+      const clonedGameBoard = CoreLogic.cloneGameBoard(gameBoard);
+
+      gameBoard.nodes[0].setOwner(Owner.PLAYERONE);
+      console.log(gameBoard.nodes);
+      console.log(clonedGameBoard.nodes);
+
+      //console.log(startingState);
+    });
+  });
+
 });

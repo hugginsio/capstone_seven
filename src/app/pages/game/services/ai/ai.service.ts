@@ -45,7 +45,7 @@ export class AiService {
     //console.log('before first next state');
     this.currentState = CoreLogic.nextState(this.currentState, previousMove);
 
-    const stats = this.mcts.runSearch(this.currentState, 5.8);
+    const stats = this.mcts.runSearch(this.currentState, 5.95);
     
     console.log(stats);
     const result = this.mcts.calculateBestMove(this.currentState,'max');

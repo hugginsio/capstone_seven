@@ -54,7 +54,7 @@ export class MonteCarlo {
       
       let winner = CoreLogic.determineIfWinner(node.state);
 
-      if(!node.isLeaf() && winner === 0){
+      if(winner === 0){
         node = this.expand(node);
         winner = this.simulate(node);
       }
@@ -62,10 +62,6 @@ export class MonteCarlo {
       this.backPropagate(node,winner);
 
       totalSims++;
-
-
-      
-
     }
 
     return {runtime: timeout, simulations:totalSims};
@@ -186,7 +182,7 @@ export class MonteCarlo {
       state = CoreLogic.nextState(state, move);
       winner = CoreLogic.determineIfWinner(state);  
      
-      console.log(state);
+      //console.log(state);
         
     }
 
