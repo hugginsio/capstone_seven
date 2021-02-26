@@ -99,16 +99,16 @@ export class ManagerService {
         }
         // assigns tile node limits
         switch (boardStringArray[i].substring(1)) {
-          case 1:
+          case "1":
             this.gameBoard.tiles[i].maxNodes = 1;
             break;
-          case 2:
+          case "2":
             this.gameBoard.tiles[i].maxNodes = 2;
             break;
-          case 3:
+          case "3":
             this.gameBoard.tiles[i].maxNodes = 3;
             break;
-          case 0:
+          case "0":
             this.gameBoard.tiles[i].maxNodes = 0;
             break;
         }
@@ -287,16 +287,6 @@ export class ManagerService {
         this.playerOne.hasLongestNetwork = false;
         this.playerOne.currentScore -= 2;
       } else if (this.playerTwo.hasLongestNetwork === true) {
-        this.playerTwo.hasLongestNetwork = false;
-        this.playerTwo.currentScore -= 2;
-      }
-    } else if (this.playerOne.currentLongest === this.playerTwo.currentLongest) { //If the longest network for each player is equal in size
-      if (this.playerOne.hasLongestNetwork){
-        this.playerOne.hasLongestNetwork = false;
-        this.playerOne.currentScore -= 2;
-      }
-
-      if (this.playerTwo.hasLongestNetwork){
         this.playerTwo.hasLongestNetwork = false;
         this.playerTwo.currentScore -= 2;
       }
@@ -1103,7 +1093,6 @@ export class ManagerService {
       return captured;
     }
 
-    const currentPlayer = capturer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
     const otherPlayer = capturer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
     const currentTile = this.gameBoard.tiles[checkTile];
     const tileTopBranch = this.gameBoard.branches[currentTile.getTopBranch()];
