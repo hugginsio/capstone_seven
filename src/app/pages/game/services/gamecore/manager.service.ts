@@ -80,7 +80,7 @@ export class ManagerService {
 
       for (let i = 0; i < boardStringArray.length; i++) {
         // assigns tile colors
-        switch (boardStringArray[i].subString(0, 1)) {
+        switch (boardStringArray[i].substring(0, 1)) {
           case 'R':
             this.gameBoard.tiles[i].color = TileColor.RED;
             break;
@@ -98,7 +98,7 @@ export class ManagerService {
             break;
         }
         // assigns tile node limits
-        switch (boardStringArray[i].subString(1)) {
+        switch (boardStringArray[i].substring(1)) {
           case 1:
             this.gameBoard.tiles[i].maxNodes = 1;
             break;
