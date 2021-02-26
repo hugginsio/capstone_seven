@@ -36,8 +36,7 @@ export class Tile {
     this.color = TileColor.BLANK;
     this.nodeCount = 0;
     this.maxNodes = 0; 
-    this.activelyExhausted = false;
-    this.passivelyExhausted = false;
+    this.isExhausted = false;
     
     this.capturedBy = Owner.NONE;
 
