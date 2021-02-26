@@ -104,7 +104,27 @@ describe('AiService', () => {
     });
   });
 
-  fdescribe('Get First Monte Carlo Move', ()=>{
+  fdescribe('Play full random Game', ()=>{
+    it('should get a move chosen randomly',()=>{
+
+      const gameBoard = new GameBoard();
+      gameBoard.randomizeColorsAndMaxNodes();
+      const player1 = new Player();
+      const player2 = new Player();
+
+      const ai = new AiService(gameBoard,player1,player2);
+
+      const start = Date.now();
+      
+      const chosenMove = ai.randomAIFirstMove();
+
+      console.log(`TIME: ${Date.now() - start}ms`);
+      console.log(`chosenmove: ${chosenMove}`);
+
+    });
+  });
+
+  describe('Get First Monte Carlo Move', ()=>{
     it('should get a move chosen by the Monte Carlo Search Tree for the first move',()=>{
 
       const gameBoard = new GameBoard();

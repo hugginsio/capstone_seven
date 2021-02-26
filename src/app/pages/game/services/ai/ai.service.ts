@@ -52,7 +52,42 @@ export class AiService {
 
     const moves = CoreLogic.getLegalMoves(this.currentState);
 
-    const resultIndex = Math.floor(Math.random()*moves.length);
+    const moveWins = Array(moves.length).fill(0);
+
+    const end = Date.now() + 5.5 * 1000;
+
+    while (Date.now() < end){
+      let weHaveAWinner = false;
+      let playState = new State(this.currentState.moveHistory,CoreLogic.cloneGameBoard(this.currentState.gameBoard),this.currentState.currentPlayer,this.currentState.player1, this.currentState.player2,this.currentState.inInitialMoves);
+      let newMoves = CoreLogic.getLegalMoves(playState);
+      let chosenMoveIndex =  Math.floor(Math.random()*moves.length);
+      const originalMoveIndex = chosenMoveIndex;
+      while(!weHaveAWinner){
+        
+       
+        
+        const chosenMove = newMoves[chosenMoveIndex];
+        playState = CoreLogic.nextState(playState,chosenMove);
+        const winner = CoreLogic.determineIfWinner(this.currentState);
+        newMoves = CoreLogic.getLegalMoves(playState);
+        chosenMoveIndex =  Math.floor(Math.random()*newMoves.length);
+
+        //console.log(`current winner state ${winner}`);
+
+        if(winner === 1){
+          //console.log('Player 1 Wins!');
+          weHaveAWinner = true;
+          moveWins[originalMoveIndex]++;
+        }
+        else if(winner === -1){
+          //console.log('Player 2 Wins!');
+          weHaveAWinner = true;
+        }
+
+      }
+    }
+
+    const resultIndex = Math.max(...moveWins);
  
     const result = moves[resultIndex];
 
