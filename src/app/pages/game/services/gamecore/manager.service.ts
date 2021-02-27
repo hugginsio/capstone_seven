@@ -26,6 +26,7 @@ export class ManagerService {
   private readonly ai: AiService;
   public stack: Array<Array<string | number>> = [];
   private tilesBeingChecked: number[];
+  public boardString: string;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -139,7 +140,20 @@ export class ManagerService {
         }
       }
     }
+    this.serializeBoard();
   }
+
+  serializeBoard(): void {
+    let currentBoardString = '';
+    for (let i = 0; i < this.gameBoard.tiles.length; i++)
+    {
+      currentBoardString += this.gameBoard.tiles[i].color.toString();
+      currentBoardString += this.gameBoard.tiles[i].maxNodes.toString();
+      currentBoardString += ',';
+    }
+    this.boardString = currentBoardString;
+  }
+
 
   applyMove(moveString: string){
     let currentPlayer;
@@ -242,6 +256,8 @@ export class ManagerService {
         // AIStringMove = this.ai.randomAIMove(pastMoveString);
       }
 
+      // print out AIStringMove
+      // apply move to board
       this.applyMove(AIStringMove);
     }
 
