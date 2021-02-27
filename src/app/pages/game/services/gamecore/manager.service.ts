@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { GameType, Owner, PlayerType, TileColor } from '../../enums/game.enums';
+import { Move } from '../../util/core-logic.util';
+import { CoreLogic } from '../../util/core-logic.util';
+import { AiService } from '../../services/ai/ai.service';
 
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Player } from '../../classes/gamecore/game.class.Player';
@@ -13,11 +16,15 @@ import { LocalStorageService } from '../../../../shared/services/local-storage/l
   providedIn: 'root'
 })
 export class ManagerService {
+  private currentGameMode: GameType;
+  private currentPlayer: Owner;
+  private firstPlayer: string;
   private gameBoard: GameBoard;
+  private gameType: GameType;
   private playerOne: Player;
   private playerTwo: Player;
-  private gameType: GameType;
-  private currentPlayer: Owner;
+  private readonly ai: AiService;
+  public stack: Array<Array<string | number>> = [];
   private tilesBeingChecked: number[];
 
   public readonly commLink = new Subject<CommPackage>();
@@ -33,13 +40,31 @@ export class ManagerService {
 
     this.storageService.setContext('game');
     const gameMode = this.storageService.fetch('mode');
+    this.firstPlayer = this.storageService.fetch('firstplayer');
     this.playerOne.type = PlayerType.HUMAN;
+
     if (gameMode === 'pvp') {
+      this.playerOne.type = PlayerType.HUMAN;
       this.playerTwo.type = PlayerType.HUMAN;
     } else if (gameMode === 'pva') {
+      this.currentGameMode = GameType.AI;
       this.playerTwo.type = PlayerType.AI;
     } else {
+      this.currentGameMode = GameType.NETWORK;
       this.playerTwo.type = PlayerType.NETWORK;
+    }
+
+    // hey, guys. grayson here if you need me. :)
+    if (this.firstPlayer === 'one') {
+      this.currentPlayer = Owner.PLAYERONE;
+      if (this.currentGameMode === GameType.AI) {
+        this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
+      }
+    } else if (this.firstPlayer === 'two') {
+      this.currentPlayer = Owner.PLAYERTWO;
+      if (this.currentGameMode === GameType.AI) {
+        this.ai = new AiService(this.gameBoard, this.playerTwo, this.playerOne);
+      }
     }
   }
 
@@ -116,17 +141,65 @@ export class ManagerService {
     }
   }
 
-  startGame(gameType: GameType, playerNum = 0): void {
-    // assigns human/ai roles in AI game
-    if (this.gameType === GameType.AI) {
-      if (playerNum == 1) {
-        this.playerTwo.type = PlayerType.AI;
-        this.playerOne.type = PlayerType.HUMAN;
-      } else if (playerNum == 2) {
-        this.playerOne.type = PlayerType.AI;
-        this.playerTwo.type = PlayerType.HUMAN;
+  applyMove(moveString: string){
+    let currentPlayer;
+    if (this.playerOne.type === PlayerType.HUMAN) {
+      currentPlayer = this.playerTwo;
+    }
+    else {
+      currentPlayer = this.playerOne;
+    }
+
+    let moveToPlace: Move;
+    moveToPlace = CoreLogic.stringToMove(moveString);
+
+    // process trade
+    if (moveToPlace.tradedIn.length > 0)
+    {
+      for (let i = 0; i < moveToPlace.tradedIn.length; i++) {
+        this.decrementResourceByOne(currentPlayer, moveToPlace.tradedIn[i]);
+      }
+      // add in resource traded for 
+      this.incrementResourceByOne(currentPlayer, moveToPlace.received);
+    }
+
+    // inital placements
+    if (currentPlayer.ownedBranches.length < 2) {
+      this.initialNodePlacements(moveToPlace.nodesPlaced[0], currentPlayer);
+      this.initialBranchPlacements(moveToPlace.nodesPlaced[0], moveToPlace.branchesPlaced[0], currentPlayer);
+    }
+    else {
+      // process general branches
+      for (let i = 0; i < moveToPlace.branchesPlaced.length; i++){
+        this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
+      }
+
+      // process general nodes
+      for (let i = 0; i < moveToPlace.nodesPlaced.length; i++)
+      {
+        this.generalNodePlacement(moveToPlace.nodesPlaced[i], currentPlayer);
       }
     }
+    
+    this.endTurn(currentPlayer);
+  }
+
+
+  startGame(gameType: GameType): void {
+    if (this.currentGameMode === GameType.AI) {
+      
+    }
+    // assigns human/ai roles in AI game
+    // if (this.gameType === GameType.AI) {
+    //   if (playerNum == 1) {
+    //     this.playerTwo.type = PlayerType.AI;
+    //     this.playerOne.type = PlayerType.HUMAN;
+    //   } else if (playerNum == 2) {
+    //     this.playerOne.type = PlayerType.AI;
+    //     this.playerTwo.type = PlayerType.HUMAN;
+        
+    //   }
+    // }
 
     // <-------------------------------------------------------------------------------------------------------FIXME: need to assign p1, p2, & GameType for networking game 
 
@@ -138,9 +211,8 @@ export class ManagerService {
     // this.endTurn(this.playerOne); 
   }
 
-  // L52-96 will be refactored when integrating with UI
-
-  nextTurn(currentPlayer: Player): void {
+  nextTurn(currentPlayer: Player, playerMoveString: string = ""): void {
+    const otherPlayer = currentPlayer === this.playerOne ? this.playerTwo : this.playerOne;
     currentPlayer.hasTraded = false;
 
     // update resources for newPlayer
@@ -148,16 +220,33 @@ export class ManagerService {
     currentPlayer.blueResources += currentPlayer.bluePerTurn;
     currentPlayer.yellowResources += currentPlayer.yellowPerTurn;
     currentPlayer.greenResources += currentPlayer.greenPerTurn;
-    // const stack = [];
-
+    
     // Set resources if still opening moves
     if (currentPlayer.numNodesPlaced < 2 && currentPlayer.ownedBranches.length < 2) {
       currentPlayer.redResources = 1;
       currentPlayer.blueResources = 1;
       currentPlayer.yellowResources = 2;
-      currentPlayer.greenResources = 2;
+      currentPlayer.greenResources = 2; 
     }
 
+    let pastMoveString = this.serializeStack();
+    this.stack.splice(0, this.stack.length);
+    
+    if (currentPlayer.type === PlayerType.AI){
+      let AIStringMove: string;
+      AIStringMove = 'jim halpert';
+
+      if (currentPlayer.numNodesPlaced === 0 && otherPlayer.numNodesPlaced === 0) {
+        // AIStringMove = this.ai.randomAIFirstMove();
+      } else {
+        // AIStringMove = this.ai.randomAIMove(pastMoveString);
+      }
+
+      this.applyMove(AIStringMove);
+    }
+
+    // Empty the move stack prior to the next placed turns
+    
     // call applyMove 
     // R,R,R,Y;8;3,18 (Trades; Nodes; Branches)
     // string AIMoveString = ai.service.getMove(board, p1, p2)
@@ -165,6 +254,54 @@ export class ManagerService {
     // gameboard.applyMove(AIMove);
 
     // make moves -- check resources 
+  }
+
+  serializeStack(): string {
+    let moves = '';
+
+    // Trades
+    if (this.getCurrentPlayer().hasTraded) {
+      this.stack.forEach(el => {
+        if (el[0] === 'T') {
+          moves += `${el[1]},`;
+        }
+      });
+    }
+
+    // handle trailing comma
+    if (moves.slice(-1) === ',') {
+      moves = moves.substring(0, moves.length - 1);
+    }
+
+    moves += ';';
+
+    // Nodes
+    this.stack.forEach(el => {
+      if (el[0] === 'N') {
+        moves += `${el[1].toString()},`;
+      }
+    });
+
+    // handle trailing comma
+    if (moves.slice(-1) === ',') {
+      moves = moves.substring(0, moves.length - 1);
+    }
+
+    moves += ';';
+    
+    // Branches
+    this.stack.forEach(el => {
+      if (el[0] === 'B') {
+        moves += `${el[1].toString()},`;
+      }
+    });
+
+    // handle trailing comma
+    if (moves.slice(-1) === ',') {
+      moves = moves.substring(0, moves.length - 1);
+    }
+    
+    return moves;
   }
 
   // clickNode(event: MouseEvent) {
@@ -211,46 +348,60 @@ export class ManagerService {
         const tlNode = this.gameBoard.nodes[this.gameBoard.tiles[i].getTopLeftNode()];
 
         const currentTileColor = this.gameBoard.tiles[i].getColor();
-
-        if (this.gameBoard.tiles[i].isExhausted) {
-          this.gameBoard.tiles[i].isExhausted = false;
-
-          if (trNode.getOwner() === currentOwner) {
-            this.incrementResource(endPlayer, currentTileColor);
-          }
-
-          if (brNode.getOwner() === currentOwner) {
-            this.incrementResource(endPlayer, currentTileColor);
-          }
-
-          if (blNode.getOwner() === currentOwner) {
-            this.incrementResource(endPlayer, currentTileColor);
-          }
-
-          if (tlNode.getOwner() === currentOwner) {
-            this.incrementResource(endPlayer, currentTileColor);
-          }
-        } else {
-          if (trNode.getOwner() === otherOwner) {
-            this.decrementResource(otherPlayer, currentTileColor);
-          }
-
-          if (brNode.getOwner() === otherOwner) {
-            this.decrementResource(otherPlayer, currentTileColor);
-          }
-
-          if (blNode.getOwner() === otherOwner) {
-            this.decrementResource(otherPlayer, currentTileColor);
-          }
-
-          if (tlNode.getOwner() === otherOwner) {
-            this.decrementResource(otherPlayer, currentTileColor);
+        let newCapture = true;
+        for (let z = 0; z < endPlayer.capturedTiles.length; z++)
+        {
+          if (endPlayer.capturedTiles[z] === i)
+          {
+            newCapture = false;
           }
         }
 
-        endPlayer.numTilesCaptured++;
-        endPlayer.currentScore++;
-        endPlayer.capturedTiles.push(i);
+        if (newCapture === true){
+          if (this.gameBoard.tiles[i].isExhausted) {
+            this.gameBoard.tiles[i].isExhausted = false;
+  
+            if (trNode.getOwner() === currentOwner) {
+              this.incrementResource(endPlayer, currentTileColor);
+            }
+  
+            if (brNode.getOwner() === currentOwner) {
+              this.incrementResource(endPlayer, currentTileColor);
+            }
+  
+            if (blNode.getOwner() === currentOwner) {
+              this.incrementResource(endPlayer, currentTileColor);
+            }
+  
+            if (tlNode.getOwner() === currentOwner) {
+              this.incrementResource(endPlayer, currentTileColor);
+            }
+          } else {
+            if (trNode.getOwner() === otherOwner) {
+              this.decrementResource(otherPlayer, currentTileColor);
+            }
+  
+            if (brNode.getOwner() === otherOwner) {
+              this.decrementResource(otherPlayer, currentTileColor);
+            }
+  
+            if (blNode.getOwner() === otherOwner) {
+              this.decrementResource(otherPlayer, currentTileColor);
+            }
+  
+            if (tlNode.getOwner() === otherOwner) {
+              this.decrementResource(otherPlayer, currentTileColor);
+            }
+          }
+  
+
+          this.gameBoard.tiles[i].setCapturedBy(currentOwner);
+
+          endPlayer.numTilesCaptured++;
+          endPlayer.currentScore++;
+          endPlayer.capturedTiles.push(i);
+        }
+        
       }
 
       // empty tilesBeingChecked before looping
@@ -320,7 +471,7 @@ export class ManagerService {
     }
   }
 
-  // L162 - 245 will be refactored upon integration with UI.
+  // Trade resources
 
   makeTrade(currentPlayer: Player): void {
 
@@ -552,7 +703,8 @@ export class ManagerService {
         this.playerTwo.currentScore++;
 
       }
-
+      let nodePlacement = ['N', possibleNode.toString()];
+      this.stack.push(nodePlacement);
       return true;
     } else {
       return false;
@@ -573,7 +725,8 @@ export class ManagerService {
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERTWO);
           this.playerTwo.ownedBranches.push(possibleBranch);
         }
-
+        let branchPlacement = ['N', possibleBranch.toString()];
+        this.stack.push(branchPlacement);
         return true;
       } else {
         return false;
@@ -694,7 +847,8 @@ export class ManagerService {
         this.playerTwo.numNodesPlaced++;
         this.playerTwo.currentScore++;
       }
-
+      let nodePlacement = ['N', possibleNode];
+      this.stack.push(nodePlacement);
       return true;
     } else {
       return false;
@@ -723,7 +877,6 @@ export class ManagerService {
     }
 
     if (this.gameBoard.branches[possibleBranch].getOwner() === Owner.NONE) {
-
       const branchOwner = currentPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
       if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch1")].getOwner() === branchOwner ||
@@ -744,7 +897,8 @@ export class ManagerService {
           this.playerTwo.redResources--;
           this.playerTwo.blueResources--;
         }
-
+        let branchPlacement = ['N', possibleBranch];
+        this.stack.push(branchPlacement);
         return true;
       } else {
         return false;
@@ -997,6 +1151,41 @@ export class ManagerService {
         break;
     }
   }
+
+  incrementResourceByOne(currentPlayer: Player, currentTileColor: string): void {
+    switch (currentTileColor){
+      case 'R':
+        currentPlayer.redResources++;
+        break;
+      case 'B':
+        currentPlayer.blueResources++;
+        break;
+      case 'Y':
+        currentPlayer.yellowResources++;
+        break;
+      case 'G':
+        currentPlayer.greenResources++;
+        break;
+    }
+  }
+
+decrementResourceByOne(currentPlayer: Player, currentTileColor: string): void {
+    switch (currentTileColor){
+      case 'R':
+        currentPlayer.redResources--;
+        break;
+      case 'B':
+        currentPlayer.blueResources--;
+        break;
+      case 'Y':
+        currentPlayer.yellowResources--;
+        break;
+      case 'G':
+        currentPlayer.greenResources--;
+        break;
+    }
+  }
+
 
   checkForLongest(branchOwner: Player, currentBranch: number): void {
 

@@ -5,7 +5,7 @@ import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
 import { Player } from '../classes/gamecore/game.class.Player';
 import { Owner, TileColor } from '../enums/game.enums';
 
-interface Move {
+export interface Move {
   tradedIn:string[],
   received:string,
   nodesPlaced:number[],
