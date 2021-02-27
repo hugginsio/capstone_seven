@@ -105,7 +105,7 @@ xdescribe('AiService', () => {
     });
   });
 
-  fdescribe('Get First Monte Carlo Move', ()=>{
+  describe('Get First Monte Carlo Move', ()=>{
     it('should get a move chosen by the Monte Carlo Search Tree for the first move',()=>{
 
       

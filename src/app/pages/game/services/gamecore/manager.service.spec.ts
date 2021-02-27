@@ -14,17 +14,17 @@ describe('ManagerService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('serializeStack should translate the stack into a string', () => {
-    const expectedString = 'R,G,B,Y;1,2,3;1,2,3';
+  fit('serializeStack should translate the stack into a string', () => {
+    const expectedString = 'R,G,B,Y;1,2,3;4,5,6';
     service.tradedResources = ['R', 'G', 'B'];
     service.selectedTrade = 'Y';
     service.stack = [
       ['N', 1],
       ['N', 2],
       ['N', 3],
-      ['B', 1],
-      ['B', 2],
-      ['B', 3],
+      ['B', 4],
+      ['B', 5],
+      ['B', 6],
     ];
 
     service.getCurrentPlayer().hasTraded = true;

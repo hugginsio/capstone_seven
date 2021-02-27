@@ -19,7 +19,6 @@ export class ManagerService {
   private currentPlayer: Owner;
   private firstPlayer: string;
   private gameBoard: GameBoard;
-  private gameType: GameType;
   private playerOne: Player;
   private playerTwo: Player;
   private readonly ai: AiService;
@@ -44,31 +43,47 @@ export class ManagerService {
 
     this.storageService.setContext('game');
     const gameMode = this.storageService.fetch('mode');
+    const boardSeed = this.storageService.fetch('board-seed');
     this.firstPlayer = this.storageService.fetch('firstplayer');
-    this.playerOne.type = PlayerType.HUMAN;
 
     if (gameMode === 'pvp') {
       this.playerOne.type = PlayerType.HUMAN;
       this.playerTwo.type = PlayerType.HUMAN;
     } else if (gameMode === 'pva') {
       this.currentGameMode = GameType.AI;
-      this.playerTwo.type = PlayerType.AI;
+      if (this.firstPlayer === 'one') {
+        this.playerOne.type = PlayerType.HUMAN;
+        this.playerTwo.type = PlayerType.AI;
+      } if (this.firstPlayer === 'two') {
+        this.playerOne.type = PlayerType.AI;
+        this.playerTwo.type = PlayerType.HUMAN;
+      }
     } else {
       this.currentGameMode = GameType.NETWORK;
       this.playerTwo.type = PlayerType.NETWORK;
     }
 
-    // hey, guys. grayson here if you need me. :)
     if (this.firstPlayer === 'one') {
-      this.currentPlayer = Owner.PLAYERONE;
       if (this.currentGameMode === GameType.AI) {
         this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
       }
     } else if (this.firstPlayer === 'two') {
-      this.currentPlayer = Owner.PLAYERTWO;
       if (this.currentGameMode === GameType.AI) {
         this.ai = new AiService(this.gameBoard, this.playerTwo, this.playerOne);
       }
+    }
+
+    if (boardSeed === '!random' || boardSeed === 'undefined') {
+      this.createBoard(true);
+      console.log(this.getBoard());
+    } else {
+      // create gameboard with user defined seed
+      this.createBoard(false, boardSeed);
+    }
+
+    if (this.currentGameMode === GameType.AI && this.getCurrentPlayer().type === PlayerType.AI) {
+      console.log('???');
+      this.nextTurn(this.getCurrentPlayer());
     }
   }
 
@@ -105,7 +120,7 @@ export class ManagerService {
     } else {
       // let user enter tile placement 
       let boardStringArray = [];
-      boardStringArray = boardString.split('X');
+      boardStringArray = boardString.split(',');
 
       for (let i = 0; i < boardStringArray.length; i++) {
         // assigns tile colors
@@ -150,16 +165,32 @@ export class ManagerService {
     let currentBoardString = '';
     for (let i = 0; i < this.gameBoard.tiles.length; i++)
     {
-      currentBoardString += this.gameBoard.tiles[i].color.toString();
+      switch (this.gameBoard.tiles[i].color){
+        case TileColor.RED:
+          currentBoardString += 'R';
+          break;
+        case TileColor.BLUE:
+          currentBoardString += 'B';
+          break;
+        case TileColor.GREEN:
+          currentBoardString += 'G';
+          break;
+        case TileColor.YELLOW:
+          currentBoardString += 'Y';
+          break;
+        case TileColor.BLANK:
+          currentBoardString += '0';
+          break;
+      }
       currentBoardString += this.gameBoard.tiles[i].maxNodes.toString();
       currentBoardString += ',';
     }
     this.boardString = currentBoardString;
+    console.log(this.boardString);
   }
 
 
   applyMove(moveString: string){
-
     let currentPlayer;
     if (this.playerOne.type === PlayerType.HUMAN) {
       currentPlayer = this.playerTwo;
@@ -247,15 +278,16 @@ export class ManagerService {
     this.stack.splice(0, this.stack.length);
 
     if (currentPlayer.type === PlayerType.AI) {
-      // let AIStringMove;
+      let AIStringMove;
 
       if (currentPlayer.numNodesPlaced === 0 && otherPlayer.numNodesPlaced === 0) {
-        // AIStringMove = this.ai.randomAIFirstMove();
+        AIStringMove = this.ai.randomAIFirstMove();
       } else {
-        // AIStringMove = this.ai.randomAIMove(pastMoveString);
+        AIStringMove = this.ai.randomAIMove(pastMoveString);
       }
 
-      // this.applyMove(AIStringMove);
+      console.warn(AIStringMove);
+      this.applyMove(AIStringMove);
     }
 
     // Empty the move stack prior to the next placed turns
@@ -374,35 +406,35 @@ export class ManagerService {
           if (this.gameBoard.tiles[i].isExhausted) {
             this.gameBoard.tiles[i].isExhausted = false;
 
-            if (trNode.getOwner() === currentOwner) {
+            if (trNode?.getOwner() === currentOwner) {
               this.incrementResource(endPlayer, currentTileColor);
             }
 
-            if (brNode.getOwner() === currentOwner) {
+            if (brNode?.getOwner() === currentOwner) {
               this.incrementResource(endPlayer, currentTileColor);
             }
 
-            if (blNode.getOwner() === currentOwner) {
+            if (blNode?.getOwner() === currentOwner) {
               this.incrementResource(endPlayer, currentTileColor);
             }
 
-            if (tlNode.getOwner() === currentOwner) {
+            if (tlNode?.getOwner() === currentOwner) {
               this.incrementResource(endPlayer, currentTileColor);
             }
           } else {
-            if (trNode.getOwner() === otherOwner) {
+            if (trNode?.getOwner() === otherOwner) {
               this.decrementResource(otherPlayer, currentTileColor);
             }
 
-            if (brNode.getOwner() === otherOwner) {
+            if (brNode?.getOwner() === otherOwner) {
               this.decrementResource(otherPlayer, currentTileColor);
             }
 
-            if (blNode.getOwner() === otherOwner) {
+            if (blNode?.getOwner() === otherOwner) {
               this.decrementResource(otherPlayer, currentTileColor);
             }
 
-            if (tlNode.getOwner() === otherOwner) {
+            if (tlNode?.getOwner() === otherOwner) {
               this.decrementResource(otherPlayer, currentTileColor);
             }
           }
@@ -464,7 +496,6 @@ export class ManagerService {
       }
     } else {
       const newPlayer = endPlayer === this.playerOne ? this.playerTwo : this.playerOne;
-      this.currentPlayer = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
 
       // update resources for newPlayer
       newPlayer.redResources += newPlayer.redPerTurn;
@@ -480,6 +511,16 @@ export class ManagerService {
         endPlayer.greenResources = 2;
       }
 
+      if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
+        if (this.currentGameMode === GameType.AI) {
+          this.ai.currentState = CoreLogic.nextState(this.ai.currentState, this.serializeStack());
+        }
+
+        this.nextTurn(endPlayer);
+        return;
+      }
+
+      this.currentPlayer = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
       this.nextTurn(newPlayer);
     }
   }
@@ -612,62 +653,18 @@ export class ManagerService {
     }
   }
 
-  // L258 - 297 will be refactored upon integration with the UI.
-
-  makeInitialPlacements(currentPlayer: Player, legalNodeMove: boolean): void {
-
-    // let legalBranchMove = false;
-    // let nodeId;
-    // let branchId;
-
-    // if(!legalNodeMove){
-    //   clickNode(event: MouseEvent) {
-    //     nodeId = event.target.id.subString(1,1) as number;
-    //     legalNodeMove = this.initialNodePlacements(nodeId, currentPlayer);
-    //     }
-    // }
-    // if(legalNodeMove){
-    //   clickBranch(event: MouseEvent) {
-    //     branchId = event.target.id.subString(1,1) as number;
-    //     legalBranchMove = this.initialBranchPlacements(nodeId, branchId, currentPlayer);
-    //    }
-
-    //   clickUndo(event: MouseEvent){
-    //     if (legalBranchMove)
-    //     {
-    //       this.reverseInitialBranchPlacement(branchId, currentPlayer)
-    //       legalBranchMove = false;
-    //     }
-    //     else {
-    //       this.reverseInitialNodePlacement(nodeId, currentPlayer);
-    //       legalNodeMove = false;
-    //     }
-    //   }
-
-    //    if (!legalBranchMove)
-    //       this.makeInitialPlacements(currentPlayer, true);
-    // }
-    // else{
-    //     this.makeInitialPlacements(currentPlayer, false);
-    // }
-
-    // clickEndTurn (event:MouseEvent){
-    //   return true;
-    // }
-  }
-
   initialNodePlacements(possibleNode: number, currentPlayer: Player): boolean {
     const otherOwner = currentPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
-    if (this.gameBoard.nodes[possibleNode].getOwner() === Owner.NONE) {
-      if (this.gameBoard.nodes[possibleNode].getTopRightTile() !== -1) {
-        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount++;
+    if (this.gameBoard.nodes[possibleNode]?.getOwner() === Owner.NONE) {
+      if (this.gameBoard.nodes[possibleNode]?.getTopRightTile() !== -1) {
+        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].nodeCount++;
 
-        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount >
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].maxNodes) &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted === false) {
+        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].nodeCount >
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].maxNodes) &&
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].isExhausted === false) {
           // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].capturedBy === Owner.NONE) {
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].capturedBy === Owner.NONE) {
             this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted = true;
             this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopRightTile(), true);
           }
@@ -680,7 +677,7 @@ export class ManagerService {
         }
       }
 
-      if (this.gameBoard.nodes[possibleNode].getBottomRightTile() !== -1) {
+      if (this.gameBoard.nodes[possibleNode]?.getBottomRightTile() !== -1) {
         this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount++;
 
         if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount >
@@ -698,7 +695,7 @@ export class ManagerService {
           this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].getColor());
       }
 
-      if (this.gameBoard.nodes[possibleNode].getBottomLeftTile() !== -1) {
+      if (this.gameBoard.nodes[possibleNode]?.getBottomLeftTile() !== -1) {
         this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount++;
 
         if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount >
@@ -718,7 +715,7 @@ export class ManagerService {
         }
       }
 
-      if (this.gameBoard.nodes[possibleNode].getTopLeftTile() != -1) {
+      if (this.gameBoard.nodes[possibleNode]?.getTopLeftTile() != -1) {
         this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount++;
 
         if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount >
@@ -757,11 +754,11 @@ export class ManagerService {
   }
 
   initialBranchPlacements(selectedNode: number, possibleBranch: number, currentPlayer: Player): boolean {
-    if (this.gameBoard.branches[possibleBranch].getOwner() === Owner.NONE) {
-      if (this.gameBoard.nodes[selectedNode].getTopBranch() === possibleBranch ||
-        this.gameBoard.nodes[selectedNode].getLeftBranch() === possibleBranch ||
-        this.gameBoard.nodes[selectedNode].getBottomBranch() === possibleBranch ||
-        this.gameBoard.nodes[selectedNode].getRightBranch() === possibleBranch
+    if (this.gameBoard.branches[possibleBranch]?.getOwner() === Owner.NONE) {
+      if (this.gameBoard.nodes[selectedNode]?.getTopBranch() === possibleBranch ||
+        this.gameBoard.nodes[selectedNode]?.getLeftBranch() === possibleBranch ||
+        this.gameBoard.nodes[selectedNode]?.getBottomBranch() === possibleBranch ||
+        this.gameBoard.nodes[selectedNode]?.getRightBranch() === possibleBranch
       ) {
         if (currentPlayer == this.playerOne) {
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
@@ -771,7 +768,7 @@ export class ManagerService {
           this.playerTwo.ownedBranches.push(possibleBranch);
         }
 
-        const branchPlacement = ['N', possibleBranch.toString()];
+        const branchPlacement = ['B', possibleBranch.toString()];
         this.stack.push(branchPlacement);
         return true;
       } else {
@@ -787,18 +784,18 @@ export class ManagerService {
       return false;
     }
 
-    if (this.gameBoard.nodes[possibleNode].getOwner() === Owner.NONE) {
+    if (this.gameBoard.nodes[possibleNode]?.getOwner() === Owner.NONE) {
       const nodeOwner = currentPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
       const otherOwner = currentPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
 
 
-      if (this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getTopBranch()].getOwner() === nodeOwner ||
-        this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getLeftBranch()].getOwner() === nodeOwner ||
-        this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getBottomBranch()].getOwner() === nodeOwner ||
-        this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getRightBranch()].getOwner() === nodeOwner) {
+      if (this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getTopBranch()]?.getOwner() === nodeOwner ||
+        this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getLeftBranch()]?.getOwner() === nodeOwner ||
+        this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getBottomBranch()]?.getOwner() === nodeOwner ||
+        this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getRightBranch()]?.getOwner() === nodeOwner) {
 
         // add to nodeCount of tiles and check for if it has been exhaused
-        if (this.gameBoard.nodes[possibleNode].getTopRightTile() != -1) {
+        if (this.gameBoard.nodes[possibleNode]?.getTopRightTile() != -1) {
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount++;
 
           if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount >
@@ -818,7 +815,7 @@ export class ManagerService {
           }
         }
 
-        if (this.gameBoard.nodes[possibleNode].getBottomRightTile() != -1) {
+        if (this.gameBoard.nodes[possibleNode]?.getBottomRightTile() != -1) {
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount++;
 
           if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount >
@@ -840,7 +837,7 @@ export class ManagerService {
         }
       }
 
-      if (this.gameBoard.nodes[possibleNode].getBottomLeftTile() != -1) {
+      if (this.gameBoard.nodes[possibleNode]?.getBottomLeftTile() != -1) {
         this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount++;
 
         if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount >
@@ -860,7 +857,7 @@ export class ManagerService {
         }
       }
 
-      if (this.gameBoard.nodes[possibleNode].getTopLeftTile() != -1) {
+      if (this.gameBoard.nodes[possibleNode]?.getTopLeftTile() != -1) {
         this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount++;
 
         if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount >
@@ -943,7 +940,7 @@ export class ManagerService {
           this.playerTwo.redResources--;
           this.playerTwo.blueResources--;
         }
-        const branchPlacement = ['N', possibleBranch];
+        const branchPlacement = ['B', possibleBranch];
         this.stack.push(branchPlacement);
         return true;
       } else {
@@ -969,7 +966,7 @@ export class ManagerService {
       this.playerTwo.greenResources += 2;
     }
 
-    if (this.gameBoard.nodes[reverseNode].getTopRightTile() !== -1) {
+    if (this.gameBoard.nodes[reverseNode]?.getTopRightTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].nodeCount--;
 
       // checking if need to un-exhaust tile
@@ -982,7 +979,7 @@ export class ManagerService {
       }
     }
 
-    if (this.gameBoard.nodes[reverseNode].getTopLeftTile() !== -1) {
+    if (this.gameBoard.nodes[reverseNode]?.getTopLeftTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].nodeCount--;
 
       // checking if need to un-exhaust tile
@@ -995,7 +992,7 @@ export class ManagerService {
       }
     }
 
-    if (this.gameBoard.nodes[reverseNode].getBottomRightTile() !== -1) {
+    if (this.gameBoard.nodes[reverseNode]?.getBottomRightTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].nodeCount--;
 
       // checking if need to un-exhaust tile
@@ -1008,7 +1005,7 @@ export class ManagerService {
       }
     }
 
-    if (this.gameBoard.nodes[reverseNode].getBottomLeftTile() !== -1) {
+    if (this.gameBoard.nodes[reverseNode]?.getBottomLeftTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].nodeCount--;
 
       // checking if need to un-exhaust tile
@@ -1032,7 +1029,7 @@ export class ManagerService {
       this.playerTwo.currentScore--;
     }
 
-    if (this.gameBoard.nodes[reverseNode].getTopRightTile() !== -1) {
+    if (this.gameBoard.nodes[reverseNode]?.getTopRightTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].nodeCount--;
 
       // checking if need to un-exhaust tile
@@ -1045,7 +1042,7 @@ export class ManagerService {
       }
     }
 
-    if (this.gameBoard.nodes[reverseNode].getTopLeftTile() !== -1) {
+    if (this.gameBoard.nodes[reverseNode]?.getTopLeftTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].nodeCount--;
       // checking if need to un-exhaust tile
       if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].isExhausted) {
@@ -1057,7 +1054,7 @@ export class ManagerService {
       }
     }
 
-    if (this.gameBoard.nodes[reverseNode].getBottomRightTile() != -1) {
+    if (this.gameBoard.nodes[reverseNode]?.getBottomRightTile() != -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].nodeCount--;
 
       // checking if need to un-exhaust tile
@@ -1070,7 +1067,7 @@ export class ManagerService {
       }
     }
 
-    if (this.gameBoard.nodes[reverseNode].getBottomLeftTile() != -1) {
+    if (this.gameBoard.nodes[reverseNode]?.getBottomLeftTile() != -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].nodeCount--;
 
       if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].isExhausted) {
@@ -1106,53 +1103,53 @@ export class ManagerService {
     const currentTileColor = this.gameBoard.tiles[tileNum].color;
 
     if (setAsExhausted) {
-      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getTopRightNode()]?.getOwner() === Owner.PLAYERONE) {
         this.decrementResource(this.playerOne, currentTileColor);
-      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getTopRightNode()]?.getOwner() === Owner.PLAYERTWO) {
         this.decrementResource(this.playerTwo, currentTileColor);
       }
 
-      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getBottomRightNode()]?.getOwner() === Owner.PLAYERONE) {
         this.decrementResource(this.playerOne, currentTileColor);
-      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getBottomRightNode()]?.getOwner() === Owner.PLAYERTWO) {
         this.decrementResource(this.playerTwo, currentTileColor);
       }
 
-      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getBottomLeftNode()]?.getOwner() === Owner.PLAYERONE) {
         this.decrementResource(this.playerOne, currentTileColor);
-      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getBottomLeftNode()]?.getOwner() === Owner.PLAYERTWO) {
         this.decrementResource(this.playerTwo, currentTileColor);
       }
 
-      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getTopLeftNode()]?.getOwner() === Owner.PLAYERONE) {
         this.decrementResource(this.playerOne, currentTileColor);
-      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getTopLeftNode()]?.getOwner() === Owner.PLAYERTWO) {
         this.decrementResource(this.playerTwo, currentTileColor);
       }
     }
 
     else {
-      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getTopRightNode()]?.getOwner() === Owner.PLAYERONE) {
         this.incrementResource(this.playerOne, currentTileColor);
-      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getTopRightNode()]?.getOwner() === Owner.PLAYERTWO) {
         this.incrementResource(this.playerTwo, currentTileColor);
       }
 
-      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getBottomRightNode()]?.getOwner() === Owner.PLAYERONE) {
         this.incrementResource(this.playerOne, currentTileColor);
-      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getBottomRightNode()]?.getOwner() === Owner.PLAYERTWO) {
         this.incrementResource(this.playerTwo, currentTileColor);
       }
 
-      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getBottomLeftNode()]?.getOwner() === Owner.PLAYERONE) {
         this.incrementResource(this.playerOne, currentTileColor);
-      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getBottomLeftNode()]?.getOwner() === Owner.PLAYERTWO) {
         this.incrementResource(this.playerTwo, currentTileColor);
       }
 
-      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getTopLeftNode()]?.getOwner() === Owner.PLAYERONE) {
         this.incrementResource(this.playerOne, currentTileColor);
-      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getTopLeftNode()]?.getOwner() === Owner.PLAYERTWO) {
         this.incrementResource(this.playerTwo, currentTileColor);
       }
     }
@@ -1254,27 +1251,27 @@ export class ManagerService {
     }
 
     if (this.gameBoard.branches[currentBranch].getBranch('branch1') !== -1) {
-      branch1Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch1')].getOwner();
+      branch1Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch1')]?.getOwner();
     }
 
     if (this.gameBoard.branches[currentBranch].getBranch('branch2') !== -1) {
-      branch2Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch2')].getOwner();
+      branch2Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch2')]?.getOwner();
     }
 
     if (this.gameBoard.branches[currentBranch].getBranch('branch3') !== -1) {
-      branch3Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch3')].getOwner();
+      branch3Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch3')]?.getOwner();
     }
 
     if (this.gameBoard.branches[currentBranch].getBranch('branch4') !== -1) {
-      branch4Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch4')].getOwner();
+      branch4Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch4')]?.getOwner();
     }
 
     if (this.gameBoard.branches[currentBranch].getBranch('branch5') !== -1) {
-      branch5Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch5')].getOwner();
+      branch5Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch5')]?.getOwner();
     }
 
     if (this.gameBoard.branches[currentBranch].getBranch('branch6') !== -1) {
-      branch6Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch6')].getOwner();
+      branch6Owner = this.gameBoard.branches[this.gameBoard.branches[currentBranch].getBranch('branch6')]?.getOwner();
     }
 
     if (branchOwner === this.playerOne) {
@@ -1336,40 +1333,40 @@ export class ManagerService {
     const tileLeftBranch = this.gameBoard.branches[currentTile.getLeftBranch()];
 
     // checks first instant fail condition: opponent has claimed any branches surrounding tile being checked
-    if (tileTopBranch.getOwner() === otherPlayer ||
-      tileRightBranch.getOwner() === otherPlayer ||
-      tileBottomBranch.getOwner() === otherPlayer ||
-      tileLeftBranch.getOwner() === otherPlayer) {
+    if (tileTopBranch?.getOwner() === otherPlayer ||
+      tileRightBranch?.getOwner() === otherPlayer ||
+      tileBottomBranch?.getOwner() === otherPlayer ||
+      tileLeftBranch?.getOwner() === otherPlayer) {
       captured = false;
       // checks second instant fail condition: no other tile present next to one of current tile's empty-branch sides
-    } else if ((tileTopBranch.getOwner() === Owner.NONE && currentTile.getTopTile() === -1) ||
-      (tileRightBranch.getOwner() === Owner.NONE && currentTile.getRightTile() === -1) ||
-      (tileBottomBranch.getOwner() === Owner.NONE && currentTile.getBottomTile() === -1) ||
-      (tileLeftBranch.getOwner() === Owner.NONE && currentTile.getLeftTile() === -1)) {
+    } else if ((tileTopBranch?.getOwner() === Owner.NONE && currentTile.getTopTile() === -1) ||
+      (tileRightBranch?.getOwner() === Owner.NONE && currentTile.getRightTile() === -1) ||
+      (tileBottomBranch?.getOwner() === Owner.NONE && currentTile.getBottomTile() === -1) ||
+      (tileLeftBranch?.getOwner() === Owner.NONE && currentTile.getLeftTile() === -1)) {
       captured = false;
     } else {
       // begins recursive calls checking for multi-tile capture
       this.tilesBeingChecked.push(checkTile);
 
-      if (tileTopBranch.getOwner() === Owner.NONE) {
+      if (tileTopBranch?.getOwner() === Owner.NONE) {
         if (this.checkForCaptures(capturer, currentTile.getTopTile()) === false) {
           captured = false;
         }
       }
 
-      if (tileRightBranch.getOwner() === Owner.NONE) {
+      if (tileRightBranch?.getOwner() === Owner.NONE) {
         if (this.checkForCaptures(capturer, currentTile.getRightTile()) === false) {
           captured = false;
         }
       }
 
-      if (tileBottomBranch.getOwner() === Owner.NONE) {
+      if (tileBottomBranch?.getOwner() === Owner.NONE) {
         if (this.checkForCaptures(capturer, currentTile.getBottomTile()) === false) {
           captured = false;
         }
       }
 
-      if (tileLeftBranch.getOwner() === Owner.NONE) {
+      if (tileLeftBranch?.getOwner() === Owner.NONE) {
         if (this.checkForCaptures(capturer, currentTile.getLeftTile()) === false) {
           captured = false;
         }

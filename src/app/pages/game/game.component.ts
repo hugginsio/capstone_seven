@@ -7,6 +7,7 @@ import { CommCode } from './interfaces/game.enum';
 import { ClickEvent, CommPackage } from './interfaces/game.interface';
 import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
+import { GameType } from './enums/game.enums';
 
 @Component({
   selector: 'app-game',
@@ -41,16 +42,6 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     // ✨ ANIMATIONS ✨
     // this.scrollToBottom();
-
-    // Fetch the board seed set in memory
-    const boardSeed = this.storageService.fetch('board-seed');
-    if (boardSeed === '!random' || boardSeed === 'undefined') {
-      this.gameManager.createBoard(true);
-      console.log(this.gameManager.getBoard());
-    } else {
-      // create gameboard with user defined seed
-      this.gameManager.createBoard(true);
-    }
 
     // Subscribe to own communications link
     this.commLink.subscribe(message => {
@@ -230,6 +221,7 @@ export class GameComponent implements OnInit {
   executeTrade(): void {
     this.isTrading = false;
     this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
+    this.tradingModel.reset();
   }
 
   scrollToBottom(): void {

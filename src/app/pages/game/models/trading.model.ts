@@ -82,4 +82,12 @@ export class TradingModel {
   setCurrentResources(resources: ResourceMap): void {
     this.currentResources = resources;
   }
+
+  reset(): void {
+    this.redResources = 0;
+    this.greenResources = 0;
+    this.blueResources = 0;
+    this.yellowResources = 0;
+    this.selectedResource = 0;
+  }
 }
