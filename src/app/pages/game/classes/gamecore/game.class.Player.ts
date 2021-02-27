@@ -56,6 +56,8 @@ export class Player {
     this.hasLongestNetwork = false;
 
     this.numTilesCaptured = 0;
+    this.capturedTiles = [];
+    
     this.numNodesPlaced = 0;
 
     this.currentScore = 0;
