@@ -24,7 +24,7 @@ export class Player {
   hasLongestNetwork: boolean;
   
   numTilesCaptured: number;
-  capturedTiles: [number];
+  capturedTiles: Array<number>;
 
   numNodesPlaced: number;
   
