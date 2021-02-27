@@ -9,6 +9,13 @@ import { CoreLogic } from '../../util/core-logic.util';
 @Injectable({
   providedIn: 'root'
 })
+
+interface Resources{
+  red:number,
+  blue:number,
+  green:number,
+  yellow:number,
+}
 export class AiService {
   
   mcts: MonteCarlo;
@@ -27,7 +34,12 @@ export class AiService {
 
   getAIFirstMove():string{
 
-    const result = this.mcts.selectMove(this.currentState);
+    const stats = this.mcts.runSearch(this.currentState, 5.95);
+
+    //console.log(this.currentState);
+    
+    console.log(stats);
+    const result = this.mcts.calculateBestMove(this.currentState,'max');
 
     
 
@@ -40,7 +52,10 @@ export class AiService {
     //console.log('before first next state');
     this.currentState = CoreLogic.nextState(this.currentState, previousMove);
 
-    const result = this.mcts.selectMove(this.currentState);
+    const stats = this.mcts.runSearch(this.currentState, 5.95);
+    
+    console.log(stats);
+    const result = this.mcts.calculateBestMove(this.currentState,'max');
 
     //console.log('Before last next state');
     this.currentState = CoreLogic.nextState(this.currentState, result);
@@ -51,44 +66,8 @@ export class AiService {
   randomAIFirstMove():string{
 
     const moves = CoreLogic.getLegalMoves(this.currentState);
-
-    const moveWins = Array(moves.length).fill(0);
-
-    const end = Date.now() + 5.5 * 1000;
-
-    while (Date.now() < end){
-      let weHaveAWinner = false;
-      let playState = new State(this.currentState.moveHistory,CoreLogic.cloneGameBoard(this.currentState.gameBoard),this.currentState.currentPlayer,this.currentState.player1, this.currentState.player2,this.currentState.inInitialMoves);
-      let newMoves = CoreLogic.getLegalMoves(playState);
-      let chosenMoveIndex =  Math.floor(Math.random()*moves.length);
-      const originalMoveIndex = chosenMoveIndex;
-      while(!weHaveAWinner){
-        
-       
-        
-        const chosenMove = newMoves[chosenMoveIndex];
-        playState = CoreLogic.nextState(playState,chosenMove);
-        const winner = CoreLogic.determineIfWinner(this.currentState);
-        newMoves = CoreLogic.getLegalMoves(playState);
-        chosenMoveIndex =  Math.floor(Math.random()*newMoves.length);
-
-        //console.log(`current winner state ${winner}`);
-
-        if(winner === 1){
-          //console.log('Player 1 Wins!');
-          weHaveAWinner = true;
-          moveWins[originalMoveIndex]++;
-        }
-        else if(winner === -1){
-          //console.log('Player 2 Wins!');
-          weHaveAWinner = true;
-        }
-
-      }
-    }
-
-    const resultIndex = Math.max(...moveWins);
  
+    const resultIndex = Math.floor(Math.random()*moves.length);
     const result = moves[resultIndex];
 
 
@@ -98,8 +77,27 @@ export class AiService {
     return result;
   }
 
-  randomAIMove(move:string):string{
+  randomAIMove(move:string,resources:Resources):string{
     this.currentState = CoreLogic.nextState(this.currentState, move);
+    
+    if(!this.currentState.inInitialMoves){
+      if(this.currentState.currentPlayer === 1){
+        this.currentState.player1.redResources = resources.red;
+        this.currentState.player1.blueResources = resources.blue;
+
+        this.currentState.player1.greenResources = resources.green;
+        this.currentState.player1.yellowResources = resources.yellow;
+
+      }
+      else{
+        this.currentState.player2.redResources = resources.red;
+        this.currentState.player2.blueResources = resources.blue;
+
+        this.currentState.player2.greenResources = resources.green;
+        this.currentState.player2.yellowResources = resources.yellow;
+
+      }
+    }
 
     const moves = CoreLogic.getLegalMoves(this.currentState);
 

@@ -145,7 +145,7 @@ describe('CoreLogic', () => {
       const state = new State([],gameBoard,1,player1,player2, false);
 
 
-      const answer = CoreLogic.checkForCaptures(state,state.currentPlayer, 12); 
+      const answer = CoreLogic.checkForCaptures(state,state.player1, 12); 
       expect(answer).toBeFalse();  
       
       
@@ -166,7 +166,7 @@ describe('CoreLogic', () => {
       
       const state = new State([],gameBoard,1,player1,player2, false);
 
-      const answer = CoreLogic.checkForCaptures(state,state.currentPlayer,6);
+      const answer = CoreLogic.checkForCaptures(state,state.player1,6);
 
       expect(answer).toBeTrue();
       
@@ -188,8 +188,8 @@ describe('CoreLogic', () => {
       
       const state = new State([],gameBoard,1,player1,player2, false);
 
-      const answer1 = CoreLogic.checkForCaptures(state,state.currentPlayer,6);
-      const answer2 = CoreLogic.checkForCaptures(state,state.currentPlayer,7);
+      const answer1 = CoreLogic.checkForCaptures(state,state.player1,6);
+      const answer2 = CoreLogic.checkForCaptures(state,state.player1,7);
 
       expect(answer1).toBeTrue();
       expect(answer2).toBeTrue();
@@ -337,8 +337,11 @@ describe('CoreLogic', () => {
     it('should identify the indices of valid branch placements',()=>{
       const gameBoard = new GameBoard();
       gameBoard.branches[12].setOwner(Owner.PLAYERONE);
+      const player1 = new Player();
+      const player2 = new Player();
+      const state = new State([],gameBoard,1,player1,player2,true);
 
-      const answer = CoreLogic.getValidBranchIndices(Owner.PLAYERONE,gameBoard);
+      const answer = CoreLogic.getValidBranchIndices(state,Owner.PLAYERONE,gameBoard);
 
       expect(answer).toContain(7);
       expect(answer).toContain(8);
@@ -578,7 +581,9 @@ describe('CoreLogic', () => {
 
       const state = new State([],gameBoard,1,player1,player2,true);
 
+      const start = Date.now();
       const moves = CoreLogic.getLegalMoves(state);
+      console.log(`TIME: ${Date.now() - start}`);
       console.log(moves);
 
 
@@ -674,4 +679,26 @@ describe('CoreLogic', () => {
       //console.log(startingState);
     });
   });
+
+  describe('Clone GameBoard', ()=>{
+    it('should Clone the gameboard',()=>{
+
+      const gameBoard = new GameBoard();
+      gameBoard.randomizeColorsAndMaxNodes();
+
+      // const clonedGameBoard = CoreLogic.cloneGameBoard(gameBoard);
+
+      // gameBoard.nodes[0].setOwner(Owner.PLAYERONE);
+
+      // expect(gameBoard.nodes[0]).not.toEqual(clonedGameBoard.nodes[0]);
+      // expect(gameBoard.nodes[1]).toEqual(clonedGameBoard.nodes[1]);
+
+
+      // console.log(gameBoard.nodes);
+      // console.log(clonedGameBoard.nodes);
+
+      //console.log(startingState);
+    });
+  });
+
 });
