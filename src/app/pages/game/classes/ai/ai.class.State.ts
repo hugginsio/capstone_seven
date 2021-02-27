@@ -37,6 +37,15 @@ export class State {
     return JSON.stringify(this.moveHistory);
   }
 
+  static cloneState(state:State):State{
+    const newMoveHistory = state.moveHistory.slice();
+    const newGameBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+    const newCurrentPlayer = state.currentPlayer;
+    const newPlayer1 = state.player1;
+    const newPlayer2 = state.player2;
+    const newInInitialMoves = state.inInitialMoves;
 
+    return new State(newMoveHistory,newGameBoard,newCurrentPlayer,newPlayer1,newPlayer2,newInInitialMoves);
+  }
 
 }

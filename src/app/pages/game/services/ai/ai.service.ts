@@ -59,9 +59,8 @@ export class AiService {
   randomAIFirstMove():string{
 
     const moves = CoreLogic.getLegalMoves(this.currentState);
-
-    const resultIndex = Math.floor(Math.random()*moves.length);
  
+    const resultIndex = Math.floor(Math.random()*moves.length);
     const result = moves[resultIndex];
 
 
@@ -84,6 +83,8 @@ export class AiService {
 
     return result;
   }
+
+
 }
 
 

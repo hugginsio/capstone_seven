@@ -43,14 +43,16 @@ export class MonteCarlo {
   }
 
   runSearch(state:State, timeout = 3):GameStatistics{
-    this.makeMCTSNode(state);
+    let clonedState = State.cloneState(state);
+    this.makeMCTSNode(clonedState);
 
     
     let totalSims = 0;
     const end = Date.now() + timeout * 1000;
 
-    while (Date.now() < end){
-      let node = this.selectMCTSNode(state);
+    //while (Date.now() < end){
+    for(let i = 0; i < 2; i++){
+      let node = this.selectMCTSNode(clonedState);
       
       let winner = CoreLogic.determineIfWinner(node.state);
 
@@ -62,6 +64,8 @@ export class MonteCarlo {
       this.backPropagate(node,winner);
 
       totalSims++;
+      clonedState = State.cloneState(state);
+      
     }
 
     return {runtime: timeout, simulations:totalSims};

@@ -24,6 +24,8 @@ export class Player {
   hasLongestNetwork: boolean;
   
   numTilesCaptured: number;
+  capturedTiles:number[];
+
   numNodesPlaced: number;
   
   currentScore: number;
@@ -48,6 +50,8 @@ export class Player {
     this.branchScanner = [];
 
     this.numTilesCaptured = 0;
+    this.capturedTiles = [];
+
     this.numNodesPlaced = 0;
 
     this.currentScore = 0;

@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { BrowserWindow } from 'electron';
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Player } from '../../classes/gamecore/game.class.Player';
 import { Owner } from '../../enums/game.enums';
@@ -104,8 +105,10 @@ describe('AiService', () => {
     });
   });
 
-  describe('Get First Monte Carlo Move', ()=>{
+  fdescribe('Get First Monte Carlo Move', ()=>{
     it('should get a move chosen by the Monte Carlo Search Tree for the first move',()=>{
+
+      
 
       const gameBoard = new GameBoard();
       gameBoard.randomizeColorsAndMaxNodes();
