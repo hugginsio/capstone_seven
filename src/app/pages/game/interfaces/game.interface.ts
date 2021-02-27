@@ -25,3 +25,10 @@ export interface CommPackage<T = string> {
   player?: Player,
   magic?: T
 }
+
+export interface ResourceMap {
+  red: number;
+  green: number;
+  blue: number;
+  yellow: number;
+}

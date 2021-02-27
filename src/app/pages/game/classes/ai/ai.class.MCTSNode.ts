@@ -1,8 +1,8 @@
+import { Owner } from '../../enums/game.enums';
 import { State } from './ai.class.State';
 
 
-interface MCTSNodePlaceHolder {
-  move:string,
+interface MCTSNodeInterface {
   node:MCTSNode | null
 }
 
@@ -11,8 +11,9 @@ export class MCTSNode {
   parent:MCTSNode | null ;
   visits:number;
   wins:number;
-  children:Map<string,MCTSNodePlaceHolder>;
-  unexpandedMoves:string[];
+  childrenKeys:string[];
+  childrenValues:MCTSNodeInterface[];
+
   state:State;
 
   constructor(parent:MCTSNode | null, move:string | null, state:State, unexpandedMoves:string[]) {
@@ -22,16 +23,24 @@ export class MCTSNode {
     this.wins = 0;
     this.visits = 0;
 
+
     this.parent = parent;
-    this.children = new Map();
-    for(const move of unexpandedMoves){
-      this.children.set(move, {move:move, node:null});
+    this.childrenKeys = [];
+    this.childrenValues = [];
+
+    //console.log(unexpandedMoves);
+    for(let i = 0; i < unexpandedMoves.length; i++){
+      this.childrenKeys.push(unexpandedMoves[i]);
+      this.childrenValues.push({node:null});
     }
+    //console.log(this.childrenKeys, this.childrenValues);
   }
 
   getChildNode(move:string):MCTSNode{
-    const child = this.children.get(move);
-
+    const child = this.childrenValues[this.childrenKeys.indexOf(move)];
+    //console.log(move);
+    //console.log(this.childrenKeys.indexOf(move));
+    //console.log(this.childrenValues[this.childrenKeys.indexOf(move)]);
     if(child === undefined){
       throw new Error("There is no such move!");
     }
@@ -43,12 +52,13 @@ export class MCTSNode {
   }
 
   expand(move:string, childState:State, unexpandedMoves:string[]):MCTSNode {
-    if(!this.children.has(move)){
+    if(!this.childrenKeys.includes(move)){
       throw new Error("No such move!");
     }
 
     const childNode = new MCTSNode(this,move,childState,unexpandedMoves);
-    this.children.set(move, {move:move, node:childNode});
+    const index = this.childrenKeys.indexOf(move);
+    this.childrenValues[index] = {node:childNode};
 
     return childNode;
   }
@@ -56,7 +66,7 @@ export class MCTSNode {
   getAllMoves():string[] {
     const result = [];
 
-    for(const child in this.children.values()){
+    for(const child of this.childrenKeys){
       result.push(child);
     }
 
@@ -65,9 +75,9 @@ export class MCTSNode {
 
   getUnexpandedMoves():string[] {
     const result = [];
-    for(const child in this.children.values()){
-      if(this.children.get(child) === null){
-        result.push(child);
+    for(let i = 0; i < this.childrenValues.length; i++){
+      if(this.childrenValues[i].node === null){
+        result.push(this.childrenKeys[i]);
       }
     }
 
@@ -76,8 +86,8 @@ export class MCTSNode {
 
   isFullyExpanded():boolean {
     let result = true;
-    for(const child in this.children.values()){
-      if(this.children.get(child) === null){
+    for(let i = 0; i < this.childrenValues.length; i++){
+      if(this.childrenValues[i].node === null){
         result = false;
       }
     }
@@ -86,9 +96,33 @@ export class MCTSNode {
 
   isLeaf():boolean {
     let result = false;
-    if(this.children.size === 0){
+    
+
+    if(!this.state.inInitialMoves && 
+      (this.state.player1.redResources === 0 && this.state.player1.redPerTurn === 0 &&
+      this.state.player1.blueResources === 0 && this.state.player1.bluePerTurn === 0 && 
+      this.state.player1.greenResources === 0 && this.state.player1.greenPerTurn === 0 &&
+      this.state.player1.yellowResources === 0 && this.state.player1.yellowPerTurn === 0) &&
+      (this.state.player2.redResources === 0 && this.state.player2.redPerTurn === 0 &&
+        this.state.player2.blueResources === 0 && this.state.player2.bluePerTurn === 0 && 
+        this.state.player2.greenResources === 0 && this.state.player2.greenPerTurn === 0 &&
+        this.state.player2.yellowResources === 0 && this.state.player2.yellowPerTurn === 0)){
       result = true;
+
     }
+    // else{
+    //   if (this.state.currentPlayer === 1){
+    //     if(this.state.player1.currentScore >= 10){
+    //       result = true;
+    //     }
+    //   }
+    //   else {
+    //     if(this.state.player2.currentScore >= 10){
+    //       result = true;
+    //     }
+    //   }
+    // }
+
 
     return result;
   }

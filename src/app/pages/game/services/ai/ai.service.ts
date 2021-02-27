@@ -14,25 +14,77 @@ export class AiService {
   mcts: MonteCarlo;
   explorationParameter:number;
   currentState:State;
-  // difficulty:string; TODO
-
+  difficulty:string;
+  
   constructor(gameBoard:GameBoard, player1:Player,player2:Player) {
     this.explorationParameter = 1.41;
     this.mcts = new MonteCarlo(gameBoard, this.explorationParameter);
 
     this.currentState = CoreLogic.getStartingState(player1, player2,gameBoard,1);
+    
+    this.difficulty = 'easy';
   }
 
-  getMove(previousMove:string):string{
-    const newState = CoreLogic.nextState(this.currentState, previousMove);
+  getAIFirstMove():string{
 
-    this.mcts.runSearch(newState, 5);
-    const result = this.mcts.calculateBestMove(newState,'max');
+    const stats = this.mcts.runSearch(this.currentState, 5.95);
 
-    this.currentState = CoreLogic.nextState(newState, result);
+    //console.log(this.currentState);
+    
+    console.log(stats);
+    const result = this.mcts.calculateBestMove(this.currentState,'max');
+
+    
+
+    this.currentState = CoreLogic.nextState(this.currentState, result);
 
     return result;
   }
+
+  getAIMove(previousMove:string):string{
+    //console.log('before first next state');
+    this.currentState = CoreLogic.nextState(this.currentState, previousMove);
+
+    const stats = this.mcts.runSearch(this.currentState, 5.95);
+    
+    console.log(stats);
+    const result = this.mcts.calculateBestMove(this.currentState,'max');
+
+    //console.log('Before last next state');
+    this.currentState = CoreLogic.nextState(this.currentState, result);
+
+    return result;
+  }
+
+  randomAIFirstMove():string{
+
+    const moves = CoreLogic.getLegalMoves(this.currentState);
+ 
+    const resultIndex = Math.floor(Math.random()*moves.length);
+    const result = moves[resultIndex];
+
+
+    const newState = CoreLogic.nextState(this.currentState, result);
+    this.currentState = newState;
+
+    return result;
+  }
+
+  randomAIMove(move:string):string{
+    this.currentState = CoreLogic.nextState(this.currentState, move);
+
+    const moves = CoreLogic.getLegalMoves(this.currentState);
+
+    const resultIndex = Math.floor(Math.random()*moves.length);
+
+    const result = moves[resultIndex];
+
+    this.currentState = CoreLogic.nextState(this.currentState, result);
+
+    return result;
+  }
+
+
 }
 
 

@@ -6,6 +6,7 @@ import { Player } from './classes/gamecore/game.class.Player';
 import { CommCode } from './interfaces/game.enum';
 import { ClickEvent, CommPackage } from './interfaces/game.interface';
 import { ManagerService } from './services/gamecore/manager.service';
+import { TradingModel } from './models/trading.model';
 
 @Component({
   selector: 'app-game',
@@ -18,6 +19,7 @@ export class GameComponent implements OnInit {
   public gameOver: boolean;
   public gameOverText: string;
   public winningPlayer: Player;
+  public tradingModel: TradingModel;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -31,6 +33,7 @@ export class GameComponent implements OnInit {
     this.isTrading = false;
     this.gameOver = false;
     this.gameOverText = "Victory!";
+    this.tradingModel = new TradingModel();
 
     this.storageService.setContext('game');
   }
@@ -57,6 +60,7 @@ export class GameComponent implements OnInit {
       if (this.gameManager.getCurrentPlayer() === message.player) {
         if (status === CommCode.IS_TRADING) {
           this.isTrading = true;
+          this.toggleTrade();
         } else if (status === CommCode.END_TURN) {
           this.gameManager.endTurn(this.gameManager.getCurrentPlayer());
         } else if (status === CommCode.END_GAME) {
@@ -211,12 +215,21 @@ export class GameComponent implements OnInit {
   }
 
   toggleTrade(): void {
-    this.isTrading = false;
+    if (!this.gameManager.getCurrentPlayer().hasTraded) {
+      this.tradingModel.setCurrentResources({
+        red: this.gameManager.getCurrentPlayer().redResources,
+        green: this.gameManager.getCurrentPlayer().greenResources,
+        blue: this.gameManager.getCurrentPlayer().blueResources,
+        yellow: this.gameManager.getCurrentPlayer().yellowResources
+      });
+    } else {
+      this.isTrading = false;
+    }
   }
 
   executeTrade(): void {
-    // Communicate trade to game core
     this.isTrading = false;
+    this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
   }
 
   scrollToBottom(): void {
