@@ -204,6 +204,8 @@ export class ManagerService {
 
     for (let i = 0; i < this.gameBoard.tiles.length; i++) {
       if (this.checkForCaptures(endPlayer, i) === true) {
+        this.gameBoard.tiles[i].setCapturedBy(currentOwner);
+
         // if new owner has nodes, give them resources per turn
         const trNode = this.gameBoard.nodes[this.gameBoard.tiles[i].getTopRightNode()];
         const brNode = this.gameBoard.nodes[this.gameBoard.tiles[i].getBottomRightNode()];
@@ -604,7 +606,7 @@ export class ManagerService {
 
           if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount >
             this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].maxNodes) &&
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted === false) {
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()]?.isExhausted === false) {
             // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
             if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].capturedBy === Owner.NONE) {
               this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted = true;
@@ -613,7 +615,7 @@ export class ManagerService {
           }
 
           // checks for if resource productions ought to be incremented
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted === false &&
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()]?.isExhausted === false &&
             this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].capturedBy !== otherOwner) {
             this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].getColor());
           }
@@ -624,7 +626,7 @@ export class ManagerService {
 
           if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount >
             this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].maxNodes) &&
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted === false) {
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()]?.isExhausted === false) {
 
             // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
             if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].capturedBy === Owner.NONE) {
@@ -635,7 +637,7 @@ export class ManagerService {
         }
 
         // checks for if resource productions ought to be incremented
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted === false &&
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()]?.isExhausted === false &&
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].capturedBy !== otherOwner) {
           this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].getColor());
         }
@@ -646,7 +648,7 @@ export class ManagerService {
 
         if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount >
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].maxNodes) &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted === false) {
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()]?.isExhausted === false) {
 
           // checking if tile is captured to set activelyExhausted and decrement tiles in tileExhaustion
           if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].capturedBy === Owner.NONE) {
@@ -655,7 +657,7 @@ export class ManagerService {
           }
         }
         // checks for if resource productions ought to be incremented
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted === false &&
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()]?.isExhausted === false &&
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].capturedBy != otherOwner) {
           this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].getColor());
         }
@@ -666,7 +668,7 @@ export class ManagerService {
 
         if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount >
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].maxNodes) &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted === false) {
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()]?.isExhausted === false) {
 
           // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
           if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].capturedBy === Owner.NONE) {
@@ -675,7 +677,7 @@ export class ManagerService {
           }
         }
         // checks for if resource productions ought to be incremented
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted === false &&
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()]?.isExhausted === false &&
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].capturedBy !== otherOwner) {
           this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].getColor());
         }
@@ -726,12 +728,12 @@ export class ManagerService {
 
       const branchOwner = currentPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
-      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch1")].getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch2")].getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch3")].getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch4")].getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch5")].getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch6")].getOwner() === branchOwner) {
+      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch1")]?.getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch2")]?.getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch3")]?.getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch4")]?.getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch5")]?.getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch6")]?.getOwner() === branchOwner) {
 
         if (currentPlayer == this.playerOne) {
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
