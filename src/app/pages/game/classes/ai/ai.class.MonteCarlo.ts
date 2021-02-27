@@ -2,76 +2,97 @@ import { GameBoard } from '../gamecore/game.class.GameBoard';
 import { MCTSNode } from './ai.class.MCTSNode';
 import { State } from './ai.class.State';
 import { CoreLogic } from '../../util/core-logic.util';
+import { state } from '@angular/animations';
 
 interface GameStatistics {
   runtime: number,
-  simulations: number,
-  draws: number
+  simulations: number
 }
+
 
 export class MonteCarlo {
   gameBoard:GameBoard;
   exploreParameter:number;
-  mctsNodes:Map<string, MCTSNode>;
+  mctsNodeKeys:string[];
+  mctsNodeValues:MCTSNode[];
 
   constructor(gameBoard:GameBoard, exploreParameter:number) { 
     this.gameBoard = gameBoard;
     this.exploreParameter = exploreParameter;
 
-    this.mctsNodes = new Map();
+    this.mctsNodeKeys = [];
+    this.mctsNodeValues = [];
     
   }
 
   makeMCTSNode(state:State):void{
-    if(!this.mctsNodes.has(state.hash())){
-      const unexpandedMoves = CoreLogic.getLegalMoves(state).slice();
-
-      const newMCTSNode = new MCTSNode(null, null, state, unexpandedMoves);
-      this.mctsNodes.set(state.hash(), newMCTSNode);
+    if(!this.mctsNodeKeys.includes(state.hash())){
+      const unexpandedMoves = CoreLogic.getLegalMoves(state);
+      let move:string | null;
+      if(state.moveHistory[state.moveHistory.length - 1] !== undefined){
+        move = state.moveHistory[state.moveHistory.length - 1];
+      }
+      else{
+        move = null;
+      }
+      //console.log(move);
+      const newMCTSNode = new MCTSNode(null, move, state, unexpandedMoves);
+      this.mctsNodeKeys.push(state.hash());
+      this.mctsNodeValues.push(newMCTSNode);
     }
   }
 
   runSearch(state:State, timeout = 3):GameStatistics{
-    this.makeMCTSNode(state);
+    let clonedState = State.cloneState(state);
+    this.makeMCTSNode(clonedState);
 
-    let draws = 0;
+    
     let totalSims = 0;
     const end = Date.now() + timeout * 1000;
 
-    while (Date.now() < end){
-      let node = this.selectMCTSNode(state);
+    //while (Date.now() < end){
+    for(let i = 0; i < 2; i++){
+      let node = this.selectMCTSNode(clonedState);
+      
       let winner = CoreLogic.determineIfWinner(node.state);
 
-      if(!node.isLeaf() && winner === -Infinity){
+      if(winner === 0){
         node = this.expand(node);
         winner = this.simulate(node);
       }
 
       this.backPropagate(node,winner);
 
-      
-      if(winner === 0){
-        draws++;
-      }
       totalSims++;
+      clonedState = State.cloneState(state);
+      
     }
 
-    return {runtime: timeout, simulations:totalSims, draws:draws};
+    return {runtime: timeout, simulations:totalSims};
   }
 
   calculateBestMove(state:State, policy:string):string{
     this.makeMCTSNode(state);
 
-    if (this.mctsNodes.get(state.hash()) === null ||
-        this.mctsNodes.get(state.hash()) === undefined ||
-        !this.mctsNodes.get(state.hash())?.isFullyExpanded()){
-        
+    if (this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())] === null ||
+        this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())] === undefined /*||
+        !this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())].isFullyExpanded()*/){
+
+      //console.log(state.hash());
+      //console.log(this.mctsNodeKeys.indexOf(state.hash()));
+      //console.log(this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())]);
+      //console.log(this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())].getUnexpandedMoves());
+      /*console.log(this.mctsNodeKeys.length, this.mctsNodeValues.length);
+      console.log(this.mctsNodeKeys);
+      console.log(this.mctsNodeValues[0],this.mctsNodeValues[1]);*/
+
       throw new Error("Not enough information!");
     }
-
-    const node = this.mctsNodes.get(state.hash());
+    // console.log(this.mctsNodeKeys.length, this.mctsNodeValues.length);
+    // console.log(this.mctsNodeKeys);
+    const node = this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())];
     const allMoves = node?.getAllMoves();
-    let bestMove = '';
+    let bestMove = ';;';
 
     if(allMoves === undefined){
       throw new Error("No Moves");
@@ -81,7 +102,7 @@ export class MonteCarlo {
       let max = -Infinity;
 
       for(const move of allMoves){
-        const childNode = node?.getChildNode(move);
+        const childNode = node.childrenValues[node.childrenKeys.indexOf(move)].node;
         if(childNode?.visits as number > max){
           bestMove = move;
           max = childNode?.visits as number;
@@ -92,14 +113,17 @@ export class MonteCarlo {
       let max = -Infinity;
 
       for(const move of allMoves){
-        const childNode = node?.getChildNode(move);
-        const visits = childNode?.visits as number;
-        const wins = childNode?.wins as number;
-        const ratio =  wins / visits;
-        if(ratio > max){
-          bestMove = move;
-          max = ratio;
+        const childNode = node.childrenValues[node.childrenKeys.indexOf(move)].node;
+        if(childNode !== null){
+          const visits = childNode.visits;
+          const wins = childNode.wins;
+          const ratio =  wins / visits;
+          if(ratio > max){
+            bestMove = move;
+            max = ratio;
+          }
         }
+
         
       }
     }
@@ -107,11 +131,15 @@ export class MonteCarlo {
   }
 
   selectMCTSNode(state:State):MCTSNode{
-    let node = this.mctsNodes.get(state.hash());
+    //console.log(state.hash());
+    //console.log(this.mctsNodeKeys.indexOf(state.hash()));
+    //console.log(this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())]);
+    let node = this.mctsNodeValues[this.mctsNodeKeys.indexOf(state.hash())];
+    //console.log(node);
     if(node === undefined){
       throw new Error("Node undefined");
     }
-    while(node?.isFullyExpanded && !node.isLeaf){
+    while(node?.isFullyExpanded() && !node.isLeaf()){
       const moves = node.getAllMoves();
       let bestMove;
       let bestUCBValue = -Infinity;
@@ -124,6 +152,7 @@ export class MonteCarlo {
       }
       node = node.getChildNode(bestMove as string);
     }
+    //console.log(node);
     return node;
   }
 
@@ -131,11 +160,15 @@ export class MonteCarlo {
     const moves = node.getUnexpandedMoves();
     const index = Math.floor(Math.random() * moves.length);
     const move = moves[index];
+    /*console.log(moves);
+    console.log(index);
+    console.log(move);*/
 
     const childState = CoreLogic.nextState(node.state, move);
     const childUnexpandedMoves = CoreLogic.getLegalMoves(childState);
     const childNode = node.expand(move, childState,childUnexpandedMoves);
-    this.mctsNodes.set(childState.hash(), childNode);
+    this.mctsNodeKeys.push(childState.hash());
+    this.mctsNodeValues.push(childNode);
 
     return childNode;
   }
@@ -144,11 +177,17 @@ export class MonteCarlo {
     let state = node.state;
     let winner = CoreLogic.determineIfWinner(state);
 
-    while(winner === -Infinity){
+    //console.log(state.currentPlayer,state.player1,state.player2);
+    while(winner === 0){
       const moves = CoreLogic.getLegalMoves(state);
+      //console.log(state);
+      //console.log(moves);
       const move = moves[Math.floor(Math.random() * moves.length)];
       state = CoreLogic.nextState(state, move);
-      winner = CoreLogic.determineIfWinner(state);    
+      winner = CoreLogic.determineIfWinner(state);  
+     
+      //console.log(state);
+        
     }
 
     return winner;
@@ -161,6 +200,7 @@ export class MonteCarlo {
       if(node.state.isPlayer(-winner)){
         node.wins += 1;
       }
+      
       node = node.parent as MCTSNode;
     }
   }
