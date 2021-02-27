@@ -1,6 +1,5 @@
 import { TileColor, Owner } from '../../enums/game.enums';
 
-// what all needs to be private and such for this and all the other classes too 
 export class Tile {
   color: TileColor;
 
@@ -8,6 +7,7 @@ export class Tile {
   maxNodes: number;
 
   isExhausted: boolean;
+  //passivelyExhausted: boolean;
 
   capturedBy: Owner;
 
@@ -27,7 +27,6 @@ export class Tile {
   private leftTile: number;
 
 
-  // having things we will reassign later after randomizing in the constructor??
   constructor(tln = -1, trn = -1, 
               bln = -1, brn = -1,
               tb = -1, rb = -1,
@@ -36,8 +35,9 @@ export class Tile {
               bt = -1, lt = -1){
     this.color = TileColor.BLANK;
     this.nodeCount = 0;
-    this.maxNodes = 0;      // how to deal with maxNodes if its just the blank... do i set this in the constuctor in general?
+    this.maxNodes = 0; 
     this.isExhausted = false;
+    
     this.capturedBy = Owner.NONE;
 
     this.topLeftNode = tln;

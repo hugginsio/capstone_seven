@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 import { GameType, Owner, PlayerType, TileColor } from '../../enums/game.enums';
 
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
-import { Tile } from '../../classes/gamecore/game.class.Tile';
-import { Node } from '../../classes/gamecore/game.class.Node';
-import { Branch } from '../../classes/gamecore/game.class.Branch';
 import { Player } from '../../classes/gamecore/game.class.Player';
 import { Subject } from 'rxjs';
 import { CommPackage } from '../../interfaces/game.interface';
@@ -16,7 +13,6 @@ import { LocalStorageService } from '../../../../shared/services/local-storage/l
   providedIn: 'root'
 })
 export class ManagerService {
-
   private gameBoard: GameBoard;
   private playerOne: Player;
   private playerTwo: Player;
@@ -74,19 +70,65 @@ export class ManagerService {
     return this.gameBoard;
   }
 
-  createBoard(random: boolean): void {
+  createBoard(random: boolean, boardString = "empty"): void {
     if (random) {
       this.gameBoard.randomizeColorsAndMaxNodes();
     } else {
-      // let user enter tile placement
-      // see docs/local-storage.service.md
+      // let user enter tile placement 
+      let boardStringArray = [];
+      boardStringArray = boardString.split('X');
+
+      for (let i = 0; i < boardStringArray.length; i++) {
+        // assigns tile colors
+        switch (boardStringArray[i].substring(0, 1)) {
+          case 'R':
+            this.gameBoard.tiles[i].color = TileColor.RED;
+            break;
+          case 'B':
+            this.gameBoard.tiles[i].color = TileColor.BLUE;
+            break;
+          case 'Y':
+            this.gameBoard.tiles[i].color = TileColor.YELLOW;
+            break;
+          case 'G':
+            this.gameBoard.tiles[i].color = TileColor.GREEN;
+            break;
+          case '0':
+            this.gameBoard.tiles[i].color = TileColor.BLANK;
+            break;
+        }
+        // assigns tile node limits
+        switch (boardStringArray[i].substring(1)) {
+          case "1":
+            this.gameBoard.tiles[i].maxNodes = 1;
+            break;
+          case "2":
+            this.gameBoard.tiles[i].maxNodes = 2;
+            break;
+          case "3":
+            this.gameBoard.tiles[i].maxNodes = 3;
+            break;
+          case "0":
+            this.gameBoard.tiles[i].maxNodes = 0;
+            break;
+        }
+      }
     }
   }
 
-  startGame(): void {
+  startGame(gameType: GameType, playerNum = 0): void {
+    // assigns human/ai roles in AI game
+    if (this.gameType === GameType.AI) {
+      if (playerNum == 1) {
+        this.playerTwo.type = PlayerType.AI;
+        this.playerOne.type = PlayerType.HUMAN;
+      } else if (playerNum == 2) {
+        this.playerOne.type = PlayerType.AI;
+        this.playerTwo.type = PlayerType.HUMAN;
+      }
+    }
 
-    // if statement check to see if its local/network/AI
-    // if AI then call the AI service
+    // <-------------------------------------------------------------------------------------------------------FIXME: need to assign p1, p2, & GameType for networking game 
 
     // this.makeInitialPlacements(this.playerOne, false);
     // this.makeInitialPlacements(this.playerTwo, false);
@@ -100,6 +142,12 @@ export class ManagerService {
 
   nextTurn(currentPlayer: Player): void {
     currentPlayer.hasTraded = false;
+
+    // update resources for newPlayer
+    currentPlayer.redResources += currentPlayer.redPerTurn;
+    currentPlayer.blueResources += currentPlayer.bluePerTurn;
+    currentPlayer.yellowResources += currentPlayer.yellowPerTurn;
+    currentPlayer.greenResources += currentPlayer.greenPerTurn;
     // const stack = [];
 
     // Set resources if still opening moves
@@ -150,11 +198,59 @@ export class ManagerService {
   // }
 
   endTurn(endPlayer: Player): void {
-    console.warn(endPlayer);
+    const otherPlayer = endPlayer === this.playerOne ? this.playerTwo : this.playerOne;
+    const otherOwner = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
+    const currentOwner = endPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
+
     for (let i = 0; i < this.gameBoard.tiles.length; i++) {
-      if (this.checkForCaptures(endPlayer, i)) {
+      if (this.checkForCaptures(endPlayer, i) === true) {
+        // if new owner has nodes, give them resources per turn
+        const trNode = this.gameBoard.nodes[this.gameBoard.tiles[i].getTopRightNode()];
+        const brNode = this.gameBoard.nodes[this.gameBoard.tiles[i].getBottomRightNode()];
+        const blNode = this.gameBoard.nodes[this.gameBoard.tiles[i].getBottomLeftNode()];
+        const tlNode = this.gameBoard.nodes[this.gameBoard.tiles[i].getTopLeftNode()];
+
+        const currentTileColor = this.gameBoard.tiles[i].getColor();
+
+        if (this.gameBoard.tiles[i].isExhausted) {
+          this.gameBoard.tiles[i].isExhausted = false;
+
+          if (trNode.getOwner() === currentOwner) {
+            this.incrementResource(endPlayer, currentTileColor);
+          }
+
+          if (brNode.getOwner() === currentOwner) {
+            this.incrementResource(endPlayer, currentTileColor);
+          }
+
+          if (blNode.getOwner() === currentOwner) {
+            this.incrementResource(endPlayer, currentTileColor);
+          }
+
+          if (tlNode.getOwner() === currentOwner) {
+            this.incrementResource(endPlayer, currentTileColor);
+          }
+        } else {
+          if (trNode.getOwner() === otherOwner) {
+            this.decrementResource(otherPlayer, currentTileColor);
+          }
+
+          if (brNode.getOwner() === otherOwner) {
+            this.decrementResource(otherPlayer, currentTileColor);
+          }
+
+          if (blNode.getOwner() === otherOwner) {
+            this.decrementResource(otherPlayer, currentTileColor);
+          }
+
+          if (tlNode.getOwner() === otherOwner) {
+            this.decrementResource(otherPlayer, currentTileColor);
+          }
+        }
+
         endPlayer.numTilesCaptured++;
-        this.gameBoard.tiles[i].setCapturedBy(this.getCurrentPlayerEnum());
+        endPlayer.currentScore++;
+        endPlayer.capturedTiles.push(i);
       }
 
       // empty tilesBeingChecked before looping
@@ -162,9 +258,7 @@ export class ManagerService {
     }
 
     // empties tilesBeingChecked for next function call
-    for (let i = 0; i < this.tilesBeingChecked.length; i++) {
-      this.tilesBeingChecked.pop();
-    }
+    this.tilesBeingChecked.splice(0, this.tilesBeingChecked.length);
 
     for (let i = 0; i < endPlayer.ownedBranches.length; i++) {
       endPlayer.currentLength = 0;
@@ -172,8 +266,8 @@ export class ManagerService {
     
       this.checkForLongest(endPlayer, endPlayer.ownedBranches[i]);      
     }
-    
-    // If player One just got the longest network
+
+    // updates scores and player data regarding hasLongestNetwork
     if ((this.playerOne.currentLongest > this.playerTwo.currentLongest) && this.playerOne.hasLongestNetwork === false) {
       this.playerOne.hasLongestNetwork = true;
       this.playerOne.currentScore += 2;
@@ -181,23 +275,18 @@ export class ManagerService {
         this.playerTwo.hasLongestNetwork = false;
         this.playerTwo.currentScore -= 2;
       }
-    } 
-    // If Player Two just got the Longest network
-    else if ((this.playerTwo.currentLongest > this.playerOne.currentLongest) && this.playerTwo.hasLongestNetwork === false) {
+    } else if ((this.playerTwo.currentLongest > this.playerOne.currentLongest) && this.playerTwo.hasLongestNetwork === false) {
       this.playerTwo.hasLongestNetwork = true;
       this.playerTwo.currentScore += 2;
       if (this.playerOne.hasLongestNetwork === true) {
         this.playerOne.hasLongestNetwork = false;
         this.playerOne.currentScore -= 2;
       }
-    }
-    //If the longest network for each player is equal in size
-    else if(this.playerOne.currentLongest === this.playerTwo.currentLongest){
-      if(this.playerOne.hasLongestNetwork){
+    } else if (this.playerOne.currentLongest === this.playerTwo.currentLongest) {
+      if (this.playerOne.hasLongestNetwork === true) {
         this.playerOne.hasLongestNetwork = false;
         this.playerOne.currentScore -= 2;
-      }
-      if(this.playerTwo.hasLongestNetwork){
+      } else if (this.playerTwo.hasLongestNetwork === true) {
         this.playerTwo.hasLongestNetwork = false;
         this.playerTwo.currentScore -= 2;
       }
@@ -210,15 +299,8 @@ export class ManagerService {
         this.commLink.next({ code: CommCode.END_GAME, player: this.playerTwo, magic: 'Player Two' });
       }
     } else {
-      let newPlayer;
-
-      if (endPlayer === this.playerOne) {
-        newPlayer = this.playerTwo;
-        this.currentPlayer = Owner.PLAYERTWO;
-      } else {
-        newPlayer = this.playerOne;
-        this.currentPlayer = Owner.PLAYERONE;
-      }
+      const newPlayer = endPlayer === this.playerOne ? this.playerTwo : this.playerOne;
+      this.currentPlayer = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
 
       // update resources for newPlayer
       newPlayer.redResources += newPlayer.redPerTurn;
@@ -325,12 +407,11 @@ export class ManagerService {
     // }
   }
 
-  undoPlacement(piece: string, index: number): void {
+  undoPlacement(piece: string, index: number, currentPlayer: Player): void {
     if (piece === 'N') {
-      this.reverseNodePlacement(index);
-    }
-    else {
-      this.reverseBranchPlacement(index);
+      this.reverseNodePlacement(index, currentPlayer);
+    } else {
+      this.reverseBranchPlacement(index, currentPlayer);
     }
   }
 
@@ -379,63 +460,97 @@ export class ManagerService {
   }
 
   initialNodePlacements(possibleNode: number, currentPlayer: Player): boolean {
-    if (this.gameBoard.nodes[possibleNode].getOwner() === Owner.NONE && currentPlayer.greenResources >= 2 && currentPlayer.yellowResources >= 2) {
-      this.gameBoard.nodes[possibleNode].setOwner(this.getCurrentPlayerEnum());
-      this.getCurrentPlayer().numNodesPlaced++;
-      this.getCurrentPlayer().currentScore++;
-      this.getCurrentPlayer().greenResources -= 2;
-      this.getCurrentPlayer().yellowResources -= 2;
+    const otherOwner = currentPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
+    if (this.gameBoard.nodes[possibleNode].getOwner() === Owner.NONE) {
       if (this.gameBoard.nodes[possibleNode].getTopRightTile() !== -1) {
         this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount++;
 
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount >
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].maxNodes &&
+        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount >
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].maxNodes) &&
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted === false) {
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted = true;
-          this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopRightTile(), true);
-        } else {
-          this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopRightTile(), false);
+          // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].capturedBy === Owner.NONE) {
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted = true;
+            this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopRightTile(), true);
+          }
+        }
+
+        // checks for if resource productions ought to be incremented
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted === false &&
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].capturedBy !== otherOwner) {
+          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].getColor());
         }
       }
 
       if (this.gameBoard.nodes[possibleNode].getBottomRightTile() !== -1) {
         this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount++;
 
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount >
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].maxNodes &&
+        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount >
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].maxNodes) &&
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted === false) {
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted = true;
-          this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomRightTile(), true);
-        } else {
-          this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomRightTile(), false);
+          // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].capturedBy === Owner.NONE) {
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted = true;
+            this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomRightTile(), true);
+          }
         }
+        // checks for if resource productions ought to be incremented
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted === false &&
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].capturedBy !== otherOwner)
+          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].getColor());
       }
 
       if (this.gameBoard.nodes[possibleNode].getBottomLeftTile() !== -1) {
         this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount++;
 
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount >
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].maxNodes &&
+        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount >
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].maxNodes) &&
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted === false) {
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted = true;
-          this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomLeftTile(), true);
-        } else {
-          this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomLeftTile(), false);
+          // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].capturedBy === Owner.NONE) {
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted = true;
+            this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomLeftTile(), true);
+          }
+        }
+
+        // checks for if resource productions ought to be incremented
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted === false &&
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].capturedBy !== otherOwner) {
+          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].getColor());
         }
       }
 
-      if (this.gameBoard.nodes[possibleNode].getTopLeftTile() !== -1) {
+      if (this.gameBoard.nodes[possibleNode].getTopLeftTile() != -1) {
         this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount++;
 
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount >
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].maxNodes &&
+        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount >
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].maxNodes) &&
           this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted === false) {
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted = true;
-          this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopLeftTile(), true);
-        } else {
-          this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopLeftTile(), false);
+
+          // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].capturedBy === Owner.NONE) {
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted = true;
+            this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopLeftTile(), true);
+          }
         }
+        // checks for if resource productions ought to be incremented
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted === false &&
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].capturedBy !== otherOwner) {
+          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].getColor());
+        }
+      }
+
+      if (currentPlayer == this.playerOne) {
+        this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
+        this.playerOne.numNodesPlaced++;
+        this.playerOne.currentScore++;
+
+      } else {
+        this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
+        this.playerTwo.numNodesPlaced++;
+        this.playerTwo.currentScore++;
+
       }
 
       return true;
@@ -445,13 +560,20 @@ export class ManagerService {
   }
 
   initialBranchPlacements(selectedNode: number, possibleBranch: number, currentPlayer: Player): boolean {
-    if (this.gameBoard.branches[possibleBranch].getOwner() === Owner.NONE && currentPlayer.redResources >= 1 && currentPlayer.blueResources >= 1) {
-      if (this.gameBoard.nodes[selectedNode]?.getTopBranch() === possibleBranch || this.gameBoard.nodes[selectedNode]?.getLeftBranch() === possibleBranch ||
-        this.gameBoard.nodes[selectedNode]?.getBottomBranch() === possibleBranch || this.gameBoard.nodes[selectedNode]?.getRightBranch() === possibleBranch) {
-        this.gameBoard.branches[possibleBranch].setOwner(this.getCurrentPlayerEnum());
-        this.getCurrentPlayer().ownedBranches.push(possibleBranch);
-        this.getCurrentPlayer().redResources -= 1;
-        this.getCurrentPlayer().blueResources -= 1;
+    if (this.gameBoard.branches[possibleBranch].getOwner() === Owner.NONE) {
+      if (this.gameBoard.nodes[selectedNode].getTopBranch() === possibleBranch ||
+        this.gameBoard.nodes[selectedNode].getLeftBranch() === possibleBranch ||
+        this.gameBoard.nodes[selectedNode].getBottomBranch() === possibleBranch ||
+        this.gameBoard.nodes[selectedNode].getRightBranch() === possibleBranch
+      ) {
+        if (currentPlayer == this.playerOne) {
+          this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
+          this.playerOne.ownedBranches.push(possibleBranch);
+        } else {
+          this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERTWO);
+          this.playerTwo.ownedBranches.push(possibleBranch);
+        }
+
         return true;
       } else {
         return false;
@@ -462,96 +584,167 @@ export class ManagerService {
   }
 
   generalNodePlacement(possibleNode: number, currentPlayer: Player): boolean {
-    if (this.gameBoard.nodes[possibleNode].getOwner() === "NONE" && currentPlayer.greenResources >= 2 && currentPlayer.yellowResources >= 2) {
-      const nodeOwner = currentPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
-      
-      this.gameBoard.nodes[possibleNode].setOwner(nodeOwner);
-      this.getCurrentPlayer().greenResources -= 2;
-      this.getCurrentPlayer().yellowResources -= 2;
-      this.getCurrentPlayer().numNodesPlaced++;
-      this.getCurrentPlayer().currentScore++;
+    if (currentPlayer.greenResources < 2 || currentPlayer.yellowResources < 2) {
+      return false;
+    }
 
-      if (this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getTopBranch()]?.getOwner() === nodeOwner ||
-        this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getLeftBranch()]?.getOwner() === nodeOwner ||
-        this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getBottomBranch()]?.getOwner() === nodeOwner ||
-        this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getRightBranch()]?.getOwner() === nodeOwner) {
+    if (this.gameBoard.nodes[possibleNode].getOwner() === Owner.NONE) {
+      const nodeOwner = currentPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
+      const otherOwner = currentPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
+
+
+      if (this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getTopBranch()].getOwner() === nodeOwner ||
+        this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getLeftBranch()].getOwner() === nodeOwner ||
+        this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getBottomBranch()].getOwner() === nodeOwner ||
+        this.gameBoard.branches[this.gameBoard.nodes[possibleNode].getRightBranch()].getOwner() === nodeOwner) {
 
         // add to nodeCount of tiles and check for if it has been exhaused
-        if (this.gameBoard.nodes[possibleNode]?.getTopRightTile() !== -1) {
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].nodeCount++;
+        if (this.gameBoard.nodes[possibleNode].getTopRightTile() != -1) {
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount++;
 
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].nodeCount >
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].maxNodes &&
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].isExhausted === false) {
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].isExhausted = true;
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode]?.getTopRightTile(), true);
-          } else {
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode]?.getTopRightTile(), false);
+          if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount >
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].maxNodes) &&
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted === false) {
+            // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
+            if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].capturedBy === Owner.NONE) {
+              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted = true;
+              this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopRightTile(), true);
+            }
+          }
+
+          // checks for if resource productions ought to be incremented
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted === false &&
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].capturedBy !== otherOwner) {
+            this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].getColor());
           }
         }
 
-        if (this.gameBoard.nodes[possibleNode]?.getBottomRightTile() != -1) {
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getBottomRightTile()].nodeCount++;
+        if (this.gameBoard.nodes[possibleNode].getBottomRightTile() != -1) {
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount++;
 
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getBottomRightTile()].nodeCount >
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getBottomRightTile()].maxNodes &&
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getBottomRightTile()].isExhausted === false) {
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getBottomRightTile()].isExhausted = true;
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode]?.getBottomRightTile(), true);
-          } else {
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode]?.getBottomRightTile(), false);
+          if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount >
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].maxNodes) &&
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted === false) {
+
+            // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
+            if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].capturedBy === Owner.NONE) {
+              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted = true;
+              this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomRightTile(), true);
+            }
           }
         }
 
-        if (this.gameBoard.nodes[possibleNode]?.getBottomLeftTile() != -1) {
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getBottomLeftTile()].nodeCount++;
-
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getBottomLeftTile()].nodeCount >
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getBottomLeftTile()].maxNodes &&
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getBottomLeftTile()].isExhausted === false) {
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getBottomLeftTile()].isExhausted = true;
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode]?.getBottomLeftTile(), true);
-          } else {
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode]?.getBottomLeftTile(), false);
-          }
+        // checks for if resource productions ought to be incremented
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted === false &&
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].capturedBy !== otherOwner) {
+          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].getColor());
         }
-
-        if (this.gameBoard.nodes[possibleNode]?.getTopLeftTile() != -1) {
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopLeftTile()].nodeCount++;
-
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopLeftTile()].nodeCount >
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopLeftTile()].maxNodes &&
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopLeftTile()].isExhausted === false) {
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopLeftTile()].isExhausted = true;
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode]?.getTopLeftTile(), true);
-          } else {
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode]?.getTopLeftTile(), false);
-          }
-        }
-
-        return true;
-      } else {
-        return false;
       }
+
+      if (this.gameBoard.nodes[possibleNode].getBottomLeftTile() != -1) {
+        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount++;
+
+        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount >
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].maxNodes) &&
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted === false) {
+
+          // checking if tile is captured to set activelyExhausted and decrement tiles in tileExhaustion
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].capturedBy === Owner.NONE) {
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted = true;
+            this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomLeftTile(), true);
+          }
+        }
+        // checks for if resource productions ought to be incremented
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted === false &&
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].capturedBy != otherOwner) {
+          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].getColor());
+        }
+      }
+
+      if (this.gameBoard.nodes[possibleNode].getTopLeftTile() != -1) {
+        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount++;
+
+        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount >
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].maxNodes) &&
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted === false) {
+
+          // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
+          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].capturedBy === Owner.NONE) {
+            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted = true;
+            this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopLeftTile(), true);
+          }
+        }
+        // checks for if resource productions ought to be incremented
+        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted === false &&
+          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].capturedBy !== otherOwner) {
+          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].getColor());
+        }
+      }
+
+      if (currentPlayer === this.playerOne) {
+        this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
+        this.playerOne.greenResources -= 2;
+        this.playerOne.yellowResources -= 2;
+        this.playerOne.numNodesPlaced++;
+        this.playerOne.currentScore++;
+      } else {
+        this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
+        this.playerTwo.greenResources -= 2;
+        this.playerTwo.yellowResources -= 2;
+        this.playerTwo.numNodesPlaced++;
+        this.playerTwo.currentScore++;
+      }
+
+      return true;
     } else {
       return false;
     }
   }
+
 
   generalBranchPlacement(possibleBranch: number, currentPlayer: Player): boolean {
-    if (this.gameBoard.branches[possibleBranch]?.getOwner() === Owner.NONE && currentPlayer.redResources >= 1 && currentPlayer.blueResources >= 1) {
+
+    // fail condition: player doesn't have required resources
+    if (currentPlayer.redResources < 1 || currentPlayer.blueResources < 1) {
+      return false;
+    }
+
+    const otherPlayer = currentPlayer === this.playerOne ? this.playerTwo : this.playerOne;
+
+    // fail condition: branch is adjacent to tile captured by other player
+    for (let i = 0; i < otherPlayer.capturedTiles.length; i++) {
+      const currentCapturedTile = this.gameBoard.tiles[otherPlayer.capturedTiles[i]];
+      if (currentCapturedTile.getTopBranch() === possibleBranch ||
+        currentCapturedTile.getRightBranch() === possibleBranch ||
+        currentCapturedTile.getBottomBranch() === possibleBranch ||
+        currentCapturedTile.getLeftBranch() === possibleBranch) {
+        return false;
+      }
+    }
+
+    if (this.gameBoard.branches[possibleBranch].getOwner() === Owner.NONE) {
+
       const branchOwner = currentPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
-      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch1')]?.getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch2')]?.getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch3')]?.getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch4')]?.getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch5')]?.getOwner() === branchOwner ||
-        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch('branch6')]?.getOwner() === branchOwner) {
-        this.gameBoard.branches[possibleBranch].setOwner(this.getCurrentPlayerEnum());
-        this.getCurrentPlayer().ownedBranches.push(possibleBranch);
-        this.getCurrentPlayer().redResources--;
-        this.getCurrentPlayer().blueResources--;
+      if (this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch1")].getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch2")].getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch3")].getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch4")].getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch5")].getOwner() === branchOwner ||
+        this.gameBoard.branches[this.gameBoard.branches[possibleBranch].getBranch("branch6")].getOwner() === branchOwner) {
+
+        if (currentPlayer == this.playerOne) {
+          this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
+          this.playerOne.ownedBranches.push(possibleBranch);
+          this.playerOne.redResources--;
+          this.playerOne.blueResources--;
+        } else {
+          this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERTWO);
+          this.playerTwo.ownedBranches.push(possibleBranch);
+          this.playerTwo.redResources--;
+          this.playerTwo.blueResources--;
+        }
+
         return true;
       } else {
         return false;
@@ -561,16 +754,25 @@ export class ManagerService {
     }
   }
 
-  reverseNodePlacement(reverseNode: number): void {
+  reverseNodePlacement(reverseNode: number, currentPlayer: Player): void {
     this.gameBoard.nodes[reverseNode].setOwner(Owner.NONE);
-    this.getCurrentPlayer().numNodesPlaced--;
-    this.getCurrentPlayer().currentScore--;
-    this.getCurrentPlayer().yellowResources += 2;
-    this.getCurrentPlayer().greenResources += 2;
+    
+    if (currentPlayer === this.playerOne) {
+      this.playerOne.numNodesPlaced--;
+      this.playerOne.currentScore--;
+      this.playerOne.yellowResources += 2;
+      this.playerOne.greenResources += 2;
+    } else {
+      this.playerTwo.numNodesPlaced--;
+      this.playerTwo.currentScore--;
+      this.playerTwo.yellowResources += 2;
+      this.playerTwo.greenResources += 2;
+    }
 
-    if (this.gameBoard.nodes[reverseNode].getTopRightTile() != -1) {
+    if (this.gameBoard.nodes[reverseNode].getTopRightTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].nodeCount--;
 
+      // checking if need to un-exhaust tile
       if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].isExhausted) {
         if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].nodeCount <=
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].maxNodes) {
@@ -580,11 +782,11 @@ export class ManagerService {
       }
     }
 
-    if (this.gameBoard.nodes[reverseNode].getTopLeftTile() != -1) {
+    if (this.gameBoard.nodes[reverseNode].getTopLeftTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].nodeCount--;
 
+      // checking if need to un-exhaust tile
       if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].isExhausted) {
-
         if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].nodeCount <=
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].maxNodes) {
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].isExhausted = false;
@@ -593,9 +795,10 @@ export class ManagerService {
       }
     }
 
-    if (this.gameBoard.nodes[reverseNode].getBottomRightTile() != -1) {
+    if (this.gameBoard.nodes[reverseNode].getBottomRightTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].nodeCount--;
 
+      // checking if need to un-exhaust tile
       if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].isExhausted) {
         if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].nodeCount <=
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].maxNodes) {
@@ -605,11 +808,11 @@ export class ManagerService {
       }
     }
 
-    if (this.gameBoard.nodes[reverseNode].getBottomLeftTile() != -1) {
+    if (this.gameBoard.nodes[reverseNode].getBottomLeftTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].nodeCount--;
 
+      // checking if need to un-exhaust tile
       if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].isExhausted) {
-
         if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].nodeCount <=
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].maxNodes) {
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].isExhausted = false;
@@ -624,15 +827,15 @@ export class ManagerService {
     if (currentPlayer === this.playerOne) {
       this.playerOne.numNodesPlaced--;
       this.playerOne.currentScore--;
-    }
-    else {
+    } else {
       this.playerTwo.numNodesPlaced--;
       this.playerTwo.currentScore--;
     }
 
-    if (this.gameBoard.nodes[reverseNode].getTopRightTile() != -1) {
+    if (this.gameBoard.nodes[reverseNode].getTopRightTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].nodeCount--;
 
+      // checking if need to un-exhaust tile
       if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].isExhausted) {
         if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].nodeCount <=
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopRightTile()].maxNodes) {
@@ -642,11 +845,10 @@ export class ManagerService {
       }
     }
 
-    if (this.gameBoard.nodes[reverseNode].getTopLeftTile() != -1) {
+    if (this.gameBoard.nodes[reverseNode].getTopLeftTile() !== -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].nodeCount--;
-
+      // checking if need to un-exhaust tile
       if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].isExhausted) {
-
         if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].nodeCount <=
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].maxNodes) {
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getTopLeftTile()].isExhausted = false;
@@ -658,6 +860,7 @@ export class ManagerService {
     if (this.gameBoard.nodes[reverseNode].getBottomRightTile() != -1) {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].nodeCount--;
 
+      // checking if need to un-exhaust tile
       if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].isExhausted) {
         if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].nodeCount <=
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomRightTile()].maxNodes) {
@@ -671,7 +874,6 @@ export class ManagerService {
       this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].nodeCount--;
 
       if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].isExhausted) {
-
         if (this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].nodeCount <=
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].maxNodes) {
           this.gameBoard.tiles[this.gameBoard.nodes[reverseNode].getBottomLeftTile()].isExhausted = false;
@@ -681,11 +883,17 @@ export class ManagerService {
     }
   }
 
-  reverseBranchPlacement(reverseBranch: number): void {
+  reverseBranchPlacement(reverseBranch: number, currentPlayer: Player): void {
     this.gameBoard.branches[reverseBranch].setOwner(Owner.NONE);
-    this.getCurrentPlayer().ownedBranches.pop();
-    this.getCurrentPlayer().redResources++;
-    this.getCurrentPlayer().blueResources++;
+    if (currentPlayer === this.playerOne) {
+      this.playerOne.ownedBranches.pop();
+      this.playerOne.redResources++;
+      this.playerOne.blueResources++;
+    } else {
+      this.playerTwo.ownedBranches.pop();
+      this.playerTwo.redResources++;
+      this.playerTwo.blueResources++;
+    }
   }
 
   reverseInitialBranchPlacement(reverseBranch: number): void {
@@ -694,53 +902,84 @@ export class ManagerService {
   }
 
   tileExhaustion(tileNum: number, setAsExhausted: boolean): void {
-    // check for whichever nodes are already on the tile and decrement their *color*PerTurn
+    // check for whichever nodes are already on the tile and decrement/increment their *color*PerTurn
     const currentTileColor = this.gameBoard.tiles[tileNum].color;
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const functionName = setAsExhausted ? this.decrementResource : this.incrementResource;
 
-    // can be reduced
-    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(this.playerOne, currentTileColor);
-    } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName(this.playerTwo, currentTileColor);
+    if (setAsExhausted) {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
+        this.decrementResource(this.playerOne, currentTileColor);
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
+        this.decrementResource(this.playerTwo, currentTileColor);
+      }
+
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
+        this.decrementResource(this.playerOne, currentTileColor);
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
+        this.decrementResource(this.playerTwo, currentTileColor);
+      }
+
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
+        this.decrementResource(this.playerOne, currentTileColor);
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
+        this.decrementResource(this.playerTwo, currentTileColor);
+      }
+
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
+        this.decrementResource(this.playerOne, currentTileColor);
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
+        this.decrementResource(this.playerTwo, currentTileColor);
+      }
     }
 
-    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(this.playerOne, currentTileColor);
-    } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName(this.playerTwo, currentTileColor);
+    else {
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
+        this.incrementResource(this.playerOne, currentTileColor);
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
+        this.incrementResource(this.playerTwo, currentTileColor);
+      }
+
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
+        this.incrementResource(this.playerOne, currentTileColor);
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
+        this.incrementResource(this.playerTwo, currentTileColor);
+      }
+
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
+        this.incrementResource(this.playerOne, currentTileColor);
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
+        this.incrementResource(this.playerTwo, currentTileColor);
+      }
+
+      if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
+        this.incrementResource(this.playerOne, currentTileColor);
+      } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
+        this.incrementResource(this.playerTwo, currentTileColor);
+      }
     }
 
-    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(this.playerOne, currentTileColor);
-    } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName(this.playerTwo, currentTileColor);
-    }
-
-    if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(this.playerOne, currentTileColor);
-    } else if (this.gameBoard.nodes[this.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName(this.playerTwo, currentTileColor);
-    }
   }
 
   decrementResource(nodeOwner: Player, currentTileColor: TileColor): void {
     switch (currentTileColor) {
       case TileColor.RED:
-        nodeOwner.redPerTurn -= nodeOwner.redPerTurn >= 1 ? 1 : 0;
+        if (nodeOwner.redPerTurn > 0)
+          nodeOwner.redPerTurn--;
         break;
       case TileColor.BLUE:
-        nodeOwner.bluePerTurn -= nodeOwner.bluePerTurn >= 1 ? 1 : 0;
+        if (nodeOwner.bluePerTurn > 0)
+          nodeOwner.bluePerTurn--;
         break;
       case TileColor.YELLOW:
-        nodeOwner.yellowPerTurn -= nodeOwner.yellowPerTurn >= 1 ? 1 : 0;
+        if (nodeOwner.redPerTurn > 0)
+          nodeOwner.yellowPerTurn--;
         break;
       case TileColor.GREEN:
-        nodeOwner.greenPerTurn -= nodeOwner.greenPerTurn >= 1 ? 1 : 0;
+        if (nodeOwner.greenPerTurn > 0)
+          nodeOwner.greenPerTurn--;
         break;
     }
   }
+
 
   incrementResource(nodeOwner: Player, currentTileColor: TileColor): void {
     switch (currentTileColor) {
@@ -805,51 +1044,41 @@ export class ManagerService {
 
     if (branchOwner === this.playerOne) {
       if (branch1Owner === Owner.PLAYERONE) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch1'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch1"));
       }
-
       if (branch2Owner === Owner.PLAYERONE) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch2'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch2"));
       }
-
       if (branch3Owner === Owner.PLAYERONE) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch3'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch3"));
       }
-
       if (branch4Owner === Owner.PLAYERONE) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch4'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch4"));
       }
-
       if (branch5Owner === Owner.PLAYERONE) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch5'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch5"));
       }
-
       if (branch6Owner === Owner.PLAYERONE) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch6'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch6"));
       }
     } else {
       if (branch1Owner === Owner.PLAYERTWO) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch1'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch1"));
       }
-
       if (branch2Owner === Owner.PLAYERTWO) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch2'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch2"));
       }
-
       if (branch3Owner === Owner.PLAYERTWO) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch3'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch3"));
       }
-
       if (branch4Owner === Owner.PLAYERTWO) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch4'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch4"));
       }
-
       if (branch5Owner === Owner.PLAYERTWO) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch5'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch5"));
       }
-
       if (branch6Owner === Owner.PLAYERTWO) {
-        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch('branch6'));
+        this.checkForLongest(branchOwner, this.gameBoard.branches[currentBranch].getBranch("branch6"));
       }
     }
 
@@ -857,7 +1086,6 @@ export class ManagerService {
   }
 
   checkForCaptures(capturer: Player, checkTile: number): boolean {
-
     let captured = true;
 
     // prevents infinite recursion
@@ -865,24 +1093,12 @@ export class ManagerService {
       return captured;
     }
 
-    let currentPlayer;
-    let otherPlayer;
-
+    const otherPlayer = capturer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
     const currentTile = this.gameBoard.tiles[checkTile];
     const tileTopBranch = this.gameBoard.branches[currentTile.getTopBranch()];
     const tileRightBranch = this.gameBoard.branches[currentTile.getRightBranch()];
     const tileBottomBranch = this.gameBoard.branches[currentTile.getBottomBranch()];
     const tileLeftBranch = this.gameBoard.branches[currentTile.getLeftBranch()];
-
-    if (capturer === this.playerOne) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      currentPlayer = "PLAYERONE";
-      otherPlayer = "PLAYERTWO";
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      currentPlayer = "PLAYERTWO";
-      otherPlayer = "PLAYERONE";
-    }
 
     // checks first instant fail condition: opponent has claimed any branches surrounding tile being checked
     if (tileTopBranch.getOwner() === otherPlayer ||
@@ -923,7 +1139,6 @@ export class ManagerService {
           captured = false;
         }
       }
-
     }
 
     return captured;
