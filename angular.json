@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "646d855b-cea4-42ef-9a0b-29c31fa4b0a6"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -127,8 +130,8 @@
           "options": {
             "eslintConfig": ".eslintrc.json",
             "lintFilePatterns": [
-              "src/**.ts",
-              "electron/main.ts"
+              "src/**/*.ts",
+              "electron/**/*.ts"
             ]
           }
         }
@@ -143,7 +146,7 @@
           "options": {
             "eslintConfig": ".eslintrc.json",
             "lintFilePatterns": [
-              "e2e/**.ts"
+              "e2e/**/*.ts"
             ]
           }
         }

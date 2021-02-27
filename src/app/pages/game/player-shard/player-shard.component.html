@@ -1,0 +1,33 @@
+<div class="border-2 border-transparent">
+  <p>{{ playerName }}</p>
+  <p class="text-sm leading-none">{{ playerDetail?.type }}</p>
+  <div class="p-3">
+    <p>Score: {{ playerDetail?.currentScore }}</p>
+    <p>Network: {{ playerDetail?.currentLength }}</p>
+  </div>
+  <div class="flex flex-col space-y-3 w-full place-items-center">
+    <div class="flex space-x-3">
+      <p>R: {{ playerDetail?.redResources }}</p>
+      <p>G: {{ playerDetail?.greenResources }}</p>
+    </div>
+    <div class="flex space-x-3">
+      <p>B: {{ playerDetail?.blueResources }}</p>
+      <p>Y: {{ playerDetail?.yellowResources }}</p>
+    </div>
+  </div>
+  <!-- These should only be visible if the player is both local and human -->
+  <div class="flex flex-col space-y-3 pt-3 text-center"
+    *ngIf="true">
+    <div class="flex space-x-3">
+      <div class="button" [ngClass]="getDynamicClass()" (click)="triggerUndo()">
+        Undo
+      </div>
+      <div class="button" [ngClass]="getDynamicClass()" (click)="triggerTrading()">
+        Trade
+      </div>
+    </div>
+    <div class="button" [ngClass]="getDynamicClass()" (click)="triggerEndTurn()">
+      End Turn
+    </div>
+  </div>
+</div>
