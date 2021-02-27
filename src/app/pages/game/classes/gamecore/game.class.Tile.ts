@@ -71,6 +71,14 @@ export class Tile {
     return this.maxNodes;
   }
 
+  getIsExhaused(): boolean {
+    return this.isExhausted;
+  }
+
+  setIsExhaused(value: boolean): void {
+    this.isExhausted = value;
+  }
+
   getCapturedBy(): Owner {
     return this.capturedBy;
   }
