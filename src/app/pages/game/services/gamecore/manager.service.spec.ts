@@ -14,7 +14,7 @@ describe('ManagerService', () => {
     expect(service).toBeTruthy();
   });
 
-  fit('serializeStack should translate the stack into a string', () => {
+  it('serializeStack should translate the stack into a string', () => {
     const expectedString = 'R,G,B,Y;1,2,3;4,5,6';
     service.tradedResources = ['R', 'G', 'B'];
     service.selectedTrade = 'Y';
