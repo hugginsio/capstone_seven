@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { GameType, Owner, PlayerType, TileColor } from '../../enums/game.enums';
-import { Move } from '../../util/core-logic.util';
 import { CoreLogic } from '../../util/core-logic.util';
 import { AiService } from '../../services/ai/ai.service';
 
