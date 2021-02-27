@@ -69,7 +69,7 @@ export class ManagerService {
       }
     } else if (this.firstPlayer === 'two') {
       if (this.currentGameMode === GameType.AI) {
-        this.ai = new AiService(this.gameBoard, this.playerTwo, this.playerOne);
+        this.ai = new AiService(this.gameBoard, this.playerOne,this.playerTwo);
       }
     }
 
@@ -259,6 +259,8 @@ export class ManagerService {
     const otherPlayer = currentPlayer === this.playerOne ? this.playerTwo : this.playerOne;
     currentPlayer.hasTraded = false;
 
+
+
     // update resources for newPlayer
     currentPlayer.redResources += currentPlayer.redPerTurn;
     currentPlayer.blueResources += currentPlayer.bluePerTurn;
@@ -271,7 +273,10 @@ export class ManagerService {
       currentPlayer.blueResources = 1;
       currentPlayer.yellowResources = 2;
       currentPlayer.greenResources = 2;
+
     }
+
+ 
 
     const pastMoveString = this.serializeStack();
     this.tradedResources.splice(0, this.tradedResources.length);
@@ -283,7 +288,12 @@ export class ManagerService {
       if (currentPlayer.numNodesPlaced === 0 && otherPlayer.numNodesPlaced === 0) {
         AIStringMove = this.ai.randomAIFirstMove();
       } else {
-        AIStringMove = this.ai.randomAIMove(pastMoveString);
+        if(currentPlayer.numNodesPlaced === 1 && otherPlayer.numNodesPlaced === 1){
+          AIStringMove = this.ai.randomAIFirstMove();
+        }
+        else{
+          AIStringMove = this.ai.randomAIMove(pastMoveString,{red:currentPlayer.redResources,blue:currentPlayer.blueResources,green:currentPlayer.greenResources,yellow:currentPlayer.yellowResources});
+        }
       }
 
       console.warn(AIStringMove);
@@ -498,21 +508,21 @@ export class ManagerService {
       const newPlayer = endPlayer === this.playerOne ? this.playerTwo : this.playerOne;
 
       // update resources for newPlayer
-      newPlayer.redResources += newPlayer.redPerTurn;
-      newPlayer.blueResources += newPlayer.bluePerTurn;
-      newPlayer.yellowResources += newPlayer.yellowPerTurn;
-      newPlayer.greenResources += newPlayer.greenPerTurn;
+      // newPlayer.redResources += newPlayer.redPerTurn;
+      // newPlayer.blueResources += newPlayer.bluePerTurn;
+      // newPlayer.yellowResources += newPlayer.yellowPerTurn;
+      // newPlayer.greenResources += newPlayer.greenPerTurn;
 
       // Set resources if still opening moves
-      if (endPlayer.numNodesPlaced < 2 && endPlayer.ownedBranches.length < 2) {
-        endPlayer.redResources = 1;
-        endPlayer.blueResources = 1;
-        endPlayer.yellowResources = 2;
-        endPlayer.greenResources = 2;
-      }
+      // if (endPlayer.numNodesPlaced < 2 && endPlayer.ownedBranches.length < 2) {
+      //   endPlayer.redResources = 1;
+      //   endPlayer.blueResources = 1;
+      //   endPlayer.yellowResources = 2;
+      //   endPlayer.greenResources = 2;
+      // }
 
       if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
-        if (this.currentGameMode === GameType.AI) {
+        if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI) {
           this.ai.currentState = CoreLogic.nextState(this.ai.currentState, this.serializeStack());
         }
 
@@ -654,7 +664,7 @@ export class ManagerService {
   }
 
   initialNodePlacements(possibleNode: number, currentPlayer: Player): boolean {
-    const otherOwner = currentPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
+    const otherOwner = currentPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
 
     if (this.gameBoard.nodes[possibleNode]?.getOwner() === Owner.NONE) {
       if (this.gameBoard.nodes[possibleNode]?.getTopRightTile() !== -1) {
@@ -739,10 +749,14 @@ export class ManagerService {
         this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
         this.playerOne.numNodesPlaced++;
         this.playerOne.currentScore++;
+        this.playerOne.greenResources-=2;
+        this.playerOne.yellowResources-=2;
       } else {
         this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
         this.playerTwo.numNodesPlaced++;
         this.playerTwo.currentScore++;
+        this.playerTwo.greenResources-=2;
+        this.playerTwo.yellowResources-=2;
       }
 
       const nodePlacement = ['N', possibleNode.toString()];
@@ -763,9 +777,13 @@ export class ManagerService {
         if (currentPlayer == this.playerOne) {
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERONE);
           this.playerOne.ownedBranches.push(possibleBranch);
+          this.playerOne.redResources--;
+          this.playerOne.blueResources--;
         } else {
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERTWO);
           this.playerTwo.ownedBranches.push(possibleBranch);
+          this.playerTwo.redResources--;
+          this.playerTwo.blueResources--;
         }
 
         const branchPlacement = ['B', possibleBranch.toString()];

@@ -9,6 +9,13 @@ import { CoreLogic } from '../../util/core-logic.util';
 @Injectable({
   providedIn: 'root'
 })
+
+interface Resources{
+  red:number,
+  blue:number,
+  green:number,
+  yellow:number,
+}
 export class AiService {
   
   mcts: MonteCarlo;
@@ -70,8 +77,27 @@ export class AiService {
     return result;
   }
 
-  randomAIMove(move:string):string{
+  randomAIMove(move:string,resources:Resources):string{
     this.currentState = CoreLogic.nextState(this.currentState, move);
+    
+    if(!this.currentState.inInitialMoves){
+      if(this.currentState.currentPlayer === 1){
+        this.currentState.player1.redResources = resources.red;
+        this.currentState.player1.blueResources = resources.blue;
+
+        this.currentState.player1.greenResources = resources.green;
+        this.currentState.player1.yellowResources = resources.yellow;
+
+      }
+      else{
+        this.currentState.player2.redResources = resources.red;
+        this.currentState.player2.blueResources = resources.blue;
+
+        this.currentState.player2.greenResources = resources.green;
+        this.currentState.player2.yellowResources = resources.yellow;
+
+      }
+    }
 
     const moves = CoreLogic.getLegalMoves(this.currentState);
 
@@ -83,8 +109,6 @@ export class AiService {
 
     return result;
   }
-
-
 }
 
 
