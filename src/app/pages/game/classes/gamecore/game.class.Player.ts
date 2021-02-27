@@ -26,6 +26,7 @@ export class Player {
   numTilesCaptured: number;
   capturedTiles: Array<number>;
 
+
   numNodesPlaced: number;
   
   currentScore: number;
@@ -46,6 +47,11 @@ export class Player {
     this.greenPerTurn = 0;
     this.yellowPerTurn = 0;
 
+    this.redPerTurn = 0;
+    this.bluePerTurn = 0;
+    this.greenPerTurn = 0;
+    this.yellowPerTurn = 0;
+
     this.hasTraded = false;
 
     this.ownedBranches = [];
@@ -54,11 +60,14 @@ export class Player {
     this.currentLength = 0;
     this.currentLongest = 0;
     this.hasLongestNetwork = false;
+    this.ownedBranches = [];
+    this.branchScanner = [];
 
     this.numTilesCaptured = 0;
+    this.capturedTiles = [];
+
     this.numNodesPlaced = 0;
 
     this.currentScore = 0;
   }
 }
- 
