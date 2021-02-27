@@ -117,7 +117,7 @@ describe('AiService', () => {
       const start = Date.now();
       const chosenMove = ai.getAIFirstMove();
       console.log(`TIME: ${Date.now() - start}ms`);
-      console.log(`chosenmove: ${chosenMove}`);
+      console.log('chosen move ', chosenMove);
 
       console.warn(ai.currentState.player1);
       console.log(ai.currentState.player2);
