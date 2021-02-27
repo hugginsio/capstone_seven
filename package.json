@@ -26,7 +26,10 @@
     "test:watch": "ng test",
     "web": "npm run ng:serve"
   },
-  "dependencies": {},
+  "dependencies": {
+    "broadcast-address": "1.0.2",
+    "socket.io": "3.1.2"
+  },
   "devDependencies": {
     "@angular-builders/custom-webpack": "10.0.1",
     "@angular-devkit/architect": "0.1001.7",
