@@ -7,7 +7,7 @@ import { AiService } from '../../services/ai/ai.service';
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Player } from '../../classes/gamecore/game.class.Player';
 import { Subject } from 'rxjs';
-import { CommPackage } from '../../interfaces/game.interface';
+import { CommPackage, ResourceMap } from '../../interfaces/game.interface';
 import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
 
@@ -24,19 +24,22 @@ export class ManagerService {
   private playerOne: Player;
   private playerTwo: Player;
   private readonly ai: AiService;
-  public stack: Array<Array<string | number>> = [];
   private tilesBeingChecked: number[];
+  public selectedTrade: string;
+  public stack: Array<Array<string | number>> = [];
+  public tradedResources: string[];
 
   public readonly commLink = new Subject<CommPackage>();
 
   constructor(
     private readonly storageService: LocalStorageService
   ) {
+    this.currentPlayer = Owner.PLAYERONE;
     this.gameBoard = new GameBoard();
     this.playerOne = new Player();
     this.playerTwo = new Player();
-    this.currentPlayer = Owner.PLAYERONE;
     this.tilesBeingChecked = [];
+    this.tradedResources = [];
 
     this.storageService.setContext('game');
     const gameMode = this.storageService.fetch('mode');
@@ -141,21 +144,18 @@ export class ManagerService {
     }
   }
 
-  applyMove(moveString: string){
+  applyMove(moveString: string): void {
     let currentPlayer;
     if (this.playerOne.type === PlayerType.HUMAN) {
       currentPlayer = this.playerTwo;
-    }
-    else {
+    } else {
       currentPlayer = this.playerOne;
     }
 
-    let moveToPlace: Move;
-    moveToPlace = CoreLogic.stringToMove(moveString);
+    const moveToPlace = CoreLogic.stringToMove(moveString);
 
     // process trade
-    if (moveToPlace.tradedIn.length > 0)
-    {
+    if (moveToPlace.tradedIn.length > 0) {
       for (let i = 0; i < moveToPlace.tradedIn.length; i++) {
         this.decrementResourceByOne(currentPlayer, moveToPlace.tradedIn[i]);
       }
@@ -167,16 +167,14 @@ export class ManagerService {
     if (currentPlayer.ownedBranches.length < 2) {
       this.initialNodePlacements(moveToPlace.nodesPlaced[0], currentPlayer);
       this.initialBranchPlacements(moveToPlace.nodesPlaced[0], moveToPlace.branchesPlaced[0], currentPlayer);
-    }
-    else {
+    } else {
       // process general branches
       for (let i = 0; i < moveToPlace.branchesPlaced.length; i++){
         this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
       }
 
       // process general nodes
-      for (let i = 0; i < moveToPlace.nodesPlaced.length; i++)
-      {
+      for (let i = 0; i < moveToPlace.nodesPlaced.length; i++) {
         this.generalNodePlacement(moveToPlace.nodesPlaced[i], currentPlayer);
       }
     }
@@ -186,9 +184,9 @@ export class ManagerService {
 
 
   startGame(gameType: GameType): void {
-    if (this.currentGameMode === GameType.AI) {
+    // if (this.currentGameMode === GameType.AI) {
       
-    }
+    // }
     // assigns human/ai roles in AI game
     // if (this.gameType === GameType.AI) {
     //   if (playerNum == 1) {
@@ -208,10 +206,10 @@ export class ManagerService {
     // this.makeInitialPlacements(this.playerTwo, false);
     // this.makeInitialPlacements(this.playerOne, false);
 
-    // this.endTurn(this.playerOne); 
+    // this.endTurn(this.playerOne);
   }
 
-  nextTurn(currentPlayer: Player, playerMoveString: string = ""): void {
+  nextTurn(currentPlayer: Player): void {
     const otherPlayer = currentPlayer === this.playerOne ? this.playerTwo : this.playerOne;
     currentPlayer.hasTraded = false;
 
@@ -229,12 +227,12 @@ export class ManagerService {
       currentPlayer.greenResources = 2; 
     }
 
-    let pastMoveString = this.serializeStack();
+    const pastMoveString = this.serializeStack();
+    this.tradedResources.splice(0, this.tradedResources.length);
     this.stack.splice(0, this.stack.length);
     
     if (currentPlayer.type === PlayerType.AI){
-      let AIStringMove: string;
-      AIStringMove = 'jim halpert';
+      // let AIStringMove;
 
       if (currentPlayer.numNodesPlaced === 0 && otherPlayer.numNodesPlaced === 0) {
         // AIStringMove = this.ai.randomAIFirstMove();
@@ -242,7 +240,7 @@ export class ManagerService {
         // AIStringMove = this.ai.randomAIMove(pastMoveString);
       }
 
-      this.applyMove(AIStringMove);
+      // this.applyMove(AIStringMove);
     }
 
     // Empty the move stack prior to the next placed turns
@@ -261,11 +259,11 @@ export class ManagerService {
 
     // Trades
     if (this.getCurrentPlayer().hasTraded) {
-      this.stack.forEach(el => {
-        if (el[0] === 'T') {
-          moves += `${el[1]},`;
-        }
+      this.tradedResources.forEach(el => {
+        moves += `${el},`;
       });
+
+      moves += `${this.selectedTrade},`;
     }
 
     // handle trailing comma
@@ -475,17 +473,54 @@ export class ManagerService {
 
   // Trade resources
 
-  makeTrade(currentPlayer: Player): void {
+  makeTrade(currentPlayer: Player, selectedResource: number, tradeMap: ResourceMap): void {
 
-    const tradedResources = [];
+    for (let i = 0; i < tradeMap.blue; i++)
+    {
+      currentPlayer.blueResources--;
+      this.tradedResources.push('B');
+    }
+    for (let i = 0; i < tradeMap.red; i++)
+    {
+      currentPlayer.redResources--;
+      this.tradedResources.push('R');
+    }
+    for (let i = 0; i < tradeMap.yellow; i++)
+    {
+      currentPlayer.yellowResources--;
+      this.tradedResources.push('Y');
+    }
+    for (let i = 0; i < tradeMap.green; i++)
+    {
+      currentPlayer.greenResources--;
+      this.tradedResources.push('G');
+    }
 
+    switch (selectedResource){
+      case 1:
+        currentPlayer.redResources++;
+        this.selectedTrade = 'R';
+        break;
+      case 2:
+        currentPlayer.greenResources++;
+        this.selectedTrade = 'G';
+        break;
+      case 3:
+        currentPlayer.blueResources++;
+        this.selectedTrade = 'B';
+        break;
+      case 4:
+        currentPlayer.yellowResources++;
+        this.selectedTrade = 'Y';
+        break;
+    }
     // if(currentPlayer.hasTraded === false)
     // {
-    //   clickRed(event: MouseEvent) {
-    //     if (currentPlayer.redResources > 0 && tradedResources.length <= 3) {
-    //       tradedResources.push('R');
-    //       currentPlayer.redResources--;
-    //     }
+    // //   clickRed(event: MouseEvent) {
+    //      if (currentPlayer.redResources > 0 && tradedResources.length <= 3) {
+    //        tradedResources.push('R');
+    //        currentPlayer.redResources--;
+    //      }
     //   }
     //   clickBlue(event: MouseEvent) {
     //     if (currentPlayer.blueResources > 0 && tradedResources.length <= 3) {
@@ -698,14 +733,13 @@ export class ManagerService {
         this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
         this.playerOne.numNodesPlaced++;
         this.playerOne.currentScore++;
-
       } else {
         this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
         this.playerTwo.numNodesPlaced++;
         this.playerTwo.currentScore++;
-
       }
-      let nodePlacement = ['N', possibleNode.toString()];
+
+      const nodePlacement = ['N', possibleNode.toString()];
       this.stack.push(nodePlacement);
       return true;
     } else {
@@ -727,7 +761,8 @@ export class ManagerService {
           this.gameBoard.branches[possibleBranch].setOwner(Owner.PLAYERTWO);
           this.playerTwo.ownedBranches.push(possibleBranch);
         }
-        let branchPlacement = ['N', possibleBranch.toString()];
+
+        const branchPlacement = ['N', possibleBranch.toString()];
         this.stack.push(branchPlacement);
         return true;
       } else {
@@ -849,7 +884,7 @@ export class ManagerService {
         this.playerTwo.numNodesPlaced++;
         this.playerTwo.currentScore++;
       }
-      let nodePlacement = ['N', possibleNode];
+      const nodePlacement = ['N', possibleNode];
       this.stack.push(nodePlacement);
       return true;
     } else {
@@ -899,7 +934,7 @@ export class ManagerService {
           this.playerTwo.redResources--;
           this.playerTwo.blueResources--;
         }
-        let branchPlacement = ['N', possibleBranch];
+        const branchPlacement = ['N', possibleBranch];
         this.stack.push(branchPlacement);
         return true;
       } else {
@@ -1171,7 +1206,7 @@ export class ManagerService {
     }
   }
 
-decrementResourceByOne(currentPlayer: Player, currentTileColor: string): void {
+  decrementResourceByOne(currentPlayer: Player, currentTileColor: string): void {
     switch (currentTileColor){
       case 'R':
         currentPlayer.redResources--;

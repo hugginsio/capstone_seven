@@ -223,6 +223,10 @@
   .resource-button-trade {
     @apply border-4 border-gray-600 flex-grow hover:border-gray-300 cursor-pointer transition-colors duration-100;
   }
+
+  .selected {
+    @apply border-4 border-gray-300;
+  }
 }
 
 .spacing-x-nodes > * + * {
