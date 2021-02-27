@@ -1,3 +1,176 @@
+//
+// Dynamic Classes
+// The preceding slash for background images must be removed for production builds.
+// It will work fine in the browser, but fail to load when packaged in Electron.
+// This is likely an issue with webpack.
+//
+
+// Regular Tiles
+
+.tile-red-1 {
+  background: url('/assets/game/tiles/Red-1.png') no-repeat center;
+}
+
+.tile-red-2 {
+  background: url('/assets/game/tiles/Red-2.png') no-repeat center;
+}
+
+.tile-red-3 {
+  background: url('/assets/game/tiles/Red-3.png') no-repeat center;
+}
+
+.tile-green-1 {
+  background: url('/assets/game/tiles/Green-1.png') no-repeat center;
+}
+
+.tile-green-2 {
+  background: url('/assets/game/tiles/Green-2.png') no-repeat center;
+}
+
+.tile-green-3 {
+  background: url('/assets/game/tiles/Green-3.png') no-repeat center;
+}
+
+.tile-blue-1 {
+  background: url('/assets/game/tiles/Blue-1.png') no-repeat center;
+}
+
+.tile-blue-2 {
+  background: url('/assets/game/tiles/Blue-2.png') no-repeat center;
+}
+
+.tile-blue-3 {
+  background: url('/assets/game/tiles/Blue-3.png') no-repeat center;
+}
+
+.tile-yellow-1 {
+  background: url('/assets/game/tiles/Yellow-1.png') no-repeat center;
+}
+
+.tile-yellow-2 {
+  background: url('/assets/game/tiles/Yellow-2.png') no-repeat center;
+}
+
+.tile-yellow-3 {
+  background: url('/assets/game/tiles/Yellow-3.png') no-repeat center;
+}
+
+.tile-blank {
+  background: url('/assets/game/tiles/Blank.png') no-repeat center;
+}
+
+// Captured Tiles
+
+.tile-red-capture-orange {
+  background: url('/assets/game/tiles/Red-Capture-Orange.png') no-repeat center;
+}
+
+.tile-red-capture-purple {
+  background: url('/assets/game/tiles/Red-Capture-Purple.png') no-repeat center;
+}
+
+.tile-green-capture-orange {
+  background: url('/assets/game/tiles/Green-Capture-Orange.png') no-repeat center;
+}
+
+.tile-green-capture-purple {
+  background: url('/assets/game/tiles/Green-Capture-Purple.png') no-repeat center;
+}
+
+.tile-blue-capture-orange {
+  background: url('/assets/game/tiles/Blue-Capture-Orange.png') no-repeat center;
+}
+
+.tile-blue-capture-purple {
+  background: url('/assets/game/tiles/Blue-Capture-Purple.png') no-repeat center;
+}
+
+.tile-yellow-capture-orange {
+  background: url('/assets/game/tiles/Yellow-Capture-Orange.png') no-repeat center;
+}
+
+.tile-yellow-capture-purple {
+  background: url('/assets/game/tiles/Yellow-Capture-Purple.png') no-repeat center;
+}
+
+// Exhausted Tiles
+
+.tile-red-exhausted {
+  background: url('/assets/game/tiles/Red-Exhausted.png') no-repeat center;
+}
+
+.tile-green-exhausted {
+  background: url('/assets/game/tiles/Green-Exhausted.png') no-repeat center;
+}
+
+.tile-blue-exhausted {
+  background: url('/assets/game/tiles/Blue-Exhausted.png') no-repeat center;
+}
+
+.tile-yellow-exhausted {
+  background: url('/assets/game/tiles/Yellow-Exhausted.png') no-repeat center;
+}
+
+// Branches
+
+.branch-orange-x {
+  background: url('/assets/game/Orange-Branch-Horizontal.png') no-repeat center;
+}
+
+.branch-orange-y {
+  background: url('/assets/game/Orange-Branch.png') no-repeat center;
+}
+
+.branch-purple-x {
+  background: url('/assets/game/Purple-Branch-Horizontal.png') no-repeat center;
+}
+
+.branch-purple-y {
+  background: url('/assets/game/Purple-Branch.png') no-repeat center;
+}
+
+.branch-blank-x {
+  background: url('/assets/game/Blank-Branch-Horizontal.png') no-repeat center;
+}
+
+.branch-blank-y {
+  background: url('/assets/game/Blank-Branch.png') no-repeat center;
+}
+
+// Nodes
+
+.node-orange {
+  background: url('/assets/game/Orange-Node.png') no-repeat center;
+}
+
+.node-purple {
+  background: url('/assets/game/Purple-Node.png') no-repeat center;
+}
+
+.node-blank {
+  background: url('/assets/game/Blank-Node.png') no-repeat center;
+}
+
+// Utilities
+
+@layer components {
+  .available {
+    @apply cursor-pointer border-2 border-transparent hover:border-gray-300 transition-colors duration-300;
+  }
+
+  .unavailable {
+    @apply cursor-default;
+  }
+
+  .occupied {
+    @apply cursor-not-allowed;
+  }
+}
+
+//
+// Common Classes
+//
+
 @layer components {
   .gameboard {
     @apply mx-auto flex flex-col space-y-8;
@@ -8,7 +181,7 @@
   }
 
   .tile {
-    @apply w-24 h-24 border border-gray-500 bg-gray-800 text-white cursor-pointer;
+    @apply w-24 h-24;
   }
 
   .node-gameboard {
@@ -20,7 +193,7 @@
   }
 
   .node {
-    @apply w-7 h-7 border border-gray-500 bg-gray-800 text-white pointer-events-auto cursor-pointer rounded-full;
+    @apply w-7 h-7 pointer-events-auto rounded-lg border-transparent;
   }
 
   .branch-y-container {
@@ -28,7 +201,7 @@
   }
 
   .branch-y {
-    @apply w-5 h-20 border border-gray-500 bg-gray-800 text-white pointer-events-auto cursor-pointer;
+    @apply w-5 h-20 pointer-events-auto;
   }
 
   .branch-x-container {
@@ -36,11 +209,19 @@
   }
 
   .branch-x {
-    @apply w-20 h-5 border border-gray-500 bg-gray-800 text-white pointer-events-auto cursor-pointer;
+    @apply w-20 h-5 pointer-events-auto;
   }
 
   .menu-btn {
-    @apply p-5 bg-gray-600 border-4 border-gray-800 w-1/3 cursor-pointer hover:border-gray-300;
+    @apply p-3 bg-gray-600 border-4 border-gray-900 flex-grow cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
+  }
+
+  .menu-btn-light {
+    @apply p-3 bg-gray-900 border-4 border-gray-600 flex-grow cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
+  }
+
+  .resource-button-trade {
+    @apply border-4 border-gray-600 flex-grow hover:border-gray-300 cursor-pointer transition-colors duration-100;
   }
 }
 
@@ -85,4 +266,17 @@
 .bg-overlay {
   --tw-bg-opacity: 0.7;
   background-color: rgba(0, 0, 0, var(--tw-bg-opacity));
+}
+
+.bg-1 {
+  background: url('/assets/game/locations/bg1.png') no-repeat;
+  background-size: cover;
+  image-rendering: pixelated;
+  opacity: 0.75;
+}
+
+.teleporter-bg-1 {
+  background: url('/assets/game/locations/teleporter-bg1.png');
+  image-rendering: pixelated;
+  opacity: 1;
 }
