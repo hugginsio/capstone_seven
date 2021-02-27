@@ -4,11 +4,11 @@ import { Player } from '../../classes/gamecore/game.class.Player';
 import { Owner } from '../../enums/game.enums';
 import { CoreLogic } from '../../util/core-logic.util';
 
-// import { AiService } from './ai.service';
+import { AiService } from './ai.service';
 
 
 
-describe('AiService', () => {
+xdescribe('AiService', () => {
   // const gameBoard = new GameBoard();
   // gameBoard.randomizeColorsAndMaxNodes();
   // const player1 = new Player();
