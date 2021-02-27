@@ -67,7 +67,7 @@ xdescribe('AiService', () => {
         
       
         const winner = CoreLogic.determineIfWinner(ai.currentState);
-        console.log(`current winner state ${winner}`);
+        //console.log(`current winner state ${winner}`);
 
         if(winner === 1){
           console.log('Player 1 Wins!');

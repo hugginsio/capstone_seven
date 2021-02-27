@@ -292,7 +292,8 @@ export class ManagerService {
           AIStringMove = this.ai.randomAIFirstMove();
         }
         else{
-          AIStringMove = this.ai.randomAIMove(pastMoveString,{red:currentPlayer.redResources,blue:currentPlayer.blueResources,green:currentPlayer.greenResources,yellow:currentPlayer.yellowResources});
+          AIStringMove = this.ai.getAIMove(pastMoveString,{red:currentPlayer.redResources,blue:currentPlayer.blueResources,green:currentPlayer.greenResources,yellow:currentPlayer.yellowResources});
+          //AIStringMove = this.ai.randomAIMove(pastMoveString,{red:currentPlayer.redResources,blue:currentPlayer.blueResources,green:currentPlayer.greenResources,yellow:currentPlayer.yellowResources});
         }
       }
 

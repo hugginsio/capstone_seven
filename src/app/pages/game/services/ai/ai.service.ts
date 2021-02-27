@@ -6,9 +6,9 @@ import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Player } from '../../classes/gamecore/game.class.Player';
 import { CoreLogic } from '../../util/core-logic.util';
 
-@Injectable({
-  providedIn: 'root'
-})
+// @Injectable({
+//   providedIn: 'root'
+// })
 
 interface Resources{
   red:number,
@@ -48,9 +48,28 @@ export class AiService {
     return result;
   }
 
-  getAIMove(previousMove:string):string{
+  getAIMove(previousMove:string,resources:Resources):string{
     //console.log('before first next state');
     this.currentState = CoreLogic.nextState(this.currentState, previousMove);
+
+    if(!this.currentState.inInitialMoves){
+      if(this.currentState.currentPlayer === 1){
+        this.currentState.player1.redResources = resources.red;
+        this.currentState.player1.blueResources = resources.blue;
+
+        this.currentState.player1.greenResources = resources.green;
+        this.currentState.player1.yellowResources = resources.yellow;
+
+      }
+      else{
+        this.currentState.player2.redResources = resources.red;
+        this.currentState.player2.blueResources = resources.blue;
+
+        this.currentState.player2.greenResources = resources.green;
+        this.currentState.player2.yellowResources = resources.yellow;
+
+      }
+    }
 
     const stats = this.mcts.runSearch(this.currentState, 5.95);
     
