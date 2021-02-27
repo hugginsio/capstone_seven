@@ -1,6 +1,6 @@
 @layer components {
   .menu-btn {
-    @apply p-5 bg-gray-600 border-4 border-gray-800 w-1/3 cursor-pointer hover:border-gray-300;
+    @apply p-5 bg-gray-600 border-4 border-gray-900 w-1/3 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
   }
 
   .menu-input {
@@ -16,7 +16,7 @@
   }
 
   .submenu-header {
-    @apply w-full text-5xl font-bold tracking-wide p-10 mb-20 border-b border-gray-600;
+    @apply w-full text-6xl font-bold tracking-wider p-5 mb-10 border-b border-gray-600;
   }
 
   .submenu-body {
@@ -26,4 +26,18 @@
   .submenu-footer {
     @apply flex flex-col items-center justify-center mx-auto w-full p-5 border-t border-gray-600 absolute bottom-0;
   }
+}
+
+.background-btn {
+  height: 134.22px;
+}
+
+.bg-caves {
+  background: url('/assets/menu/bg_cave.png');
+  opacity: 0.3;
+}
+
+.bg-mountains {
+  background: url('/assets/menu/bg_main.png');
+  opacity: 0.75;
 }
