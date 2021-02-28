@@ -4,11 +4,12 @@ import { MonteCarlo } from '../..//classes/ai/ai.class.MonteCarlo';
 import { State } from '../../classes/ai/ai.class.State';
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Player } from '../../classes/gamecore/game.class.Player';
+import { Owner } from '../../enums/game.enums';
 import { CoreLogic } from '../../util/core-logic.util';
 
-@Injectable({
-  providedIn: 'root'
-})
+// @Injectable({
+//   providedIn: 'root'
+// })
 
 interface Resources{
   red:number,
@@ -66,8 +67,9 @@ export class AiService {
   randomAIFirstMove():string{
 
     const moves = CoreLogic.getLegalMoves(this.currentState);
- 
-    const resultIndex = Math.floor(Math.random()*moves.length);
+
+
+    const resultIndex = this.weightMoves(moves);
     const result = moves[resultIndex];
 
 
@@ -100,8 +102,8 @@ export class AiService {
     }
 
     const moves = CoreLogic.getLegalMoves(this.currentState);
-
-    const resultIndex = Math.floor(Math.random()*moves.length);
+   
+    const resultIndex = this.weightMoves(moves);
 
     const result = moves[resultIndex];
 
@@ -109,6 +111,88 @@ export class AiService {
 
     return result;
   }
+
+  weightMoves(moves:string[]):number{
+    const weights = Array<string>();
+
+    for(let i = 0; i<moves.length;i++){
+      const moveObj = CoreLogic.stringToMove(moves[i]);
+      if(moveObj.tradedIn.length > 0){
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.length > 0){
+        weights.push(moves[i]);
+      }
+      if(moveObj.branchesPlaced.length > 0){
+        weights.push(moves[i]);
+      }
+
+      if(moveObj.nodesPlaced.includes(8)){
+        weights.push(moves[i]);
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.includes(9)){
+        weights.push(moves[i]);
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.includes(14)){
+        weights.push(moves[i]);
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.includes(15)){
+        weights.push(moves[i]);
+        weights.push(moves[i]);
+      }
+
+      if(moveObj.nodesPlaced.includes(3)){
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.includes(4)){
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.includes(10)){
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.includes(16)){
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.includes(20)){
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.includes(19)){
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.includes(13)){
+        weights.push(moves[i]);
+      }
+      if(moveObj.nodesPlaced.includes(7)){
+        weights.push(moves[i]);
+      }
+      
+      const currentOwner = this.currentState.currentPlayer === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
+      const affectedPlayer = this.currentState.currentPlayer === 1 ? CoreLogic.clonePlayer(this.currentState.player1) : CoreLogic.clonePlayer(this.currentState.player2);
+      
+      for(const branchIndex of moveObj.branchesPlaced){
+        const clonedState = State.cloneState(this.currentState);
+        clonedState.gameBoard.branches[branchIndex].setOwner(currentOwner);
+
+        for (let i = 0; i < clonedState.gameBoard.tiles.length; i++) {
+          clonedState.tilesBeingChecked = [];
+          if (CoreLogic.checkForCaptures(clonedState,affectedPlayer, i) === true) {
+            weights.push(moves[i]);
+          }
+        }
+      }
+
+      if(moveObj.tradedIn.length === 0 && moveObj.nodesPlaced.length === 0 && moveObj.branchesPlaced.length === 0){
+        weights.push(moves[i]);
+      }
+    }
+    console.log(weights.length, weights);
+    return moves.indexOf(weights[Math.floor(Math.random()*weights.length)]);
+  }
+
+  
 }
 
 
