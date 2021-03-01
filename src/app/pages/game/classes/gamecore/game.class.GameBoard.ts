@@ -534,7 +534,9 @@ export class GameBoard {
     this.nodes[8].setTopLeftTile(1);
     this.nodes[8].setTopRightTile(2);
     this.nodes[8].setBottomLeftTile(5);
-    this.nodes[8].setBottomLeftTile(6);
+    this.nodes[8].setBottomRightTile(6);
+
+    
 
     this.nodes[9].setTopBranch(8);
     this.nodes[9].setRightBranch(13);
