@@ -190,7 +190,7 @@ export class ManagerService {
   }
 
 
-  applyMove(moveString: string){
+  applyMove(moveString: string): void{
     let currentPlayer;
     if (this.playerOne.type === PlayerType.HUMAN) {
       currentPlayer = this.playerTwo;

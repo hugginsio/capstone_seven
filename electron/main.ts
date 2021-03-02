@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as url from 'url';
 
 let window: BrowserWindow;
-const args = process.argv.slice(1)
+const args = process.argv.slice(1);
 const serve = args.some(val => val === '--serve');
 const isDev = !app.isPackaged;
 
