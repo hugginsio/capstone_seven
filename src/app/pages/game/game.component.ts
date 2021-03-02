@@ -7,7 +7,7 @@ import { CommCode } from './interfaces/game.enum';
 import { ClickEvent, CommPackage } from './interfaces/game.interface';
 import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
-import { GameType } from './enums/game.enums';
+//import { GameType } from './enums/game.enums';
 
 @Component({
   selector: 'app-game',

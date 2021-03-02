@@ -185,6 +185,7 @@ export class ManagerService {
       currentBoardString += this.gameBoard.tiles[i].maxNodes.toString();
       currentBoardString += ',';
     }
+    currentBoardString = currentBoardString.substring(0, currentBoardString.length - 1);
     this.boardString = currentBoardString;
     console.log(this.boardString);
   }
