@@ -159,41 +159,50 @@ export class ManagerService {
 
       // assigning tiles[] in gameBoard to match the input for the board
       for (let i = 0; i < boardStringArray.length; i++) {
+
+        let tileColor;
+        let maxNodes;
+
         // parses first char from pair
         switch (boardStringArray[i].substring(0, 1)) {
           // assigns tile colors
           case 'R':
-            this.gameBoard.tiles[i].color = TileColor.RED;
+            tileColor = TileColor.RED;
             break;
           case 'B':
-            this.gameBoard.tiles[i].color = TileColor.BLUE;
+            tileColor = TileColor.BLUE;
             break;
           case 'Y':
-            this.gameBoard.tiles[i].color = TileColor.YELLOW;
+            tileColor = TileColor.YELLOW;
             break;
           case 'G':
-            this.gameBoard.tiles[i].color = TileColor.GREEN;
+            tileColor = TileColor.GREEN;
             break;
-          case '0':
-            this.gameBoard.tiles[i].color = TileColor.BLANK;
+          // blank tile, '0'
+          default:
+            tileColor = TileColor.BLANK;
             break;
         }
+        this.gameBoard.tiles[i].color = tileColor;
+
         // parses second char from pair
         switch (boardStringArray[i].substring(1)) {
           // assigns tile node limits
           case "1":
-            this.gameBoard.tiles[i].maxNodes = 1;
+            maxNodes = 1;
             break;
           case "2":
-            this.gameBoard.tiles[i].maxNodes = 2;
+            maxNodes = 2;
             break;
           case "3":
-            this.gameBoard.tiles[i].maxNodes = 3;
+            maxNodes = 3;
             break;
-          case "0":
-            this.gameBoard.tiles[i].maxNodes = 0;
+          // blank tile, '0'
+          default:
+            maxNodes = 0;
             break;
         }
+        this.gameBoard.tiles[i].maxNodes = maxNodes;
       }
     }
     this.serializeBoard();
@@ -777,112 +786,117 @@ export class ManagerService {
   initialNodePlacements(possibleNode: number, currentPlayer: Player): boolean {
     const otherOwner = currentPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
 
+    // type aliasing for node's adjacent tiles index
+    const trTileIndex = this.gameBoard.nodes[possibleNode]?.getTopRightTile();
+    const brTileIndex = this.gameBoard.nodes[possibleNode]?.getBottomRightTile();
+    const blTileIndex = this.gameBoard.nodes[possibleNode]?.getBottomLeftTile();
+    const tlTileIndex = this.gameBoard.nodes[possibleNode]?.getTopLeftTile();
+
+    // type aliasing for node's adjacent tiles
+    const trTile = this.gameBoard.tiles[trTileIndex];
+    const brTile = this.gameBoard.tiles[brTileIndex];
+    const blTile = this.gameBoard.tiles[blTileIndex];
+    const tlTile = this.gameBoard.tiles[tlTileIndex];
+
     // instant fail if node is already owned 
     if (this.gameBoard.nodes[possibleNode]?.getOwner() === Owner.NONE) {
       
-      // checks if possibleNode's topRightTile exists
-      if (this.gameBoard.nodes[possibleNode]?.getTopRightTile() !== -1) {
+      // checks trTileIndex
+      if (trTileIndex !== -1) {
         
         // nodeCount of tile incremented
-        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount++;
+        trTile.nodeCount++;
         
         // checks if tile should be exhausted
-        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].nodeCount >
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].maxNodes) &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].isExhausted === false) {
+        if ((trTile.nodeCount > trTile.maxNodes) && trTile.isExhausted === false) {
             
           // checking if tile is not captured to set isExhausted and decrement tiles through tileExhaustion()
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode]?.getTopRightTile()].capturedBy === Owner.NONE) {
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted = true;
+          if (trTile.capturedBy === Owner.NONE) {
+            trTile.isExhausted = true;
             
             // updates tile's stored exhaustion state
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopRightTile(), true);
+            this.tileExhaustion(trTileIndex, true);
           }
         }
 
         // checks if player's resource production ought to be incremented
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted === false &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].capturedBy !== otherOwner) {
-          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].getColor());
+        if (trTile.isExhausted === false &&
+          trTile.capturedBy !== otherOwner) {
+          this.incrementResource(currentPlayer, trTile.getColor());
         }
       }
 
       // checks if possibleNode's bottomRightTile exists
-      if (this.gameBoard.nodes[possibleNode]?.getBottomRightTile() !== -1) {
+      if (brTileIndex !== -1) {
 
         // nodeCount of tile incremented
-        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount++;
+        brTile.nodeCount++;
         
         // checks if tile should be exhausted
-        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount >
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].maxNodes) &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted === false) {
+        if ((brTile.nodeCount > brTile.maxNodes) && brTile.isExhausted === false) {
             
           // checking if tile is not captured to set isExhausted and decrement tiles through tileExhaustion()
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].capturedBy === Owner.NONE) {
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted = true;
+          if (brTile.capturedBy === Owner.NONE) {
+            
+            brTile.isExhausted = true;
             
             // updates tile's stored exhaustion state
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomRightTile(), true);
+            this.tileExhaustion(brTileIndex, true);
           }
         }
 
         // checks if player's resource production ought to be incremented
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted === false &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].capturedBy !== otherOwner)
-          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].getColor());
+        if (brTile.isExhausted === false &&
+           brTile.capturedBy !== otherOwner)
+          this.incrementResource(currentPlayer, brTile.getColor());
       }
 
       // checks if possibleNode's bottomLeftTile exists
-      if (this.gameBoard.nodes[possibleNode]?.getBottomLeftTile() !== -1) {
+      if (blTileIndex !== -1) {
 
         // nodeCount of tile incremented
-        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount++;
+        blTile.nodeCount++;
         
         // checks if tile should be exhausted
-        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].nodeCount >
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].maxNodes) &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted === false) {
+        if ((blTile.nodeCount > blTile.maxNodes) && blTile.isExhausted === false) {
             
           // checking if tile is not captured to set isExhausted and decrement tiles through tileExhaustion()
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].capturedBy === Owner.NONE) {
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted = true;
+          if (blTile.capturedBy === Owner.NONE) {
+            blTile.isExhausted = true;
    
             // updates tile's stored exhaustion state
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomLeftTile(), true);
+            this.tileExhaustion(blTileIndex, true);
           }
         }
 
         // checks if player's resource production ought to be incremented
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].isExhausted === false &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].capturedBy !== otherOwner) {
-          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomLeftTile()].getColor());
+        if (blTile.isExhausted === false &&
+          blTile.capturedBy !== otherOwner) {
+          this.incrementResource(currentPlayer, blTile.getColor());
         }
       }
 
       // checks if possibleNode's topLeftTile exists
-      if (this.gameBoard.nodes[possibleNode]?.getTopLeftTile() != -1) {
+      if (tlTileIndex != -1) {
         
         // nodeCount of tile incremented
-        this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount++;
+        tlTile.nodeCount++;
       
         // checks if tile should be exhausted
-        if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].nodeCount >
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].maxNodes) &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted === false) {
+        if ((tlTile.nodeCount > tlTile.maxNodes) && tlTile.isExhausted === false) {
 
           // checking if tile is not captured to set isExhausted and decrement tiles through tileExhaustion()
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].capturedBy === Owner.NONE) {
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted = true;
+          if (tlTile.capturedBy === Owner.NONE) {
+            
+            tlTile.isExhausted = true;
             
             // updates tile's stored exhaustion state
-            this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopLeftTile(), true);
+            this.tileExhaustion(tlTileIndex, true);
           }
         }
         // checks if player's resource production ought to be incremented
-        if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].isExhausted === false &&
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].capturedBy !== otherOwner) {
-          this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopLeftTile()].getColor());
+        if (tlTile.isExhausted === false && tlTile.capturedBy !== otherOwner) {
+          this.incrementResource(currentPlayer, tlTile.getColor());
         }
       }
 
@@ -920,13 +934,18 @@ export class ManagerService {
   // returns whether move is valid
   initialBranchPlacements(selectedNode: number, possibleBranch: number, currentPlayer: Player): boolean {
     
+    const topBranch = this.gameBoard.nodes[selectedNode]?.getTopBranch();
+    const leftBranch = this.gameBoard.nodes[selectedNode]?.getLeftBranch();
+    const bottomBranch = this.gameBoard.nodes[selectedNode]?.getBottomBranch();
+    const rightBranch = this.gameBoard.nodes[selectedNode]?.getRightBranch();
+    
     // instant fail if branch is already owned
     if (this.gameBoard.branches[possibleBranch]?.getOwner() === Owner.NONE) {
       
       // instant fail if branch is not connected to currentPlayer's node placed beforehand
-      if (this.gameBoard.nodes[selectedNode]?.getTopBranch() === possibleBranch ||
-        this.gameBoard.nodes[selectedNode]?.getLeftBranch() === possibleBranch ||
-        this.gameBoard.nodes[selectedNode]?.getBottomBranch() === possibleBranch ||
+      if (topBranch === possibleBranch ||
+          leftBranch === possibleBranch ||
+        bottombr === possibleBranch ||
         this.gameBoard.nodes[selectedNode]?.getRightBranch() === possibleBranch
       ) {
         
@@ -963,6 +982,24 @@ export class ManagerService {
   // evaluates possibleNode, places in node position if legal, returns whether move is valid
   generalNodePlacement(possibleNode: number, currentPlayer: Player): boolean {
     
+    // type aliasing for node's adjacent tiles index
+    const trTileIndex = this.gameBoard.nodes[possibleNode]?.getTopRightTile();
+    const brTileIndex = this.gameBoard.nodes[possibleNode]?.getBottomRightTile();
+    const blTileIndex = this.gameBoard.nodes[possibleNode]?.getBottomLeftTile();
+    const tlTileIndex = this.gameBoard.nodes[possibleNode]?.getTopLeftTile();
+
+    // type aliasing for node's adjacent tiles
+    const trTile = this.gameBoard.tiles[trTileIndex];
+    const brTile = this.gameBoard.tiles[brTileIndex];
+    const blTile = this.gameBoard.tiles[blTileIndex];
+    const tlTile = this.gameBoard.tiles[tlTileIndex];
+
+    // type aliasing for owners of node's adjacent branches
+    const tbOwner = this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getTopBranch()]?.getOwner();
+    const lbOwner = this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getLeftBranch()]?.getOwner();
+    const bbOwner = this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getBottomBranch()]?.getOwner();
+    const rbOwner = this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getRightBranch()]?.getOwner();
+
     // instant fail if player does not have enough of required resources
     if (currentPlayer.greenResources < 2 || currentPlayer.yellowResources < 2) {
       return false;
@@ -974,54 +1011,46 @@ export class ManagerService {
       const otherOwner = currentPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
 
       // instant fail if possibleNode is not attached to one of currentPlayer's branches
-      if (this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getTopBranch()]?.getOwner() === nodeOwner ||
-        this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getLeftBranch()]?.getOwner() === nodeOwner ||
-        this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getBottomBranch()]?.getOwner() === nodeOwner ||
-        this.gameBoard.branches[this.gameBoard.nodes[possibleNode]?.getRightBranch()]?.getOwner() === nodeOwner) {
+      if (tbOwner === nodeOwner || lbOwner === nodeOwner || bbOwner === nodeOwner || rbOwner === nodeOwner) {
 
         // check if topRightTile of the possibleNode exists
         if (this.gameBoard.nodes[possibleNode]?.getTopRightTile() != -1) {
           // increment node count on the tile
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount++;
+          trTile.nodeCount++;
 
           // check if tile should be exhausted
-          if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].nodeCount >
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].maxNodes) &&
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()]?.isExhausted === false) {
+          if ((trTile.nodeCount > trTile.maxNodes) && trTile?.isExhausted === false) {
               
             // checking if tile is not captured to set isExhausted and decrement tiles in tileExhaustion()
-            if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].capturedBy === Owner.NONE) {
+            if (trTile.capturedBy === Owner.NONE) {
              
               // update tile's stored exhaustion state 
-              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].isExhausted = true;
-              this.tileExhaustion(this.gameBoard.nodes[possibleNode].getTopRightTile(), true);
+              trTile.isExhausted = true;
+              this.tileExhaustion(trTileIndex, true);
             }
           }
 
           // checks if player's resource production ought to be incremented
-          if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()]?.isExhausted === false &&
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].capturedBy !== otherOwner) {
-            this.incrementResource(currentPlayer, this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getTopRightTile()].getColor());
+          if (trTile?.isExhausted === false && trTile.capturedBy !== otherOwner) {
+            this.incrementResource(currentPlayer, trTile.getColor());
           }
         }
 
         // check if bottomRightTile of the possibleNode exists
-        if (this.gameBoard.nodes[possibleNode]?.getBottomRightTile() != -1) {
+        if (brTileIndex != -1) {
 
           // increment nodeCount on the tile
-          this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount++;
+          brTile.nodeCount++;
 
           // check if tile should be exhausted
-          if ((this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].nodeCount >
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].maxNodes) &&
-            this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()]?.isExhausted === false) {
+          if ((brTile.nodeCount > brTile.maxNodes) && brTile?.isExhausted === false) {
               
             // checking if tile is not captured to set isExhausted and decrement tiles in tileExhaustion()
-            if (this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].capturedBy === Owner.NONE) {
+            if (brTile.capturedBy === Owner.NONE) {
               
               // update tile's stored exhaustion state 
-              this.gameBoard.tiles[this.gameBoard.nodes[possibleNode].getBottomRightTile()].isExhausted = true;
-              this.tileExhaustion(this.gameBoard.nodes[possibleNode].getBottomRightTile(), true);
+              brTile.isExhausted = true;
+              this.tileExhaustion(brTileIndex, true);
             }
           }
         }
