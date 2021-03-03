@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as io from 'socket.io-client';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -8,16 +9,14 @@ export class GameNetworkingService {
 
   socket: any;
 
-  constructor() 
-  {
-  }
+  constructor() {}
 
   //https://www.youtube.com/watch?v=66T2A2dvplY
-  listen(eventName: string) {
+  listen(eventName: string): Observable<any> {
     return new Observable((subscriber) => {
       this.socket.on(eventName, (data: any) => {
         subscriber.next(data);
-      })
+      });
     });
   }
 
@@ -33,26 +32,22 @@ export class GameNetworkingService {
     - Rematch Handshake (I haven't thought this out yet)
   */
 
-  public createTCPServer(board:string, isPlayer1:boolean) 
-  {
+  public createTCPServer(board:string, isPlayer1:boolean): void {
     this.socket = io("http://localhost:8000");
     console.log("TCP Server Created!");
     this.socket.emit('create-lobby', {gameboard: board, isHostPlayer1: isPlayer1});
   }
 
-  public connectTCPserver(serverIP: string) 
-  {
+  public connectTCPserver(serverIP: string): void {
     this.socket = io("http://" + serverIP + ":8000");
     console.log("Server connection attempted");
   }
 
-  public sendMove(move: string)
-  {
+  public sendMove(move: string): void {
     this.socket.emit('send-move', move);
   }
 
-  public sendChatMessage(message: string)
-  {
+  public sendChatMessage(message: string): void {
     this.socket.emit('send-chat-message', message);
   }
 }

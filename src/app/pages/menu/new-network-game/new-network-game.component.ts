@@ -8,57 +8,56 @@ import { MatchmakingService } from '../../networking/matchmaking.service';
   styleUrls: ['../menu-common.scss']
 })
 export class NewNetworkGameComponent implements OnInit {
+  private username: string;
 
-  private matchmaking:MatchmakingService;
-  private networking:GameNetworkingService;
-  private username:string;
-
-  constructor() { }
+  constructor(
+    private readonly matchmakingService: MatchmakingService,
+    private readonly networkingService: GameNetworkingService
+  ) {}
 
   ngOnInit(): void {
     // instantiate class here
-    this.matchmaking = new MatchmakingService(this.username);
-    this.networking = new GameNetworkingService();
+    // this.matchmaking = new MatchmakingService(this.username);
+    // this.networking = new GameNetworkingService();
+    this.matchmakingService.initialize(this.username);
 
-    this.matchmaking.listen('you-connected').subscribe(() => {
+    this.matchmakingService.listen('you-connected').subscribe(() => {
       console.log('You are connected to your UDP server.');
-    })
+    });
 
-    this.matchmaking.listen('game-found').subscribe((gameInfo: any) => {
-      let oppUsername:string = gameInfo.username;
-      let oppAddress:string = gameInfo.oppAddress;
+    this.matchmakingService.listen('game-found').subscribe((gameInfo: any) => {
+      const oppUsername = gameInfo.username;
+      const oppAddress = gameInfo.oppAddress;
 
-      //Add a <div> to show the game on screen
-    })
+    //Add a <div> to show the game on screen
+    });
 
-    this.networking.listen('lobby-joined').subscribe((gameInfo:any) => {
-      let board:string = gameInfo.gameboard;
-      let isHostP1:boolean = gameInfo.isHostPlayer1;
+    this.networkingService.listen('lobby-joined').subscribe((gameInfo:any) => {
+      const board = gameInfo.gameboard;
+      const isHostP1 = gameInfo.isHostPlayer1;
       
       //Create network game using these settings
-    })
+    });
 
-    this.networking.listen('lobby-full').subscribe(() => {
+    this.networkingService.listen('lobby-full').subscribe(() => {
       console.log('Lobby is full. Sucks bro');
-    })
+    });
   }
 
-  HostGame()
-  {
+  HostGame(): void {
     //1. Lead to normal game creation screen
     //2. Create network game
 
     //3. Create game server
-    let board:string = '';
-    let isPlayer1:boolean = true;
-    this.networking.createTCPServer(board, isPlayer1);
+    const board = '';
+    const isPlayer1 = true;
+    this.networkingService.createTCPServer(board, isPlayer1);
 
     //4. Broadcast the game until someone joins
-    this.matchmaking.broadcastGame(); //Every 1000ms or so
+    this.matchmakingService.broadcastGame(); //Every 1000ms or so
   }
 
-  JoinGame()
-  {
+  JoinGame(): void {
     //get gameInfo from object clicked
     
     //this.networking.connectTCPserver(oppAddress)

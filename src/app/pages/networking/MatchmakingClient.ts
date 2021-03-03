@@ -2,29 +2,29 @@
 
 export class MatchmakingClient {
 
-    private socket: any;
+  private socket: any;
 
-    public gameFound?: (msg:string, oppAddress:string) => void;
+  public gameFound?: (msg:string, oppAddress:string) => void;
 
-    constructor()
-    {
-        this.socket = io("http://localhost:3000");
-        this.setListeners();
-    }
+  constructor()
+  {
+    this.socket = io("http://localhost:3000");
+    this.setListeners();
+  }
 
-    private setListeners()
-    {
-        this.socket.on('you-connected', () => {
-            console.log("Client connected to UDP server");
-        });
+  private setListeners()
+  {
+    this.socket.on('you-connected', () => {
+      console.log("Client connected to UDP server");
+    });
 
-        this.socket.on('game-found', info => {
-            console.log(info);
-            this.gameFound(info.msg, info.oppAddress);
-        });
-    }
+    this.socket.on('game-found', info => {
+      console.log(info);
+      this.gameFound(info.msg, info.oppAddress);
+    });
+  }
 
-    public hostGame() {
-        this.socket.emit('create-lobby');
-    }
+  public hostGame() {
+    this.socket.emit('create-lobby');
+  }
 }
