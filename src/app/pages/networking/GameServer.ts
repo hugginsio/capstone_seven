@@ -1,22 +1,28 @@
-const io = require('socket.io')(8000, {
+const server = require('socket.io')(8000, {
     cors: {
         origin: "*",
     },
 })
 
 let users = {};
+let gameboard:string;
+let isHostPlayer1:boolean;
 
-io.on('connection', socket => {
+server.on('connection', socket => {
 
-    socket.emit("connected", "You have succefully connected to the socket server!");
+    socket.emit("lobby-joined", {gameboard, isHostPlayer1});
 
     socket.on('new-user', username => {
         users[socket.id] = username;
         socket.broadcast.emit("player-join", "A new player has joined");
     });
 
+    socket.on('send-move', move => {
+        socket.broadcast.emit("recieve-move", move);
+    })
+
     socket.on('send-chat-message', message => {
-        //logic
+        socket.broadcast.emit("recieve-chat-message", message);
     });
 
     socket.on('disconnect', () => {
@@ -24,7 +30,8 @@ io.on('connection', socket => {
         delete users[socket.id];
     });
 
-    socket.on('create-lobby', () => {
-        //logic
+    socket.on('create-lobby', lobbyInfo => {
+        gameboard = lobbyInfo.gameboard;
+        isHostPlayer1 = lobbyInfo.isPlayer1;
     });
 });

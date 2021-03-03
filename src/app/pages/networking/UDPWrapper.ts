@@ -4,23 +4,21 @@ import * as broadcastAddress from 'broadcast-address';
 
 export class UDPWrapper {
 
-    private netInfo: any;
-    private IP: string;
+    //private netInfo: any;
+    //private IP: string;
     private broadcastIP: string;
     private username: string;
-    private broadcast: string;
     private server: any;
 
-    public gameFound?: (msg:string, oppAddress:string) => void;
+    public gameFound?: (username:string, oppAddress:string) => void;
 
-    constructor(name:string) {
+    constructor() {
         this.server = dgram.createSocket('udp4');
         this.server.bind(41234);
-        this.netInfo = os.networkInterfaces();
-        this.IP = this.netInfo['Wi-Fi'][3].address;
+        //this.netInfo = os.networkInterfaces();
+        //this.IP = this.netInfo['Wi-Fi'][3].address;
         this.broadcastIP = broadcastAddress('Wi-Fi');
-        this.broadcast = "This is a test broadcast, please remain calm.";
-        this.username = name;
+        this.username = "Person McHuman";
 
         this.server.on('error', (err) => {
             console.log(`server error:\n${err.stack}`);
@@ -39,17 +37,14 @@ export class UDPWrapper {
             
         });
     }
-    
-    /**
-     * broadcastGame
-     */
-    public broadcastGame() {
-        this.server.send(this.broadcast, 0, this.broadcast.length, 41234, this.broadcastIP);
+
+    public setUsername(name:string)
+    {
+        this.username = name;
     }
 
-    private sendChallenge(oppIP:string) {
-        let challenge:string = "It's time to D-D-DUUUEEEELLL!!!";
-        this.server.send(challenge, 0, challenge.length, 41234, oppIP);
+    public broadcastGame() {
+        this.server.send(this.username, 0, this.username.length, 41234, this.broadcastIP);
     }
     
 }

@@ -5,28 +5,25 @@ const io = require('socket.io')(3000, {
         origin: "*",
     },
 })
-let users = {};
-let udp = new UDPWrapper("Person McHuman");
+let udp = new UDPWrapper();
 
 io.on('connection', socket => {
     socket.emit("you-connceted");
-    socket.on('new-user', username => {
-        users[socket.id] = username;
-        //udp = new UDPWrapper(username);
-    });
-    socket.on('send-chat-message', message => {
-        //udp.broadcastGame();
-    });
+
     socket.on('disconnect', () => {
         socket.emit('user-disconnected');
-        delete users[socket.id];
     });
-    socket.on('create-lobby', () => {
+
+    socket.on('set-username', username => {
+        udp.setUsername(username);
+    })
+
+    socket.on('broadcast-game', () => {
         udp.broadcastGame();
     });
 });
 
-udp.gameFound = (msg:string, oppAddress:string) => {
-    console.log(`${oppAddress} is hosting a game: ${msg}`);
-    io.emit('game-found', { msg: `${oppAddress} is hosting a game.`, oppAddress: oppAddress});
+udp.gameFound = (username:string, oppAddress:string) => {
+    console.log(`${username} is hosting a game at: ${oppAddress}`);
+    io.emit('game-found', { username: username, oppAddress: oppAddress});
 }
