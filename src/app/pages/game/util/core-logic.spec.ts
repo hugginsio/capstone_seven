@@ -328,7 +328,7 @@ describe('CoreLogic', () => {
 
       const answer = CoreLogic.determineIfWinner(state);
 
-      expect(answer).toEqual(-Infinity);
+      expect(answer).toEqual(0);
       
     });
   });
