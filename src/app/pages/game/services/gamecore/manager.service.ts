@@ -944,7 +944,7 @@ export class ManagerService {
     const placedBranch = this.gameBoard.branches[possibleBranch];
     
     // instant fail if branch is already owned
-    if (this.gameBoard.branches[possibleBranch]?.getOwner() === Owner.NONE) {
+    if (placedBranch?.getOwner() === Owner.NONE) {
       
       // instant fail if branch is not connected to currentPlayer's node placed beforehand
       if (topBranch === possibleBranch ||
