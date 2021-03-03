@@ -283,19 +283,23 @@ export class ManagerService {
     this.stack.splice(0, this.stack.length);
 
     if (currentPlayer.type === PlayerType.AI) {
-      let AIStringMove;
+      //let AIStringMove;
+      const playerNumber = currentPlayer === this.playerOne ? 1 : 2;
 
-      if (currentPlayer.numNodesPlaced === 0 && otherPlayer.numNodesPlaced === 0) {
-        AIStringMove = this.ai.randomAIFirstMove();
-      } else {
-        if(currentPlayer.numNodesPlaced === 1 && otherPlayer.numNodesPlaced === 1){
-          AIStringMove = this.ai.randomAIFirstMove();
-        }
-        else{
-          AIStringMove = this.ai.getAIMove(pastMoveString,{red:currentPlayer.redResources,blue:currentPlayer.blueResources,green:currentPlayer.greenResources,yellow:currentPlayer.yellowResources});
-          //AIStringMove = this.ai.randomAIMove(pastMoveString,{red:currentPlayer.redResources,blue:currentPlayer.blueResources,green:currentPlayer.greenResources,yellow:currentPlayer.yellowResources});
-        }
-      }
+      
+
+      const AIStringMove = this.ai.getAIMove(pastMoveString, playerNumber);
+
+      // if (currentPlayer.numNodesPlaced === 0 && otherPlayer.numNodesPlaced === 0) {
+      //   AIStringMove = this.ai.randomAIFirstMove();
+      // } else {
+      //   if(currentPlayer.numNodesPlaced === 1 && otherPlayer.numNodesPlaced === 1){
+      //     AIStringMove = this.ai.randomAIFirstMove();
+      //   }
+      //   else{
+      //     AIStringMove = this.ai.randomAIMove(pastMoveString,{red:currentPlayer.redResources,blue:currentPlayer.blueResources,green:currentPlayer.greenResources,yellow:currentPlayer.yellowResources});
+      //   }
+      // }
 
       console.warn(AIStringMove);
       this.applyMove(AIStringMove);
@@ -523,9 +527,9 @@ export class ManagerService {
       // }
 
       if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
-        if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI) {
-          this.ai.currentState = CoreLogic.nextState(this.ai.currentState, this.serializeStack());
-        }
+        // if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI) {
+        //   this.ai.currentState = CoreLogic.nextState(this.ai.currentState, this.serializeStack());
+        // }
 
         this.nextTurn(endPlayer);
         return;

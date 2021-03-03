@@ -20,55 +20,68 @@ interface Move {
 
 export class CoreLogic {
 
-  static getStartingState(player1:Player, player2:Player, gameBoard:GameBoard, currentPlayer:number):State{
-    const newBoard = CoreLogic.cloneGameBoard(gameBoard);
-    //const clonedPlayer1 = CoreLogic.clonePlayer(player1);
-    //const clonedPlayer2 = CoreLogic.clonePlayer(player2);
+  // static getStartingState(player1:Player, player2:Player, gameBoard:GameBoard, currentPlayer:number):State{
+  //   const newBoard = CoreLogic.cloneGameBoard(gameBoard);
+  //   //const clonedPlayer1 = CoreLogic.clonePlayer(player1);
+  //   //const clonedPlayer2 = CoreLogic.clonePlayer(player2);
     
-    return new State([], newBoard, currentPlayer, player1, player2,true);
-  }
+  //   return new State([], newBoard, currentPlayer, player1, player2,true);
+  // }
 
   static getLegalMoves(state:State): string[] {
     
     const result:string[] = [];
     //console.log(state.inInitialMoves);
     
-    if(state.inInitialMoves){
+    if(state.turnNumber < 4){
       //initial moves
+      if(state.playerNumber === 1){
+        state.player1.redResources = 1;
+        state.player1.blueResources = 1;
+        state.player1.greenResources = 2;
+        state.player1.yellowResources = 2;
+      }
+      else{
+        state.player2.redResources = 1;
+        state.player2.blueResources = 1;
+        state.player2.greenResources = 2;
+        state.player2.yellowResources = 2;
+
+      }
 
       const nodePlacements = [];
       
       //get starting move possibilities for player 1
-      for(const node of state.gameBoard.nodes){
+      for(const node of state.board.nodes){
         if(node.getOwner() === Owner.NONE){
-          nodePlacements.push(state.gameBoard.nodes.indexOf(node));
+          nodePlacements.push(state.board.nodes.indexOf(node));
         }
       }
 
       const branchPlacements = [];
       for(const nodeIndex of nodePlacements){
         const branchesPerNode = [];
-        if(state.gameBoard.nodes[nodeIndex].getTopBranch() >= 0){
-          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getTopBranch()].getOwner() === Owner.NONE){
-            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getTopBranch());
+        if(state.board.nodes[nodeIndex].getTopBranch() >= 0){
+          if ( state.board.branches[state.board.nodes[nodeIndex].getTopBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.board.nodes[nodeIndex].getTopBranch());
           }
         }
 
-        if(state.gameBoard.nodes[nodeIndex].getRightBranch() >= 0){
-          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getRightBranch()].getOwner() === Owner.NONE){
-            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getRightBranch());
+        if(state.board.nodes[nodeIndex].getRightBranch() >= 0){
+          if ( state.board.branches[state.board.nodes[nodeIndex].getRightBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.board.nodes[nodeIndex].getRightBranch());
           }
         }
 
-        if(state.gameBoard.nodes[nodeIndex].getBottomBranch() >= 0){
-          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getBottomBranch()].getOwner() === Owner.NONE){
-            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getBottomBranch());
+        if(state.board.nodes[nodeIndex].getBottomBranch() >= 0){
+          if ( state.board.branches[state.board.nodes[nodeIndex].getBottomBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.board.nodes[nodeIndex].getBottomBranch());
           }
         }
 
-        if(state.gameBoard.nodes[nodeIndex].getLeftBranch() >= 0){
-          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getLeftBranch()].getOwner() === Owner.NONE){
-            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getLeftBranch());
+        if(state.board.nodes[nodeIndex].getLeftBranch() >= 0){
+          if ( state.board.branches[state.board.nodes[nodeIndex].getLeftBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.board.nodes[nodeIndex].getLeftBranch());
           }
         }
 
@@ -89,7 +102,7 @@ export class CoreLogic {
       let yellowAvailable:number;
       let playerOwner:Owner;
 
-      if(state.currentPlayer === 1){
+      if(state.playerNumber === 1){
         redAvailable = state.player1.redResources;
         blueAvailable = state.player1.blueResources;
         greenAvailable = state.player1.greenResources;
@@ -237,7 +250,7 @@ export class CoreLogic {
 
         
 
-        const branchBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+        const branchBoard = CoreLogic.cloneGameBoard(state.board);
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
           possibleBranchIndices=CoreLogic.getValidBranchIndices(state,playerOwner,branchBoard);
@@ -245,7 +258,7 @@ export class CoreLogic {
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
 
-        const nodeBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+        const nodeBoard = CoreLogic.cloneGameBoard(state.board);
         if(possibleBranchCombinations.length > 0){
           for(const branchCombo of possibleBranchCombinations){
             for(const branchIndex of branchCombo){
@@ -330,7 +343,7 @@ export class CoreLogic {
 
         
 
-        const branchBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+        const branchBoard = CoreLogic.cloneGameBoard(state.board);
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
           possibleBranchIndices=CoreLogic.getValidBranchIndices(state,playerOwner,branchBoard);
@@ -338,7 +351,7 @@ export class CoreLogic {
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
 
-        const nodeBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+        const nodeBoard = CoreLogic.cloneGameBoard(state.board);
         if(possibleBranchCombinations.length > 0){
           for(const branchCombo of possibleBranchCombinations){
             for(const branchIndex of branchCombo){
@@ -424,7 +437,7 @@ export class CoreLogic {
 
         
 
-        const branchBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+        const branchBoard = CoreLogic.cloneGameBoard(state.board);
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
           possibleBranchIndices=CoreLogic.getValidBranchIndices(state,playerOwner,branchBoard);
@@ -432,7 +445,7 @@ export class CoreLogic {
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
 
-        const nodeBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+        const nodeBoard = CoreLogic.cloneGameBoard(state.board);
         if(possibleBranchCombinations.length > 0){
           for(const branchCombo of possibleBranchCombinations){
             for(const branchIndex of branchCombo){
@@ -518,7 +531,7 @@ export class CoreLogic {
 
         
 
-        const branchBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+        const branchBoard = CoreLogic.cloneGameBoard(state.board);
 
         for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
           possibleBranchIndices=CoreLogic.getValidBranchIndices(state,playerOwner,branchBoard);
@@ -526,7 +539,7 @@ export class CoreLogic {
 
         const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
 
-        const nodeBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+        const nodeBoard = CoreLogic.cloneGameBoard(state.board);
         if(possibleBranchCombinations.length > 0){
           for(const branchCombo of possibleBranchCombinations){
             for(const branchIndex of branchCombo){
@@ -597,7 +610,7 @@ export class CoreLogic {
 
       
 
-      const branchBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+      const branchBoard = CoreLogic.cloneGameBoard(state.board);
 
       for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
         possibleBranchIndices=CoreLogic.getValidBranchIndices(state,playerOwner,branchBoard);
@@ -605,7 +618,7 @@ export class CoreLogic {
 
       const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
 
-      const nodeBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+      const nodeBoard = CoreLogic.cloneGameBoard(state.board);
 
       for(const branchCombo of possibleBranchCombinations){
         for(const branchIndex of branchCombo){
@@ -720,7 +733,7 @@ export class CoreLogic {
   }
 
   //return 1 if player 1 is the winner, -1 if Player 2 is the winner, 0  if there is no winner yet
-  static determineIfWinner(state:State):number {
+  static getWinner(state:State):number {
     let result = 0;
 
     //console.log(state.currentPlayer,state.player1,state.player2);
@@ -729,19 +742,19 @@ export class CoreLogic {
       result = 1;
     }
     else if(state.player2.currentScore >= 10){
-      result = -1;
+      result = 2;
     }
-    else if(!state.inInitialMoves){
-      if(state.currentPlayer === 1 && (state.player1.redResources === 0 && state.player1.redPerTurn === 0 &&
-        state.player1.blueResources === 0 && state.player1.bluePerTurn === 0 && 
-        state.player1.greenResources === 0 && state.player1.greenPerTurn === 0 &&
-        state.player1.yellowResources === 0 && state.player1.yellowPerTurn === 0)){
-        result = -1;
+    else if(state.turnNumber > 6){
+      if(state.getPlayerNo() === 1 && (state.player1.redResources < 1 && state.player1.redPerTurn === 0 &&
+        state.player1.blueResources < 1 && state.player1.bluePerTurn === 0 && 
+        state.player1.greenResources < 2 && state.player1.greenPerTurn === 0 &&
+        state.player1.yellowResources < 2 && state.player1.yellowPerTurn === 0)){
+        result = 2;
       }
-      else if(state.currentPlayer === -1 && (state.player2.redResources === 0 && state.player2.redPerTurn === 0 &&
-      state.player2.blueResources === 0 && state.player2.bluePerTurn === 0 && 
-      state.player2.greenResources === 0 && state.player2.greenPerTurn === 0 &&
-      state.player2.yellowResources === 0 && state.player2.yellowPerTurn === 0)){
+      else if(state.getPlayerNo() === 2 && (state.player2.redResources < 1 && state.player2.redPerTurn === 0 &&
+      state.player2.blueResources < 1 && state.player2.bluePerTurn === 0 && 
+      state.player2.greenResources < 2 && state.player2.greenPerTurn === 0 &&
+      state.player2.yellowResources < 2 && state.player2.yellowPerTurn === 0)){
         result = 1;
       }
     }
@@ -750,54 +763,83 @@ export class CoreLogic {
     return result;
   }
 
-  static nextState(state:State, move:string):State{
-    const newHistory = state.moveHistory.slice();
-    newHistory.push(move);
-    const newBoard = CoreLogic.cloneGameBoard(state.gameBoard);
+  // static nextState(state:State, move:string):State{
+  //   const newHistory = state.moveHistory.slice();
+  //   newHistory.push(move);
+  //   const newBoard = CoreLogic.cloneGameBoard(state.gameBoard);
    
 
-    const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2, state.inInitialMoves);
+  //   const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2, state.inInitialMoves);
 
-    if(state.currentPlayer === 1){
-      CoreLogic.applyMove(move,newState,newState.player1, Owner.PLAYERONE);
-    }
-    else{
-      CoreLogic.applyMove(move,newState,newState.player2, Owner.PLAYERTWO);
-    }
+  //   if(state.currentPlayer === 1){
+  //     CoreLogic.applyMove(move,newState,newState.player1, Owner.PLAYERONE);
+  //   }
+  //   else{
+  //     CoreLogic.applyMove(move,newState,newState.player2, Owner.PLAYERTWO);
+  //   }
 
 
 
-    //currentPlayer is 1 for player 1 and -1 for player 2
-    if(newState.moveHistory.length !== 2){
-      newState.currentPlayer = -newState.currentPlayer;
-    }
-    if(newState.moveHistory.length === 4){
-      newState.inInitialMoves = false;
-    }
+  //   //currentPlayer is 1 for player 1 and -1 for player 2
+  //   if(newState.moveHistory.length !== 2){
+  //     newState.currentPlayer = -newState.currentPlayer;
+  //   }
+  //   if(newState.moveHistory.length === 4){
+  //     newState.inInitialMoves = false;
+  //   }
 
-    if(!newState.inInitialMoves){
-    //Next Player gets more resources
-      if(newState.currentPlayer === 1){
-        newState.player1.redResources += newState.player1.redPerTurn;
-        newState.player1.blueResources += newState.player1.bluePerTurn;
-        newState.player1.greenResources += newState.player1.greenPerTurn;
-        newState.player1.yellowResources += newState.player1.yellowPerTurn;
-      }
-      else{
-        newState.player2.redResources += newState.player2.redPerTurn;
-        newState.player2.blueResources += newState.player2.bluePerTurn;
-        newState.player2.greenResources += newState.player2.greenPerTurn;
-        newState.player2.yellowResources += newState.player2.yellowPerTurn;
-      }
-    }
+  //   if(){
+  //   //Next Player gets more resources
+  //     if(newState.currentPlayer === 1){
+  //       newState.player1.redResources += newState.player1.redPerTurn;
+  //       newState.player1.blueResources += newState.player1.bluePerTurn;
+  //       newState.player1.greenResources += newState.player1.greenPerTurn;
+  //       newState.player1.yellowResources += newState.player1.yellowPerTurn;
+  //     }
+  //     else{
+  //       newState.player2.redResources += newState.player2.redPerTurn;
+  //       newState.player2.blueResources += newState.player2.bluePerTurn;
+  //       newState.player2.greenResources += newState.player2.greenPerTurn;
+  //       newState.player2.yellowResources += newState.player2.yellowPerTurn;
+  //     }
+  //   }
     
 
 
    
-    return newState;
-  }
+  //   return newState;
+  // }
 
-  static applyMove(move:string, state:State, affectedPlayer:Player, owner:Owner):void{
+  static applyMove(move:string, state:State):void{
+
+    if(state.turnNumber > 4){
+      //Next Player gets more resources
+      if(state.playerNumber === 1){
+        state.player1.redResources += state.player1.redPerTurn;
+        state.player1.blueResources += state.player1.bluePerTurn;
+        state.player1.greenResources += state.player1.greenPerTurn;
+        state.player1.yellowResources += state.player1.yellowPerTurn;
+
+      }
+      else{
+        state.player2.redResources += state.player2.redPerTurn;
+        state.player2.blueResources += state.player2.bluePerTurn;
+        state.player2.greenResources += state.player2.greenPerTurn;
+        state.player2.yellowResources += state.player2.yellowPerTurn;
+      }
+    }
+
+    let affectedPlayer:Player;
+    let owner:Owner;
+
+    if(state.playerNumber === 1){
+      affectedPlayer = state.player1;
+      owner = Owner.PLAYERONE;
+    }
+    else{
+      affectedPlayer = state.player2;
+      owner = Owner.PLAYERTWO;
+    }
     
     const moveObj:Move = CoreLogic.stringToMove(move);
     //console.log(moveObj);
@@ -834,21 +876,19 @@ export class CoreLogic {
     //console.log(affectedPlayer);
 
     for(const branch of moveObj.branchesPlaced){
-      state.gameBoard.branches[branch].setOwner(owner);
+      state.board.branches[branch].setOwner(owner);
       affectedPlayer.ownedBranches.push(branch);
-      if(!state.inInitialMoves){
-        affectedPlayer.redResources--;
-        affectedPlayer.blueResources--;
-      }
-      
+      affectedPlayer.redResources--;
+      affectedPlayer.blueResources--;
+
     }
 
     for(const node of moveObj.nodesPlaced){
-      state.gameBoard.nodes[node].setOwner(owner);
-      if(!state.inInitialMoves){
-        affectedPlayer.greenResources -= 2;
-        affectedPlayer.yellowResources -=2;
-      }
+      state.board.nodes[node].setOwner(owner);
+      
+      affectedPlayer.greenResources -= 2;
+      affectedPlayer.yellowResources -=2;
+      
       
       affectedPlayer.currentScore++;
       affectedPlayer.numNodesPlaced++;
@@ -863,81 +903,81 @@ export class CoreLogic {
       
 
     
-      if (state.gameBoard.nodes[node].getTopRightTile() !== -1) {
-        state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount++;
+      if (state.board.nodes[node].getTopRightTile() !== -1) {
+        state.board.tiles[state.board.nodes[node].getTopRightTile()].nodeCount++;
 
-        if ((state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount >
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].maxNodes) &&
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].isExhausted === false) {
+        if ((state.board.tiles[state.board.nodes[node].getTopRightTile()].nodeCount >
+          state.board.tiles[state.board.nodes[node].getTopRightTile()].maxNodes) &&
+          state.board.tiles[state.board.nodes[node].getTopRightTile()].isExhausted === false) {
           // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
-          if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].capturedBy === Owner.NONE) {
-            state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].isExhausted = true;
-            CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getTopRightTile(), true);
+          if (state.board.tiles[state.board.nodes[node].getTopRightTile()].capturedBy === Owner.NONE) {
+            state.board.tiles[state.board.nodes[node].getTopRightTile()].isExhausted = true;
+            CoreLogic.tileExhaustion(state,state.board.nodes[node].getTopRightTile(), true);
           }
         }
 
         // checks for if resource productions ought to be incremented
-        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].isExhausted === false &&
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].capturedBy !== otherOwner) {
-          CoreLogic.incrementResource(affectedPlayer, state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].getColor());
+        if (state.board.tiles[state.board.nodes[node].getTopRightTile()].isExhausted === false &&
+          state.board.tiles[state.board.nodes[node].getTopRightTile()].capturedBy !== otherOwner) {
+          CoreLogic.incrementResource(affectedPlayer, state.board.tiles[state.board.nodes[node].getTopRightTile()].getColor());
         }
       }
 
-      if (state.gameBoard.nodes[node].getBottomRightTile() != -1) {
-        state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].nodeCount++;
+      if (state.board.nodes[node].getBottomRightTile() != -1) {
+        state.board.tiles[state.board.nodes[node].getBottomRightTile()].nodeCount++;
 
-        if ((state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].nodeCount >
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].maxNodes) &&
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].isExhausted === false) {
+        if ((state.board.tiles[state.board.nodes[node].getBottomRightTile()].nodeCount >
+          state.board.tiles[state.board.nodes[node].getBottomRightTile()].maxNodes) &&
+          state.board.tiles[state.board.nodes[node].getBottomRightTile()].isExhausted === false) {
           // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
-          if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].capturedBy === Owner.NONE) {
-            state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].isExhausted = true;
-            CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getBottomRightTile(), true);
+          if (state.board.tiles[state.board.nodes[node].getBottomRightTile()].capturedBy === Owner.NONE) {
+            state.board.tiles[state.board.nodes[node].getBottomRightTile()].isExhausted = true;
+            CoreLogic.tileExhaustion(state,state.board.nodes[node].getBottomRightTile(), true);
           }
         }
         // checks for if resource productions ought to be incremented
-        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].isExhausted === false &&
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].capturedBy !== otherOwner)
-          CoreLogic.incrementResource(affectedPlayer, state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].getColor());
+        if (state.board.tiles[state.board.nodes[node].getBottomRightTile()].isExhausted === false &&
+          state.board.tiles[state.board.nodes[node].getBottomRightTile()].capturedBy !== otherOwner)
+          CoreLogic.incrementResource(affectedPlayer, state.board.tiles[state.board.nodes[node].getBottomRightTile()].getColor());
       }
 
-      if (state.gameBoard.nodes[node].getBottomLeftTile() != -1) {
-        state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].nodeCount++;
+      if (state.board.nodes[node].getBottomLeftTile() != -1) {
+        state.board.tiles[state.board.nodes[node].getBottomLeftTile()].nodeCount++;
 
-        if ((state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].nodeCount >
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].maxNodes) &&
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].isExhausted === false) {
+        if ((state.board.tiles[state.board.nodes[node].getBottomLeftTile()].nodeCount >
+          state.board.tiles[state.board.nodes[node].getBottomLeftTile()].maxNodes) &&
+          state.board.tiles[state.board.nodes[node].getBottomLeftTile()].isExhausted === false) {
           // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
-          if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].capturedBy === Owner.NONE) {
-            state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].isExhausted = true;
-            CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getBottomLeftTile(), true);
+          if (state.board.tiles[state.board.nodes[node].getBottomLeftTile()].capturedBy === Owner.NONE) {
+            state.board.tiles[state.board.nodes[node].getBottomLeftTile()].isExhausted = true;
+            CoreLogic.tileExhaustion(state,state.board.nodes[node].getBottomLeftTile(), true);
           }
         }
 
         // checks for if resource productions ought to be incremented
-        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].isExhausted === false &&
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].capturedBy !== otherOwner) {
-          CoreLogic.incrementResource(affectedPlayer, state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].getColor());
+        if (state.board.tiles[state.board.nodes[node].getBottomLeftTile()].isExhausted === false &&
+          state.board.tiles[state.board.nodes[node].getBottomLeftTile()].capturedBy !== otherOwner) {
+          CoreLogic.incrementResource(affectedPlayer, state.board.tiles[state.board.nodes[node].getBottomLeftTile()].getColor());
         }
       }
 
-      if (state.gameBoard.nodes[node].getTopLeftTile() != -1) {
-        state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount++;
+      if (state.board.nodes[node].getTopLeftTile() != -1) {
+        state.board.tiles[state.board.nodes[node].getTopLeftTile()].nodeCount++;
 
-        if ((state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount >
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].maxNodes) &&
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].isExhausted === false) {
+        if ((state.board.tiles[state.board.nodes[node].getTopLeftTile()].nodeCount >
+          state.board.tiles[state.board.nodes[node].getTopLeftTile()].maxNodes) &&
+          state.board.tiles[state.board.nodes[node].getTopLeftTile()].isExhausted === false) {
 
           // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
-          if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].capturedBy === Owner.NONE) {
-            state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].isExhausted = true;
-            CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getTopLeftTile(), true);
+          if (state.board.tiles[state.board.nodes[node].getTopLeftTile()].capturedBy === Owner.NONE) {
+            state.board.tiles[state.board.nodes[node].getTopLeftTile()].isExhausted = true;
+            CoreLogic.tileExhaustion(state,state.board.nodes[node].getTopLeftTile(), true);
           }
         }
         // checks for if resource productions ought to be incremented
-        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].isExhausted === false &&
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].capturedBy !== otherOwner) {
-          CoreLogic.incrementResource(affectedPlayer, state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].getColor());
+        if (state.board.tiles[state.board.nodes[node].getTopLeftTile()].isExhausted === false &&
+          state.board.tiles[state.board.nodes[node].getTopLeftTile()].capturedBy !== otherOwner) {
+          CoreLogic.incrementResource(affectedPlayer, state.board.tiles[state.board.nodes[node].getTopLeftTile()].getColor());
         }
       }
       
@@ -987,21 +1027,22 @@ export class CoreLogic {
     //captured tile 
     let numberTilesCapturedAtEndOfTurn = 0;
     const otherOwner = owner === Owner.PLAYERONE ? Owner.PLAYERTWO : Owner.PLAYERONE;
-    const otherPlayer = state.currentPlayer === 1 ? state.player2 : state.player1;
+    const otherPlayer = state.playerNumber === 1 ? state.player2 : state.player1;
 
-    for (let i = 0; i < state.gameBoard.tiles.length; i++) {
-      state.tilesBeingChecked = [];
-      if (CoreLogic.checkForCaptures(state,affectedPlayer, i) === true) {
+    let tilesBeingChecked:number[];
+    for (let i = 0; i < state.board.tiles.length; i++) {
+      tilesBeingChecked = [];
+      if (CoreLogic.checkForCaptures(state,affectedPlayer, i,tilesBeingChecked) === true) {
         // if new owner has nodes, give them resources per turn
-        const trNode = state.gameBoard.nodes[state.gameBoard.tiles[i].getTopRightNode()];
-        const brNode = state.gameBoard.nodes[state.gameBoard.tiles[i].getBottomRightNode()];
-        const blNode = state.gameBoard.nodes[state.gameBoard.tiles[i].getBottomLeftNode()];
-        const tlNode = state.gameBoard.nodes[state.gameBoard.tiles[i].getTopLeftNode()];
+        const trNode = state.board.nodes[state.board.tiles[i].getTopRightNode()];
+        const brNode = state.board.nodes[state.board.tiles[i].getBottomRightNode()];
+        const blNode = state.board.nodes[state.board.tiles[i].getBottomLeftNode()];
+        const tlNode = state.board.nodes[state.board.tiles[i].getTopLeftNode()];
 
-        const currentTileColor = state.gameBoard.tiles[i].getColor();
+        const currentTileColor = state.board.tiles[i].getColor();
 
-        if (state.gameBoard.tiles[i].isExhausted) {
-          state.gameBoard.tiles[i].isExhausted = false;
+        if (state.board.tiles[i].isExhausted) {
+          state.board.tiles[i].isExhausted = false;
 
           if (trNode.getOwner() === owner) {
             CoreLogic.incrementResource(affectedPlayer, currentTileColor);
@@ -1037,15 +1078,12 @@ export class CoreLogic {
         }
 
         numberTilesCapturedAtEndOfTurn++;
-        state.gameBoard.tiles[i].capturedBy = owner;
+        state.board.tiles[i].capturedBy = owner;
         // if(!affectedPlayer.capturedTiles.includes(i)){
         //   affectedPlayer.capturedTiles.push(i);
         // }
       }
     }
-
-    // empties tilesBeingChecked for next function call
-    state.tilesBeingChecked.splice(0, state.tilesBeingChecked.length);
 
     affectedPlayer.currentScore += numberTilesCapturedAtEndOfTurn - affectedPlayer.numTilesCaptured;
     affectedPlayer.numTilesCaptured = numberTilesCapturedAtEndOfTurn;
@@ -1056,7 +1094,7 @@ export class CoreLogic {
 
   static tileExhaustion(state:State,tileNum: number, setAsExhausted: boolean): void {
     // check for whichever nodes are already on the tile and decrement their *color*PerTurn
-    const currentTileColor = state.gameBoard.tiles[tileNum].color;
+    const currentTileColor = state.board.tiles[tileNum].color;
     let functionName;
     if (setAsExhausted){
       functionName = (nodeOwner: Player, currentTileColor: TileColor) => {
@@ -1103,31 +1141,31 @@ export class CoreLogic {
       };
     }
     
-    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
+    if (state.board.nodes[state.board.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
       functionName(state.player1, currentTileColor);
     }
-    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
+    else if (state.board.nodes[state.board.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
       functionName(state.player2, currentTileColor);
     }
 
-    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
+    if (state.board.nodes[state.board.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
       functionName(state.player1, currentTileColor);
     }
-    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
+    else if (state.board.nodes[state.board.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
       functionName( state.player2, currentTileColor);
     }
 
-    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
+    if (state.board.nodes[state.board.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
       functionName(state.player1, currentTileColor);
     }
-    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
+    else if (state.board.nodes[state.board.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
       functionName(state.player2, currentTileColor);
     }
 
-    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
+    if (state.board.nodes[state.board.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
       functionName(state.player1, currentTileColor);
     }
-    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
+    else if (state.board.nodes[state.board.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
       functionName(state.player2, currentTileColor);
     }
   }
@@ -1194,106 +1232,106 @@ export class CoreLogic {
     let branch5Owner:Owner;
     let branch6Owner:Owner;
 
-    if(state.gameBoard.branches[currentBranch].getBranch('branch1') !== -1){
-      branch1Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch1')].getOwner();
+    if(state.board.branches[currentBranch].getBranch('branch1') !== -1){
+      branch1Owner = state.board.branches[state.board.branches[currentBranch].getBranch('branch1')].getOwner();
     }
     else{
       branch1Owner = Owner.NONE;
     }
-    if(state.gameBoard.branches[currentBranch].getBranch('branch2') !== -1){
-      branch2Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch2')].getOwner();
+    if(state.board.branches[currentBranch].getBranch('branch2') !== -1){
+      branch2Owner = state.board.branches[state.board.branches[currentBranch].getBranch('branch2')].getOwner();
     }
     else{
       branch2Owner = Owner.NONE;
     }
-    if(state.gameBoard.branches[currentBranch].getBranch('branch3') !== -1){
-      branch3Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch3')].getOwner();
+    if(state.board.branches[currentBranch].getBranch('branch3') !== -1){
+      branch3Owner = state.board.branches[state.board.branches[currentBranch].getBranch('branch3')].getOwner();
     }
     else{
       branch3Owner = Owner.NONE;
     }
-    if(state.gameBoard.branches[currentBranch].getBranch('branch4') !== -1){
-      branch4Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch4')].getOwner();
+    if(state.board.branches[currentBranch].getBranch('branch4') !== -1){
+      branch4Owner = state.board.branches[state.board.branches[currentBranch].getBranch('branch4')].getOwner();
     }
     else{
       branch4Owner = Owner.NONE;
     }
-    if(state.gameBoard.branches[currentBranch].getBranch('branch5') !== -1){
-      branch5Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch5')].getOwner();
+    if(state.board.branches[currentBranch].getBranch('branch5') !== -1){
+      branch5Owner = state.board.branches[state.board.branches[currentBranch].getBranch('branch5')].getOwner();
     }
     else{
       branch5Owner = Owner.NONE;
     }
-    if(state.gameBoard.branches[currentBranch].getBranch('branch6') !== -1){
-      branch6Owner = state.gameBoard.branches[state.gameBoard.branches[currentBranch].getBranch('branch6')].getOwner();
+    if(state.board.branches[currentBranch].getBranch('branch6') !== -1){
+      branch6Owner = state.board.branches[state.board.branches[currentBranch].getBranch('branch6')].getOwner();
     }
     else{
       branch6Owner = Owner.NONE;
     }
    
 
-    if (state.currentPlayer === 1) {
+    if (state.playerNumber === 1) {
 
       if (branch1Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch1'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch1'));
       }
       if (branch2Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch2'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch2'));
       }
       if (branch3Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch3'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch3'));
       }
       if (branch4Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch4'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch4'));
       }
       if (branch5Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch5'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch5'));
       }
       if (branch6Owner === Owner.PLAYERONE) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch6'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch6'));
       }
     }
 
     else {
       if (branch1Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch1'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch1'));
       }
       if (branch2Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch2'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch2'));
       }
       if (branch3Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch3'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch3'));
       }
       if (branch4Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch4'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch4'));
       }
       if (branch5Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch5'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch5'));
       }
       if (branch6Owner === Owner.PLAYERTWO) {
-        CoreLogic.checkForLongest(state, branchOwner, state.gameBoard.branches[currentBranch].getBranch('branch6'));
+        CoreLogic.checkForLongest(state, branchOwner, state.board.branches[currentBranch].getBranch('branch6'));
       }
     }
 
     //branchOwner.branchScanner.pop();
   }
 
-  static checkForCaptures(state:State, capturer:Player, checkTile: number): boolean {
+  static checkForCaptures(state:State, capturer:Player, checkTile: number, tilesBeingChecked:number[]): boolean {
     let captured = true;
 
     // prevents infinite recursion
-    if (state.tilesBeingChecked.includes(checkTile)) {
+    if (tilesBeingChecked.includes(checkTile)) {
       return captured;
     }
 
     let currentPlayer;
     let otherPlayer;
 
-    const currentTile = state.gameBoard.tiles[checkTile];
-    const tileTopBranch = state.gameBoard.branches[currentTile.getTopBranch()];
-    const tileRightBranch = state.gameBoard.branches[currentTile.getRightBranch()];
-    const tileBottomBranch = state.gameBoard.branches[currentTile.getBottomBranch()];
-    const tileLeftBranch = state.gameBoard.branches[currentTile.getLeftBranch()];
+    const currentTile = state.board.tiles[checkTile];
+    const tileTopBranch = state.board.branches[currentTile.getTopBranch()];
+    const tileRightBranch = state.board.branches[currentTile.getRightBranch()];
+    const tileBottomBranch = state.board.branches[currentTile.getBottomBranch()];
+    const tileLeftBranch = state.board.branches[currentTile.getLeftBranch()];
 
     if (capturer === state.player1) {
       currentPlayer = Owner.PLAYERONE;
@@ -1320,25 +1358,25 @@ export class CoreLogic {
     }
     // begins recursive calls checking for multi-tile capture
     else {
-      state.tilesBeingChecked.push(checkTile);
+      tilesBeingChecked.push(checkTile);
 
       if (tileTopBranch.getOwner() === Owner.NONE) {
-        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getTopTile()) === false) {
+        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getTopTile(), tilesBeingChecked) === false) {
           captured = false;
         }
       }
       if (tileRightBranch.getOwner() === Owner.NONE) {
-        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getRightTile()) === false) {
+        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getRightTile(), tilesBeingChecked) === false) {
           captured = false;
         }
       }
       if (tileBottomBranch.getOwner() === Owner.NONE) {
-        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getBottomTile()) === false) {
+        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getBottomTile(), tilesBeingChecked) === false) {
           captured = false;
         }
       }
       if (tileLeftBranch.getOwner() === Owner.NONE) {
-        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getLeftTile()) === false) {
+        if (CoreLogic.checkForCaptures(state,capturer, currentTile.getLeftTile(), tilesBeingChecked) === false) {
           captured = false;
         }
       }
