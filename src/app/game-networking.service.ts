@@ -1,9 +1,53 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import * as io from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameNetworkingService {
 
-  constructor() { }
+  socket: any;
+
+  constructor() {}
+
+  //https://www.youtube.com/watch?v=66T2A2dvplY
+  listen(eventName: string): Observable<any> {
+    return new Observable((subscriber) => {
+      this.socket.on(eventName, (data: any) => {
+        subscriber.next(data);
+      });
+    });
+  }
+
+  /*
+    Things to listen for:
+    - UI 'lobby-joined': confirmation you connected to the game server. returns a the board as a string.
+    - UI 'disconnecting?': confirmation you disconnected (perhaps unintentionally) form the game server.
+    built-in error
+    - UI 'disconnect?': someone has disconnected. built-in error
+    - UI 'lobby-full': there are already two players here. no data
+    - UI 'recieve-chat-message': the opponent has sent a chat message. string 
+    - GC 'recieve-move': the opponent has sent a move. string
+    - Rematch Handshake (I haven't thought this out yet)
+  */
+
+  public createTCPServer(board:string, isPlayer1:boolean): void {
+    this.socket = io("http://localhost:8000");
+    console.log("TCP Server Created!");
+    this.socket.emit('create-lobby', {gameboard: board, isHostPlayer1: isPlayer1});
+  }
+
+  public connectTCPserver(serverIP: string): void {
+    this.socket = io("http://" + serverIP + ":8000");
+    console.log("Server connection attempted");
+  }
+
+  public sendMove(move: string): void {
+    this.socket.emit('send-move', move);
+  }
+
+  public sendChatMessage(message: string): void {
+    this.socket.emit('send-chat-message', message);
+  }
 }
