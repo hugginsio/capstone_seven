@@ -25,10 +25,12 @@ export class AppComponent {
 
     // Game defaults
     // We set these in the app component so that they are always created on startup, regardless of page
+    // If we initially navigate to the /game route, this will destroy any modified settings
     this.storageService.setContext('game');
     this.storageService.store('mode', 'pvp');
     this.storageService.store('ai-difficulty', 'easy');
     this.storageService.store('guided-tutorial', 'false');
     this.storageService.update('board-seed', '!random');
+    this.storageService.update('firstplayer', 'one');
   }
 }

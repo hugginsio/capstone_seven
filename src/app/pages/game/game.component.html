@@ -41,7 +41,7 @@
   </div>
 
   <!-- Trade Modal Container -->
-  <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-50" *ngIf="this.isTrading">
+  <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-50 pointer-events-auto" *ngIf="this.isTrading">
     <div class="flex flex-row items-center content-center h-full">
       <div class="mx-auto flex flex-col spacing-y-5 w-1/3">
         <p class="text-5xl font-bold tracking-wide p-5">Trading</p>
@@ -55,17 +55,21 @@
               this.gameManager.getCurrentPlayer().blueResources === 0 && this.gameManager.getCurrentPlayer().yellowResources === 0">
               <p>You have no resources to trade.</p>
             </div>
-            <div class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().redResources > 0">
-              <img src="/assets/game/Resource-Red.png" class="w-full h-full" />
+            <div id="1" class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().redResources > 0" (click)="tradingModel.increment(1)">
+              <span>{{ tradingModel.redResources }}</span>
+              <img src="/assets/game/Resource-Red.png" class="w-full h-full" draggable="false" />
             </div>
-            <div class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().greenResources > 0">
-              <img src="/assets/game/Resource-Green.png" class="w-full h-full" />
+            <div id="2" class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().greenResources > 0" (click)="tradingModel.increment(2)">
+              <span>{{ tradingModel.greenResources }}</span>
+              <img src="/assets/game/Resource-Green.png" class="w-full h-full" draggable="false" />
             </div>
-            <div class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().blueResources > 0">
-              <img src="/assets/game/Resource-Blue.png" class="w-full h-full" />
+            <div id="3" class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().blueResources > 0" (click)="tradingModel.increment(3)">
+              <span>{{ tradingModel.blueResources }}</span>
+              <img src="/assets/game/Resource-Blue.png" class="w-full h-full" draggable="false" />
             </div>
-            <div class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().yellowResources > 0">
-              <img src="/assets/game/Resource-Yellow.png" class="w-full h-full" />
+            <div id="4" class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().yellowResources > 0" (click)="tradingModel.increment(4)">
+              <span>{{ tradingModel.yellowResources }}</span>
+              <img src="/assets/game/Resource-Yellow.png" class="w-full h-full" draggable="false" />
             </div>
           </div>
           <div class="flex justify-center p-3">
@@ -75,21 +79,21 @@
             </svg>
           </div>
           <div class="flex space-x-3">
-            <div class="resource-button-trade">
-              <img src="/assets/game/Resource-Red.png" class="w-full h-full" />
+            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(1)" (click)="tradingModel.select(1)">
+              <img src="/assets/game/Resource-Red.png" class="w-full h-full" draggable="false" />
             </div>
-            <div class="resource-button-trade">
-              <img src="/assets/game/Resource-Green.png" class="w-full h-full" />
+            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(2)" (click)="tradingModel.select(2)">
+              <img src="/assets/game/Resource-Green.png" class="w-full h-full" draggable="false" />
             </div>
-            <div class="resource-button-trade">
-              <img src="/assets/game/Resource-Blue.png" class="w-full h-full" />
+            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(3)" (click)="tradingModel.select(3)">
+              <img src="/assets/game/Resource-Blue.png" class="w-full h-full" draggable="false" />
             </div>
-            <div class="resource-button-trade">
-              <img src="/assets/game/Resource-Yellow.png" class="w-full h-full" />
+            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(4)" (click)="tradingModel.select(4)">
+              <img src="/assets/game/Resource-Yellow.png" class="w-full h-full" draggable="false" />
             </div>
           </div>
           <div class="flex space-x-3 w-full flex-grow-0">
-            <div class="menu-btn-light w-full flex-grow pointer-events-auto" (click)="toggleTrade()">
+            <div class="menu-btn-light w-full flex-grow pointer-events-auto" (click)="this.isTrading = !this.isTrading">
               <div>
                 <p>Cancel</p>
               </div>
