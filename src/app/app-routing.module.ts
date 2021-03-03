@@ -7,7 +7,7 @@ import { LandingRoutingModule } from './pages/landing/landing-routing.module';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'landing',
+    redirectTo: 'game',
     pathMatch: 'full'
   },
   {
