@@ -236,4 +236,9 @@ export class GameComponent implements OnInit {
       }
     })();
   }
+
+  cancelTrading(): void {
+    this.isTrading = false;
+    this.tradingModel.reset();
+  }
 }
