@@ -28,7 +28,10 @@
     "src/polyfills.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "./src/app/pages/networking/MatchmakingServer.ts",
+    "./src/app/pages/networking/GameServer.ts",
+    "./src/app/pages/networking/UDPWrapper.ts"
   ],
   "exclude": [
     "node_modules"

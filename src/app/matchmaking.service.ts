@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import * as io from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,14 @@ export class MatchmakingService {
   constructor() {}
 
   initialize(name: string): void {
+    console.log("UDP connection attempted");
     this.socket = io("http://localhost:3000");
     this.username = name;
+
+    this.socket.on('you-connected', () => {
+      console.log("Yep, it's listen() that's broken, not the socket.");
+    });
+
     this.socket.emit('set-username');
   }
 
