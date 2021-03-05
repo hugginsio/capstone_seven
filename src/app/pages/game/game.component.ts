@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, Renderer2, AfterViewInit } from '@angular/core';
 import { MatchmakingService } from '../../matchmaking.service';
 import { GameNetworkingService } from '../../game-networking.service';
 @Component({
@@ -6,16 +6,20 @@ import { GameNetworkingService } from '../../game-networking.service';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements OnInit {
-  @ViewChild('gameList') list:any;
-  @ViewChild('oppAddress') input:any;
+export class GameComponent implements OnInit, AfterViewInit {
+  //@ViewChild('gameList') list:any;
+  //@ViewChild('oppAddress') input:any;
 
+  private list:any;
+  private input:any;
   private username = "Client McGee";
 
   constructor(
     private readonly matchmakingService: MatchmakingService,
     private readonly networkingService: GameNetworkingService,
     private renderer: Renderer2
+    //private list:any,
+    //private input:any
   ) {}
 
   ngOnInit(): void {
@@ -36,8 +40,13 @@ export class GameComponent implements OnInit {
       const messageElement = document.createElement('div');
       messageElement.innerText = `${oppUsername} wants to play at ${oppAddress}`;
       //messageElement.click = this.JoinGame;
-      this.renderer.appendChild(this.list, messageElement);
+      this.list.append(messageElement);
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.list = document.getElementById('gameList');
+    this.input = document.getElementById('oppAddress');
   }
 
   HostGame(): void {
@@ -69,7 +78,7 @@ export class GameComponent implements OnInit {
     this.networkingService.listen('lobby-joined').subscribe((gameInfo:any) => {
       const board = gameInfo.gameboard;
       const isHostP1 = gameInfo.isHostPlayer1;
-      
+      console.log("Lobby joined! Huzzah!");
       //Create network game using these settings
     });
 

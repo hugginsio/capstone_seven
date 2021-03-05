@@ -21,7 +21,7 @@ export class MatchmakingService {
       console.log("Yep, it's listen() that's broken, not the socket.");
     });
 
-    this.socket.emit('set-username');
+    this.socket.emit('set-username', this.username);
   }
 
   //https://www.youtube.com/watch?v=66T2A2dvplY
