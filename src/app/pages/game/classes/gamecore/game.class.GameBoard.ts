@@ -8,6 +8,7 @@ export class GameBoard {
   nodes: Node[];
   branches: Branch[];
 
+  // randomizes array of tiles and assigns to tiles[]
   randomizeColorsAndMaxNodes(): void { 
     const tileColorsAndMax = this.shuffleArray(this.getTileColorsAndMax());
 
@@ -17,7 +18,7 @@ export class GameBoard {
     }
   }
 
-  /* Randomize array in-place using Durstenfeld shuffle algorithm */
+  // Randomize array in-place using Durstenfeld shuffle algorithm
   shuffleArray(array: Array<any>): Array<any> {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -29,6 +30,7 @@ export class GameBoard {
     return array;
   }
 
+  // array of tile pieces to make the board
   getTileColorsAndMax(): Array<Tile>{
     const colorTilesAndMax = new Array<Tile>(13);
 
@@ -96,18 +98,18 @@ export class GameBoard {
   }
 
   constructor() {
+
     this.tiles = new Array<Tile>(13);
     this.nodes = new Array<Node>(24);
     this.branches = new Array<Branch>(36);
 
+    // populates game component arrays
     for (let i = 0; i < 36; i++) {
       this.branches[i] = new Branch();
     }
-
     for (let i = 0; i < 24; i++) {
       this.nodes[i] = new Node();
     }
-      
     for (let i = 0; i < 13; i++) {
       this.tiles[i] = new Tile();
     }
