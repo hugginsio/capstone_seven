@@ -96,19 +96,19 @@ export class CoreLogic {
     }
     else{
 
-      if(state.playerNumber === 2){
-        state.player1.redResources += state.player1.redPerTurn;
-        state.player1.blueResources += state.player1.bluePerTurn;
-        state.player1.greenResources += state.player1.greenPerTurn;
-        state.player1.yellowResources += state.player1.yellowPerTurn;
-      }
-      else{
-        state.player2.redResources += state.player2.redPerTurn;
-        state.player2.blueResources += state.player2.bluePerTurn;
-        state.player2.greenResources += state.player2.greenPerTurn;
-        state.player2.yellowResources += state.player2.yellowPerTurn;
+      // if(state.playerNumber === 2){
+      //   state.player1.redResources += state.player1.redPerTurn;
+      //   state.player1.blueResources += state.player1.bluePerTurn;
+      //   state.player1.greenResources += state.player1.greenPerTurn;
+      //   state.player1.yellowResources += state.player1.yellowPerTurn;
+      // }
+      // else{
+      //   state.player2.redResources += state.player2.redPerTurn;
+      //   state.player2.blueResources += state.player2.bluePerTurn;
+      //   state.player2.greenResources += state.player2.greenPerTurn;
+      //   state.player2.yellowResources += state.player2.yellowPerTurn;
 
-      }
+      // }
 
       let redAvailable:number;
       let blueAvailable:number;

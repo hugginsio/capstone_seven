@@ -44,7 +44,7 @@ export class State {
       newState.move = move;
       
       if(newState.player1.numNodesPlaced === 1 && newState.player2.numNodesPlaced === 1){
-        newState.playerNumber = this.playerNumber;
+        newState.playerNumber = 2;
       }
       else{
         newState.playerNumber = 3 - this.playerNumber;
@@ -301,7 +301,11 @@ export class State {
     if (CoreLogic.getWinner(this) === 0) {
       const newPlayer = endPlayer === this.player1 ? this.player2 : this.player1;
 
-
+      //update resources for newPlayer
+      newPlayer.redResources += newPlayer.redPerTurn;
+      newPlayer.blueResources += newPlayer.bluePerTurn;
+      newPlayer.yellowResources += newPlayer.yellowPerTurn;
+      newPlayer.greenResources += newPlayer.greenPerTurn;
 
       //Set resources if still opening moves
       if (endPlayer.numNodesPlaced < 2 && endPlayer.ownedBranches.length < 2) {
@@ -310,11 +314,7 @@ export class State {
         endPlayer.yellowResources = 2;
         endPlayer.greenResources = 2;
       }
-      // //update resources for newPlayer
-      // newPlayer.redResources += newPlayer.redPerTurn;
-      // newPlayer.blueResources += newPlayer.bluePerTurn;
-      // newPlayer.yellowResources += newPlayer.yellowPerTurn;
-      // newPlayer.greenResources += newPlayer.greenPerTurn;
+
       
 
       // if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {

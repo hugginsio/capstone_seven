@@ -21,41 +21,33 @@ export class MonteCarlo {
     const end = Date.now() + 5800;
 
     this.opponent = 3 - playerNo;
-    //const tree = new Tree();
+    
     let rootNode = this.tree.getRoot();
+    const rootState = rootNode.getState();
 
-    const newRootState = rootNode.getState().cloneState();
-    const newRootNode = new MCTSNode(newRootState);
+    if(rootState.move !== previousMove){
+      if(rootNode.getChildArray().length > 0){
+        for(let i = 0; i < rootNode.getChildArray.length; i++){
+          const childNode = rootNode.getChildArray()[i];
+          const childState = rootNode.getChildArray()[i].getState();
+          if(childState.move === previousMove){
+            i = rootNode.getChildArray().length;
+            this.tree.setRoot(childNode);
+          }
+        }
+      }
+      else if(rootNode.getChildArray().length === 0 || rootState.move === ''){
+        rootState.applyMove(previousMove); // this is not currently setting player 1's second move to the board.
+      }
 
-    if(newRootNode.getState().player1.numNodesPlaced < 2 && newRootNode.getState().playerNumber === 2){
-      newRootNode.getState().setPlayerNo(this.opponent);
     }
 
-    newRootNode.getState().applyMove(previousMove);
-    rootNode = newRootNode;
-
-
-    rootNode.getState().setPlayerNo(this.opponent);
-    
-    // if(rootNode.getState().getMove() === '' && previousMove !== ''){
-    //   rootNode.getState().applyMove(previousMove);
-    // }
-
-    // if(rootNode.getChildArray().length === 0){
-    //   this.expandNode(rootNode);
-    // }
-
-    // if(rootNode.getChildArray().length > 0){
-    //   for(let i = 0; i < rootNode.getChildArray().length; i++){
-    //     if(rootNode.getChildArray()[i].getState().getMove() === previousMove){
-    //       rootNode = rootNode.getChildArray()[i];
-    //     }
-    //   }
-    // }
+    rootNode = this.tree.getRoot();
+    console.log(rootNode.getState().playerNumber);
 
 
     //while (Date.now() < end) {
-    for(let iteration = 0; iteration < 10; iteration++){
+    for(let iteration = 0; iteration < 1; iteration++){
       const promisingNode = this.selectPromisingNode(rootNode);
       if (CoreLogic.getWinner(promisingNode.getState()) === 0) {
         this.expandNode(promisingNode);
