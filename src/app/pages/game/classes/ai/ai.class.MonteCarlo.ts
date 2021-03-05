@@ -23,15 +23,27 @@ export class MonteCarlo {
     this.opponent = 3 - playerNo;
     //const tree = new Tree();
     let rootNode = this.tree.getRoot();
-    if(rootNode.getChildArray().length === 0){
-      this.expandNode(rootNode);
+
+    const newRootState = rootNode.getState().cloneState();
+    const newRootNode = new MCTSNode(newRootState);
+
+    if(newRootNode.getState().player1.numNodesPlaced < 2 && newRootNode.getState().playerNumber === 2){
+      newRootNode.getState().setPlayerNo(this.opponent);
     }
 
-    for(let i = 0; i < rootNode.getChildArray().length; i++){
-      if(rootNode.getChildArray()[i].getState().getMove() === previousMove){
-        rootNode = rootNode.getChildArray()[i];
-      }
-    }
+    newRootNode.getState().applyMove(previousMove);
+    rootNode = newRootNode;
+
+
+    rootNode.getState().setPlayerNo(this.opponent);
+    
+    // if(rootNode.getState().getMove() === '' && previousMove !== ''){
+    //   rootNode.getState().applyMove(previousMove);
+    // }
+
+    // if(rootNode.getChildArray().length === 0){
+    //   this.expandNode(rootNode);
+    // }
 
     // if(rootNode.getChildArray().length > 0){
     //   for(let i = 0; i < rootNode.getChildArray().length; i++){
@@ -40,24 +52,10 @@ export class MonteCarlo {
     //     }
     //   }
     // }
-    // else{
-    //   const newRootState = rootNode.getState().cloneState();
-    //   newRootState.move = previousMove;
-    //   newRootState.togglePlayer();
-    //   newRootState.turnNumber++;
 
-    //   CoreLogic.applyMove(previousMove,newRootState);
-
-    //   const newRoot = new MCTSNode(newRootState);
-    //   rootNode = newRoot;
-    // }
-
-    if(rootNode.getState().turnNumber !== 2){
-      rootNode.getState().setPlayerNo(this.opponent);
-    }
 
     //while (Date.now() < end) {
-    for(let iteration = 0; iteration < 1; iteration++){
+    for(let iteration = 0; iteration < 10; iteration++){
       const promisingNode = this.selectPromisingNode(rootNode);
       if (CoreLogic.getWinner(promisingNode.getState()) === 0) {
         this.expandNode(promisingNode);
@@ -125,10 +123,12 @@ export class MonteCarlo {
 
       return boardStatus;
     }
-    while (boardStatus === 0 && tempState.turnNumber < 100) {
+    let counter = 0;
+    while (boardStatus === 0 && counter < 50) {
       tempState.togglePlayer();
       tempState.randomPlay();
       boardStatus = CoreLogic.getWinner(tempState);
+      counter++;
     }
 
     console.log(`simulateRandomPlayout TIME: ${Date.now() - start}ms`);

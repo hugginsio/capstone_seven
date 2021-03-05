@@ -63,6 +63,16 @@ export class ManagerService {
       this.playerTwo.type = PlayerType.NETWORK;
     }
 
+   
+
+    if (boardSeed === '!random' || boardSeed === 'undefined') {
+      this.createBoard(true);
+      console.log(this.getBoard());
+    } else {
+      // create gameboard with user defined seed
+      this.createBoard(false, boardSeed);
+    }
+
     if (this.firstPlayer === 'one') {
       if (this.currentGameMode === GameType.AI) {
         this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
@@ -71,14 +81,6 @@ export class ManagerService {
       if (this.currentGameMode === GameType.AI) {
         this.ai = new AiService(this.gameBoard, this.playerOne,this.playerTwo);
       }
-    }
-
-    if (boardSeed === '!random' || boardSeed === 'undefined') {
-      this.createBoard(true);
-      console.log(this.getBoard());
-    } else {
-      // create gameboard with user defined seed
-      this.createBoard(false, boardSeed);
     }
 
     if (this.currentGameMode === GameType.AI && this.getCurrentPlayer().type === PlayerType.AI) {
@@ -284,7 +286,7 @@ export class ManagerService {
 
     if (currentPlayer.type === PlayerType.AI) {
       //let AIStringMove;
-      const playerNumber = currentPlayer === this.playerOne ? 1 : 2;
+      const playerNumber = currentPlayer === this.playerOne ? 1: 2;
 
       
 
