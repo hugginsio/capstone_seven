@@ -286,11 +286,11 @@ export class ManagerService {
 
     if (currentPlayer.type === PlayerType.AI) {
       //let AIStringMove;
-      const playerNumber = currentPlayer === this.playerOne ? 1: 2;
+      const previousPlayer = currentPlayer === this.playerOne ? 2: 1;
 
       
 
-      const AIStringMove = this.ai.getAIMove(pastMoveString, playerNumber);
+      const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, previousPlayer);
 
       // if (currentPlayer.numNodesPlaced === 0 && otherPlayer.numNodesPlaced === 0) {
       //   AIStringMove = this.ai.randomAIFirstMove();
@@ -529,9 +529,9 @@ export class ManagerService {
       // }
 
       if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
-        // if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI) {
-        //   this.ai.currentState = CoreLogic.nextState(this.ai.currentState, this.serializeStack());
-        // }
+        if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI) {
+          this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
+        }
 
         this.nextTurn(endPlayer);
         return;

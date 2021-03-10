@@ -25,9 +25,43 @@ export class AiService {
     this.mcts = new MonteCarlo(gameBoard, player1, player2); 
   }
 
-  getAIMove(previousMove:string,playerNumber:number):string{
-    const result = this.mcts.findNextMove(previousMove,playerNumber);
+  getAIMove(gameboard:GameBoard,player1:Player,player2:Player,previousPlayerNo:number):string{
+    const newState = new State(gameboard,player1, player2);
+    newState.playerNumber = previousPlayerNo;
+    const result = this.mcts.findNextMove(newState,5000);
     return result;
+  }
+
+  player2InitialMoveSpecialCase(previousMove:string,playerNo:number):void{
+
+    this.mcts.opponent = 3 - playerNo;
+
+    const rootNode = this.mcts.tree.getRoot();
+    const rootState = rootNode.getState();
+
+    if(rootState.move !== previousMove){
+      if(rootNode.getChildArray().length > 0){
+        for(let i = 0; i < rootNode.getChildArray.length; i++){
+          const childNode = rootNode.getChildArray()[i];
+          const childState = rootNode.getChildArray()[i].getState();
+          if(childState.move === previousMove){
+            i = rootNode.getChildArray().length;
+            this.mcts.tree.setRoot(childNode);
+          }
+        }
+      }
+      else if(rootNode.getState().player1.numNodesPlaced >= 1 && rootNode.getState().player2.numNodesPlaced >= 2){
+        rootNode.getState().setPlayerNo(this.mcts.opponent);
+        rootNode.getState().applyMove(previousMove);
+        rootNode.getState().setPlayerNo(playerNo);
+
+      }
+      else if(rootNode.getChildArray().length === 0 || rootState.move === ''){
+        //rootNode.getState().setPlayerNo(this.opponent);
+        rootNode.getState().applyMove(previousMove); 
+      }
+
+    }
   }
 
   // randomAIFirstMove():string{

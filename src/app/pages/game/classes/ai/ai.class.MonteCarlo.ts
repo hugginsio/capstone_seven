@@ -16,38 +16,20 @@ export class MonteCarlo {
     this.tree.setRoot(startingRoot);
   }
 
-  findNextMove(previousMove:string, playerNo:number):string {
+  
+  findNextMove(gameState:State,time:number):string {
     // define an end time in milliseconds which will act as a terminating condition
-    const end = Date.now() + 5800;
-
-    this.opponent = 3 - playerNo;
+    const end = Date.now() + time;
     
-    let rootNode = this.tree.getRoot();
-    const rootState = rootNode.getState();
 
-    if(rootState.move !== previousMove){
-      if(rootNode.getChildArray().length > 0){
-        for(let i = 0; i < rootNode.getChildArray.length; i++){
-          const childNode = rootNode.getChildArray()[i];
-          const childState = rootNode.getChildArray()[i].getState();
-          if(childState.move === previousMove){
-            i = rootNode.getChildArray().length;
-            this.tree.setRoot(childNode);
-          }
-        }
-      }
-      else if(rootNode.getChildArray().length === 0 || rootState.move === ''){
-        rootState.applyMove(previousMove); // this is not currently setting player 1's second move to the board.
-      }
+    const newNode = new MCTSNode(gameState);
 
-    }
-
-    rootNode = this.tree.getRoot();
-    console.log(rootNode.getState().playerNumber);
+    this.tree.setRoot(newNode);
+    const rootNode = this.tree.getRoot();
 
 
     //while (Date.now() < end) {
-    for(let iteration = 0; iteration < 1; iteration++){
+    for(let iteration = 0; iteration < 10; iteration++){
       const promisingNode = this.selectPromisingNode(rootNode);
       if (CoreLogic.getWinner(promisingNode.getState()) === 0) {
         this.expandNode(promisingNode);
@@ -60,9 +42,14 @@ export class MonteCarlo {
       this.backPropogation(nodeToExplore, playoutResult);
     }
 
-    const winnerNode = rootNode.getChildWithMaxScore();
-    this.tree.setRoot(winnerNode);
-    return winnerNode.getState().getMove();
+    if(rootNode.getChildArray().length > 0){
+      const winnerNode = rootNode.getChildWithMaxScore();
+      this.tree.setRoot(winnerNode);
+      return winnerNode.getState().getMove();
+    }
+    else{
+      return ';;';
+    }
   }
 
   selectPromisingNode(rootNode:MCTSNode):MCTSNode {
@@ -117,9 +104,9 @@ export class MonteCarlo {
     }
     let counter = 0;
     while (boardStatus === 0 && counter < 50) {
-      tempState.togglePlayer();
       tempState.randomPlay();
       boardStatus = CoreLogic.getWinner(tempState);
+      tempState.togglePlayer();
       counter++;
     }
 

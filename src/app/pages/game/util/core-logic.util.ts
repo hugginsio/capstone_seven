@@ -96,34 +96,42 @@ export class CoreLogic {
     }
     else{
 
-      // if(state.playerNumber === 2){
-      //   state.player1.redResources += state.player1.redPerTurn;
-      //   state.player1.blueResources += state.player1.bluePerTurn;
-      //   state.player1.greenResources += state.player1.greenPerTurn;
-      //   state.player1.yellowResources += state.player1.yellowPerTurn;
-      // }
-      // else{
-      //   state.player2.redResources += state.player2.redPerTurn;
-      //   state.player2.blueResources += state.player2.bluePerTurn;
-      //   state.player2.greenResources += state.player2.greenPerTurn;
-      //   state.player2.yellowResources += state.player2.yellowPerTurn;
-
-      // }
+      
 
       let redAvailable:number;
       let blueAvailable:number;
       let greenAvailable:number;
       let yellowAvailable:number;
       let playerOwner:Owner;
-
-      if(state.playerNumber === 1){
-        redAvailable = state.player1.redResources;
-        blueAvailable = state.player1.blueResources;
-        greenAvailable = state.player1.greenResources;
-        yellowAvailable = state.player1.yellowResources;
-        playerOwner = Owner.PLAYERONE;
+      if(state.playerNumber === 2){
+        if(state.player1.numNodesPlaced === 1 && state.player2.numNodesPlaced === 1){
+          // state.player2.redResources += state.player2.redPerTurn;
+          // state.player2.blueResources += state.player2.bluePerTurn;
+          // state.player2.greenResources += state.player2.greenPerTurn;
+          // state.player2.yellowResources += state.player2.yellowPerTurn;
+          redAvailable = state.player2.redResources;
+          blueAvailable = state.player2.blueResources;
+          greenAvailable = state.player2.greenResources;
+          yellowAvailable = state.player2.yellowResources;
+          playerOwner = Owner.PLAYERTWO;
+        }
+        else{
+          // state.player1.redResources += state.player1.redPerTurn;
+          // state.player1.blueResources += state.player1.bluePerTurn;
+          // state.player1.greenResources += state.player1.greenPerTurn;
+          // state.player1.yellowResources += state.player1.yellowPerTurn;
+          redAvailable = state.player1.redResources;
+          blueAvailable = state.player1.blueResources;
+          greenAvailable = state.player1.greenResources;
+          yellowAvailable = state.player1.yellowResources;
+          playerOwner = Owner.PLAYERONE;
+        }
       }
       else{
+        // state.player2.redResources += state.player2.redPerTurn;
+        // state.player2.blueResources += state.player2.bluePerTurn;
+        // state.player2.greenResources += state.player2.greenPerTurn;
+        // state.player2.yellowResources += state.player2.yellowPerTurn;
         redAvailable = state.player2.redResources;
         blueAvailable = state.player2.blueResources;
         greenAvailable = state.player2.greenResources;
@@ -131,6 +139,7 @@ export class CoreLogic {
         playerOwner = Owner.PLAYERTWO;
 
       }
+
 
       //general moves
       //Step 1: trade

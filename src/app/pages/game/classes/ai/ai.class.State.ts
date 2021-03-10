@@ -16,6 +16,7 @@ export class State {
   visitCount:number;
   winScore:number;
 
+
   tilesBeingChecked:number[];
 
   constructor(newBoard:GameBoard, player1:Player, player2:Player){
@@ -35,6 +36,18 @@ export class State {
 
   getAllPossibleStates():Array<State>{
     // constructs a list of all possible states from current state
+    console.log(this.playerNumber);
+   
+    let nextPlayer;
+    if(this.player1.numNodesPlaced === 1 && this.player2.numNodesPlaced === 1){
+      nextPlayer = this.playerNumber;
+    }
+    else{
+      nextPlayer = 3 - this.playerNumber;
+    }
+  
+
+
     const moves = CoreLogic.getLegalMoves(this);
 
     const states = [];
@@ -43,12 +56,7 @@ export class State {
       const newState = this.cloneState();
       newState.move = move;
       
-      if(newState.player1.numNodesPlaced === 1 && newState.player2.numNodesPlaced === 1){
-        newState.playerNumber = 2;
-      }
-      else{
-        newState.playerNumber = 3 - this.playerNumber;
-      }
+      newState.playerNumber = nextPlayer;
       
       newState.applyMove(move);
 
@@ -302,10 +310,10 @@ export class State {
       const newPlayer = endPlayer === this.player1 ? this.player2 : this.player1;
 
       //update resources for newPlayer
-      newPlayer.redResources += newPlayer.redPerTurn;
-      newPlayer.blueResources += newPlayer.bluePerTurn;
-      newPlayer.yellowResources += newPlayer.yellowPerTurn;
-      newPlayer.greenResources += newPlayer.greenPerTurn;
+      // newPlayer.redResources += newPlayer.redPerTurn;
+      // newPlayer.blueResources += newPlayer.bluePerTurn;
+      // newPlayer.yellowResources += newPlayer.yellowPerTurn;
+      // newPlayer.greenResources += newPlayer.greenPerTurn;
 
       //Set resources if still opening moves
       if (endPlayer.numNodesPlaced < 2 && endPlayer.ownedBranches.length < 2) {
