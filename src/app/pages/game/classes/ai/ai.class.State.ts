@@ -48,7 +48,7 @@ export class State {
   
 
 
-    const moves = CoreLogic.getLegalMoves(this);
+    const moves = CoreLogic.getLegalMoves(this,false);
 
     const states = [];
 
@@ -69,7 +69,7 @@ export class State {
   randomPlay():void{
     /* get a list of all possible positions on the board and 
            play a random move */
-    const moves = CoreLogic.getLegalMoves(this);
+    const moves = CoreLogic.getLegalMoves(this,true);
     const index = Math.floor(Math.random() * moves.length);
 
     this.applyMove(moves[index]);
@@ -309,11 +309,7 @@ export class State {
     if (CoreLogic.getWinner(this) === 0) {
       const newPlayer = endPlayer === this.player1 ? this.player2 : this.player1;
 
-      //update resources for newPlayer
-      // newPlayer.redResources += newPlayer.redPerTurn;
-      // newPlayer.blueResources += newPlayer.bluePerTurn;
-      // newPlayer.yellowResources += newPlayer.yellowPerTurn;
-      // newPlayer.greenResources += newPlayer.greenPerTurn;
+      
 
       //Set resources if still opening moves
       if (endPlayer.numNodesPlaced < 2 && endPlayer.ownedBranches.length < 2) {
@@ -321,6 +317,13 @@ export class State {
         endPlayer.blueResources = 1;
         endPlayer.yellowResources = 2;
         endPlayer.greenResources = 2;
+      }
+      else{
+        //update resources for newPlayer
+        newPlayer.redResources += newPlayer.redPerTurn;
+        newPlayer.blueResources += newPlayer.bluePerTurn;
+        newPlayer.yellowResources += newPlayer.yellowPerTurn;
+        newPlayer.greenResources += newPlayer.greenPerTurn;
       }
 
       

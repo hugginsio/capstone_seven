@@ -530,7 +530,7 @@ export class ManagerService {
 
       if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
         if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI) {
-          this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
+          //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
 
         this.nextTurn(endPlayer);

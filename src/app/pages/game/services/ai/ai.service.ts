@@ -28,6 +28,7 @@ export class AiService {
   getAIMove(gameboard:GameBoard,player1:Player,player2:Player,previousPlayerNo:number):string{
     const newState = new State(gameboard,player1, player2);
     newState.playerNumber = previousPlayerNo;
+
     const result = this.mcts.findNextMove(newState,5000);
     return result;
   }

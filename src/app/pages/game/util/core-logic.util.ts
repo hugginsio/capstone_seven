@@ -28,7 +28,7 @@ export class CoreLogic {
   //   return new State([], newBoard, currentPlayer, player1, player2,true);
   // }
 
-  static getLegalMoves(state:State): string[] {
+  static getLegalMoves(state:State, inSimulation:boolean): string[] {
     
     const result:string[] = [];
     //console.log(state.inInitialMoves);
@@ -103,41 +103,85 @@ export class CoreLogic {
       let greenAvailable:number;
       let yellowAvailable:number;
       let playerOwner:Owner;
-      if(state.playerNumber === 2){
-        if(state.player1.numNodesPlaced === 1 && state.player2.numNodesPlaced === 1){
+
+      if(!inSimulation){
+        if(state.playerNumber === 2){
+          if(state.player1.numNodesPlaced === 1 && state.player2.numNodesPlaced === 1){
+
+            // state.player2.redResources += state.player2.redPerTurn;
+            // state.player2.blueResources += state.player2.bluePerTurn;
+            // state.player2.greenResources += state.player2.greenPerTurn;
+            // state.player2.yellowResources += state.player2.yellowPerTurn;
+
+            redAvailable = state.player2.redResources;
+            blueAvailable = state.player2.blueResources;
+            greenAvailable = state.player2.greenResources;
+            yellowAvailable = state.player2.yellowResources;
+
+            playerOwner = Owner.PLAYERTWO;
+          }
+          else{
+
+            // state.player1.redResources += state.player1.redPerTurn;
+            // state.player1.blueResources += state.player1.bluePerTurn;
+            // state.player1.greenResources += state.player1.greenPerTurn;
+            // state.player1.yellowResources += state.player1.yellowPerTurn;
+
+            redAvailable = state.player1.redResources;
+            blueAvailable = state.player1.blueResources;
+            greenAvailable = state.player1.greenResources;
+            yellowAvailable = state.player1.yellowResources;
+
+            playerOwner = Owner.PLAYERONE;
+          }
+        }
+        else{
+          
           // state.player2.redResources += state.player2.redPerTurn;
           // state.player2.blueResources += state.player2.bluePerTurn;
           // state.player2.greenResources += state.player2.greenPerTurn;
           // state.player2.yellowResources += state.player2.yellowPerTurn;
+
           redAvailable = state.player2.redResources;
           blueAvailable = state.player2.blueResources;
           greenAvailable = state.player2.greenResources;
           yellowAvailable = state.player2.yellowResources;
+
           playerOwner = Owner.PLAYERTWO;
+
         }
-        else{
+      }
+      else{
+        if(state.playerNumber === 1){
+
           // state.player1.redResources += state.player1.redPerTurn;
           // state.player1.blueResources += state.player1.bluePerTurn;
           // state.player1.greenResources += state.player1.greenPerTurn;
           // state.player1.yellowResources += state.player1.yellowPerTurn;
+
           redAvailable = state.player1.redResources;
           blueAvailable = state.player1.blueResources;
           greenAvailable = state.player1.greenResources;
           yellowAvailable = state.player1.yellowResources;
-          playerOwner = Owner.PLAYERONE;
-        }
-      }
-      else{
-        // state.player2.redResources += state.player2.redPerTurn;
-        // state.player2.blueResources += state.player2.bluePerTurn;
-        // state.player2.greenResources += state.player2.greenPerTurn;
-        // state.player2.yellowResources += state.player2.yellowPerTurn;
-        redAvailable = state.player2.redResources;
-        blueAvailable = state.player2.blueResources;
-        greenAvailable = state.player2.greenResources;
-        yellowAvailable = state.player2.yellowResources;
-        playerOwner = Owner.PLAYERTWO;
 
+          playerOwner = Owner.PLAYERONE;
+          
+        }
+        else{
+          
+          // state.player2.redResources += state.player2.redPerTurn;
+          // state.player2.blueResources += state.player2.bluePerTurn;
+          // state.player2.greenResources += state.player2.greenPerTurn;
+          // state.player2.yellowResources += state.player2.yellowPerTurn;
+
+          redAvailable = state.player2.redResources;
+          blueAvailable = state.player2.blueResources;
+          greenAvailable = state.player2.greenResources;
+          yellowAvailable = state.player2.yellowResources;
+
+          playerOwner = Owner.PLAYERTWO;
+
+        }
       }
 
 
@@ -709,10 +753,22 @@ export class CoreLogic {
     for(let branchIndex = 0; branchIndex < gameBoard.branches.length; branchIndex++){
 
       const otherPlayer = player === Owner.PLAYERONE ? state.player2 : state.player1;
+      const currentPlayer = player === Owner.PLAYERONE ? state.player1 : state.player2;
       let branchNotIntrudingInCapturedSpaces = false;
       // fail condition: branch is adjacent to tile captured by other player
       for (let i = 0; i < otherPlayer.capturedTiles.length; i++) {
         const currentCapturedTile = gameBoard.tiles[otherPlayer.capturedTiles[i]];
+        if (currentCapturedTile.getTopBranch() === branchIndex ||
+          currentCapturedTile.getRightBranch() === branchIndex ||
+          currentCapturedTile.getBottomBranch() === branchIndex ||
+          currentCapturedTile.getLeftBranch() === branchIndex) {
+          branchNotIntrudingInCapturedSpaces = true;
+        }
+      }
+
+      // fail condition: branch is adjacent to tile captured by current player
+      for (let i = 0; i < currentPlayer.capturedTiles.length; i++) {
+        const currentCapturedTile = gameBoard.tiles[currentPlayer.capturedTiles[i]];
         if (currentCapturedTile.getTopBranch() === branchIndex ||
           currentCapturedTile.getRightBranch() === branchIndex ||
           currentCapturedTile.getBottomBranch() === branchIndex ||
