@@ -15,21 +15,21 @@ import { LocalStorageService } from '../../../../shared/services/local-storage/l
   providedIn: 'root'
 })
 export class ManagerService {
-  
+
   // NETWORK/AI/LOCAL
   private currentGameMode: GameType;
-  
+
   // tracks current turn's active player
   private currentPlayer: Owner;
-  
+
   private gameBoard: GameBoard;
-  
+
   private playerOne: Player;
   private playerTwo: Player;
 
   // used for UI integration
   private firstPlayer: string;
-  
+
   // initializes AI service
   private readonly ai: AiService;
 
@@ -47,7 +47,7 @@ export class ManagerService {
 
   // keeps track of human player's moves (used for AI & Networking)
   public stack: Array<Array<string | number>> = [];
-  
+
   // <---------------------------------------------------------------------------------------------------------------------------------------what is this?
   public readonly commLink = new Subject<CommPackage>();
 
@@ -75,13 +75,13 @@ export class ManagerService {
     if (gameMode === 'pvp') {
       this.playerOne.type = PlayerType.HUMAN;
       this.playerTwo.type = PlayerType.HUMAN;
-    } 
+    }
     else if (gameMode === 'pva') {
       this.currentGameMode = GameType.AI;
       if (this.firstPlayer === 'one') {
         this.playerOne.type = PlayerType.HUMAN;
         this.playerTwo.type = PlayerType.AI;
-      } 
+      }
       if (this.firstPlayer === 'two') {
         this.playerOne.type = PlayerType.AI;
         this.playerTwo.type = PlayerType.HUMAN;
@@ -98,7 +98,7 @@ export class ManagerService {
       }
     } else if (this.firstPlayer === 'two') {
       if (this.currentGameMode === GameType.AI) {
-        this.ai = new AiService(this.gameBoard, this.playerOne,this.playerTwo);
+        this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
       }
     }
 
@@ -210,15 +210,14 @@ export class ManagerService {
 
   // creates string representing gameBoard for AI/Networking
   serializeBoard(): void {
-    
+
     // string to represent gameBoard
     let currentBoardString = '';
 
     // concatenates gameBoard data onto currentBoardString
-    for (let i = 0; i < this.gameBoard.tiles.length; i++)
-    {
+    for (let i = 0; i < this.gameBoard.tiles.length; i++) {
       // concatenates tile's color
-      switch (this.gameBoard.tiles[i].color){
+      switch (this.gameBoard.tiles[i].color) {
         case TileColor.RED:
           currentBoardString += 'R';
           break;
@@ -242,14 +241,14 @@ export class ManagerService {
     }
     // removes trailing comma
     currentBoardString = currentBoardString.substring(0, currentBoardString.length - 1);
-    
+
     // initializes ManagerService's boardString field
     this.boardString = currentBoardString;
     console.log(this.boardString);
   }
 
   // takes string from Networking/AI and places move in local gameBoard
-  applyMove(moveString: string): void{
+  applyMove(moveString: string): void {
     let currentPlayer;
     if (this.playerOne.type === PlayerType.HUMAN) {
       currentPlayer = this.playerTwo;
@@ -321,7 +320,7 @@ export class ManagerService {
 
     // sets otherPlayer as instance of opponent player
     const otherPlayer = currentPlayer === this.playerOne ? this.playerTwo : this.playerOne;
-    
+
     // hasTraded always defaults to false to allow singular trade per turn
     currentPlayer.hasTraded = false;
 
@@ -339,10 +338,10 @@ export class ManagerService {
       currentPlayer.greenResources = 2;
 
     }
- 
+
     // serializing otherPlayer's previous move
     const pastMoveString = this.serializeStack();
-    
+
     // clear tradedResources[]
     this.tradedResources.splice(0, this.tradedResources.length);
     // clear stack of node and branch placements
@@ -352,18 +351,18 @@ export class ManagerService {
     if (currentPlayer.type === PlayerType.AI) {
       // string to store AI move
       let AIStringMove;
-      
+
       if (currentPlayer.numNodesPlaced === 0 && otherPlayer.numNodesPlaced === 0) {
         // call if AI is the first player and if it is the first move of the game
         AIStringMove = this.ai.randomAIFirstMove();
       } else {
-        if(currentPlayer.numNodesPlaced === 1 && otherPlayer.numNodesPlaced === 1){
+        if (currentPlayer.numNodesPlaced === 1 && otherPlayer.numNodesPlaced === 1) {
           // call if AI is second player and it is the initial move of second player
           AIStringMove = this.ai.randomAIFirstMove();
         }
-        else{
+        else {
           // call for any other AI move, pass in otherPlayer's previous move and currentPlayer's resources
-          AIStringMove = this.ai.randomAIMove(pastMoveString,{red:currentPlayer.redResources,blue:currentPlayer.blueResources,green:currentPlayer.greenResources,yellow:currentPlayer.yellowResources});
+          AIStringMove = this.ai.randomAIMove(pastMoveString, { red: currentPlayer.redResources, blue: currentPlayer.blueResources, green: currentPlayer.greenResources, yellow: currentPlayer.yellowResources });
         }
       }
 
@@ -388,7 +387,7 @@ export class ManagerService {
     let moves = '';
 
     // Trades
-    
+
     // which three resources were traded
     if (this.getCurrentPlayer().hasTraded) {
       this.tradedResources.forEach(el => {
@@ -476,7 +475,7 @@ export class ManagerService {
     // passes every tile to checkForCaptures for purposes of multi-tile captures
     for (let i = 0; i < this.gameBoard.tiles.length; i++) {
       if (this.checkForCaptures(endPlayer, i) === true) {
-        
+
         // updates owner info of tile
         this.gameBoard.tiles[i].setCapturedBy(currentOwner);
 
@@ -488,10 +487,10 @@ export class ManagerService {
 
         // type aliasing for tile's color
         const currentTileColor = this.gameBoard.tiles[i].getColor();
-        
+
         // determine whether tile is actually being captured this turn
         let newCapture = true;
-        
+
         for (let z = 0; z < endPlayer.capturedTiles.length; z++) {
 
           // check if tile has already been captured in previous turns
@@ -523,7 +522,7 @@ export class ManagerService {
               this.incrementResource(endPlayer, currentTileColor);
             }
           } else {
-            
+
             // for tiles that weren't exhausted, decrement otherPlayer's resources for each node
 
             if (trNode?.getOwner() === otherOwner) {
@@ -567,7 +566,7 @@ export class ManagerService {
 
       // iterator calculating each path's length
       endPlayer.currentLength = 0;
-      
+
       // stack tracking branch paths evaluated via each starting branch position
       endPlayer.branchScanner = [];
 
@@ -637,7 +636,7 @@ export class ManagerService {
       }
 
       // this.currentPlayer = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
-      
+
       // change active player
       this.nextTurn(newPlayer);
     }
@@ -649,7 +648,7 @@ export class ManagerService {
 
     // tradeMap had number tied to each resource color that 
     // increments to the number of that color being traded 
-    
+
     // loop through number of blues being traded
     for (let i = 0; i < tradeMap.blue; i++) {
       // decrement resource
@@ -779,7 +778,7 @@ export class ManagerService {
       this.reverseBranchPlacement(index, currentPlayer);
     }
   }
-  
+
   // evaluates possibleNode
   // places possibleNode in node position if legal
   // returns whether move is valid
@@ -800,20 +799,20 @@ export class ManagerService {
 
     // instant fail if node is already owned 
     if (this.gameBoard.nodes[possibleNode]?.getOwner() === Owner.NONE) {
-      
+
       // checks trTileIndex
       if (trTileIndex !== -1) {
-        
+
         // nodeCount of tile incremented
         trTile.nodeCount++;
-        
+
         // checks if tile should be exhausted
         if ((trTile.nodeCount > trTile.maxNodes) && trTile.isExhausted === false) {
-            
+
           // checking if tile is not captured to set isExhausted and decrement tiles through tileExhaustion()
           if (trTile.capturedBy === Owner.NONE) {
             trTile.isExhausted = true;
-            
+
             // updates tile's stored exhaustion state
             this.tileExhaustion(trTileIndex, true);
           }
@@ -831,15 +830,15 @@ export class ManagerService {
 
         // nodeCount of tile incremented
         brTile.nodeCount++;
-        
+
         // checks if tile should be exhausted
         if ((brTile.nodeCount > brTile.maxNodes) && brTile.isExhausted === false) {
-            
+
           // checking if tile is not captured to set isExhausted and decrement tiles through tileExhaustion()
           if (brTile.capturedBy === Owner.NONE) {
-            
+
             brTile.isExhausted = true;
-            
+
             // updates tile's stored exhaustion state
             this.tileExhaustion(brTileIndex, true);
           }
@@ -847,7 +846,7 @@ export class ManagerService {
 
         // checks if player's resource production ought to be incremented
         if (brTile.isExhausted === false &&
-           brTile.capturedBy !== otherOwner)
+          brTile.capturedBy !== otherOwner)
           this.incrementResource(currentPlayer, brTile.getColor());
       }
 
@@ -856,14 +855,14 @@ export class ManagerService {
 
         // nodeCount of tile incremented
         blTile.nodeCount++;
-        
+
         // checks if tile should be exhausted
         if ((blTile.nodeCount > blTile.maxNodes) && blTile.isExhausted === false) {
-            
+
           // checking if tile is not captured to set isExhausted and decrement tiles through tileExhaustion()
           if (blTile.capturedBy === Owner.NONE) {
             blTile.isExhausted = true;
-   
+
             // updates tile's stored exhaustion state
             this.tileExhaustion(blTileIndex, true);
           }
@@ -878,18 +877,18 @@ export class ManagerService {
 
       // checks if possibleNode's topLeftTile exists
       if (tlTileIndex != -1) {
-        
+
         // nodeCount of tile incremented
         tlTile.nodeCount++;
-      
+
         // checks if tile should be exhausted
         if ((tlTile.nodeCount > tlTile.maxNodes) && tlTile.isExhausted === false) {
 
           // checking if tile is not captured to set isExhausted and decrement tiles through tileExhaustion()
           if (tlTile.capturedBy === Owner.NONE) {
-            
+
             tlTile.isExhausted = true;
-            
+
             // updates tile's stored exhaustion state
             this.tileExhaustion(tlTileIndex, true);
           }
@@ -907,23 +906,23 @@ export class ManagerService {
         this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
         this.playerOne.numNodesPlaced++;
         this.playerOne.currentScore++;
-        this.playerOne.greenResources-=2;
-        this.playerOne.yellowResources-=2;
+        this.playerOne.greenResources -= 2;
+        this.playerOne.yellowResources -= 2;
       } else {
         this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
         this.playerTwo.numNodesPlaced++;
         this.playerTwo.currentScore++;
-        this.playerTwo.greenResources-=2;
-        this.playerTwo.yellowResources-=2;
+        this.playerTwo.greenResources -= 2;
+        this.playerTwo.yellowResources -= 2;
       }
 
       // create nodePlacement object to push on current turn's stack of moves
       const nodePlacement = ['N', possibleNode.toString()];
       this.stack.push(nodePlacement);
-      
+
       return true;
     }
-     
+
     else {
       return false;
     }
@@ -933,7 +932,7 @@ export class ManagerService {
   // places in branch position if legal and attached to selectedNode
   // returns whether move is valid
   initialBranchPlacements(selectedNode: number, possibleBranch: number, currentPlayer: Player): boolean {
-    
+
     // type aliasing for node's adjacent branches
     const topBranch = this.gameBoard.nodes[selectedNode]?.getTopBranch();
     const leftBranch = this.gameBoard.nodes[selectedNode]?.getLeftBranch();
@@ -942,17 +941,17 @@ export class ManagerService {
 
     // type alias for branch player is attempting to place
     const placedBranch = this.gameBoard.branches[possibleBranch];
-    
+
     // instant fail if branch is already owned
     if (placedBranch?.getOwner() === Owner.NONE) {
-      
+
       // instant fail if branch is not connected to currentPlayer's node placed beforehand
       if (topBranch === possibleBranch ||
-          leftBranch === possibleBranch ||
-          bottomBranch === possibleBranch ||
-          rightBranch === possibleBranch
+        leftBranch === possibleBranch ||
+        bottomBranch === possibleBranch ||
+        rightBranch === possibleBranch
       ) {
-        
+
         // place branch and adjust resources for player 
         if (currentPlayer == this.playerOne) {
           placedBranch.setOwner(Owner.PLAYERONE);
@@ -970,22 +969,22 @@ export class ManagerService {
         const branchPlacement = ['B', possibleBranch.toString()];
         this.stack.push(branchPlacement);
         return true;
-      } 
-      
+      }
+
       else {
         return false;
       }
-    } 
-    
+    }
+
     else {
       return false;
     }
   }
 
-  
+
   // evaluates possibleNode, places in node position if legal, returns whether move is valid
   generalNodePlacement(possibleNode: number, currentPlayer: Player): boolean {
-    
+
     // type aliasing for node's adjacent tiles index
     const trTileIndex = this.gameBoard.nodes[possibleNode]?.getTopRightTile();
     const brTileIndex = this.gameBoard.nodes[possibleNode]?.getBottomRightTile();
@@ -1024,10 +1023,10 @@ export class ManagerService {
 
           // check if tile should be exhausted
           if ((trTile.nodeCount > trTile.maxNodes) && trTile?.isExhausted === false) {
-              
+
             // checking if tile is not captured to set isExhausted and decrement tiles in tileExhaustion()
             if (trTile.capturedBy === Owner.NONE) {
-             
+
               // update tile's stored exhaustion state 
               trTile.isExhausted = true;
               this.tileExhaustion(trTileIndex, true);
@@ -1048,10 +1047,10 @@ export class ManagerService {
 
           // check if tile should be exhausted
           if ((brTile.nodeCount > brTile.maxNodes) && brTile?.isExhausted === false) {
-              
+
             // checking if tile is not captured to set isExhausted and decrement tiles in tileExhaustion()
             if (brTile.capturedBy === Owner.NONE) {
-              
+
               // update tile's stored exhaustion state 
               brTile.isExhausted = true;
               this.tileExhaustion(brTileIndex, true);
@@ -1065,10 +1064,10 @@ export class ManagerService {
           this.incrementResource(currentPlayer, brTile.getColor());
         }
       }
-      
+
       // check if bottomLeftTile of the possibleNode exists
       if (blTileIndex != -1) {
-        
+
         // increment nodeCount on the tile
         blTile.nodeCount++;
 
@@ -1077,7 +1076,7 @@ export class ManagerService {
 
           // checking if tile is not captured to set isExhausted and decrement tiles in tileExhaustion()
           if (blTile.capturedBy === Owner.NONE) {
-            
+
             // update tile's stored exhaustion state
             blTile.isExhausted = true;
             this.tileExhaustion(blTileIndex, true);
@@ -1092,7 +1091,7 @@ export class ManagerService {
 
       // check if topLeftTile of the possibleNode exists
       if (tlTileIndex != -1) {
-        
+
         // increment nodeCount on the tile
         tlTile.nodeCount++;
 
@@ -1101,13 +1100,13 @@ export class ManagerService {
 
           // checking if tile is not captured to set isExhausted and decrement tiles in tileExhaustion()
           if (tlTile.capturedBy === Owner.NONE) {
-            
+
             // update tile's stored exhaustion state 
             tlTile.isExhausted = true;
             this.tileExhaustion(tlTileIndex, true);
           }
         }
-        
+
         // checks if player's resource production ought to be incremented
         if (tlTile?.isExhausted === false &&
           tlTile.capturedBy !== otherOwner) {
@@ -1136,7 +1135,7 @@ export class ManagerService {
       const nodePlacement = ['N', possibleNode];
       this.stack.push(nodePlacement);
       return true;
-    } 
+    }
     else {
       return false;
     }
@@ -1184,11 +1183,11 @@ export class ManagerService {
 
       // fail condition: branch is unconnected to currentPlayer's owned branches
       if (branch1Owner === currentBranchOwner ||
-          branch2Owner === currentBranchOwner ||
-          branch3Owner === currentBranchOwner ||
-          branch4Owner === currentBranchOwner ||
-          branch5Owner === currentBranchOwner ||
-          branch6Owner === currentBranchOwner) {
+        branch2Owner === currentBranchOwner ||
+        branch3Owner === currentBranchOwner ||
+        branch4Owner === currentBranchOwner ||
+        branch5Owner === currentBranchOwner ||
+        branch6Owner === currentBranchOwner) {
 
         // updates placed branch's stored owner data
         // updates currentPlayer's owned branches
@@ -1208,11 +1207,11 @@ export class ManagerService {
         const branchPlacement = ['B', possibleBranch];
         this.stack.push(branchPlacement);
         return true;
-      } 
+      }
       else {
         return false;
       }
-    } 
+    }
     else {
       return false;
     }
@@ -1222,7 +1221,7 @@ export class ManagerService {
   reverseNodePlacement(reverseNode: number, currentPlayer: Player): void {
     // set owner to none
     this.gameBoard.nodes[reverseNode].setOwner(Owner.NONE);
-    
+
     // type aliasing for node's adjacent tiles index
     const trTileIndex = this.gameBoard.nodes[reverseNode]?.getTopRightTile();
     const brTileIndex = this.gameBoard.nodes[reverseNode]?.getBottomRightTile();
@@ -1269,7 +1268,7 @@ export class ManagerService {
 
     // check if topLeftTile of the node exists
     if (tlTileIndex !== -1) {
-      
+
       // decrement the nodeCount
       tlTile.nodeCount--;
 
@@ -1277,7 +1276,7 @@ export class ManagerService {
       if (tlTile.isExhausted) {
         if (tlTile.nodeCount <=
           tlTile.maxNodes) {
-            
+
           // update tile's stored exhastion state 
           tlTile.isExhausted = false;
           this.tileExhaustion(tlTileIndex, false);
@@ -1287,7 +1286,7 @@ export class ManagerService {
 
     // check if bottomRightTile exists
     if (brTileIndex !== -1) {
-      
+
       // decrement the tile's nodeCount 
       brTile.nodeCount--;
 
@@ -1305,7 +1304,7 @@ export class ManagerService {
 
     // check if bottomLeftTile exists
     if (blTileIndex !== -1) {
-      
+
       // decrement the tile's nodeCount
       blTile.nodeCount--;
 
@@ -1365,10 +1364,10 @@ export class ManagerService {
 
     // check if topLeftTile of node exists
     if (tlTileIndex !== -1) {
-      
+
       // decrement tile's nodeCount
       tlTile.nodeCount--;
-      
+
       // checking if need to un-exhaust tile
       if (tlTile.isExhausted) {
         if (tlTile.nodeCount <=
@@ -1401,7 +1400,7 @@ export class ManagerService {
 
     // check if bottomLeftTile exists
     if (blTileIndex != -1) {
-      
+
       // decrement tile's nodeCount
       blTile.nodeCount--;
 
@@ -1420,12 +1419,12 @@ export class ManagerService {
 
   // integrates w/ "Undo" UI button for taking back a general branch placement before turn ends
   reverseBranchPlacement(reverseBranch: number, currentPlayer: Player): void {
-    
+
     // set branch owner to node
     this.gameBoard.branches[reverseBranch].setOwner(Owner.NONE);
-    
+
     if (currentPlayer === this.playerOne) {
-      
+
       // remeove branch from player's ownedBranches[]
       this.playerOne.ownedBranches.pop();
 
@@ -1436,7 +1435,7 @@ export class ManagerService {
 
       // remeove branch from player's ownedBranches[]
       this.playerTwo.ownedBranches.pop();
-      
+
       // reverses resources spent
       this.playerTwo.redResources++;
       this.playerTwo.blueResources++;
@@ -1448,7 +1447,7 @@ export class ManagerService {
 
     // set branch owner to none
     this.gameBoard.branches[reverseBranch].setOwner(Owner.NONE);
-    
+
     // remove branch from player's ownedBranches[]
     this.getCurrentPlayer().ownedBranches.pop();
   }
@@ -1461,7 +1460,7 @@ export class ManagerService {
     const brNodeOwner = this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getBottomRightNode()]?.getOwner();
     const blNodeOwner = this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getBottomLeftNode()]?.getOwner();
     const tlNodeOwner = this.gameBoard.nodes[this.gameBoard.tiles[tileNum]?.getTopLeftNode()]?.getOwner();
-    
+
     // type aliasing for tileNum's color
     const currentTileColor = this.gameBoard.tiles[tileNum].color;
 
@@ -1494,7 +1493,7 @@ export class ManagerService {
       if (blNodeOwner === Owner.PLAYERONE) {
         // decrement resourcePerTurn of tile's color from playerOne
         this.decrementResource(this.playerOne, currentTileColor);
-      } 
+      }
       // checks if playerTwo owns tile's bottomLeftNode 
       else if (blNodeOwner === Owner.PLAYERTWO) {
         // decrement resourcePerTurn of tile's color from playerTwo
@@ -1505,7 +1504,7 @@ export class ManagerService {
       if (tlNodeOwner === Owner.PLAYERONE) {
         // decrement resourcePerTurn of tile's color from playerOne
         this.decrementResource(this.playerOne, currentTileColor);
-      } 
+      }
       // checks if playerTwo owns tile's topLeftNode 
       else if (tlNodeOwner === Owner.PLAYERTWO) {
         // decrement resourcePerTurn of tile's color from playerTwo
@@ -1520,7 +1519,7 @@ export class ManagerService {
       if (trNodeOwner === Owner.PLAYERONE) {
         // increment resourcePerTurn of tile's color from playerOne
         this.incrementResource(this.playerOne, currentTileColor);
-      } 
+      }
       // checks if playerTwo owns tile's topRightNode 
       else if (trNodeOwner === Owner.PLAYERTWO) {
         // increment resourcePerTurn of tile's color from playerTwo
@@ -1531,7 +1530,7 @@ export class ManagerService {
       if (brNodeOwner === Owner.PLAYERONE) {
         // increment resourcePerTurn of tile's color from playerOne
         this.incrementResource(this.playerOne, currentTileColor);
-      } 
+      }
       // checks if playerTwo owns tile's bottomRightNode 
       else if (brNodeOwner === Owner.PLAYERTWO) {
         // increment resourcePerTurn of tile's color from playerTwo
@@ -1542,7 +1541,7 @@ export class ManagerService {
       if (blNodeOwner === Owner.PLAYERONE) {
         // increment resourcePerTurn of tile's color from playerOne
         this.incrementResource(this.playerOne, currentTileColor);
-      } 
+      }
       // checks if playerTwo owns tile's bottomLeftNode 
       else if (blNodeOwner === Owner.PLAYERTWO) {
         // increment resourcePerTurn of tile's color from playerTwo
@@ -1553,7 +1552,7 @@ export class ManagerService {
       if (tlNodeOwner === Owner.PLAYERONE) {
         // increment resourcePerTurn of tile's color from playerOne
         this.incrementResource(this.playerOne, currentTileColor);
-      } 
+      }
       // checks if playerTwo owns tile's topLeftNode 
       else if (tlNodeOwner === Owner.PLAYERTWO) {
         // increment resourcePerTurn of tile's color from playerTwo
@@ -1772,15 +1771,15 @@ export class ManagerService {
       tileBottomBranch?.getOwner() === otherPlayer ||
       tileLeftBranch?.getOwner() === otherPlayer) {
       captured = false;
-    } 
+    }
     // checks second instant fail condition: no other tile adjacent to one of current tile's empty-branch sides
     else if ((tileTopBranch?.getOwner() === Owner.NONE && currentTile.getTopTile() === -1) ||
       (tileRightBranch?.getOwner() === Owner.NONE && currentTile.getRightTile() === -1) ||
       (tileBottomBranch?.getOwner() === Owner.NONE && currentTile.getBottomTile() === -1) ||
       (tileLeftBranch?.getOwner() === Owner.NONE && currentTile.getLeftTile() === -1)) {
       captured = false;
-    } 
-    
+    }
+
     // begins evaluating other tiles for fail conditions
     else {
 
