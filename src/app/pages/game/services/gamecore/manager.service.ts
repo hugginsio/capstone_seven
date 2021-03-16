@@ -635,7 +635,7 @@ export class ManagerService {
         return;
       }
 
-      // this.currentPlayer = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
+      this.currentPlayer = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
 
       // change active player
       this.nextTurn(newPlayer);
