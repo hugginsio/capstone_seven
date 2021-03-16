@@ -72,6 +72,13 @@ export class GameComponent implements OnInit {
           this.gameOverText = `${this.gameManager.getCurrentPlayerEnum()} Victorious!`;
           this.winningPlayer = this.gameManager.getCurrentPlayer();
           this.gameOver = true;
+        } else if (status === CommCode.UNDO) {
+          const gamePiece = this.gameManager.stack.pop();
+          if (gamePiece) {
+            this.gameManager.undoPlacement(gamePiece[0] as string, gamePiece[1] as number, this.gameManager.getCurrentPlayer());
+          } else {
+            this.snackbarService.add({ message: 'No moves to undo.' });
+          }
         }
       }
     });

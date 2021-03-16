@@ -1,5 +1,6 @@
 export enum CommCode {
   IS_TRADING,
   END_TURN,
-  END_GAME
+  END_GAME,
+  UNDO
 }
