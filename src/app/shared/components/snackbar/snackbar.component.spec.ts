@@ -4,7 +4,7 @@ import { SnackbarService } from './services/snackbar.service';
 
 import { SnackbarComponent } from './snackbar.component';
 
-fdescribe('SnackbarComponent', () => {
+describe('SnackbarComponent', () => {
   let component: SnackbarComponent;
   let fixture: ComponentFixture<SnackbarComponent>;
   let service: SnackbarService;
@@ -36,6 +36,7 @@ fdescribe('SnackbarComponent', () => {
 
   it('should allow adding snacks', () => {
     service.add(demoSnack);
+
     expect(component.snacks.length).toEqual(1);
   });
 
@@ -49,20 +50,25 @@ fdescribe('SnackbarComponent', () => {
 
   it('should allow clearing all snacks', () => {
     service.clear();
+
     expect(component.snacks.length).toEqual(0);
   });
 
   it('should allow removing a snack', () => {
     service.add(demoSnack);
+
     expect(component.snacks.length).toEqual(1);
     service.remove(component.snacks[0].id as string);
+
     expect(component.snacks.length).toEqual(0);
   });
 
   it('should do nothing when removing a snack that does not exist', () => {
     service.add(demoSnack);
+
     expect(component.snacks.length).toEqual(1);
     service.remove(demoSnack.message);
+
     expect(component.snacks.length).toEqual(1);
   });
 
@@ -75,6 +81,7 @@ fdescribe('SnackbarComponent', () => {
 
     expect(component.snacks.length).toEqual(5);
     service.add(demoSnack);
+
     expect(component.snacks.length).toEqual(5);
   });
 
@@ -88,10 +95,13 @@ fdescribe('SnackbarComponent', () => {
 
     expect(component.snacks.length).toEqual(3);
     tick(200);
+
     expect(component.snacks.length).toEqual(2);
     tick(100);
+
     expect(component.snacks.length).toEqual(1);
     tick(100);
+
     expect(component.snacks.length).toEqual(0);
   }));
 });
