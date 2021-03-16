@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Snack } from './interfaces/snackbar.interface';
 import { SnackbarService } from './services/snackbar.service';
 
@@ -65,4 +65,33 @@ fdescribe('SnackbarComponent', () => {
     service.remove(demoSnack.message);
     expect(component.snacks.length).toEqual(1);
   });
+
+  it('max snacks should be adjustable', () => {
+    service.clear();
+    component.max = 5;
+    for (let index = 0; index < 5; index++) {
+      service.add(demoSnack);
+    }
+
+    expect(component.snacks.length).toEqual(5);
+    service.add(demoSnack);
+    expect(component.snacks.length).toEqual(5);
+  });
+
+  it('timeout should remove snacks', fakeAsync(() => {
+    service.clear();
+    component.timeout = 500;
+    for (let index = 0; index < 3; index++) {
+      service.add(demoSnack);
+      tick(100);
+    }
+
+    expect(component.snacks.length).toEqual(3);
+    tick(200);
+    expect(component.snacks.length).toEqual(2);
+    tick(100);
+    expect(component.snacks.length).toEqual(1);
+    tick(100);
+    expect(component.snacks.length).toEqual(0);
+  }));
 });
