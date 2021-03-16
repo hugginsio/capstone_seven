@@ -797,6 +797,11 @@ export class ManagerService {
     const blTile = this.gameBoard.tiles[blTileIndex];
     const tlTile = this.gameBoard.tiles[tlTileIndex];
 
+    // instant fail if player does not have enough of required resources
+    if (currentPlayer.greenResources < 2 || currentPlayer.yellowResources < 2) {
+      return false;
+    }
+
     // instant fail if node is already owned 
     if (this.gameBoard.nodes[possibleNode]?.getOwner() === Owner.NONE) {
 
@@ -941,6 +946,11 @@ export class ManagerService {
 
     // type alias for branch player is attempting to place
     const placedBranch = this.gameBoard.branches[possibleBranch];
+
+    // instant fail condition: player doesn't have required resources
+    if (currentPlayer.redResources < 1 || currentPlayer.blueResources < 1) {
+      return false;
+    }
 
     // instant fail if branch is already owned
     if (placedBranch?.getOwner() === Owner.NONE) {
