@@ -25,9 +25,10 @@ export class AiService {
     this.mcts = new MonteCarlo(gameBoard, player1, player2); 
   }
 
-  getAIMove(gameboard:GameBoard,player1:Player,player2:Player,previousPlayerNo:number):string{
+  getAIMove(gameboard:GameBoard,player1:Player,player2:Player,previousPlayerNo:number,pastMoveString:string):string{
     const newState = new State(gameboard,player1, player2);
     newState.playerNumber = previousPlayerNo;
+    newState.move = pastMoveString;
 
     const result = this.mcts.findNextMove(newState,5000);
     return result;

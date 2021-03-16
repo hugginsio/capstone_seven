@@ -23,13 +23,26 @@ export class MonteCarlo {
     
 
     const newNode = new MCTSNode(gameState);
+    const currentRoot = this.tree.getRoot();
+    let childStateFound = false;
 
-    this.tree.setRoot(newNode);
+    for(let i = 0; i < currentRoot.childArray.length;i++){
+      if(currentRoot.childArray[i].getState().move === newNode.getState().move){
+        this.tree.setRoot(currentRoot.childArray[i]);
+        childStateFound = true;
+        i = currentRoot.childArray.length;
+      }
+    }
+
+    if(!childStateFound){
+      this.tree.setRoot(newNode);
+    }
+
     const rootNode = this.tree.getRoot();
 
 
-    //while (Date.now() < end) {
-    for(let iteration = 0; iteration < 10; iteration++){
+    while (Date.now() < end) {
+    //for(let iteration = 0; iteration < 10; iteration++){
       const promisingNode = this.selectPromisingNode(rootNode);
       if (CoreLogic.getWinner(promisingNode.getState()) === 0) {
         this.expandNode(promisingNode);

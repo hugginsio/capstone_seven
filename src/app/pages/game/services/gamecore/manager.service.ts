@@ -290,7 +290,7 @@ export class ManagerService {
 
       
 
-      const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, previousPlayer);
+      const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, previousPlayer, pastMoveString);
 
       // if (currentPlayer.numNodesPlaced === 0 && otherPlayer.numNodesPlaced === 0) {
       //   AIStringMove = this.ai.randomAIFirstMove();
