@@ -1,6 +1,5 @@
 import { app, BrowserWindow, dialog, webFrame } from 'electron';
 import { protocol } from 'electron';
-import { request } from 'http';
 import * as path from 'path';
 import * as url from 'url';
 
