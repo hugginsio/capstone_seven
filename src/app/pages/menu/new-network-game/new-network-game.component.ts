@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { GameNetworkingService } from '../../networking/game-networking.service';
 import { MatchmakingService } from '../../networking/matchmaking.service';
+import { NetworkGameInfo } from './interfaces/new-network-game.interface';
 
 @Component({
   selector: 'app-new-network-game',
@@ -10,6 +11,7 @@ import { MatchmakingService } from '../../networking/matchmaking.service';
 export class NewNetworkGameComponent implements OnInit, AfterViewInit {
   private username: string;
   private list:any;
+  private gamesList: Array<NetworkGameInfo>;
   constructor(
     private readonly matchmakingService: MatchmakingService,
     private readonly networkingService: GameNetworkingService
@@ -31,10 +33,16 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
       const oppUsername:string = gameInfo.username;
       const oppAddress:string = gameInfo.oppAddress;
       console.log(`${oppUsername} wants to play at ${oppAddress}`);
+      //append to arrary
+      this.gamesList.push({
+        host: oppUsername,
+        address: oppAddress
+      });
+
       //Add a <div> to show the game on screen
-      const messageElement = document.createElement('div');
-      messageElement.innerText = `${oppUsername} wants to play at ${oppAddress}`;
-      this.list.append(messageElement);
+      // const messageElement = document.createElement('div');
+      // messageElement.innerText = `${oppUsername} wants to play at ${oppAddress}`;
+      // this.list.append(messageElement);
     });
   }
 

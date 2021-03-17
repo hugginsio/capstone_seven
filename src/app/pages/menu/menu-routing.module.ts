@@ -6,6 +6,7 @@ import { NewLocalGameComponent } from './new-local-game/new-local-game.component
 import { NewNetworkGameComponent } from './new-network-game/new-network-game.component';
 import { MenuHelpComponent } from './help/menu-help.component';
 import { MenuOptionsComponent } from './options/menu-options.component';
+import { NewNetworkGameHostComponent } from './new-network-game-host/new-network-game-host.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,10 @@ const routes: Routes = [
   {
     path: 'menu/new/online',
     component: NewNetworkGameComponent
+  },
+  {
+    path: 'menu/new/online/host',
+    component: NewNetworkGameHostComponent
   },
   {
     path: 'menu/help',
