@@ -1,3 +1,5 @@
+/* eslint-disable jasmine/no-suite-dupes */
+/* eslint-disable jasmine/no-spec-dupes */
 import { TestBed } from '@angular/core/testing';
 import { BrowserWindow } from 'electron';
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
@@ -9,6 +11,7 @@ import { AiService } from './ai.service';
 
 
 
+// eslint-disable-next-line jasmine/no-disabled-tests
 xdescribe('AiService', () => {
   // const gameBoard = new GameBoard();
   // gameBoard.randomizeColorsAndMaxNodes();
@@ -105,7 +108,7 @@ xdescribe('AiService', () => {
     });
   });
 
-  fdescribe('Play full random Game', ()=>{
+  describe('Play full random Game', ()=>{
     it('should get a move chosen randomly',()=>{
 
       const gameBoard = new GameBoard();
@@ -120,8 +123,7 @@ xdescribe('AiService', () => {
       const chosenMove = ai.randomAIFirstMove();
 
       console.log(`TIME: ${Date.now() - start}ms`);
-      console.log(`chosenmove: ${chosenMove}`);
-
+      console.log(`chosenmove: ${chosenMove as string}`);
     });
   });
 
