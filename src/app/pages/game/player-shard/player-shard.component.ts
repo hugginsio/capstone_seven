@@ -40,6 +40,6 @@ export class PlayerShardComponent implements OnInit {
   }
 
   triggerUndo(): void {
-    // this.actionSubject.next(this.generateMessage(CommCode.END_TURN));
+    this.actionSubject.next(this.generateMessage(CommCode.UNDO));
   }
 }

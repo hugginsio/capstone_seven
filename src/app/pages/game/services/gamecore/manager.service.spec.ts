@@ -29,6 +29,7 @@ describe('ManagerService', () => {
 
     service.getCurrentPlayer().hasTraded = true;
     const stackString = service.serializeStack();
+
     expect(stackString).toEqual(expectedString);
   });
 });

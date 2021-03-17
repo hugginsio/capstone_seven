@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog } from 'electron';
+import { app, BrowserWindow, dialog, webFrame } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -20,7 +20,8 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,
       enableRemoteModule : true,
-      devTools: isDev
+      devTools: isDev,
+      zoomFactor: 1
     },
   });
 
@@ -43,7 +44,7 @@ function createWindow(): BrowserWindow {
     }));
   }
 
-  if (process.platform !== 'darwin' && !isDev) {
+  if (process.platform !== 'darwin' || !isDev) {
     window.removeMenu();
   }
 
@@ -79,4 +80,6 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   createWindow();
+  webFrame.setZoomFactor(1);
+  webFrame.setVisualZoomLevelLimits(1, 1);
 });
