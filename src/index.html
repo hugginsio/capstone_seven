@@ -5,8 +5,14 @@
   <meta charset="utf-8">
   <title>MasterMine</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
   <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico" />
+  <script>
+    window.onkeydown = function (evt) {
+      if ((evt.code == "Minus" || evt.code == "Equal") && (evt.ctrlKey || evt.metaKey)) { evt.preventDefault() };
+    }
+  </script>
 </head>
 
 <body>

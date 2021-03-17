@@ -5,11 +5,13 @@ import { PlayerType } from '../../enums/game.enums';
 export class Player {
   type: PlayerType;
   
+  // resources availble to spend
   redResources: number;
   blueResources: number;
   greenResources: number;
   yellowResources: number;
 
+  // resources incremented per turn
   redPerTurn: number;
   bluePerTurn: number;
   greenPerTurn: number;
@@ -17,7 +19,9 @@ export class Player {
    
   hasTraded: boolean;
 
+  // used for longestNetwork()
   ownedBranches: Array<number>;
+  // keeps track of all evaluated branches in a path, prevents infinite recursion in longestNetwork
   branchScanner: Array<number>;
   currentLength: number;
   currentLongest: number;

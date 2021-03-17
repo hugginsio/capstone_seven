@@ -42,6 +42,7 @@ describe('CoreLogic', () => {
   describe('string to move', ()=>{
     it('should convert a string representation of a move to an object',()=>{
       const answer = CoreLogic.stringToMove('R,B,B,G;5,4,3;12,4,16');
+
       expect(answer).toEqual({tradedIn:['R','B','B'],received:'G',nodesPlaced:[5,4,3],branchesPlaced:[12,4,16]});
     });
   });
@@ -49,6 +50,7 @@ describe('CoreLogic', () => {
   describe('string to move no trade', ()=>{
     it('should convert a string representation of a move to an object',()=>{
       const answer = CoreLogic.stringToMove(';5,4,3;12,4,16');
+
       expect(answer).toEqual({tradedIn:[],received:'',nodesPlaced:[5,4,3],branchesPlaced:[12,4,16]});
     });
   });
@@ -56,6 +58,7 @@ describe('CoreLogic', () => {
   describe('string to move no nodes', ()=>{
     it('should convert a string representation of a move to an object',()=>{
       const answer = CoreLogic.stringToMove('R,B,B,G;;12,4,16');
+
       expect(answer).toEqual({tradedIn:['R','B','B'],received:'G',nodesPlaced:[],branchesPlaced:[12,4,16]});
     });
   });
@@ -63,6 +66,7 @@ describe('CoreLogic', () => {
   describe('string to move no branches', ()=>{
     it('should convert a string representation of a move to an object',()=>{
       const answer = CoreLogic.stringToMove('R,B,B,G;5,4,3;');
+
       expect(answer).toEqual({tradedIn:['R','B','B'],received:'G',nodesPlaced:[5,4,3],branchesPlaced:[]});
     });
   });
@@ -70,6 +74,7 @@ describe('CoreLogic', () => {
   describe('string to move empty', ()=>{
     it('should convert a string representation of a move to an object',()=>{
       const answer = CoreLogic.stringToMove(';;');
+
       expect(answer).toEqual({tradedIn:[],received:'',nodesPlaced:[],branchesPlaced:[]});
     });
   });
@@ -145,7 +150,8 @@ describe('CoreLogic', () => {
       const state = new State([],gameBoard,1,player1,player2, false);
 
 
-      const answer = CoreLogic.checkForCaptures(state,state.player1, 12); 
+      const answer = CoreLogic.checkForCaptures(state,state.player1, 12);
+
       expect(answer).toBeFalse();  
       
       
@@ -328,7 +334,7 @@ describe('CoreLogic', () => {
 
       const answer = CoreLogic.determineIfWinner(state);
 
-      expect(answer).toEqual(-Infinity);
+      expect(answer).toEqual(0);
       
     });
   });
