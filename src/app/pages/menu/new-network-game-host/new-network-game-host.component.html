@@ -1,11 +1,11 @@
 <div class="h-screen w-screen absolute top-0 left-0 z-neg bg-mountains"></div>
 <div class="submenu-container">
   <div class="submenu-header">
-    <p>Play Multiplayer</p>
+    <p>Host Game</p>
   </div>
   <div class="submenu-body">
-    <div class="flex flex-col items-center space-y-5" id="gameList">
-      <p>Scanning for games on your local network</p>
+    <div id="waiting_for_player" *ngIf="isWaitingForPlayer">
+      <p>Waiting for player to join</p>
       <div class="animate-bounce">
         <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
           viewBox="0 0 24 24">
@@ -15,12 +15,21 @@
           </path>
         </svg>
       </div>
-      <div id="games_wrapper" class="flex flex-col space-y-5">
-        <div *ngFor="let game of gamesList" class="flex">
-          <p>{{ game.host }} of addr. {{ game.address }}</p>
-          <p (click)="JoinGame(game.address)">Join button</p>
+    </div>
+    <div id="setting_up_game" *ngIf="isSettingUpGame">
+      <div class="flex w-1/3 space-x-3">
+        <div class="menu-btn background-btn">BG1</div>
+        <div class="menu-btn background-btn">BG2</div>
+        <div class="menu-btn background-btn">BG3</div>
+      </div>
+      <div class="menu-btn" (click)="changeFirstPlayer()">
+        <div>
+          <p>{{ this.firstPlayer }}</p>
         </div>
       </div>
+      <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed"
+        oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
+      <p class="leading-none text-base font-normal" *ngIf="advancedOpts">Leave blank for random seed</p>
     </div>
   </div>
   <div class="submenu-footer">
@@ -30,14 +39,9 @@
           <p>Back</p>
         </div>
       </div>
-      <div class="menu-btn flex-grow">
+      <div class="menu-btn flex-grow" (click)="startHosting()">
         <div>
-          <p>Refresh</p>
-        </div>
-      </div>
-      <div class="menu-btn w-full flex-grow" routerLink="/menu/new/online/host">
-        <div>
-          <p>Host Game</p>
+          <p>Start Hosting</p>
         </div>
       </div>
     </div>
