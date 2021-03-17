@@ -17,8 +17,6 @@ export class NewNetworkGameComponent implements OnInit {
 
   ngOnInit(): void {
     // instantiate class here
-    // this.matchmaking = new MatchmakingService(this.username);
-    // this.networking = new GameNetworkingService();
     this.matchmakingService.initialize(this.username);
 
     this.matchmakingService.listen('you-connected').subscribe(() => {
@@ -26,9 +24,9 @@ export class NewNetworkGameComponent implements OnInit {
     });
 
     this.matchmakingService.listen('game-found').subscribe((gameInfo: any) => {
-      const oppUsername = gameInfo.username;
-      const oppAddress = gameInfo.oppAddress;
-
+      const oppUsername:string = gameInfo.username;
+      const oppAddress:string = gameInfo.oppAddress;
+      console.log(`${oppUsername} wants to play at ${oppAddress}`);
     //Add a <div> to show the game on screen
     });
   }
@@ -41,6 +39,7 @@ export class NewNetworkGameComponent implements OnInit {
     const board = '';
     const isPlayer1 = true;
     this.networkingService.createTCPServer(board, isPlayer1);
+    this.initializeListeners();
 
     //4. Broadcast the game until someone joins
     this.matchmakingService.broadcastGame(); //Every 1000ms or so
@@ -48,10 +47,10 @@ export class NewNetworkGameComponent implements OnInit {
 
   JoinGame(): void {
     //get gameInfo from object clicked
-    
-    //this.networking.connectTCPserver(oppAddress)
+    const oppAddress = "";
+    this.networkingService.connectTCPserver(oppAddress);
 
-    //GoTo: lobby-joined/full
+    this.initializeListeners();
   }
 
   initializeListeners(): void {
@@ -66,5 +65,7 @@ export class NewNetworkGameComponent implements OnInit {
       console.log('Lobby is full. Sucks bro');
     });
   }
+
+  
 
 }
