@@ -10,6 +10,7 @@ export class UDPWrapper {
     private username: string;
     //private broadcast: string;
     private server: any;
+    private netInterface: string;
 
     public gameFound?: (msg:string, oppAddress:string) => void;
 
@@ -18,7 +19,8 @@ export class UDPWrapper {
         this.server.bind(41234);
         //this.netInfo = os.networkInterfaces();
         //this.IP = this.netInfo['Wi-Fi'][3].address;
-        this.broadcastIP = broadcastAddress('Wi-Fi');
+        this.netInterface = this.getNetworkInterface();
+        this.broadcastIP = broadcastAddress(this.netInterface);
         //this.broadcast = "This is a test broadcast, please remain calm.";
         this.username = 'Person McHuman';
 
@@ -28,7 +30,7 @@ export class UDPWrapper {
         });
         
         this.server.on('message', (msg:any, rinfo:any) => {
-            this.gameFound!(msg, rinfo.address);
+            this.gameFound!(msg.toString(), rinfo.address);
             //console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
         });
         
@@ -49,4 +51,41 @@ export class UDPWrapper {
         this.username = name;
     }
     
+    private getNetworkInterface() : string
+    {
+        let netInfo = os.networkInterfaces();
+        let interfaces = Object.keys(netInfo);
+        let platform = os.platform();
+        console.log(netInfo);
+
+        if(platform === 'win32')
+        {   
+            if (interfaces.includes('Ethernet'))
+            {
+                return 'Ethernet';
+            }
+            else if (interfaces.includes('Wi-Fi'))
+            {
+                return 'Wi-Fi';
+            }
+        }
+        else if(platform === 'darwin')
+        {
+            if (interfaces.includes('Ethernet'))
+            {
+                return 'Ethernet';
+            }
+            else if (interfaces.includes('Wi-Fi'))
+            {
+                return 'Wi-Fi';
+            }
+        }
+        else
+        {
+            console.error("No viable OS found.");
+        }
+
+        console.error("No viable interfaces found.");
+        return '';
+    }
 }
