@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { GameNetworkingService } from '../../networking/game-networking.service';
 import { MatchmakingService } from '../../networking/matchmaking.service';
 
@@ -7,13 +7,17 @@ import { MatchmakingService } from '../../networking/matchmaking.service';
   templateUrl: './new-network-game.component.html',
   styleUrls: ['../menu-common.scss']
 })
-export class NewNetworkGameComponent implements OnInit {
+export class NewNetworkGameComponent implements OnInit, AfterViewInit {
   private username: string;
-
+  private list:any;
   constructor(
     private readonly matchmakingService: MatchmakingService,
     private readonly networkingService: GameNetworkingService
   ) {}
+
+  ngAfterViewInit(): void {
+    this.list = document.getElementById("gameList");
+  }
 
   ngOnInit(): void {
     // instantiate class here
@@ -27,7 +31,10 @@ export class NewNetworkGameComponent implements OnInit {
       const oppUsername:string = gameInfo.username;
       const oppAddress:string = gameInfo.oppAddress;
       console.log(`${oppUsername} wants to play at ${oppAddress}`);
-    //Add a <div> to show the game on screen
+      //Add a <div> to show the game on screen
+      const messageElement = document.createElement('div');
+      messageElement.innerText = `${oppUsername} wants to play at ${oppAddress}`;
+      this.list.append(messageElement);
     });
   }
 
@@ -65,7 +72,5 @@ export class NewNetworkGameComponent implements OnInit {
       console.log('Lobby is full. Sucks bro');
     });
   }
-
-  
 
 }
