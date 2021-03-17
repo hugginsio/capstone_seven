@@ -1,21 +1,22 @@
 //import socketIO from 'socket.io';
-import {UDPWrapper} from "./UDPwrapper.js";
+import {UDPWrapper} from "./UDPWrapper";
 const io = require('socket.io')(3000, {
   cors: {
-    origin: "*",
+    origin: true,
+    credentials: true
   },
 });
 const udp = new UDPWrapper();
 
-io.on('connection', socket => {
-  socket.emit("you-connceted");
+io.on('connection', (socket:any) => {
 
   socket.on('disconnect', () => {
     socket.emit('user-disconnected');
   });
 
-  socket.on('set-username', username => {
+  socket.on('set-username', (username:string) => {
     udp.setUsername(username);
+    socket.emit("you-connceted");
   });
 
   socket.on('broadcast-game', () => {

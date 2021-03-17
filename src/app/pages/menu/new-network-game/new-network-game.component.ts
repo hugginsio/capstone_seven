@@ -31,17 +31,6 @@ export class NewNetworkGameComponent implements OnInit {
 
     //Add a <div> to show the game on screen
     });
-
-    this.networkingService.listen('lobby-joined').subscribe((gameInfo:any) => {
-      const board = gameInfo.gameboard;
-      const isHostP1 = gameInfo.isHostPlayer1;
-      
-      //Create network game using these settings
-    });
-
-    this.networkingService.listen('lobby-full').subscribe(() => {
-      console.log('Lobby is full. Sucks bro');
-    });
   }
 
   HostGame(): void {
@@ -63,6 +52,19 @@ export class NewNetworkGameComponent implements OnInit {
     //this.networking.connectTCPserver(oppAddress)
 
     //GoTo: lobby-joined/full
+  }
+
+  initializeListeners(): void {
+    this.networkingService.listen('lobby-joined').subscribe((gameInfo:any) => {
+      const board = gameInfo.gameboard;
+      const isHostP1 = gameInfo.isHostPlayer1;
+      
+      //Create network game using these settings
+    });
+
+    this.networkingService.listen('lobby-full').subscribe(() => {
+      console.log('Lobby is full. Sucks bro');
+    });
   }
 
 }
