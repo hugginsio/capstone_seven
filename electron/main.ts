@@ -19,7 +19,7 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,
       enableRemoteModule : true,
-      devTools: isDev
+      devTools: true
     },
   });
 
