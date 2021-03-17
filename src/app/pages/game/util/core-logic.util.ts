@@ -849,6 +849,8 @@ export class CoreLogic {
 
     return result;
   }
+
+
  
   static moveToString(move:Move):string{
     let result = '';

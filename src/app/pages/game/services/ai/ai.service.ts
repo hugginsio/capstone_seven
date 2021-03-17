@@ -26,45 +26,18 @@ export class AiService {
   }
 
   getAIMove(gameboard:GameBoard,player1:Player,player2:Player,previousPlayerNo:number,pastMoveString:string):string{
+
+    const start = Date.now();
     const newState = new State(gameboard,player1, player2);
     newState.playerNumber = previousPlayerNo;
     newState.move = pastMoveString;
 
     const result = this.mcts.findNextMove(newState,5000);
+
+    console.warn(`Time for AI move = ${Date.now() - start}ms`);
     return result;
   }
 
-  player2InitialMoveSpecialCase(previousMove:string,playerNo:number):void{
-
-    this.mcts.opponent = 3 - playerNo;
-
-    const rootNode = this.mcts.tree.getRoot();
-    const rootState = rootNode.getState();
-
-    if(rootState.move !== previousMove){
-      if(rootNode.getChildArray().length > 0){
-        for(let i = 0; i < rootNode.getChildArray.length; i++){
-          const childNode = rootNode.getChildArray()[i];
-          const childState = rootNode.getChildArray()[i].getState();
-          if(childState.move === previousMove){
-            i = rootNode.getChildArray().length;
-            this.mcts.tree.setRoot(childNode);
-          }
-        }
-      }
-      else if(rootNode.getState().player1.numNodesPlaced >= 1 && rootNode.getState().player2.numNodesPlaced >= 2){
-        rootNode.getState().setPlayerNo(this.mcts.opponent);
-        rootNode.getState().applyMove(previousMove);
-        rootNode.getState().setPlayerNo(playerNo);
-
-      }
-      else if(rootNode.getChildArray().length === 0 || rootState.move === ''){
-        //rootNode.getState().setPlayerNo(this.opponent);
-        rootNode.getState().applyMove(previousMove); 
-      }
-
-    }
-  }
 
   // randomAIFirstMove():string{
 

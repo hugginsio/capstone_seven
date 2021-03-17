@@ -116,7 +116,7 @@ export class MonteCarlo {
       return boardStatus;
     }
     let counter = 0;
-    while (boardStatus === 0 && counter < 50) {
+    while (boardStatus === 0 && counter < 30) {
       if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
         tempState.player1.redResources = 1;
         tempState.player1.blueResources = 1;
@@ -126,6 +126,7 @@ export class MonteCarlo {
       tempState.randomPlay();
       boardStatus = CoreLogic.getWinner(tempState);
       tempState.togglePlayer();
+      console.log(`Inside simulation: count = ${counter}`);
       counter++;
     }
 
