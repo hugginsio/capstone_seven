@@ -4,30 +4,28 @@
     <p>How to Play</p>
   </div>
   <div class="submenu-body">
-    <!--https://www.w3schools.com/howto/howto_js_slideshow.asp-->
+
+    <div>
+      <p id = 'title'></p>
+      <img id = 'image'>
+      <p id = 'info'></p>
+    </div>
+
+    <!--https://www.w3schools.com/howto/howto_js_slideshow.asp
     <div class = "slideshow-container">
 
-      <!--https://stackoverflow.com/questions/48100152/hide-elements-using-typescript/48101098-->
-      <form class = "slide" [style.display] = "isVisible ? 'block' : 'none'">
-        <!--SLIDE 1-->
+      https://stackoverflow.com/questions/48100152/hide-elements-using-typescript/48101098
+      <form class = "slide" id = 'slide1'>
+        SLIDE 1
         <h3>MasterMine</h3>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
-          <p>Howdy partners!  Welcome to the MasterMines.  
-            Here y’all compete in the rush to get rich quick by 
-            layin’ rails and pickin’ sites before your competitors do the same.
-          </p>
-          <p>Here in Peppermint Junction we have a classic match of man vs machine 
-            with an underground twist. We’re fixin’ to show y’all the ropes of how 
-            things work here in this ‘ol town so you can be on your way to the mines. 
-          </p>
         </div>
       </form>
 
-      <!--SLIDE 2-->
-      <div class = "slide">
+      <div class = "slide" id = 'slide2'>
         <h3>Settin’ Up a Local Competition</h3>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
           <p>Pick your minin' background</p>
           <p>Single Player vs. AI</p>
@@ -49,9 +47,9 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide3'>
         <p>Settin' Up the Mine</p>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div class="instruction-box"> 
           <p>Choose random to shuffle the mine sites for a random game
              or pick your own arrangement </p>
@@ -68,28 +66,28 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide4'>
         <p>Newfangled "On The Line" Technology</p>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
           <p>detailed instructions</p>
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide5'>
         <p>Game Pieces</p>
-        <!--flexbox or something for these img and associated text-->
-        <img class = "pickaxe">
-        <img class = "drill">
-        <img class = "human-track">
-        <img class = "machine-track">
-        <img class = "tile">
+    flexbox or something for these img and associated text
+        <img class = "pickaxe" src = './../../../../assets/help/testBoard.png'>
+        <img class = "drill" src = './../../../../assets/help/testBoard.png'>
+        <img class = "human-track" src = './../../../../assets/help/testBoard.png'>
+        <img class = "machine-track" src = './../../../../assets/help/testBoard.png'>
+        <img class = "tile" src = './../../../../assets/help/testBoard.png'>
         <p>detailed instructions</p>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide6'>
         <p>Startin' the Game</p>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
           <ul>
             <li>Each of y’all gets 2 of your team’s mining markers 
@@ -104,9 +102,9 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide7'>
         <p>Helpful Hints</p>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
           <ul>
             <li>If y’all ever be regrettin’ your turn, just hit undo! </li>
@@ -116,9 +114,9 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide8'>
         <p>Start of Each Turn</p>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
           <p>
             Let the games begin! Now y’all have freedom to place 
@@ -135,9 +133,9 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide9'>
         <p>Building Your Operation</p>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
           <p>Now that y’all got two startin’ points to your mining operation 
           you can build rails and place mining markers off either 
@@ -151,9 +149,9 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide10'>
         <p>Gettin' Them Gems</p>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div>
           <p>
             Y’all can place your mining markers on the corners 
@@ -174,10 +172,10 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide11'>
         <p>A Tuckered Out Minin’ Site</p>
-        <img class = "exhausted-tile">
-        <div class = "instruction-box">
+        <img class = "exhausted-tile" src = './../../../../assets/help/testBoard.png'>
+        <div class = "instruction-box" src = './../../../../assets/help/testBoard.png'>
           <p>
             If y’all be tryin’ to corner a minin’ site by 
             placing more mining markers than gems on a site, 
@@ -192,9 +190,9 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide12'>
         <p>Claimin' a Site</p>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
           <p>
             Stake your claim for exclusive minin’ rights by 
@@ -217,14 +215,14 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide13'>
         <p>Buying More Mining Markers and Tracks</p>
-        <img class = "cost-breakdown">
+        <img class = "cost-breakdown" src = './../../../../assets/help/testBoard.png'>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide14'>
         <p>Trading Post</p>
-        <img class = "trade-screen">
+        <img class = "trade-screen" src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
           <div>Y'all Lookin' to Trade?</div>
           <ul>
@@ -243,9 +241,9 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide15'>
         <p>How To Win</p>
-        <img>
+        <img src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
           <p>
             First miner to 10 points wins!
@@ -263,9 +261,9 @@
         </div>
       </div>
 
-      <div class = "slide">
+      <div class = "slide" id = 'slide16'>
         <p>Options Menu</p>
-        <img class = "options-screen">
+        <img class = "options-screen" src = './../../../../assets/help/testBoard.png'>
         <div class = "instruction-box">
           <p>
             Go here to look at all our nifty features 
@@ -284,7 +282,7 @@
       </div>
       
     </div>
-    
+    -->
   </div>
   <div class="submenu-footer">
     <div class="flex space-x-5 w-1/3">
