@@ -1,0 +1,28 @@
+<div class="flex space-between w-full justify-center h-full" id="help-slideshow-container">
+  <div class="menu-btn" (click)="decrementSlides()">
+    prev
+  </div>
+  <div class="px-4" id="actual-slides">
+    <div class="flex flex-col space-y-4" *ngIf="currentSlide === 1">
+      <h1>Title</h1>
+      <div class="flex space-between w-full">
+        <div>
+          <p>Paragraph one.</p>
+          <p>Paragraph two.</p>
+        </div>
+        <div>
+          <img src="/assets/help/testBoard.png"/>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="currentSlide === 2">
+      two
+    </div>
+    <div *ngIf="currentSlide === 3">
+      three
+    </div>
+  </div>
+  <div class="menu-btn" (click)="incrementSlides()">
+    next
+  </div>
+</div>

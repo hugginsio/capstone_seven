@@ -37,7 +37,7 @@ export class MenuHelpComponent implements OnInit {
   }
 
   displaySlide(index: number):void {
-    let currentSlide = document.getElementById(image);
+    // let currentSlide = document.getElementById();
 
   }
 
