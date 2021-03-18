@@ -36,8 +36,7 @@ export class State {
 
   getAllPossibleStates():Array<State>{
     // constructs a list of all possible states from current state
-    console.log(this.playerNumber);
-   
+    
     let nextPlayer;
     if(this.player1.numNodesPlaced === 1 && this.player2.numNodesPlaced === 1){
       nextPlayer = this.playerNumber;
@@ -69,16 +68,16 @@ export class State {
   randomPlay():void{
     /* get a list of all possible positions on the board and 
            play a random move */
-    let start = Date.now();
+    //let start = Date.now();
     const moves = CoreLogic.getLegalMoves(this,true);
-    console.log(`In simulation: Time to generate moves = ${Date.now()-start}ms`);
+    //console.log(`In simulation: Time to generate moves = ${Date.now()-start}ms`);
 
     // start = Date.now();
     // const index = Math.floor(Math.random() * moves.length);
     // console.log( `Inside simulation: Time to pick random move = ${Date.now()-start}ms`);
     let maxWeight = 0;
     let maxWeightIndex = Math.floor(Math.random() * moves.length);
-    start = Date.now();
+    //start = Date.now();
     for(let i = 0; i < moves.length; i++){
       const localWeight = this.moveWeighting(moves[i]);
       if(localWeight > maxWeight){
@@ -86,11 +85,11 @@ export class State {
         maxWeightIndex = i;
       }
     }
-    console.log( `Inside simulation: Time to pick weighted move = ${Date.now()-start}ms`);
+    //console.log( `Inside simulation: Time to pick weighted move = ${Date.now()-start}ms`);
 
-    start = Date.now();
+    //start = Date.now();
     this.applyMove(moves[maxWeightIndex]);
-    console.log(`Inside simulation: Time to apply chosen move = ${Date.now()-start}ms`);
+    //console.log(`Inside simulation: Time to apply chosen move = ${Date.now()-start}ms`);
   }
 
   moveWeighting(move:string):number{
@@ -98,7 +97,6 @@ export class State {
     const moveObj = CoreLogic.stringToMove(move);
 
     const horizontalBranches = [0,3,4,5,10,11,12,13,14,21,22,23,24,25,30,31,32,35];
-    //const verticalBranches = [1,2,6,7,8,9,15,16,17,18,19,20,26,27,28,29,33,34];
 
     let resultWeight = 0;
 

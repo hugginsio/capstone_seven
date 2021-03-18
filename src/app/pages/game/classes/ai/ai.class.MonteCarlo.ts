@@ -66,17 +66,17 @@ export class MonteCarlo {
   }
 
   selectPromisingNode(rootNode:MCTSNode):MCTSNode {
-    const start = Date.now();
+    //const start = Date.now();
     let node = rootNode;
     while (node.getChildArray().length != 0) {
       node = UCT.findBestNodeWithUCT(node);
     }
-    console.log(`SelectPromisingNode TIME: ${Date.now() - start}ms`);
+    //console.log(`SelectPromisingNode TIME: ${Date.now() - start}ms`);
     return node;
   }
 
   expandNode(node:MCTSNode):void {
-    const start = Date.now();
+    //const start = Date.now();
     const possibleStates = node.getState().getAllPossibleStates();
     for(const state of possibleStates){
       const newNode = new MCTSNode(state);
@@ -86,11 +86,11 @@ export class MonteCarlo {
       node.getChildArray().push(newNode);
     }
     
-    console.log(`expandNode TIME: ${Date.now() - start}ms`);
+    //console.log(`expandNode TIME: ${Date.now() - start}ms`);
   }
 
   backPropogation(nodeToExplore:MCTSNode, playerNo:number):void {
-    const start = Date.now();
+    //const start = Date.now();
     let tempNode:MCTSNode|null = nodeToExplore;
     while (tempNode != null) {
       tempNode.getState().incrementVisit();
@@ -99,11 +99,11 @@ export class MonteCarlo {
       }
       tempNode = tempNode.getParent();
     }
-    console.log(`backPropagation TIME: ${Date.now() - start}ms`);
+    //console.log(`backPropagation TIME: ${Date.now() - start}ms`);
   }
 
   simulateRandomPlayout(node:MCTSNode):number {
-    const start = Date.now();
+    //const start = Date.now();
     const tempNode = MCTSNode.copyConstructor(node);
     const tempState = tempNode.getState();
     let boardStatus = CoreLogic.getWinner(tempState);
@@ -126,11 +126,11 @@ export class MonteCarlo {
       tempState.randomPlay();
       boardStatus = CoreLogic.getWinner(tempState);
       tempState.togglePlayer();
-      console.log(`Inside simulation: count = ${counter}`);
+      //console.log(`Inside simulation: count = ${counter}`);
       counter++;
     }
 
-    console.log(`simulateRandomPlayout TIME: ${Date.now() - start}ms`);
+    //console.log(`simulateRandomPlayout TIME: ${Date.now() - start}ms`);
     return boardStatus;
   }
 
