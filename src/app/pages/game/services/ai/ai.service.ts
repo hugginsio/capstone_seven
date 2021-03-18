@@ -17,6 +17,7 @@ interface Resources{
   green:number,
   yellow:number,
 }
+
 export class AiService {
   
   mcts: MonteCarlo;
