@@ -27,16 +27,20 @@ describe('NewLocalGameComponent', () => {
   it('changeGameMode should flip game modes', () => {
     // Assumes PVP as default.
     component.changeGameMode();
+
     expect(component.gameModeString).toEqual(component.pva);
     component.changeGameMode();
+
     expect(component.gameModeString).toEqual(component.pvp);
   });
 
   it('changeAiDifficulty should flip AI difficulty', () => {
     // Assumes AI is set to easy by default.
     component.changeAiDifficulty();
+
     expect(component.aiDifficultyString).toEqual(component.aiMedium);
     component.changeAiDifficulty();
+
     expect(component.aiDifficultyString).toEqual(component.aiEasy);
   });
 });

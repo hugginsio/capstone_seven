@@ -15,6 +15,7 @@ describe('angular-electron App', function () {
 
   it('creates initial windows', async function () {
     const count = await client.getWindowCount();
+
     expect(count).to.equal(1);
   });
 

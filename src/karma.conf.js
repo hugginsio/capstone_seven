@@ -27,7 +27,7 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    browserDisconnectTimeout: 10000,
+    browserDisconnectTimeout: 15000,
     browsers: ['Cr6'],
     customLaunchers: {
       NgE: {

@@ -1,10 +1,11 @@
-import { app, BrowserWindow, dialog } from 'electron';
+import { app, BrowserWindow, dialog, webFrame } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
 let window: BrowserWindow;
-const args = process.argv.slice(1), serve = args.some(val => val === '--serve');
-const isDev = process.env.NODE_ENV === 'development';
+const args = process.argv.slice(1);
+const serve = args.some(val => val === '--serve');
+const isDev = !app.isPackaged;
 
 function createWindow(): BrowserWindow {
   window = new BrowserWindow({
@@ -19,7 +20,8 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,
       enableRemoteModule : true,
-      devTools: true
+      devTools: isDev,
+      zoomFactor: 1
     },
   });
 
@@ -40,6 +42,10 @@ function createWindow(): BrowserWindow {
       protocol: 'file:',
       slashes: true
     }));
+  }
+
+  if (process.platform !== 'darwin' || !isDev) {
+    window.removeMenu();
   }
 
   window.on('close', (event) => {
@@ -74,4 +80,6 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   createWindow();
+  webFrame.setZoomFactor(1);
+  webFrame.setVisualZoomLevelLimits(1, 1);
 });
