@@ -4,6 +4,287 @@
     <p>How to Play</p>
   </div>
   <div class="submenu-body">
+    <!--https://www.w3schools.com/howto/howto_js_slideshow.asp-->
+    <div class = "slideshow-container">
+
+      <!--https://stackoverflow.com/questions/48100152/hide-elements-using-typescript/48101098-->
+      <form class = "slide" [style.display] = "isVisible ? 'block' : 'none'">
+        <!--SLIDE 1-->
+        <h3>MasterMine</h3>
+        <img>
+        <div class = "instruction-box">
+          <p>Howdy partners!  Welcome to the MasterMines.  
+            Here y’all compete in the rush to get rich quick by 
+            layin’ rails and pickin’ sites before your competitors do the same.
+          </p>
+          <p>Here in Peppermint Junction we have a classic match of man vs machine 
+            with an underground twist. We’re fixin’ to show y’all the ropes of how 
+            things work here in this ‘ol town so you can be on your way to the mines. 
+          </p>
+        </div>
+      </form>
+
+      <!--SLIDE 2-->
+      <div class = "slide">
+        <h3>Settin’ Up a Local Competition</h3>
+        <img>
+        <div class = "instruction-box">
+          <p>Pick your minin' background</p>
+          <p>Single Player vs. AI</p>
+          <div class = "local-instruction-box">
+            <p>Who goes first?</p>
+            <div>Difficulty:</div>
+            <ul>
+              <li>Greenhorn</li>
+              <li>MasterMiner</li>
+            </ul>
+            <p>Guided Tour of the Mine ON or OFF<br>
+            * only for Greenhorn level game *</p>
+          </div>
+          <p>Multiplayer</p>
+          <div class = "local-instruction-box">
+            <p>Who goes first?</p>
+            <p>Pick who is the Prospector and who is the Machine</p>
+          </div>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>Settin' Up the Mine</p>
+        <img>
+        <div class="instruction-box"> 
+          <p>Choose random to shuffle the mine sites for a random game
+             or pick your own arrangement </p>
+             <ul>
+               <li>
+                Enter in your mine configuration just like it has below 
+                and make sure each o’ these letter/number pairings 
+                come up just once in the list
+               </li>
+               <li>
+                R1,R2,R3,B1,B2,B3,G1,G2,G3,Y1,Y2,Y3,00
+               </li>
+             </ul>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>Newfangled "On The Line" Technology</p>
+        <img>
+        <div class = "instruction-box">
+          <p>detailed instructions</p>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>Game Pieces</p>
+        <!--flexbox or something for these img and associated text-->
+        <img class = "pickaxe">
+        <img class = "drill">
+        <img class = "human-track">
+        <img class = "machine-track">
+        <img class = "tile">
+        <p>detailed instructions</p>
+      </div>
+
+      <div class = "slide">
+        <p>Startin' the Game</p>
+        <img>
+        <div class = "instruction-box">
+          <ul>
+            <li>Each of y’all gets 2 of your team’s mining markers 
+              and 2 tracks at the start of the duel</li>
+            <li>Miner 1 places one axe and a connecting 
+              track for each starting turn anywhere in the mine</li>  
+            <li>To keep things fair and square we do a little do-si-do 
+              in the set up turns like we explained above, 
+              rotating from miner 1 to miner 2, miner 2 again, 
+              and then back to miner 1</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>Helpful Hints</p>
+        <img>
+        <div class = "instruction-box">
+          <ul>
+            <li>If y’all ever be regrettin’ your turn, just hit undo! </li>
+            <li>Once you’ve settled your mind a bit, just hit “End Turn” 
+              to carry on the game</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>Start of Each Turn</p>
+        <img>
+        <div class = "instruction-box">
+          <p>
+            Let the games begin! Now y’all have freedom to place 
+            whatever you can afford in the mine. 
+            Rotatin’ back n forth and hittin’ “End Turn” 
+            when you’re finished.
+          </p>
+          <p>
+            Now, before you start making moves on your turn, 
+            your hard work will start to pay off. At the start 
+            of each turn you get your earnings of one gem from 
+            each site you have a mining marker touchin’. 
+          </p>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>Building Your Operation</p>
+        <img>
+        <div class = "instruction-box">
+          <p>Now that y’all got two startin’ points to your mining operation 
+          you can build rails and place mining markers off either 
+          of your startin’ points.
+          </p>
+          <p>
+            Fixin’ to put down a rail? Make sure it's connected 
+            to another rail you own. Other miners can their 
+            mining markers in your path but your rails’ve gotta connect.
+          </p>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>Gettin' Them Gems</p>
+        <img>
+        <div>
+          <p>
+            Y’all can place your mining markers on the corners 
+            of these here mining sites to collect gems from 
+            the sites they be touchin’.
+          </p>
+          <p>
+            If you’re fixin’ to place a mining marker you best
+             make sure it’s connected to one of your rails. 
+             We don’t allow you to just mine anywhere! 
+             Gotta have a track to get to your earnings on.
+          </p>
+          <p>
+            Now them gems is limited in our mine here and only 
+            a certain amount can be mined per turn, as indicated 
+            by the number of gems present on each site.  
+          </p>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>A Tuckered Out Minin’ Site</p>
+        <img class = "exhausted-tile">
+        <div class = "instruction-box">
+          <p>
+            If y’all be tryin’ to corner a minin’ site by 
+            placing more mining markers than gems on a site, 
+            then that site is what we folks in the business 
+            call “tuckered out”.  Y’all both cain’t be gettin 
+            any more gems from that site now.  
+          </p>
+          <p>Y’all can still be puttin’ markers down around 
+            the “tuckered out” site but you cain’t get gems 
+            from that site.
+          </p>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>Claimin' a Site</p>
+        <img>
+        <div class = "instruction-box">
+          <p>
+            Stake your claim for exclusive minin’ rights by 
+            formin’ a perimeter of your rail track around one 
+            or more sites! 
+          </p>
+          <p>
+            Once you’ve completely surrounded a site, only 
+            your business can mine there. Others can put an 
+            marker or two down but they cain’t get any gems 
+            from your site or try to cut across your site. 
+            No sir, no opponent tracks allowed here!
+          </p>
+          <p>
+            Best of all, now that you have claimed a site 
+            there’s no chance to tucker it out! Put as many 
+            minging markers as you can fit and it’ll still be 
+            giving you a gem per marker on each turn.
+          </p>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>Buying More Mining Markers and Tracks</p>
+        <img class = "cost-breakdown">
+      </div>
+
+      <div class = "slide">
+        <p>Trading Post</p>
+        <img class = "trade-screen">
+        <div class = "instruction-box">
+          <div>Y'all Lookin' to Trade?</div>
+          <ul>
+            <li>
+              Mosey on down to the trading post for the best
+              deal in the west!
+            </li>
+            <li>
+              3 of your gems for 1 of any other color of gem
+            </li>
+            <li>
+              But don't be gettin greedy now. Sheriff only allows
+              one trade per turn.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>How To Win</p>
+        <img>
+        <div class = "instruction-box">
+          <p>
+            First miner to 10 points wins!
+          </p>
+          <p>
+            +1 for each mining marker placed
+          </p>
+          <p>
+            +1 for each site you claim
+          </p>
+          <p>
+            +2 for the miner with the longest set of connected 
+            rails in the mine
+          </p>
+        </div>
+      </div>
+
+      <div class = "slide">
+        <p>Options Menu</p>
+        <img class = "options-screen">
+        <div class = "instruction-box">
+          <p>
+            Go here to look at all our nifty features 
+            in the mine. We got options to change the look 
+            and sound of your mining competition free of charge!
+          </p>
+          <p>
+            Forgot a rule in the middle of a mining match? 
+            Click here to see the rules again
+          </p>
+          <p>
+            Giving up already? 
+            Exit the competition via this here emergency exit shaft.
+          </p>
+        </div>
+      </div>
+      
+    </div>
+    
   </div>
   <div class="submenu-footer">
     <div class="flex space-x-5 w-1/3">
