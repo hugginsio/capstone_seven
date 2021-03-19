@@ -1,4 +1,5 @@
 <div class="flex space-between w-full justify-center h-full" id="help-slideshow-container">
+  <div class = "flex items-center">
   <div class="menu-btn" (click)="decrementSlides()">
     prev
   </div>
@@ -7,7 +8,7 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 1">
       <h1>MasterMine</h1>
       <div class="flex space-between w-full">
-        <div>
+        <div class="flex flex-col space-y-4">
           <p>Howdy partners! Welcome to the MasterMines. 
             Here y'all compete in the rush to get rich quick by layin' rails and pickin' sites before your competitors do the same.</p>
           <p>Here in Peppermint Junction we have a classic match of Miner vs. Machine. 
@@ -22,10 +23,10 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 2">
       <h1>Settin' Up a Local Competition</h1>
       <div class="flex space-between w-full">
-        <div class="flex flex-col">
-          <p>Pick your minin' background</p>
+        <div class="flex flex-col space-y-4">
+          <p>Pick your minin' background<br></p>
           <div class="flex space-between">
-            <div><p>Who goes first? <br>
+            <div><p>Single Player vs. AI</p><p>Who goes first?
             Difficulty:</p>
             <ul>
               <li>Greenhorn</li>
@@ -37,12 +38,12 @@
             <div>
               <p>Multiplayer</p>
               <p>Who goes first?</p>
-              <p>Pick who is the Prospector and who is the Machine</p>
+              <p>Pick who is the Machine and who is the Prospector</p>
             </div>
         </div>
-        <div>
-          <img src="/assets/help/testBoard.png"/>
-        </div>
+      </div>
+      <div>
+        <img src="/assets/help/testBoard.png"/>
       </div>
     </div>
     </div>
@@ -51,9 +52,9 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 3">
       <h1>Settin' Up the Mine</h1>
       <div class="flex space-between w-full">
-        <div>
+        <div class = "flex flex-col space-y-4">
           <p>Choose random to shuffle the mine sites for a random game
-            or pick your own arrangement </p>
+            or pick your own arrangement</p>
           <p>Enter in your mine configuration just like it has below 
                and make sure each o’ these letter/number pairings 
                come up just once in the list</p>
@@ -124,7 +125,7 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 6">
       <h1>Startin' the Game</h1>
       <div class="flex space-between w-full">
-        <div>
+        <div class="flex flex-col space-y-4">
           <p>Each of y’all gets 2 pairs of your team’s mining markers and tracks at the start of the duel.</p>
             <p>Miner 1 places one axe and a connecting track for the starting turn anywhere in the mine.</p>
             <p>To keep things fair and square we do a little do-si-do in the set up turns like we explained above,
@@ -139,7 +140,7 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 7">
       <h1>Helpful Hints</h1>
       <div class="flex space-between w-full">
-        <div>
+        <div class="flex flex-col space-y-4">
           <p>Only in these startin’ turns can your pair be placed not in connection with the other pair.</p>
           <p>If y’all ever be regrettin’ your turn, just hit undo!</p>
           <p>Once you’ve settled your mind a bit, just hit “End Turn” to carry on the game.</p>
@@ -153,7 +154,7 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 8">
       <h1>Start of Each Turn</h1>
       <div class="flex space-between w-full">
-        <div>
+        <div class="flex flex-col space-y-4">
           <p>Let the games begin! Now y’all have freedom to place 
             whatever you can afford in the mine. 
             Rotatin’ back n forth and hittin’ “End Turn” 
@@ -172,7 +173,7 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 9">
       <h1>Building Your Operation</h1>
       <div class="flex space-between w-full">
-        <div>
+        <div class="flex flex-col space-y-4">
           <p>Now that y’all got two startin’ points to your mining operation 
             you can build rails and place mining markers off either 
             of your startin’ points.</p>
@@ -187,7 +188,7 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 10">
       <h1>All Tuckered Out</h1>
       <div class="flex space-between w-full">
-        <div>
+        <div class="flex flex-col space-y-4">
           <p>
             Now them gems is limited in our mine here and only 
             a certain amount can be mined per turn, as indicated 
@@ -214,7 +215,7 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 11">
       <h1>Claimin' a Site</h1>
       <div class="flex space-between w-full">
-        <div>
+        <div class="flex flex-col space-y-4">
           <p>
             Stake your claim for exclusive minin’ rights by 
             formin’ a perimeter of your rail track around one 
@@ -301,7 +302,7 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 13">
       <h1>How To Win</h1>
       <div class="flex space-between w-full">
-        <div>
+        <div class="flex flex-col space-y-4">
           <p>
             First miner to 10 points wins!
           </p>
@@ -325,7 +326,7 @@
     <div class="flex flex-col space-y-4" *ngIf="currentSlide === 14">
       <h1>Options Menu</h1>
       <div class="flex space-between w-full">
-        <div>
+        <div class="flex flex-col space-y-4">
           <p>
             Go here to look at all our nifty features 
             in the mine. We got options to change the look 
@@ -344,7 +345,7 @@
           <img src="/assets/help/testBoard.png"/>
         </div>
       </div>
-      <p>Looks like you're all ready to go! Good luck down there, Miner!</p>
+      <p>Looks like you're all ready to go! Good luck, Miner!</p>
     </div>
 
   </div>
@@ -352,4 +353,5 @@
   <div class="menu-btn" (click)="incrementSlides()">
     next
   </div>
+</div>
 </div>

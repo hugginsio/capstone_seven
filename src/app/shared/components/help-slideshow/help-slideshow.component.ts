@@ -14,10 +14,16 @@ export class HelpSlideshowComponent {
   constructor() { }
 
   decrementSlides(): void {
-    this.currentSlide--;
+    if (this.currentSlide > 1)
+    {
+      this.currentSlide--;
+    }
   }
 
   incrementSlides(): void {
-    this.currentSlide++;
+    if (this.currentSlide < 14)
+    {
+      this.currentSlide++;
+    }
   }
 }
