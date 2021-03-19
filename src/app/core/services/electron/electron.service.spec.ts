@@ -7,6 +7,7 @@ describe('ElectronService', () => {
 
   it('should be created', () => {
     const service: ElectronService = TestBed.get(ElectronService);
+
     expect(service).toBeTruthy();
   });
 });

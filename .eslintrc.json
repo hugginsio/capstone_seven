@@ -3,7 +3,8 @@
       "browser": true,
       "node": true,
       "es6": true,
-      "es2017": true
+      "es2017": true,
+      "jasmine": true
   },
   "overrides": [
     {
@@ -12,7 +13,8 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:jasmine/recommended"
       ],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
@@ -31,7 +33,8 @@
       },
       "plugins": [
         "@typescript-eslint",
-        "@angular-eslint/eslint-plugin"
+        "@angular-eslint/eslint-plugin",
+        "jasmine"
       ],
       "rules": {
         "@typescript-eslint/indent": [

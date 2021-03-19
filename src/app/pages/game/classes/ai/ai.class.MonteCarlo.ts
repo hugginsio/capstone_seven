@@ -1,181 +1,160 @@
 import { GameBoard } from '../gamecore/game.class.GameBoard';
-import { MCTSNode } from './ai.class.MCTSNode';
+import { Tree, MCTSNode } from './ai.class.MCTSNode';
 import { State } from './ai.class.State';
 import { CoreLogic } from '../../util/core-logic.util';
-
-interface GameStatistics {
-  runtime: number,
-  simulations: number,
-  draws: number
-}
+import { Player } from '../gamecore/game.class.Player';
 
 export class MonteCarlo {
-  gameBoard:GameBoard;
-  exploreParameter:number;
-  mctsNodes:Map<string, MCTSNode>;
+  WINSCORE = 10;
+  opponent:number;
+  tree:Tree;
 
-  constructor(gameBoard:GameBoard, exploreParameter:number) { 
-    this.gameBoard = gameBoard;
-    this.exploreParameter = exploreParameter;
+  constructor(gameBoard:GameBoard,player1:Player,player2:Player){
+    this.tree = new Tree();
+    const startingState = new State(gameBoard,player1,player2);
+    const startingRoot = new MCTSNode(startingState);
+    this.tree.setRoot(startingRoot);
+  }
 
-    this.mctsNodes = new Map();
+  
+  findNextMove(gameState:State,time:number):string {
+    // define an end time in milliseconds which will act as a terminating condition
+    const end = Date.now() + time;
     
+
+    const newNode = new MCTSNode(gameState);
+    const currentRoot = this.tree.getRoot();
+    let childStateFound = false;
+
+    for(let i = 0; i < currentRoot.childArray.length;i++){
+      if(currentRoot.childArray[i].getState().move === newNode.getState().move){
+        this.tree.setRoot(currentRoot.childArray[i]);
+        childStateFound = true;
+        i = currentRoot.childArray.length;
+      }
+    }
+
+    if(!childStateFound){
+      this.tree.setRoot(newNode);
+    }
+
+    const rootNode = this.tree.getRoot();
+
+
+    while (Date.now() < end) {
+    //for(let iteration = 0; iteration < 10; iteration++){
+      const promisingNode = this.selectPromisingNode(rootNode);
+      if (CoreLogic.getWinner(promisingNode.getState()) === 0) {
+        this.expandNode(promisingNode);
+      }
+      let nodeToExplore = promisingNode;
+      if (promisingNode.getChildArray().length > 0) {
+        nodeToExplore = promisingNode.getRandomChildNode();
+      }
+      const playoutResult = this.simulateRandomPlayout(nodeToExplore);
+      this.backPropogation(nodeToExplore, playoutResult);
+    }
+
+    if(rootNode.getChildArray().length > 0){
+      const winnerNode = rootNode.getChildWithMaxScore();
+      this.tree.setRoot(winnerNode);
+      return winnerNode.getState().getMove();
+    }
+    else{
+      return ';;';
+    }
   }
 
-  makeMCTSNode(state:State):void{
-    if(!this.mctsNodes.has(state.hash())){
-      const unexpandedMoves = CoreLogic.getLegalMoves(state).slice();
-
-      const newMCTSNode = new MCTSNode(null, null, state, unexpandedMoves);
-      this.mctsNodes.set(state.hash(), newMCTSNode);
+  selectPromisingNode(rootNode:MCTSNode):MCTSNode {
+    //const start = Date.now();
+    let node = rootNode;
+    while (node.getChildArray().length != 0) {
+      node = UCT.findBestNodeWithUCT(node);
     }
-  }
-
-  runSearch(state:State, timeout = 3):GameStatistics{
-    this.makeMCTSNode(state);
-
-    let draws = 0;
-    let totalSims = 0;
-    const end = Date.now() + timeout * 1000;
-
-    while (Date.now() < end){
-      let node = this.selectMCTSNode(state);
-      let winner = CoreLogic.determineIfWinner(node.state);
-
-      if(!node.isLeaf() && winner === -Infinity){
-        node = this.expand(node);
-        winner = this.simulate(node);
-      }
-
-      this.backPropagate(node,winner);
-
-      
-      if(winner === 0){
-        draws++;
-      }
-      totalSims++;
-    }
-
-    return {runtime: timeout, simulations:totalSims, draws:draws};
-  }
-
-  calculateBestMove(state:State, policy:string):string{
-    this.makeMCTSNode(state);
-
-    if (this.mctsNodes.get(state.hash()) === null ||
-        this.mctsNodes.get(state.hash()) === undefined ||
-        !this.mctsNodes.get(state.hash())?.isFullyExpanded()){
-        
-      throw new Error("Not enough information!");
-    }
-
-    const node = this.mctsNodes.get(state.hash());
-    const allMoves = node?.getAllMoves();
-    let bestMove = '';
-
-    if(allMoves === undefined){
-      throw new Error("No Moves");
-    }
-
-    if(policy === "robust"){
-      let max = -Infinity;
-
-      for(const move of allMoves){
-        const childNode = node?.getChildNode(move);
-        if(childNode?.visits as number > max){
-          bestMove = move;
-          max = childNode?.visits as number;
-        }
-      }
-    }
-    else if(policy === "max"){
-      let max = -Infinity;
-
-      for(const move of allMoves){
-        const childNode = node?.getChildNode(move);
-        const visits = childNode?.visits as number;
-        const wins = childNode?.wins as number;
-        const ratio =  wins / visits;
-        if(ratio > max){
-          bestMove = move;
-          max = ratio;
-        }
-        
-      }
-    }
-    return bestMove;
-  }
-
-  selectMCTSNode(state:State):MCTSNode{
-    let node = this.mctsNodes.get(state.hash());
-    if(node === undefined){
-      throw new Error("Node undefined");
-    }
-    while(node?.isFullyExpanded && !node.isLeaf){
-      const moves = node.getAllMoves();
-      let bestMove;
-      let bestUCBValue = -Infinity;
-      for(const move of moves){
-        const childUCBValue = node.getChildNode(move).getUCBValue(this.exploreParameter);
-        if(childUCBValue > bestUCBValue){
-          bestMove = move;
-          bestUCBValue = childUCBValue;
-        }
-      }
-      node = node.getChildNode(bestMove as string);
-    }
+    //console.log(`SelectPromisingNode TIME: ${Date.now() - start}ms`);
     return node;
   }
 
-  expand(node:MCTSNode):MCTSNode{
-    const moves = node.getUnexpandedMoves();
-    const index = Math.floor(Math.random() * moves.length);
-    const move = moves[index];
+  expandNode(node:MCTSNode):void {
+    //const start = Date.now();
+    const possibleStates = node.getState().getAllPossibleStates();
+    for(const state of possibleStates){
+      const newNode = new MCTSNode(state);
+      newNode.setParent(node);
 
-    const childState = CoreLogic.nextState(node.state, move);
-    const childUnexpandedMoves = CoreLogic.getLegalMoves(childState);
-    const childNode = node.expand(move, childState,childUnexpandedMoves);
-    this.mctsNodes.set(childState.hash(), childNode);
-
-    return childNode;
-  }
-
-  simulate(node:MCTSNode):number{
-    let state = node.state;
-    let winner = CoreLogic.determineIfWinner(state);
-
-    while(winner === -Infinity){
-      const moves = CoreLogic.getLegalMoves(state);
-      const move = moves[Math.floor(Math.random() * moves.length)];
-      state = CoreLogic.nextState(state, move);
-      winner = CoreLogic.determineIfWinner(state);    
+      newNode.getState().setPlayerNo(node.getState().getOpponent());
+      node.getChildArray().push(newNode);
     }
-
-    return winner;
+    
+    //console.log(`expandNode TIME: ${Date.now() - start}ms`);
   }
 
-  backPropagate(node:MCTSNode, winner:number):void{
-    while (node !== null){
-      node.visits += 1;
-
-      if(node.state.isPlayer(-winner)){
-        node.wins += 1;
+  backPropogation(nodeToExplore:MCTSNode, playerNo:number):void {
+    //const start = Date.now();
+    let tempNode:MCTSNode|null = nodeToExplore;
+    while (tempNode != null) {
+      tempNode.getState().incrementVisit();
+      if (tempNode.getState().getPlayerNo() == playerNo) {
+        tempNode.getState().addScore(this.WINSCORE);
       }
-      node = node.parent as MCTSNode;
+      tempNode = tempNode.getParent();
     }
+    //console.log(`backPropagation TIME: ${Date.now() - start}ms`);
   }
 
-//   getStats(state:State):Stats{
-//     const node = this.mctsNodes.get(state.hash()) as MCTSNode;
-//     const stats = { visits: node.visits, wins: node.wins, children: [] };
-//     for (const child in node.children.values()) {
-//       if (node.children.get(child)?.node === null){ 
-//         stats.children.push({ move: child, visits: null, wins: null});
-//       }
-//       else {
-//         stats.children.push({ move: child, visits: node.children.get(child)?.node.visits, wins: node.children.get(child)?.node.wins});
-//       }
-//     }
-//     return stats;
-//   }
+  simulateRandomPlayout(node:MCTSNode):number {
+    //const start = Date.now();
+    const tempNode = MCTSNode.copyConstructor(node);
+    const tempState = tempNode.getState();
+    let boardStatus = CoreLogic.getWinner(tempState);
+    if (boardStatus == this.opponent) {
+      const tempParent = tempNode.getParent();
+      if(tempParent !== null){
+        tempParent.getState().setWinScore(Number.MIN_VALUE);
+      }
+
+      return boardStatus;
+    }
+    let counter = 0; //decrease counter and assign winner based on score if game not finished
+    while (boardStatus === 0 && counter < 30) {
+      if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
+        tempState.player1.redResources = 1;
+        tempState.player1.blueResources = 1;
+        tempState.player1.greenResources = 2;
+        tempState.player1.yellowResources = 2;
+      }
+      tempState.randomPlay();
+      boardStatus = CoreLogic.getWinner(tempState);
+      tempState.togglePlayer();
+      //console.log(`Inside simulation: count = ${counter}`);
+      counter++;
+    }
+
+    //console.log(`simulateRandomPlayout TIME: ${Date.now() - start}ms`);
+    return boardStatus;
+  }
+
+}
+
+class UCT {
+  static uctValue(totalVisit:number, nodeWinScore:number, nodeVisit:number):number {
+    if (nodeVisit == 0) {
+      return Number.MAX_VALUE;
+    }
+    return (nodeWinScore / nodeVisit) + 1.41 * Math.sqrt(Math.log(totalVisit) / nodeVisit);
+  }
+
+  static findBestNodeWithUCT(node:MCTSNode):MCTSNode {
+    const parentVisit = node.getState().getVisitCount();
+    let maxUctValue = this.uctValue(parentVisit,node.getChildArray()[0].getState().getWinScore(),node.getChildArray()[0].getState().getVisitCount());
+    let maxNode = node.getChildArray()[0];
+    for(let i = 1; i < node.getChildArray().length; i++){
+      const uctValue = this.uctValue(parentVisit,node.getChildArray()[i].getState().getWinScore(),node.getChildArray()[i].getState().getVisitCount());
+      if(uctValue > maxUctValue){
+        maxUctValue = uctValue;
+        maxNode = node.getChildArray()[i];
+      }
+    }
+    return maxNode;
+  }
 }

@@ -1,103 +1,74 @@
+import { Owner } from '../../enums/game.enums';
+import { CoreLogic } from '../../util/core-logic.util';
+import { GameBoard } from '../gamecore/game.class.GameBoard';
 import { State } from './ai.class.State';
 
 
-interface MCTSNodePlaceHolder {
-  move:string,
-  node:MCTSNode | null
+export class Tree{
+  root:MCTSNode;
+
+  getRoot():MCTSNode{
+    return this.root;
+  }
+
+  setRoot(newRoot:MCTSNode):void{
+    this.root = newRoot;
+  }
 }
 
 export class MCTSNode {
-  move:string | null;
-  parent:MCTSNode | null ;
-  visits:number;
-  wins:number;
-  children:Map<string,MCTSNodePlaceHolder>;
-  unexpandedMoves:string[];
   state:State;
+  parent:MCTSNode | null;
+  childArray:Array<MCTSNode>;
 
-  constructor(parent:MCTSNode | null, move:string | null, state:State, unexpandedMoves:string[]) {
-    this.move = move;
+  constructor(state:State){
     this.state = state;
-
-    this.wins = 0;
-    this.visits = 0;
-
-    this.parent = parent;
-    this.children = new Map();
-    for(const move of unexpandedMoves){
-      this.children.set(move, {move:move, node:null});
-    }
+    this.parent = null;
+    this.childArray = [];
   }
 
-  getChildNode(move:string):MCTSNode{
-    const child = this.children.get(move);
-
-    if(child === undefined){
-      throw new Error("There is no such move!");
-    }
-    else if (child.node === null){
-      throw new Error("Child is not expanded");
-    }
+  static copyConstructor(node:MCTSNode):MCTSNode{
+    const newNode = new MCTSNode(node.getState().cloneState());
+    newNode.parent = node.parent;
     
-    return child.node;
+    newNode.childArray = node.childArray;
+
+    return newNode;
+    
   }
 
-  expand(move:string, childState:State, unexpandedMoves:string[]):MCTSNode {
-    if(!this.children.has(move)){
-      throw new Error("No such move!");
-    }
-
-    const childNode = new MCTSNode(this,move,childState,unexpandedMoves);
-    this.children.set(move, {move:move, node:childNode});
-
-    return childNode;
+  getRandomChildNode():MCTSNode{
+    return this.childArray[Math.floor(Math.random() * this.childArray.length)];
   }
 
-  getAllMoves():string[] {
-    const result = [];
+  getChildWithMaxScore():MCTSNode{
+    let maxChild = this.childArray[0];
+    let maxScore = this.childArray[0].getState().getWinScore();
 
-    for(const child in this.children.values()){
-      result.push(child);
-    }
-
-    return result;
-  }
-
-  getUnexpandedMoves():string[] {
-    const result = [];
-    for(const child in this.children.values()){
-      if(this.children.get(child) === null){
-        result.push(child);
+    for(let i = 0; i < this.childArray.length;i++){
+      const tempScore = this.childArray[i].getState().getWinScore();
+      if(tempScore > maxScore){
+        maxScore = tempScore;
+        maxChild = this.childArray[i];
       }
     }
 
-    return result;
+    return maxChild;
   }
 
-  isFullyExpanded():boolean {
-    let result = true;
-    for(const child in this.children.values()){
-      if(this.children.get(child) === null){
-        result = false;
-      }
-    }
-    return result;
+  getState():State{
+    return this.state;
   }
 
-  isLeaf():boolean {
-    let result = false;
-    if(this.children.size === 0){
-      result = true;
-    }
-
-    return result;
+  getChildArray():Array<MCTSNode>{
+    return this.childArray;
   }
 
-  getUCBValue(biasParam:number):number {
-    let visitNumber = 0;
-    if(this.parent !== null){
-      visitNumber = this.parent.visits;
-    }
-    return (this.wins / this.visits) + Math.sqrt(biasParam * Math.log(visitNumber) / this.visits);
+  getParent():MCTSNode|null{
+    return this.parent;
+  }
+
+  setParent(node:MCTSNode):void{
+    this.parent = node;
   }
 }

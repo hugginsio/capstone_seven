@@ -1,9 +1,14 @@
 // Defines helper methods for core game logic
 
+
 import { State } from '../classes/ai/ai.class.State';
 import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
 import { Player } from '../classes/gamecore/game.class.Player';
+import { Tile } from '../classes/gamecore/game.class.Tile';
+import { Branch } from '../classes/gamecore/game.class.Branch';
+import { Node } from '../classes/gamecore/game.class.Node';
 import { Owner, TileColor } from '../enums/game.enums';
+
 
 interface Move {
   tradedIn:string[],
@@ -15,83 +20,86 @@ interface Move {
 
 export class CoreLogic {
 
-  static getStartingState(player1:Player, player2:Player, gameBoard:GameBoard, currentPlayer:number):State{
-    const newBoard = new GameBoard();
-    newBoard.tiles = gameBoard.tiles.slice();
-    newBoard.nodes = gameBoard.nodes.slice();
-    newBoard.branches = gameBoard.branches.slice();
+  // static getStartingState(player1:Player, player2:Player, gameBoard:GameBoard, currentPlayer:number):State{
+  //   const newBoard = CoreLogic.cloneGameBoard(gameBoard);
+  //   //const clonedPlayer1 = CoreLogic.clonePlayer(player1);
+  //   //const clonedPlayer2 = CoreLogic.clonePlayer(player2);
     
-    return new State([], newBoard, currentPlayer, player1, player2,true);
-  }
+  //   return new State([], newBoard, currentPlayer, player1, player2,true);
+  // }
 
-  static getLegalMoves(state:State): string[] {
+  static getLegalMoves(state:State, inSimulation:boolean): string[] {
     
     const result:string[] = [];
-    if(state.inInitialMoves){
+    //console.log(state.inInitialMoves);
+    
+    if(state.player1.numNodesPlaced <= 1 && state.player2.numNodesPlaced <= 2){
       //initial moves
+      // if(state.playerNumber === 1){
+      //   state.player1.redResources = 1;
+      //   state.player1.blueResources = 1;
+      //   state.player1.greenResources = 2;
+      //   state.player1.yellowResources = 2;
+      // }
+      // else{
+      //   state.player2.redResources = 1;
+      //   state.player2.blueResources = 1;
+      //   state.player2.greenResources = 2;
+      //   state.player2.yellowResources = 2;
+
+      // }
 
       const nodePlacements = [];
-      /*the initial moves the ai will treat the players as having enough resources
-           for one node and one branch without the ability to trade*/
-      if(state.currentPlayer === 1){
-        state.player1.greenResources = 2;
-        state.player1.yellowResources = 2;
-        state.player1.redResources = 1;
-        state.player1.blueResources = 1;
-      }
-      else{
-        state.player2.greenResources = 2;
-        state.player2.yellowResources = 2;
-        state.player2.redResources = 1;
-        state.player2.blueResources = 1;
-      }
+      const cornerNodes = [2,0,1,5,6,12,11,17,18,21,22,23];
 
-      //get starting move possibilities for player 1
-      for(const node of state.gameBoard.nodes){
+      
+      for(const node of state.board.nodes){
         if(node.getOwner() === Owner.NONE){
-          nodePlacements.push(state.gameBoard.nodes.indexOf(node));
+          if(!cornerNodes.includes(state.board.nodes.indexOf(node))){
+            nodePlacements.push(state.board.nodes.indexOf(node));
+          }
         }
       }
 
       const branchPlacements = [];
       for(const nodeIndex of nodePlacements){
         const branchesPerNode = [];
-        if(state.gameBoard.nodes[nodeIndex].getTopBranch() >= 0){
-          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getTopBranch()].getOwner() === Owner.NONE){
-            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getTopBranch());
+        if(state.board.nodes[nodeIndex].getTopBranch() >= 0){
+          if ( state.board.branches[state.board.nodes[nodeIndex].getTopBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.board.nodes[nodeIndex].getTopBranch());
           }
         }
 
-        if(state.gameBoard.nodes[nodeIndex].getRightBranch() >= 0){
-          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getRightBranch()].getOwner() === Owner.NONE){
-            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getRightBranch());
+        if(state.board.nodes[nodeIndex].getRightBranch() >= 0){
+          if ( state.board.branches[state.board.nodes[nodeIndex].getRightBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.board.nodes[nodeIndex].getRightBranch());
           }
         }
 
-        if(state.gameBoard.nodes[nodeIndex].getBottomBranch() >= 0){
-          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getBottomBranch()].getOwner() === Owner.NONE){
-            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getBottomBranch());
+        if(state.board.nodes[nodeIndex].getBottomBranch() >= 0){
+          if ( state.board.branches[state.board.nodes[nodeIndex].getBottomBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.board.nodes[nodeIndex].getBottomBranch());
           }
         }
 
-        if(state.gameBoard.nodes[nodeIndex].getLeftBranch() >= 0){
-          if ( state.gameBoard.branches[state.gameBoard.nodes[nodeIndex].getLeftBranch()].getOwner() === Owner.NONE){
-            branchesPerNode.push(state.gameBoard.nodes[nodeIndex].getLeftBranch());
+        if(state.board.nodes[nodeIndex].getLeftBranch() >= 0){
+          if ( state.board.branches[state.board.nodes[nodeIndex].getLeftBranch()].getOwner() === Owner.NONE){
+            branchesPerNode.push(state.board.nodes[nodeIndex].getLeftBranch());
           }
         }
 
         branchPlacements.push(branchesPerNode);
       }
-      
 
-      for(const nodeMoveIndex of nodePlacements){
-        for(const branchMoveIndex of branchPlacements[nodeMoveIndex]){
-          result.push(CoreLogic.moveToString({tradedIn:[''],received:'',nodesPlaced:[nodeMoveIndex],branchesPlaced:[branchMoveIndex]}));
+      for(let nodeMoveIndex = 0; nodeMoveIndex < nodePlacements.length; nodeMoveIndex++){
+        for(let branchMoveIndex = 0; branchMoveIndex < branchPlacements[nodeMoveIndex].length; branchMoveIndex++){
+          result.push(CoreLogic.moveToString({tradedIn:[],received:'',nodesPlaced:[nodePlacements[nodeMoveIndex]],branchesPlaced:[branchPlacements[nodeMoveIndex][branchMoveIndex]]}));
         }
       }
-
     }
     else{
+
+      
 
       let redAvailable:number;
       let blueAvailable:number;
@@ -99,20 +107,86 @@ export class CoreLogic {
       let yellowAvailable:number;
       let playerOwner:Owner;
 
-      if(state.currentPlayer === 1){
-        redAvailable = state.player1.redResources;
-        blueAvailable = state.player1.blueResources;
-        greenAvailable = state.player1.greenResources;
-        yellowAvailable = state.player1.yellowResources;
-        playerOwner = Owner.PLAYERONE;
+      if(!inSimulation){
+        if(state.playerNumber === 2){
+          if(state.player1.numNodesPlaced === 1 && state.player2.numNodesPlaced === 1){
+
+            // state.player2.redResources += state.player2.redPerTurn;
+            // state.player2.blueResources += state.player2.bluePerTurn;
+            // state.player2.greenResources += state.player2.greenPerTurn;
+            // state.player2.yellowResources += state.player2.yellowPerTurn;
+
+            redAvailable = state.player2.redResources;
+            blueAvailable = state.player2.blueResources;
+            greenAvailable = state.player2.greenResources;
+            yellowAvailable = state.player2.yellowResources;
+
+            playerOwner = Owner.PLAYERTWO;
+          }
+          else{
+
+            // state.player1.redResources += state.player1.redPerTurn;
+            // state.player1.blueResources += state.player1.bluePerTurn;
+            // state.player1.greenResources += state.player1.greenPerTurn;
+            // state.player1.yellowResources += state.player1.yellowPerTurn;
+
+            redAvailable = state.player1.redResources;
+            blueAvailable = state.player1.blueResources;
+            greenAvailable = state.player1.greenResources;
+            yellowAvailable = state.player1.yellowResources;
+
+            playerOwner = Owner.PLAYERONE;
+          }
+        }
+        else{
+          
+          // state.player2.redResources += state.player2.redPerTurn;
+          // state.player2.blueResources += state.player2.bluePerTurn;
+          // state.player2.greenResources += state.player2.greenPerTurn;
+          // state.player2.yellowResources += state.player2.yellowPerTurn;
+
+          redAvailable = state.player2.redResources;
+          blueAvailable = state.player2.blueResources;
+          greenAvailable = state.player2.greenResources;
+          yellowAvailable = state.player2.yellowResources;
+
+          playerOwner = Owner.PLAYERTWO;
+
+        }
       }
       else{
-        redAvailable = state.player2.redResources;
-        blueAvailable = state.player2.blueResources;
-        greenAvailable = state.player2.greenResources;
-        yellowAvailable = state.player2.yellowResources;
-        playerOwner = Owner.PLAYERTWO;
+        if(state.playerNumber === 1){
+
+          // state.player1.redResources += state.player1.redPerTurn;
+          // state.player1.blueResources += state.player1.bluePerTurn;
+          // state.player1.greenResources += state.player1.greenPerTurn;
+          // state.player1.yellowResources += state.player1.yellowPerTurn;
+
+          redAvailable = state.player1.redResources;
+          blueAvailable = state.player1.blueResources;
+          greenAvailable = state.player1.greenResources;
+          yellowAvailable = state.player1.yellowResources;
+
+          playerOwner = Owner.PLAYERONE;
+          
+        }
+        else{
+          
+          // state.player2.redResources += state.player2.redPerTurn;
+          // state.player2.blueResources += state.player2.bluePerTurn;
+          // state.player2.greenResources += state.player2.greenPerTurn;
+          // state.player2.yellowResources += state.player2.yellowPerTurn;
+
+          redAvailable = state.player2.redResources;
+          blueAvailable = state.player2.blueResources;
+          greenAvailable = state.player2.greenResources;
+          yellowAvailable = state.player2.yellowResources;
+
+          playerOwner = Owner.PLAYERTWO;
+
+        }
       }
+
 
       //general moves
       //Step 1: trade
@@ -137,26 +211,55 @@ export class CoreLogic {
         yellowStringArray.push('Y');
       }
 
-
       //determine possible trades for red
       const tradeForRed = blueStringArray.slice();
-      tradeForRed.concat(greenStringArray,yellowStringArray);
+      for(const green of greenStringArray){
+        tradeForRed.push(green);
+      }
+      for(const yellow of yellowStringArray){
+        tradeForRed.push(yellow);
+      }
+      
       const tradeForRedCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForRed,3));
+      
 
       //determine possible trades for blue
       const tradeForBlue = redStringArray.slice();
-      tradeForBlue.concat(greenStringArray,yellowStringArray);
+      for(const green of greenStringArray){
+        tradeForBlue.push(green);
+      }
+      for(const yellow of yellowStringArray){
+        tradeForBlue.push(yellow);
+      }
+      
       const tradeForBlueCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForBlue,3));
 
       //determine possible trades for green
       const tradeForGreen = blueStringArray.slice();
-      tradeForGreen.concat(redStringArray,yellowStringArray);
+      for(const red of redStringArray){
+        tradeForGreen.push(red);
+      }
+      for(const yellow of yellowStringArray){
+        tradeForGreen.push(yellow);
+      }
+      
       const tradeForGreenCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForGreen,3));
 
       //determine possible trades for yellow
       const tradeForYellow = blueStringArray.slice();
-      tradeForYellow.concat(greenStringArray,redStringArray);
+      for(const green of greenStringArray){
+        tradeForYellow.push(green);
+      }
+      for(const red of redStringArray){
+        tradeForYellow.push(red);
+      }
+      
       const tradeForYellowCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForYellow,3));
+
+      /*console.log({redTrades:JSON.stringify(tradeForRedCombinations),
+        blueTrades:JSON.stringify(tradeForBlueCombinations),
+        greenTrades:JSON.stringify(tradeForGreenCombinations),
+        yellowTrades:JSON.stringify(tradeForYellowCombinations)});*/
 
       //apply trades and pick piece locations
       let redTemp = redAvailable;
@@ -164,50 +267,95 @@ export class CoreLogic {
       let greenTemp = greenAvailable;
       let yellowTemp = yellowAvailable;
 
+
       for(const trade of tradeForRedCombinations){
 
-        trade.forEach((color)=>{
-          if(color === 'B'){
-            blueTemp--;
+        for(const resource of trade){
+          switch(resource){
+            case 'B':
+              blueTemp--;
+              break;
+            case 'G':
+              greenTemp--;
+              break;
+            case 'Y':
+              yellowTemp--;
+              break;
           }
-          else if(color === 'G'){
-            greenTemp--;
-          }
-          else if(color === 'Y'){
-            yellowTemp--;
-          }
-        });
+        }
+        
 
         redTemp++;
-        let possibleBranchIndices:number[] = [];
-        let possibleNodeIndices:number[] = [];
+        if(blueTemp >= redTemp){
+          let possibleBranchIndices:number[] = [];
+          let possibleNodeIndices:number[] = [];
 
-        const numPossibleBranches = Math.floor((redTemp+blueTemp) / 2);
-        const numPossibleNodes = Math.floor((greenTemp+yellowTemp)/4);
-
-        const branchBoard = JSON.parse(JSON.stringify(state.gameBoard));
-        for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
-          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
-        }
-
-        const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
-
-        const nodeBoard = JSON.parse(JSON.stringify(state.gameBoard));
-        for(const branchCombo of possibleBranchCombinations){
-          for(const branchIndex of branchCombo){
-            nodeBoard.branches[branchIndex].setOwner(playerOwner);
+          let numPossibleBranches:number;
+          const redBlueDiff = redTemp - blueTemp;
+    
+          if(redBlueDiff === 0){
+            numPossibleBranches = redTemp;
           }
-          for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
-            possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+          else if(Math.sign(redBlueDiff) === 1){
+            numPossibleBranches = redTemp - Math.abs(redBlueDiff);
           }
-
-          const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
-          for(const nodeCombo of possibleNodeCombinations){
-            result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+          else{
+            numPossibleBranches = blueTemp - Math.abs(redBlueDiff);
           }
+    
           
-          for(const branchIndex of branchCombo){
-            nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+    
+          let numPossibleNodes:number;
+          const greenNum = (greenTemp - (greenTemp % 2))/2;
+          const yellowNum = (yellowTemp - (yellowTemp % 2))/2;
+          const greenYellowDiff = greenNum - yellowNum;
+          if(greenYellowDiff === 0){
+            numPossibleNodes = greenNum;
+          }
+          else if(Math.sign(greenYellowDiff) === 1){
+            numPossibleNodes = greenNum - Math.abs(greenYellowDiff);
+          }
+          else{
+            numPossibleNodes = yellowNum - Math.abs(greenYellowDiff);
+          }
+
+          
+
+          const branchBoard = CoreLogic.cloneGameBoard(state.board);
+
+          for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
+            possibleBranchIndices=CoreLogic.getValidBranchIndices(state,playerOwner,branchBoard);
+          }
+
+          const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
+
+          const nodeBoard = CoreLogic.cloneGameBoard(state.board);
+          if(possibleBranchCombinations.length > 0){
+            for(const branchCombo of possibleBranchCombinations){
+              for(const branchIndex of branchCombo){
+                nodeBoard.branches[branchIndex].setOwner(playerOwner);
+              }
+              for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
+                possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+              }
+
+              const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+              if(possibleNodeCombinations.length > 0){
+                for(const nodeCombo of possibleNodeCombinations){
+                  result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+                }
+              }
+              else{
+                result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:[],branchesPlaced:branchCombo}));
+              }
+              
+              for(const branchIndex of branchCombo){
+                nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+              }
+            }
+          }
+          else{
+            result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:[],branchesPlaced:[]}));
           }
         }
         redTemp = redAvailable;
@@ -218,51 +366,93 @@ export class CoreLogic {
 
       for(const trade of tradeForBlueCombinations){
 
-        trade.forEach((color)=>{
-          if(color === 'R'){
-            redTemp--;
+        for(const resource of trade){
+          switch(resource){
+            case 'R':
+              redTemp--;
+              break;
+            case 'G':
+              greenTemp--;
+              break;
+            case 'Y':
+              yellowTemp--;
+              break;
           }
-          else if(color === 'G'){
-            greenTemp--;
-          }
-          else if(color === 'Y'){
-            yellowTemp--;
-          }
-        });
+        }
 
         blueTemp++;
-        let possibleBranchIndices:number[] = [];
-        let possibleNodeIndices:number[] = [];
+        if(redTemp >= blueTemp){
+          let possibleBranchIndices:number[] = [];
+          let possibleNodeIndices:number[] = [];
 
-        const numPossibleBranches = Math.floor((redTemp+blueTemp) / 2);
-        const numPossibleNodes = Math.floor((greenTemp+yellowTemp)/4);
-
-        const branchBoard = JSON.parse(JSON.stringify(state.gameBoard));
-        for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
-          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
-        }
-
-        const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
-
-        const nodeBoard = JSON.parse(JSON.stringify(state.gameBoard));
-        for(const branchCombo of possibleBranchCombinations){
-          for(const branchIndex of branchCombo){
-            nodeBoard.branches[branchIndex].setOwner(playerOwner);
+          let numPossibleBranches:number;
+          const redBlueDiff = redTemp - blueTemp;
+    
+          if(redBlueDiff === 0){
+            numPossibleBranches = redTemp;
           }
-          for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
-            possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+          else if(Math.sign(redBlueDiff) === 1){
+            numPossibleBranches = redTemp - Math.abs(redBlueDiff);
           }
-
-          const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
-          for(const nodeCombo of possibleNodeCombinations){
-            result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+          else{
+            numPossibleBranches = blueTemp - Math.abs(redBlueDiff);
           }
+    
           
-          for(const branchIndex of branchCombo){
-            nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+    
+          let numPossibleNodes:number;
+          const greenNum = (greenTemp - (greenTemp % 2))/2;
+          const yellowNum = (yellowTemp - (yellowTemp % 2))/2;
+          const greenYellowDiff = greenNum - yellowNum;
+          if(greenYellowDiff === 0){
+            numPossibleNodes = greenNum;
+          }
+          else if(Math.sign(greenYellowDiff) === 1){
+            numPossibleNodes = greenNum - Math.abs(greenYellowDiff);
+          }
+          else{
+            numPossibleNodes = yellowNum - Math.abs(greenYellowDiff);
+          }
+
+          
+
+          const branchBoard = CoreLogic.cloneGameBoard(state.board);
+
+          for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
+            possibleBranchIndices=CoreLogic.getValidBranchIndices(state,playerOwner,branchBoard);
+          }
+
+          const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
+
+          const nodeBoard = CoreLogic.cloneGameBoard(state.board);
+          if(possibleBranchCombinations.length > 0){
+            for(const branchCombo of possibleBranchCombinations){
+              for(const branchIndex of branchCombo){
+                nodeBoard.branches[branchIndex].setOwner(playerOwner);
+              }
+              for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
+                possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+              }
+
+              const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+              if(possibleNodeCombinations.length > 0){
+                for(const nodeCombo of possibleNodeCombinations){
+                  result.push(CoreLogic.moveToString({tradedIn:trade,received:'B',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+                }
+              }
+              else{
+                result.push(CoreLogic.moveToString({tradedIn:trade,received:'B',nodesPlaced:[],branchesPlaced:branchCombo}));
+              }
+              
+              for(const branchIndex of branchCombo){
+                nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+              }
+            }
+          }
+          else{
+            result.push(CoreLogic.moveToString({tradedIn:trade,received:'B',nodesPlaced:[],branchesPlaced:[]}));
           }
         }
-
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
@@ -271,51 +461,93 @@ export class CoreLogic {
 
       for(const trade of tradeForGreenCombinations){
 
-        trade.forEach((color)=>{
-          if(color === 'B'){
-            blueTemp--;
+        for(const resource of trade){
+          switch(resource){
+            case 'B':
+              blueTemp--;
+              break;
+            case 'R':
+              redTemp--;
+              break;
+            case 'Y':
+              yellowTemp--;
+              break;
           }
-          else if(color === 'R'){
-            redTemp--;
-          }
-          else if(color === 'Y'){
-            yellowTemp--;
-          }
-        });
+        }
 
         greenTemp++;
-        let possibleBranchIndices:number[] = [];
-        let possibleNodeIndices:number[] = [];
+        if(yellowTemp >= greenTemp){
+          let possibleBranchIndices:number[] = [];
+          let possibleNodeIndices:number[] = [];
 
-        const numPossibleBranches = Math.floor((redTemp+blueTemp) / 2);
-        const numPossibleNodes = Math.floor((greenTemp+yellowTemp)/4);
-
-        const branchBoard = JSON.parse(JSON.stringify(state.gameBoard));
-        for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
-          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
-        }
-
-        const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
-
-        const nodeBoard = JSON.parse(JSON.stringify(state.gameBoard));
-        for(const branchCombo of possibleBranchCombinations){
-          for(const branchIndex of branchCombo){
-            nodeBoard.branches[branchIndex].setOwner(playerOwner);
+          let numPossibleBranches:number;
+          const redBlueDiff = redTemp - blueTemp;
+    
+          if(redBlueDiff === 0){
+            numPossibleBranches = redTemp;
           }
-          for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
-            possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+          else if(Math.sign(redBlueDiff) === 1){
+            numPossibleBranches = redTemp - Math.abs(redBlueDiff);
           }
-
-          const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
-          for(const nodeCombo of possibleNodeCombinations){
-            result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+          else{
+            numPossibleBranches = blueTemp - Math.abs(redBlueDiff);
           }
+    
           
-          for(const branchIndex of branchCombo){
-            nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+    
+          let numPossibleNodes:number;
+          const greenNum = (greenTemp - (greenTemp % 2))/2;
+          const yellowNum = (yellowTemp - (yellowTemp % 2))/2;
+          const greenYellowDiff = greenNum - yellowNum;
+          if(greenYellowDiff === 0){
+            numPossibleNodes = greenNum;
+          }
+          else if(Math.sign(greenYellowDiff) === 1){
+            numPossibleNodes = greenNum - Math.abs(greenYellowDiff);
+          }
+          else{
+            numPossibleNodes = yellowNum - Math.abs(greenYellowDiff);
+          }
+
+          
+
+          const branchBoard = CoreLogic.cloneGameBoard(state.board);
+
+          for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
+            possibleBranchIndices=CoreLogic.getValidBranchIndices(state,playerOwner,branchBoard);
+          }
+
+          const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
+
+          const nodeBoard = CoreLogic.cloneGameBoard(state.board);
+          if(possibleBranchCombinations.length > 0){
+            for(const branchCombo of possibleBranchCombinations){
+              for(const branchIndex of branchCombo){
+                nodeBoard.branches[branchIndex].setOwner(playerOwner);
+              }
+              for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
+                possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+              }
+
+              const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+              if(possibleNodeCombinations.length > 0){
+                for(const nodeCombo of possibleNodeCombinations){
+                  result.push(CoreLogic.moveToString({tradedIn:trade,received:'G',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+                }
+              }
+              else{
+                result.push(CoreLogic.moveToString({tradedIn:trade,received:'G',nodesPlaced:[],branchesPlaced:branchCombo}));
+              }
+            
+              for(const branchIndex of branchCombo){
+                nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+              }
+            }
+          }
+          else{
+            result.push(CoreLogic.moveToString({tradedIn:trade,received:'G',nodesPlaced:[],branchesPlaced:[]}));
           }
         }
-
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
@@ -324,58 +556,171 @@ export class CoreLogic {
 
       for(const trade of tradeForYellowCombinations){
 
-        trade.forEach((color)=>{
-          if(color === 'B'){
-            blueTemp--;
+        for(const resource of trade){
+          switch(resource){
+            case 'B':
+              blueTemp--;
+              break;
+            case 'G':
+              greenTemp--;
+              break;
+            case 'R':
+              redTemp--;
+              break;
           }
-          else if(color === 'G'){
-            greenTemp--;
-          }
-          else if(color === 'R'){
-            redTemp--;
-          }
-        });
+        }
 
         yellowTemp++;
-        let possibleBranchIndices:number[] = [];
-        let possibleNodeIndices:number[] = [];
+        if(greenTemp >= yellowTemp){
+          let possibleBranchIndices:number[] = [];
+          let possibleNodeIndices:number[] = [];
 
-        const numPossibleBranches = Math.floor((redTemp+blueTemp) / 2);
-        const numPossibleNodes = Math.floor((greenTemp+yellowTemp)/4);
-
-        const branchBoard = JSON.parse(JSON.stringify(state.gameBoard));
-        for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
-          possibleBranchIndices=CoreLogic.getValidBranchIndices(playerOwner,branchBoard);
-        }
-
-        const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
-
-        const nodeBoard = JSON.parse(JSON.stringify(state.gameBoard));
-        for(const branchCombo of possibleBranchCombinations){
-          for(const branchIndex of branchCombo){
-            nodeBoard.branches[branchIndex].setOwner(playerOwner);
+          let numPossibleBranches:number;
+          const redBlueDiff = redTemp - blueTemp;
+    
+          if(redBlueDiff === 0){
+            numPossibleBranches = redTemp;
           }
-          for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
-            possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+          else if(Math.sign(redBlueDiff) === 1){
+            numPossibleBranches = redTemp - Math.abs(redBlueDiff);
           }
-
-          const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
-          for(const nodeCombo of possibleNodeCombinations){
-            result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+          else{
+            numPossibleBranches = blueTemp - Math.abs(redBlueDiff);
           }
+    
           
-          for(const branchIndex of branchCombo){
-            nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+    
+          let numPossibleNodes:number;
+          const greenNum = (greenTemp - (greenTemp % 2))/2;
+          const yellowNum = (yellowTemp - (yellowTemp % 2))/2;
+          const greenYellowDiff = greenNum - yellowNum;
+          if(greenYellowDiff === 0){
+            numPossibleNodes = greenNum;
+          }
+          else if(Math.sign(greenYellowDiff) === 1){
+            numPossibleNodes = greenNum - Math.abs(greenYellowDiff);
+          }
+          else{
+            numPossibleNodes = yellowNum - Math.abs(greenYellowDiff);
+          }
+
+          
+
+          const branchBoard = CoreLogic.cloneGameBoard(state.board);
+
+          for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
+            possibleBranchIndices=CoreLogic.getValidBranchIndices(state,playerOwner,branchBoard);
+          }
+
+          const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
+
+          const nodeBoard = CoreLogic.cloneGameBoard(state.board);
+          if(possibleBranchCombinations.length > 0){
+            for(const branchCombo of possibleBranchCombinations){
+              for(const branchIndex of branchCombo){
+                nodeBoard.branches[branchIndex].setOwner(playerOwner);
+              }
+              for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
+                possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+              }
+
+              const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+              if(possibleNodeCombinations.length > 0){
+                for(const nodeCombo of possibleNodeCombinations){
+                  result.push(CoreLogic.moveToString({tradedIn:trade,received:'Y',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+                }
+              }
+              else{
+                result.push(CoreLogic.moveToString({tradedIn:trade,received:'Y',nodesPlaced:[],branchesPlaced:branchCombo}));
+              }
+              
+              for(const branchIndex of branchCombo){
+                nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+              }
+            }
+          }
+          else{
+            result.push(CoreLogic.moveToString({tradedIn:trade,received:'Y',nodesPlaced:[],branchesPlaced:[]}));
           }
         }
-
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
         yellowTemp = yellowAvailable;
       }
 
+      
+      const noTrade:string[] = [];
+      let possibleBranchIndices:number[] = [];
+      let possibleNodeIndices:number[] = [];
 
+      let numPossibleBranches:number;
+      const redBlueDiff = redTemp - blueTemp;
+
+      if(redBlueDiff === 0){
+        numPossibleBranches = redTemp;
+      }
+      else if(Math.sign(redBlueDiff) === 1){
+        numPossibleBranches = redTemp - Math.abs(redBlueDiff);
+      }
+      else{
+        numPossibleBranches = blueTemp - Math.abs(redBlueDiff);
+      }
+
+      
+
+      let numPossibleNodes:number;
+      const greenNum = (greenTemp - (greenTemp % 2))/2;
+      const yellowNum = (yellowTemp - (yellowTemp % 2))/2;
+      const greenYellowDiff = greenNum - yellowNum;
+      if(greenYellowDiff === 0){
+        numPossibleNodes = greenNum;
+      }
+      else if(Math.sign(greenYellowDiff) === 1){
+        numPossibleNodes = greenNum - Math.abs(greenYellowDiff);
+      }
+      else{
+        numPossibleNodes = yellowNum - Math.abs(greenYellowDiff);
+      }
+
+      
+
+      const branchBoard = CoreLogic.cloneGameBoard(state.board);
+
+      for(let numBranches = 0; numBranches < numPossibleBranches; numBranches++){
+        possibleBranchIndices=CoreLogic.getValidBranchIndices(state,playerOwner,branchBoard);
+      }
+
+      const possibleBranchCombinations = CoreLogic.kNumberCombinations(possibleBranchIndices,numPossibleBranches);
+
+      const nodeBoard = CoreLogic.cloneGameBoard(state.board);
+
+      for(const branchCombo of possibleBranchCombinations){
+        for(const branchIndex of branchCombo){
+          nodeBoard.branches[branchIndex].setOwner(playerOwner);
+        }
+        for(let numNodes = 0; numNodes < numPossibleNodes; numNodes++){
+          possibleNodeIndices=CoreLogic.getValidNodeIndices(playerOwner,nodeBoard);
+        }
+
+        const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+        if(possibleNodeCombinations.length > 0){
+          for(const nodeCombo of possibleNodeCombinations){
+            result.push(CoreLogic.moveToString({tradedIn:noTrade,received:'',nodesPlaced:nodeCombo,branchesPlaced:branchCombo}));
+          }
+        }
+        else{
+          result.push(CoreLogic.moveToString({tradedIn:noTrade,received:'',nodesPlaced:[],branchesPlaced:branchCombo}));
+        }
+        
+        for(const branchIndex of branchCombo){
+          nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+        }
+      }
+    }
+
+    if(result.length === 0){
+      result.push(';;');
     }
     
     return result;
@@ -385,296 +730,166 @@ export class CoreLogic {
     const result:number[] = [];
 
     for(const node of gameBoard.nodes){
-      if (node.getOwner() === Owner.NONE && (gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getTopBranch()].getOwner() === player ||
-      gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getLeftBranch()].getOwner() === player ||
-      gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getBottomBranch()].getOwner() === player ||
-      gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getRightBranch()].getOwner() === player)) {
-        result.push(gameBoard.nodes.indexOf(node));
+
+      if (node.getOwner() === Owner.NONE){
+        if (gameBoard.nodes[gameBoard.nodes.indexOf(node)].getTopBranch() !== -1 &&
+          gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getTopBranch()].getOwner() === player) {
+          result.push(gameBoard.nodes.indexOf(node));
+        }
+        else if (gameBoard.nodes[gameBoard.nodes.indexOf(node)].getRightBranch() !== -1 &&
+        gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getRightBranch()].getOwner() === player) {
+          result.push(gameBoard.nodes.indexOf(node));
+        } 
+        else if (gameBoard.nodes[gameBoard.nodes.indexOf(node)].getBottomBranch() !== -1 &&
+        gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getBottomBranch()].getOwner() === player) {
+          result.push(gameBoard.nodes.indexOf(node));
+        } 
+        else if (gameBoard.nodes[gameBoard.nodes.indexOf(node)].getLeftBranch() !== -1 &&
+        gameBoard.branches[gameBoard.nodes[gameBoard.nodes.indexOf(node)].getLeftBranch()].getOwner() === player) {
+          result.push(gameBoard.nodes.indexOf(node));
+        } 
       }
     }
 
     return result;
   }
 
-  static getValidBranchIndices(player:Owner, gameBoard:GameBoard):number[]{
+  static getValidBranchIndices(state:State,player:Owner, gameBoard:GameBoard):number[]{
     const result:number[] = [];
+    
 
-    for(const branch of gameBoard.branches){
+    for(let branchIndex = 0; branchIndex < gameBoard.branches.length; branchIndex++){
 
-      if (branch.getOwner() === Owner.NONE && (gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch1')].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch2')].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch3')].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch4')].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch5')].getOwner() === player ||
-        gameBoard.branches[gameBoard.branches[gameBoard.branches.indexOf(branch)].getBranch('branch6')].getOwner() === player)) {
-        result.push(gameBoard.branches.indexOf(branch));
-        branch.setOwner(player);
+      const otherPlayer = player === Owner.PLAYERONE ? state.player2 : state.player1;
+      const currentPlayer = player === Owner.PLAYERONE ? state.player1 : state.player2;
+      let branchNotIntrudingInCapturedSpaces = false;
+      // fail condition: branch is adjacent to tile captured by other player
+      for (let i = 0; i < otherPlayer.capturedTiles.length; i++) {
+        const currentCapturedTile = gameBoard.tiles[otherPlayer.capturedTiles[i]];
+        if (currentCapturedTile.getTopBranch() === branchIndex ||
+          currentCapturedTile.getRightBranch() === branchIndex ||
+          currentCapturedTile.getBottomBranch() === branchIndex ||
+          currentCapturedTile.getLeftBranch() === branchIndex) {
+          branchNotIntrudingInCapturedSpaces = true;
+        }
+      }
+
+      // fail condition: branch is adjacent to tile captured by current player
+      for (let i = 0; i < currentPlayer.capturedTiles.length; i++) {
+        const currentCapturedTile = gameBoard.tiles[currentPlayer.capturedTiles[i]];
+        if (currentCapturedTile.getTopBranch() === branchIndex ||
+          currentCapturedTile.getRightBranch() === branchIndex ||
+          currentCapturedTile.getBottomBranch() === branchIndex ||
+          currentCapturedTile.getLeftBranch() === branchIndex) {
+          branchNotIntrudingInCapturedSpaces = true;
+        }
+      }
+
+      if (gameBoard.branches[branchIndex].getOwner() === Owner.NONE && !branchNotIntrudingInCapturedSpaces){
+        if(gameBoard.branches[branchIndex].getBranch('branch1') !== -1 &&
+          gameBoard.branches[gameBoard.branches[branchIndex].getBranch('branch1')].getOwner() === player){
+          result.push(branchIndex);
+          
+        } 
+        else if(gameBoard.branches[branchIndex].getBranch('branch2') !== -1 &&
+        gameBoard.branches[gameBoard.branches[branchIndex].getBranch('branch2')].getOwner() === player){
+          result.push(branchIndex);
+        } 
+        else if(gameBoard.branches[branchIndex].getBranch('branch3') !== -1 &&
+        gameBoard.branches[gameBoard.branches[branchIndex].getBranch('branch3')].getOwner() === player){
+          result.push(branchIndex);
+        } 
+        else if(gameBoard.branches[branchIndex].getBranch('branch4') !== -1 &&
+        gameBoard.branches[gameBoard.branches[branchIndex].getBranch('branch4')].getOwner() === player){
+          result.push(branchIndex);
+        } 
+        else if(gameBoard.branches[branchIndex].getBranch('branch5') !== -1 &&
+        gameBoard.branches[gameBoard.branches[branchIndex].getBranch('branch5')].getOwner() === player){
+          result.push(branchIndex);
+        } 
+        else if(gameBoard.branches[branchIndex].getBranch('branch6') !== -1 &&
+        gameBoard.branches[gameBoard.branches[branchIndex].getBranch('branch6')].getOwner() === player){
+          result.push(branchIndex);
+        } 
       }
 
     }
+
   
     return result;
   }
 
-  //return 1 if winner, -1 if loser, 0 if draw, -Infinity if there is no winner yet
-  static determineIfWinner(state:State):number {
-    let result = -Infinity;
+  //return 1 if player 1 is the winner, -1 if Player 2 is the winner, 0  if there is no winner yet
+  static getWinner(state:State):number {
+    let result = 0;
 
-    //Probably need to take into account possible draws with less than ten points
-    if(state.player1.currentScore >= 10 && state.player2.currentScore >= 10){
-      result = 0;
-    }
+    //console.log(state.currentPlayer,state.player1,state.player2);
 
-    if(state.currentPlayer === 1){
-      if(state.player1.currentScore >= 10){
-        result = state.currentPlayer;
-      }
-      
+    if(state.player1.currentScore >= 10){
+      result = 1;
     }
-    else{
-      if(state.player2.currentScore >= 10){
-        result = state.currentPlayer;
+    else if(state.player2.currentScore >= 10){
+      result = 2;
+    }
+    else if(state.player1.numNodesPlaced  >= 2 && state.player2.numNodesPlaced >= 2){
+      if(state.getPlayerNo() === 1 && (state.player1.redResources < 1 && state.player1.redPerTurn === 0 &&
+        state.player1.blueResources < 1 && state.player1.bluePerTurn === 0 && 
+        state.player1.greenResources < 2 && state.player1.greenPerTurn === 0 &&
+        state.player1.yellowResources < 2 && state.player1.yellowPerTurn === 0)){
+        result = 2;
+      }
+      else if(state.getPlayerNo() === 2 && (state.player2.redResources < 1 && state.player2.redPerTurn === 0 &&
+      state.player2.blueResources < 1 && state.player2.bluePerTurn === 0 && 
+      state.player2.greenResources < 2 && state.player2.greenPerTurn === 0 &&
+      state.player2.yellowResources < 2 && state.player2.yellowPerTurn === 0)){
+        result = 1;
       }
     }
+    
 
     return result;
   }
 
-  static nextState(state:State, move:string):State{
-    const newHistory = state.moveHistory.slice();
-    newHistory.push(move);
-    const newBoard = new GameBoard();
-    newBoard.tiles = state.gameBoard.tiles.slice();
-    newBoard.nodes = state.gameBoard.nodes.slice();
-    newBoard.branches = state.gameBoard.branches.slice();
 
-    
-    const newState = new State(newHistory, newBoard, state.currentPlayer, state.player1, state.player2, state.inInitialMoves);
-
-    if(state.currentPlayer === 1){
-      CoreLogic.applyMove(move,newState,newState.player1, Owner.PLAYERONE);
-    }
-    else{
-      CoreLogic.applyMove(move, newState,newState.player2, Owner.PLAYERTWO);
-    }
-
-    
-    //currentPlayer is 1 for player 1 and -1 for player 2
-    if(newState.moveHistory.length !== 2){
-      newState.currentPlayer = -newState.currentPlayer;
-    }
-
-    if(!newState.inInitialMoves){
-    //Next Player gets more resources
-      if(newState.currentPlayer === 1){
-        newState.player1.redResources += newState.player1.redPerTurn;
-        newState.player1.blueResources += newState.player1.bluePerTurn;
-        newState.player1.greenResources += newState.player1.greenPerTurn;
-        newState.player1.yellowResources += newState.player1.yellowPerTurn;
-      }
-      else{
-        newState.player2.redResources += newState.player2.redPerTurn;
-        newState.player2.blueResources += newState.player2.bluePerTurn;
-        newState.player2.greenResources += newState.player2.greenPerTurn;
-        newState.player2.yellowResources += newState.player2.yellowPerTurn;
-      }
-    }
-    
-    if(newState.moveHistory.length === 4){
-      newState.inInitialMoves = false;
-    }
-
-   
-    return newState;
-  }
-
-  static applyMove(move:string, state:State, affectedPlayer:Player, owner:Owner):void{
-
-    const moveObj:Move = CoreLogic.stringToMove(move);
-    for(const resource of moveObj.tradedIn){
-      if(resource === 'G'){
-        affectedPlayer.greenResources--;
-      }
-      else if (resource === 'Y'){
-        affectedPlayer.yellowResources--;
-      }
-      else if (resource === 'R'){
-        affectedPlayer.redResources--;
-      }
-      else if (resource === 'B'){
-        affectedPlayer.blueResources--;
-      }
-    }
-
-    if(moveObj.received === 'G'){
-      affectedPlayer.greenResources++;
-    }
-    else if (moveObj.received  === 'Y'){
-      affectedPlayer.yellowResources++;
-    }
-    else if (moveObj.received  === 'R'){
-      affectedPlayer.redResources++;
-    }
-    else if (moveObj.received  === 'B'){
-      affectedPlayer.blueResources++;
-    }
-
-    for(const branch of moveObj.branchesPlaced){
-      state.gameBoard.branches[branch].setOwner(owner);
-      affectedPlayer.redResources --;
-      affectedPlayer.blueResources --;
-    }
-
-    for(const node of moveObj.nodesPlaced){
-      state.gameBoard.nodes[node].setOwner(owner);
-      affectedPlayer.greenResources -= 2;
-      affectedPlayer.yellowResources -=2;
-      affectedPlayer.currentScore++;
-
-      if (state.gameBoard.nodes[node].getTopRightTile() !== -1) {
-        state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount++;
-        
-        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].nodeCount >
-            state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].maxNodes) {
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopRightTile()].isExhausted = true;
-          CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getTopRightTile(), true);
-        }
-      }
-
-      if (state.gameBoard.nodes[node].getBottomRightTile() !== -1) {
-        state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].nodeCount++;
-        
-        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].nodeCount >
-            state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].maxNodes) {
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomRightTile()].isExhausted = true;
-          CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getBottomRightTile(), true);
-        }
-      }
-
-      if (state.gameBoard.nodes[node].getBottomLeftTile() !== -1) {
-        state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].nodeCount++;
-
-        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].nodeCount >
-            state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].maxNodes) {
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getBottomLeftTile()].isExhausted = true;
-          CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getBottomLeftTile(), true);
-        }
-      }
-      
-      if (state.gameBoard.nodes[node].getTopLeftTile() !== -1) {
-        state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount++;
-
-        if (state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].nodeCount >
-            state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].maxNodes) {
-          state.gameBoard.tiles[state.gameBoard.nodes[node].getTopLeftTile()].isExhausted = true;
-          CoreLogic.tileExhaustion(state,state.gameBoard.nodes[node].getTopLeftTile(), true);
-        }
-      }
-    }
-
-
-
-    //captured tile and longest network point allocation
-
-  }
-
-  static tileExhaustion(state:State,tileNum: number, setAsExhausted: boolean): void {
-    // check for whichever nodes are already on the tile and decrement their *color*PerTurn
-    const currentTileColor = state.gameBoard.tiles[tileNum].color;
-    let functionName;
-    if (setAsExhausted){
-      functionName = (nodeOwner: Player, currentTileColor: TileColor) => {
-        switch (currentTileColor){
-          case TileColor.RED:
-            nodeOwner.redPerTurn--;
-            break;
-          case TileColor.BLUE:
-            nodeOwner.bluePerTurn--;
-            break;
-          case TileColor.YELLOW:
-            nodeOwner.yellowPerTurn--;
-            break;
-          case TileColor.GREEN:
-            nodeOwner.greenPerTurn--;
-            break;
-        }
-      };
-    }
-    else{
-      functionName = (nodeOwner: Player, currentTileColor: TileColor) =>{
-        switch (currentTileColor){
-          case TileColor.RED:
-            nodeOwner.redPerTurn++;
-            break;
-          case TileColor.BLUE:
-            nodeOwner.bluePerTurn++;
-            break;
-          case TileColor.YELLOW:
-            nodeOwner.yellowPerTurn++;
-            break;
-          case TileColor.GREEN:
-            nodeOwner.greenPerTurn++;
-            break;
-        }
-      };
-    }
-    
-    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(state.player1, currentTileColor);
-    }
-    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopRightNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName(state.player2, currentTileColor);
-    }
-
-    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(state.player1, currentTileColor);
-    }
-    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomRightNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName( state.player2, currentTileColor);
-    }
-
-    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(state.player1, currentTileColor);
-    }
-    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getBottomLeftNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName(state.player2, currentTileColor);
-    }
-
-    if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERONE) {
-      functionName(state.player1, currentTileColor);
-    }
-    else if (state.gameBoard.nodes[state.gameBoard.tiles[tileNum].getTopLeftNode()].getOwner() === Owner.PLAYERTWO) {
-      functionName(state.player2, currentTileColor);
-    }
-  }
-
-  
-
+ 
   static moveToString(move:Move):string{
     let result = '';
+    
 
     for(const resource of move.tradedIn){
       result += resource + ',';
     }
-    result += move.received + ';';
+
+    if(move.received === ''){
+      result += ';';
+    }
+    else{
+      result += move.received + ';';
+    }
 
     for(const node of move.nodesPlaced){
       result += node.toString();
 
-      if(node !== move.nodesPlaced[-1]){
+      if(node !== move.nodesPlaced[move.nodesPlaced.length-1]){
         result += ',';
       }
       else{
         result += ';';
       }
     }
+    if(move.nodesPlaced.length === 0){
+      result += ';';
+    }
 
     for(const branch of move.branchesPlaced){
-      result += branch.toString();
-
-      if(branch !== move.branchesPlaced[-1]){
+      if(move.branchesPlaced.indexOf(branch) !== 0){
         result += ',';
       }
+      result += branch.toString();
+    }
+
+    if(result === ''){
+      result = ';;';
     }
 
     return result; //result should be a string formatted like 'R,R,R,Y;8;3,18'
@@ -684,21 +899,48 @@ export class CoreLogic {
     const result:Move = {tradedIn:[],received:'',nodesPlaced:[],branchesPlaced:[]};
 
     const moveSections = moveString.split(';');
-
-    const trade = moveSections[0].split(',');
-    result.tradedIn.push(trade[0]);
-    result.tradedIn.push(trade[1]);
-    result.tradedIn.push(trade[2]);
-    result.received = trade[3];
-
-    const nodes = moveSections[1].split(',');
-    for(const node of nodes){
-      result.nodesPlaced.push(parseInt(node));
+    if(moveSections.length === 0){
+      result.tradedIn = [];
+      result.received = '';
+      result.nodesPlaced = [];
+      result.branchesPlaced = [];
     }
+    else{
+      const trade = moveSections[0].split(',');
+      if(trade.length > 0 && trade[0] !== ''){
+        result.tradedIn.push(trade[0]);
+        result.tradedIn.push(trade[1]);
+        result.tradedIn.push(trade[2]);
+        result.received = trade[3];
+      }
+      else{
+        result.tradedIn = [];
+        result.received = '';
+      }
 
-    const branches = moveSections[2].split(',');
-    for(const branch of branches){
-      result.branchesPlaced.push(parseInt(branch));
+    
+      if(moveSections[1] !== ''){
+        const nodes = moveSections[1].split(',');
+          
+        for(const node of nodes){
+          if(parseInt(node) !== undefined){
+            result.nodesPlaced.push(parseInt(node));
+          }
+        }
+
+      }
+      
+    
+      if(moveSections[2] !== ''){
+        const branches = moveSections[2].split(',');
+
+        for(const branch of branches){
+          if(parseInt(branch) !== undefined){
+            result.branchesPlaced.push(parseInt(branch));
+          }
+        }
+
+      }
     }
 
     return result;
@@ -798,5 +1040,128 @@ export class CoreLogic {
     uniqueStringArray.forEach(someFunction);
     
     return uniqueArray;
+  }
+
+  static clonePlayer(player:Player):Player{
+    const result = new Player();
+
+    result.redResources = player.redResources;
+    result.blueResources = player.blueResources;
+    result.greenResources = player.greenResources;
+    result.yellowResources = player.yellowResources;
+
+    result.redPerTurn = player.redPerTurn;
+    result.bluePerTurn = player.bluePerTurn;
+    result.greenPerTurn = player.greenPerTurn;
+    result.yellowPerTurn = player.yellowPerTurn;
+
+    result.hasTraded = player.hasTraded;
+
+    result.currentLength = player.currentLength;
+    result.currentLongest = player.currentLongest;
+    result.hasLongestNetwork = player.hasLongestNetwork;
+    result.ownedBranches = player.ownedBranches.slice();
+    result.branchScanner = player.branchScanner.slice();
+
+    result.numTilesCaptured = player.numTilesCaptured;
+    result.capturedTiles = player.capturedTiles.slice();
+
+    result.numNodesPlaced = player.numNodesPlaced;
+
+    result.currentScore = player.currentScore;
+
+    return result;
+  }
+
+  static cloneGameBoard(gameBoard:GameBoard):GameBoard{
+    const clonedGameBoard = new GameBoard();
+
+    const clonedTiles:Tile[] = [];
+    for(let i = 0; i < gameBoard.tiles.length; i++){
+      clonedTiles.push(CoreLogic.cloneTile(gameBoard.tiles[i]));
+    }
+
+    const clonedNodes:Node[] = [];
+    for(let i = 0; i < gameBoard.nodes.length; i++){
+      clonedNodes.push(CoreLogic.cloneNode(gameBoard.nodes[i]));
+    }
+
+    const clonedBranches:Branch[] = [];
+    for(let i = 0; i < gameBoard.branches.length; i++){
+      clonedBranches.push(CoreLogic.cloneBranch(gameBoard.branches[i]));
+    }
+
+    clonedGameBoard.tiles = clonedTiles;
+    clonedGameBoard.nodes = clonedNodes;
+    clonedGameBoard.branches = clonedBranches;
+
+    return clonedGameBoard;
+
+  }
+
+  static cloneTile(tile:Tile):Tile{
+
+    const clonedTile = new Tile();
+
+    clonedTile.color = tile.color;
+    clonedTile.isExhausted = tile.isExhausted;
+    clonedTile.maxNodes = tile.maxNodes;
+    clonedTile.nodeCount = tile.nodeCount;
+
+    clonedTile.setTopLeftNode(tile.getTopLeftNode());
+    clonedTile.setTopRightNode(tile.getTopRightNode());
+    clonedTile.setBottomLeftNode(tile.getBottomLeftNode());
+    clonedTile.setBottomRightNode(tile.getBottomRightNode());
+
+    clonedTile.setTopBranch(tile.getTopBranch());
+    clonedTile.setLeftBranch(tile.getLeftBranch());
+    clonedTile.setBottomBranch(tile.getBottomBranch());
+    clonedTile.setRightBranch(tile.getRightBranch());
+
+    clonedTile.setTopTile(tile.getTopTile());
+    clonedTile.setLeftTile(tile.getLeftTile());
+    clonedTile.setBottomTile(tile.getBottomTile());
+    clonedTile.setRightTile(tile.getRightTile());
+
+    return clonedTile;
+
+  }
+
+  static cloneBranch(branch:Branch):Branch{
+    const clonedBranch = new Branch();
+
+    clonedBranch.setOwner(branch.getOwner());
+
+    clonedBranch.setBranch("branch1",branch.getBranch("branch1"));
+    clonedBranch.setBranch("branch2",branch.getBranch("branch2"));
+    clonedBranch.setBranch("branch3",branch.getBranch("branch3"));
+    clonedBranch.setBranch("branch4",branch.getBranch("branch4"));
+    clonedBranch.setBranch("branch5",branch.getBranch("branch5"));
+    clonedBranch.setBranch("branch6",branch.getBranch("branch6"));
+
+    return clonedBranch;
+  }
+
+  static cloneNode(node:Node):Node{
+    const clonedNode = new Node();
+
+    clonedNode.setOwner(node.getOwner());
+    
+    clonedNode.setRedProvided(node.getRedProvided());
+    clonedNode.setBlueProvided(node.getBlueProvided());
+    clonedNode.setGreenProvided(node.getGreenProvided());
+    clonedNode.setYellowProvided(node.getYellowProvided());
+
+    clonedNode.setTopBranch(node.getTopBranch());
+    clonedNode.setLeftBranch(node.getLeftBranch());
+    clonedNode.setBottomBranch(node.getBottomBranch());
+    clonedNode.setRightBranch(node.getRightBranch());
+
+    clonedNode.setTopLeftTile(node.getTopLeftTile());
+    clonedNode.setTopRightTile(node.getTopRightTile());
+    clonedNode.setBottomRightTile(node.getBottomRightTile());
+    clonedNode.setBottomLeftTile(node.getBottomLeftTile());
+
+    return clonedNode;
   }
 }

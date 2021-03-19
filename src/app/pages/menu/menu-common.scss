@@ -16,7 +16,7 @@
   }
 
   .submenu-header {
-    @apply w-full text-6xl font-bold tracking-wider p-5 mb-10 border-b border-gray-600;
+    @apply w-full text-6xl font-bold tracking-wider p-5 mb-10 border-b border-gray-900 bg-black bg-opacity-75;
   }
 
   .submenu-body {
@@ -24,7 +24,7 @@
   }
 
   .submenu-footer {
-    @apply flex flex-col items-center justify-center mx-auto w-full p-5 border-t border-gray-600 absolute bottom-0;
+    @apply flex flex-col items-center justify-center mx-auto w-full p-5 border-t border-gray-900 absolute bottom-0 bg-black bg-opacity-75;
   }
 }
 
@@ -38,6 +38,7 @@
 }
 
 .bg-mountains {
-  background: url('/assets/menu/bg_main.png');
+  background: url('/assets/menu/bg_main.png') fixed repeat-x bottom;
+  background-size: cover;
   opacity: 0.75;
 }

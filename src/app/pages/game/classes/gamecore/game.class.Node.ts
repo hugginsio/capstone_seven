@@ -3,17 +3,20 @@ import { Owner } from '../../enums/game.enums';
 
 export class Node {
   private ownedBy: Owner;
-    
+  
+  // resources avalible from node
   private redProvided: number;
   private blueProvided: number;
   private greenProvided: number;
   private yellowProvided: number;
   
+  // branches adjacent to node
   private topBranch: number;
   private rightBranch: number;
   private bottomBranch: number;
   private leftBranch: number;
   
+  // tiles diagonally related to node
   private topLeftTile: number;
   private topRightTile: number;
   private bottomLeftTile: number;

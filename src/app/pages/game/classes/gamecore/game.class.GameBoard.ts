@@ -8,6 +8,7 @@ export class GameBoard {
   nodes: Node[];
   branches: Branch[];
 
+  // randomizes array of tiles and assigns to tiles[]
   randomizeColorsAndMaxNodes(): void { 
     const tileColorsAndMax = this.shuffleArray(this.getTileColorsAndMax());
 
@@ -17,7 +18,7 @@ export class GameBoard {
     }
   }
 
-  /* Randomize array in-place using Durstenfeld shuffle algorithm */
+  // Randomize array in-place using Durstenfeld shuffle algorithm
   shuffleArray(array: Array<any>): Array<any> {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -29,58 +30,67 @@ export class GameBoard {
     return array;
   }
 
+  // array of tile pieces to make the board
   getTileColorsAndMax(): Array<Tile>{
-    const colorTilesAndMax = Array<Tile>(13);
+    const colorTilesAndMax = new Array<Tile>(13);
 
     for (let i = 0; i < colorTilesAndMax.length; i++) {
       colorTilesAndMax[i] = new Tile();
-      
     }
 
     colorTilesAndMax[0].maxNodes = 1;
     colorTilesAndMax[0].color = TileColor.RED;
 
+    colorTilesAndMax[1] = new Tile();
     colorTilesAndMax[1].maxNodes = 2;
     colorTilesAndMax[1].color = TileColor.RED;
 
+    colorTilesAndMax[2] = new Tile();
     colorTilesAndMax[2].maxNodes = 3;
     colorTilesAndMax[2].color = TileColor.RED;
 
     //
-
+    colorTilesAndMax[3] = new Tile();
     colorTilesAndMax[3].maxNodes = 1;
     colorTilesAndMax[3].color = TileColor.BLUE;
 
+    colorTilesAndMax[4] = new Tile();
     colorTilesAndMax[4].maxNodes = 2;
     colorTilesAndMax[4].color = TileColor.BLUE;
 
+    colorTilesAndMax[5] = new Tile();
     colorTilesAndMax[5].maxNodes = 3;
     colorTilesAndMax[5].color = TileColor.BLUE;
 
     //
-
+    colorTilesAndMax[6] = new Tile();
     colorTilesAndMax[6].maxNodes = 1;
     colorTilesAndMax[6].color = TileColor.GREEN;
 
+    colorTilesAndMax[7] = new Tile();
     colorTilesAndMax[7].maxNodes = 2;
     colorTilesAndMax[7].color = TileColor.GREEN;
 
+    colorTilesAndMax[8] = new Tile();
     colorTilesAndMax[8].maxNodes = 3;
     colorTilesAndMax[8].color = TileColor.GREEN;
 
     //
-
+    colorTilesAndMax[9] = new Tile();
     colorTilesAndMax[9].maxNodes = 1;
     colorTilesAndMax[9].color = TileColor.YELLOW;
 
+    colorTilesAndMax[10] = new Tile();
     colorTilesAndMax[10].maxNodes = 2;
     colorTilesAndMax[10].color = TileColor.YELLOW;
 
+    colorTilesAndMax[11] = new Tile();
     colorTilesAndMax[11].maxNodes = 3;
     colorTilesAndMax[11].color = TileColor.YELLOW;
 
     //
       
+    colorTilesAndMax[12] = new Tile();
     colorTilesAndMax[12].maxNodes = 0;
     colorTilesAndMax[12].color = TileColor.BLANK;
 
@@ -88,18 +98,18 @@ export class GameBoard {
   }
 
   constructor() {
+
     this.tiles = new Array<Tile>(13);
     this.nodes = new Array<Node>(24);
     this.branches = new Array<Branch>(36);
 
+    // populates game component arrays
     for (let i = 0; i < 36; i++) {
       this.branches[i] = new Branch();
     }
-
     for (let i = 0; i < 24; i++) {
       this.nodes[i] = new Node();
     }
-      
     for (let i = 0; i < 13; i++) {
       this.tiles[i] = new Tile();
     }
@@ -526,7 +536,9 @@ export class GameBoard {
     this.nodes[8].setTopLeftTile(1);
     this.nodes[8].setTopRightTile(2);
     this.nodes[8].setBottomLeftTile(5);
-    this.nodes[8].setBottomLeftTile(6);
+    this.nodes[8].setBottomRightTile(6);
+
+    
 
     this.nodes[9].setTopBranch(8);
     this.nodes[9].setRightBranch(13);
