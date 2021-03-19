@@ -32,9 +32,13 @@ export class GameNetworkingService {
     - Rematch Handshake (I haven't thought this out yet)
   */
 
-  public createTCPServer(board:string, isPlayer1:boolean): void {
+  public createTCPServer(): void {
     this.socket = io("http://localhost:8000");
     console.log("TCP Server Created!");
+    
+  }
+
+  public setGame(board:string, isPlayer1:boolean): void {
     this.socket.emit('create-lobby', {gameboard: board, isHostPlayer1: isPlayer1});
   }
 

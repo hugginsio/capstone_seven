@@ -23,6 +23,7 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     // instantiate class here
+    this.gamesList = new Array<NetworkGameInfo>();
     this.matchmakingService.initialize(this.username);
 
     this.matchmakingService.listen('you-connected').subscribe(() => {
@@ -53,7 +54,7 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
     //3. Create game server
     const board = '';
     const isPlayer1 = true;
-    this.networkingService.createTCPServer(board, isPlayer1);
+    this.networkingService.createTCPServer();
     this.initializeListeners();
 
     //4. Broadcast the game until someone joins
