@@ -1,3 +1,5 @@
+import { NetworkGameSettings } from "./NetworkGameSettings";
+
 const server = require('socket.io')(8000, {
   cors: {
     origin: true,
@@ -6,12 +8,11 @@ const server = require('socket.io')(8000, {
 });
 
 const users:any = {};
-let gameboard:string;
-let isHostPlayer1:boolean;
+let gameSettings:NetworkGameSettings;
 
 server.on('connection', (socket:any) => {
 
-  socket.emit("lobby-joined", {gameboard, isHostPlayer1});
+  //socket.emit("lobby-joined", gameSettings);
 
   socket.on('new-user', (username:string) => {
     users[socket.id] = username;
@@ -31,8 +32,11 @@ server.on('connection', (socket:any) => {
     delete users[socket.id];
   });
 
-  socket.on('create-lobby', (lobbyInfo:any) => {
-    gameboard = lobbyInfo.gameboard;
-    isHostPlayer1 = lobbyInfo.isPlayer1;
+  socket.on('create-lobby', (lobbyInfo: NetworkGameSettings) => {
+    gameSettings = lobbyInfo;
+  });
+
+  socket.on('ask-gameSettings', () => {
+    socket.emit('get-gameSettings', gameSettings);
   });
 });

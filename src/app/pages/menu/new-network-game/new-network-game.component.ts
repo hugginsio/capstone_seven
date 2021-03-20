@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { GameNetworkingService } from '../../networking/game-networking.service';
 import { MatchmakingService } from '../../networking/matchmaking.service';
 import { NetworkGameInfo } from './interfaces/new-network-game.interface';
+import { NetworkGameSettings } from '../../networking/NetworkGameSettings';
 
 @Component({
   selector: 'app-new-network-game',
@@ -12,6 +13,8 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
   private username: string;
   private list:any;
   private gamesList: Array<NetworkGameInfo>;
+  private gameSettings: NetworkGameSettings;
+
   constructor(
     private readonly matchmakingService: MatchmakingService,
     private readonly networkingService: GameNetworkingService
@@ -34,17 +37,26 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
       const oppUsername:string = gameInfo.username;
       const oppAddress:string = gameInfo.oppAddress;
       console.log(`${oppUsername} wants to play at ${oppAddress}`);
-      //append to arrary
-      this.gamesList.push({
-        host: oppUsername,
-        address: oppAddress
+
+      let isDuplicate = false;
+      this.gamesList.forEach(game => {
+        if(gameInfo.oppAddress === game.address)
+        {
+          isDuplicate = true;
+        }
       });
 
-      //Add a <div> to show the game on screen
-      // const messageElement = document.createElement('div');
-      // messageElement.innerText = `${oppUsername} wants to play at ${oppAddress}`;
-      // this.list.append(messageElement);
+      //append to arrary
+      if (!isDuplicate)
+      {
+        this.gamesList.push({
+          host: oppUsername,
+          address: oppAddress
+        });
+      }
+
     });
+
   }
 
   HostGame(): void {
@@ -67,19 +79,27 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
     this.networkingService.connectTCPserver(oppAddress);
 
     this.initializeListeners();
+    this.networkingService.getNetGameSettings();
   }
 
   initializeListeners(): void {
     this.networkingService.listen('lobby-joined').subscribe((gameInfo:any) => {
-      const board = gameInfo.gameboard;
-      const isHostP1 = gameInfo.isHostPlayer1;
-      
-      //Create network game using these settings
     });
 
     this.networkingService.listen('lobby-full').subscribe(() => {
       console.log('Lobby is full. Sucks bro');
     });
+   
+    this.networkingService.listen('get-gameSettings').subscribe((settings: NetworkGameSettings) => {
+      this.gameSettings = settings;
+      console.log(this.gameSettings);
+    });
+  }
+
+  startJoinedGame(): void {
+    //set game settings in storage
+    
+    //route to Game
   }
 
 }

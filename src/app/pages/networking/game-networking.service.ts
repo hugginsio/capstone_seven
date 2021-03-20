@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io } from 'socket.io-client';
+import { NetworkGameSettings } from './NetworkGameSettings';
 
 @Injectable({
   providedIn: 'root'
@@ -38,8 +39,8 @@ export class GameNetworkingService {
     
   }
 
-  public setGame(board:string, isPlayer1:boolean): void {
-    this.socket.emit('create-lobby', {gameboard: board, isHostPlayer1: isPlayer1});
+  public setGame(settings: NetworkGameSettings): void {
+    this.socket.emit('create-lobby', settings);
   }
 
   public connectTCPserver(serverIP: string): void {
@@ -53,5 +54,10 @@ export class GameNetworkingService {
 
   public sendChatMessage(message: string): void {
     this.socket.emit('send-chat-message', message);
+  }
+
+  public getNetGameSettings()
+  {
+    this.socket.emit('ask-gameSettings');
   }
 }

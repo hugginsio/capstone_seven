@@ -14,6 +14,7 @@ export class NewNetworkGameHostComponent implements OnInit {
   public firstPlayer: string;
   public boardSeed: string;
 
+  private isHostFirst: boolean;
   private isWaitingForPlayer = false;
   private isSettingUpGame = true;
   private readonly username: string = "Client McGee";
@@ -29,11 +30,12 @@ export class NewNetworkGameHostComponent implements OnInit {
     private readonly matchmakingService: MatchmakingService
   ) {
     this.firstPlayer = this.playerOneFirst;
+    this.isHostFirst = true;
 
     this.storageService.setContext('network');
     this.storageService.store('firstPlayer', this.firstPlayer);
   }
-  
+
   ngOnInit(): void {
     this.matchmakingService.initialize(this.username);
     this.networkingService.createTCPServer();
@@ -42,14 +44,17 @@ export class NewNetworkGameHostComponent implements OnInit {
       console.log("A opponent has connected");
       this.isWaitingForPlayer = false;
       this.subscription.unsubscribe();
+      this.routerService.navigate(['/game']);
     });
   }
 
   changeFirstPlayer(): void {
     if (this.firstPlayer === 'Player One Goes First') {
       this.firstPlayer = this.playerTwoFirst;
+      this.isHostFirst = false;
     } else {
       this.firstPlayer = this.playerOneFirst;
+      this.isHostFirst = true;
     }
 
     this.storageService.update('firstPlayer', this.firstPlayer);
@@ -58,6 +63,7 @@ export class NewNetworkGameHostComponent implements OnInit {
   startHosting(): void {
     // Set board seed before hosting begins
     this.storageService.update('board-seed', this.boardSeed);
+    this.networkingService.setGame({board : this.boardSeed, background: "BG1", isHostFirst: this.isHostFirst});
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
 

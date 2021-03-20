@@ -42,18 +42,18 @@ export class UDPWrapper {
     });
   }
 
-  public broadcastGame() {
+  public broadcastGame(): void {
     this.server.send(this.username, 0, this.username.length, 41234, this.broadcastIP);
   }
 
-  public setUsername(name: string) {
+  public setUsername(name: string): void {
     this.username = name;
   }
 
   private getNetworkInterface(): string {
-    let netInfo = os.networkInterfaces();
-    let interfaces = Object.keys(netInfo);
-    let platform = os.platform();
+    const netInfo = os.networkInterfaces();
+    const interfaces = Object.keys(netInfo);
+    const platform = os.platform();
     console.log(netInfo);
 
     if (platform === 'win32') {
