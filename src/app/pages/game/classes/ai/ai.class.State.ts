@@ -102,6 +102,65 @@ export class State {
 
     resultWeight += moveObj.nodesPlaced.length;
 
+    for(let n = 0; n < moveObj.nodesPlaced.length; n++){
+      const topRight = this.board.nodes[moveObj.nodesPlaced[n]].getTopRightTile();
+      const bottomRight = this.board.nodes[moveObj.nodesPlaced[n]].getBottomRightTile();
+      const bottomLeft = this.board.nodes[moveObj.nodesPlaced[n]].getBottomLeftTile();
+      const topLeft = this.board.nodes[moveObj.nodesPlaced[n]].getTopLeftTile();
+
+      if(topRight != -1){
+        if(!this.board.tiles[topRight].getIsExhaused()){
+          if(this.board.tiles[topRight].getCapturedBy() === currentOwner){
+            resultWeight ++;
+          }
+          else if(this.board.tiles[topRight].getCapturedBy() === Owner.NONE){
+            if(this.board.tiles[topRight].getNodeCount() <= this.board.tiles[topRight].getMaxNodes()){
+              resultWeight++;
+            }
+          }
+        }
+      }
+
+      if(bottomRight != -1){
+        if(!this.board.tiles[bottomRight].getIsExhaused()){
+          if(this.board.tiles[bottomRight].getCapturedBy() === currentOwner){
+            resultWeight ++;
+          }
+          else if(this.board.tiles[bottomRight].getCapturedBy() === Owner.NONE){
+            if(this.board.tiles[bottomRight].getNodeCount() <= this.board.tiles[bottomRight].getMaxNodes()){
+              resultWeight++;
+            }
+          }
+        }
+      }
+
+      if(bottomLeft != -1){
+        if(!this.board.tiles[bottomLeft].getIsExhaused()){
+          if(this.board.tiles[bottomLeft].getCapturedBy() === currentOwner){
+            resultWeight ++;
+          }
+          else if(this.board.tiles[bottomLeft].getCapturedBy() === Owner.NONE){
+            if(this.board.tiles[bottomLeft].getNodeCount() <= this.board.tiles[bottomLeft].getMaxNodes()){
+              resultWeight++;
+            }
+          }
+        }
+      }
+
+      if(topLeft != -1){
+        if(!this.board.tiles[topLeft].getIsExhaused()){
+          if(this.board.tiles[topLeft].getCapturedBy() === currentOwner){
+            resultWeight ++;
+          }
+          else if(this.board.tiles[topLeft].getCapturedBy() === Owner.NONE){
+            if(this.board.tiles[topLeft].getNodeCount() <= this.board.tiles[topLeft].getMaxNodes()){
+              resultWeight++;
+            }
+          }
+        }
+      }
+    }
+
     resultWeight += moveObj.branchesPlaced.length;
 
     for(let i = 0; i < moveObj.branchesPlaced.length; i++){
