@@ -36,7 +36,7 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
     this.matchmakingService.listen('game-found').subscribe((gameInfo: any) => {
       const oppUsername:string = gameInfo.username;
       const oppAddress:string = gameInfo.oppAddress;
-      console.log(`${oppUsername} wants to play at ${oppAddress}`);
+      //console.log(`${oppUsername} wants to play at ${oppAddress}`);
 
       let isDuplicate = false;
       this.gamesList.forEach(game => {
@@ -73,9 +73,9 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
     this.matchmakingService.broadcastGame(); //Every 1000ms or so
   }
 
-  JoinGame(): void {
+  JoinGame(oppAddress:string): void {
     //get gameInfo from object clicked
-    const oppAddress = "";
+    console.log(oppAddress);
     this.networkingService.connectTCPserver(oppAddress);
 
     this.initializeListeners();
@@ -92,6 +92,7 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
    
     this.networkingService.listen('get-gameSettings').subscribe((settings: NetworkGameSettings) => {
       this.gameSettings = settings;
+      console.log("Joined game");
       console.log(this.gameSettings);
     });
   }

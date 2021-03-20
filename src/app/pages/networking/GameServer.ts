@@ -37,6 +37,7 @@ server.on('connection', (socket:any) => {
   });
 
   socket.on('ask-gameSettings', () => {
+    console.log("settings requested");
     socket.emit('get-gameSettings', gameSettings);
   });
 });
