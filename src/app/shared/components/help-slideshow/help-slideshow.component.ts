@@ -7,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class HelpSlideshowComponent {
 
-  private currentSlide = 1;
+  public currentSlide = 1;
   public maxSlides = 14;
 
   @Input() slidesToShow = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
