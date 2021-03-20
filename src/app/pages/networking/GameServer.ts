@@ -37,8 +37,8 @@ server.on('connection', (socket:any) => {
     gameSettings = lobbyInfo;
   });
 
-  socket.on('ask-gameSettings', () => {
+  socket.on('ask-game-settings', () => {
     console.log("settings requested");
-    server.emit('get-gameSettings', gameSettings);
+    server.emit('get-game-settings', gameSettings);
   });
 });

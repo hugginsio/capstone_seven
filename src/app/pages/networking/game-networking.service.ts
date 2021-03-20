@@ -73,7 +73,7 @@ export class GameNetworkingService {
 
   public getNetGameSettings()
   {
-    this.socket.emit('ask-gameSettings');
+    this.socket.emit('ask-game-settings');
   }
 
   

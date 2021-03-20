@@ -16,7 +16,7 @@ io.on('connection', (socket:any) => {
 
   socket.on('set-username', (username:string) => {
     udp.setUsername(username);
-    socket.emit("you-connceted");
+    socket.emit("you-connected");
   });
 
   socket.on('broadcast-game', () => {
