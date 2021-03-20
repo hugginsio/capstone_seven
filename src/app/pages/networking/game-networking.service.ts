@@ -46,6 +46,21 @@ export class GameNetworkingService {
   public connectTCPserver(serverIP: string): void {
     this.socket = io("http://" + serverIP + ":8000");
     console.log("Server connection attempted");
+
+    this.socket.on('popup', function(msg:any){
+      console.log("hello: ", msg)
+    });
+    this.socket.on('connection', function() {
+        console.log("client connected");
+    });
+
+    this.socket.on('connect_error', function(err:any) {
+        console.log("client connect_error: ", err);
+    });
+
+    this.socket.on('connect_timeout', function(err:any) {
+        console.log("client connect_timeout: ", err);
+    });
   }
 
   public sendMove(move: string): void {
@@ -60,4 +75,6 @@ export class GameNetworkingService {
   {
     this.socket.emit('ask-gameSettings');
   }
+
+  
 }

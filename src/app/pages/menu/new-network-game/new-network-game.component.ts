@@ -3,6 +3,7 @@ import { GameNetworkingService } from '../../networking/game-networking.service'
 import { MatchmakingService } from '../../networking/matchmaking.service';
 import { NetworkGameInfo } from './interfaces/new-network-game.interface';
 import { NetworkGameSettings } from '../../networking/NetworkGameSettings';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-network-game',
@@ -17,7 +18,8 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
 
   constructor(
     private readonly matchmakingService: MatchmakingService,
-    private readonly networkingService: GameNetworkingService
+    private readonly networkingService: GameNetworkingService,
+    private readonly routerService: Router
   ) {}
 
   ngAfterViewInit(): void {
@@ -78,11 +80,6 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
     console.log(oppAddress);
     this.networkingService.connectTCPserver(oppAddress);
 
-    this.initializeListeners();
-    this.networkingService.getNetGameSettings();
-  }
-
-  initializeListeners(): void {
     this.networkingService.listen('lobby-joined').subscribe((gameInfo:any) => {
     });
 
@@ -94,7 +91,14 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
       this.gameSettings = settings;
       console.log("Joined game");
       console.log(this.gameSettings);
+      this.routerService.navigate(['/game']);
     });
+
+    this.networkingService.getNetGameSettings();
+  }
+
+  initializeListeners(): void {
+    
   }
 
   startJoinedGame(): void {

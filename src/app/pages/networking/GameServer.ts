@@ -13,6 +13,7 @@ let gameSettings:NetworkGameSettings;
 server.on('connection', (socket:any) => {
 
   //socket.emit("lobby-joined", gameSettings);
+  socket.emit('get-gameSettings', gameSettings);
 
   socket.on('new-user', (username:string) => {
     users[socket.id] = username;
@@ -38,6 +39,6 @@ server.on('connection', (socket:any) => {
 
   socket.on('ask-gameSettings', () => {
     console.log("settings requested");
-    socket.emit('get-gameSettings', gameSettings);
+    server.emit('get-gameSettings', gameSettings);
   });
 });
