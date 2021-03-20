@@ -91,7 +91,15 @@ export class ManagerService {
       this.playerTwo.type = PlayerType.NETWORK;
     }
 
-    // instantiating AiService, calling its contructor w/ gameBoard and both players
+
+    if (boardSeed === '!random' || boardSeed === 'undefined') {
+      this.createBoard(true);
+      console.log(this.getBoard());
+    } else {
+      // create gameboard with user defined seed
+      this.createBoard(false, boardSeed);
+    }
+
     if (this.firstPlayer === 'one') {
       if (this.currentGameMode === GameType.AI) {
         this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
@@ -102,17 +110,6 @@ export class ManagerService {
       }
     }
 
-    // setting board as random or manually setting tiles
-    if (boardSeed === '!random' || boardSeed === 'undefined') {
-      // create random tile location gameBoard
-      this.createBoard(true);
-      console.log(this.getBoard());
-    } else {
-      // create gameboard with user defined seed
-      this.createBoard(false, boardSeed);
-    }
-
-    // <---------------------------------------------------------------------------------------------------------------------------------------what is this?
     if (this.currentGameMode === GameType.AI && this.getCurrentPlayer().type === PlayerType.AI) {
       console.log('???');
       this.nextTurn(this.getCurrentPlayer());
@@ -349,22 +346,9 @@ export class ManagerService {
 
     // calls AI to make move on its turn
     if (currentPlayer.type === PlayerType.AI) {
+      const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
-      let AIStringMove;
-
-      if (currentPlayer.numNodesPlaced === 0 && otherPlayer.numNodesPlaced === 0) {
-        // call if AI is the first player and if it is the first move of the game
-        AIStringMove = this.ai.randomAIFirstMove();
-      } else {
-        if (currentPlayer.numNodesPlaced === 1 && otherPlayer.numNodesPlaced === 1) {
-          // call if AI is second player and it is the initial move of second player
-          AIStringMove = this.ai.randomAIFirstMove();
-        }
-        else {
-          // call for any other AI move, pass in otherPlayer's previous move and currentPlayer's resources
-          AIStringMove = this.ai.randomAIMove(pastMoveString, { red: currentPlayer.redResources, blue: currentPlayer.blueResources, green: currentPlayer.greenResources, yellow: currentPlayer.yellowResources });
-        }
-      }
+      const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
 
       console.warn(AIStringMove);
       this.applyMove(AIStringMove);
@@ -628,7 +612,7 @@ export class ManagerService {
       // if AI is PlayerOne, send the first move of playerTwo to AI, keeping track of all moves placed
       if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
         if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI) {
-          this.ai.currentState = CoreLogic.nextState(this.ai.currentState, this.serializeStack());
+          //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
         // allow playerTwo's second initial turn 
         this.nextTurn(endPlayer);
