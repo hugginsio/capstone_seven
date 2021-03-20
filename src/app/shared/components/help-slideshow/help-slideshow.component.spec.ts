@@ -10,7 +10,7 @@ describe('HelpSlideshowComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ HelpSlideshowComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
