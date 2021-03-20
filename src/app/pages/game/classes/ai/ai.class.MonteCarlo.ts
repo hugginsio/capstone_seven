@@ -116,7 +116,7 @@ export class MonteCarlo {
       return boardStatus;
     }
     let counter = 0; //decrease counter and assign winner based on score if game not finished
-    while (boardStatus === 0 && counter < 30) {
+    while (boardStatus === 0 && counter < 20) {
       if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
         tempState.player1.redResources = 1;
         tempState.player1.blueResources = 1;
@@ -130,6 +130,14 @@ export class MonteCarlo {
       counter++;
     }
 
+    if(boardStatus === 0){
+      if(tempState.player1.currentScore > tempState.player2.currentScore){
+        boardStatus = 1;
+      }
+      else if(tempState.player1.currentScore < tempState.player2.currentScore){
+        boardStatus = 2;
+      }
+    }
     //console.log(`simulateRandomPlayout TIME: ${Date.now() - start}ms`);
     return boardStatus;
   }

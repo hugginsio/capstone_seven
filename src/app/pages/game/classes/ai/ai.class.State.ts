@@ -106,22 +106,22 @@ export class State {
 
     for(let i = 0; i < moveObj.branchesPlaced.length; i++){
       if(horizontalBranches.includes(moveObj.branchesPlaced[i])){
-        const topNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2')];
-        const sideNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
-        const bottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5')];
+        const topNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2')];
+        const sideNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
+        const bottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
         if(!topNeighbors.includes(-1)){
           if(this.board.branches[topNeighbors[0]].getOwner() === currentOwner && this.board.branches[topNeighbors[1]].getOwner() === currentOwner){
-            resultWeight++;
+            resultWeight+=10;
           }
         }
         else if(!sideNeighbors.includes(-1)){
           if(this.board.branches[sideNeighbors[0]].getOwner() === currentOwner && this.board.branches[sideNeighbors[1]].getOwner() === currentOwner){
-            resultWeight++;
+            resultWeight+=10;
           }
         }
         else if(!bottomNeighbors.includes(-1)){
           if(this.board.branches[bottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[bottomNeighbors[1]].getOwner() === currentOwner){
-            resultWeight++;
+            resultWeight+=10;
           }
         }
       }
@@ -131,17 +131,17 @@ export class State {
         const leftNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
         if(!rightNeighbors.includes(-1)){
           if(this.board.branches[rightNeighbors[0]].getOwner() === currentOwner && this.board.branches[rightNeighbors[1]].getOwner() === currentOwner){
-            resultWeight++;
+            resultWeight+=10;
           }
         }
         else if(!topAndBottomNeighbors.includes(-1)){
           if(this.board.branches[topAndBottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[topAndBottomNeighbors[1]].getOwner() === currentOwner){
-            resultWeight++;
+            resultWeight+=10;
           }
         }
         else if(!leftNeighbors.includes(-1)){
           if(this.board.branches[leftNeighbors[0]].getOwner() === currentOwner && this.board.branches[leftNeighbors[1]].getOwner() === currentOwner){
-            resultWeight++;
+            resultWeight+=10;
           }
         }
       }

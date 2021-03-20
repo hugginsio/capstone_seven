@@ -33,7 +33,7 @@ export class AiService {
     newState.playerNumber = previousPlayerNo;
     newState.move = pastMoveString;
 
-    const result = this.mcts.findNextMove(newState,5000);
+    const result = this.mcts.findNextMove(newState,5700);
 
     console.warn(`Time for AI move = ${Date.now() - start}ms`);
     return result;

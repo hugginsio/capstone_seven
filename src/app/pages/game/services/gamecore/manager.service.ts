@@ -346,7 +346,7 @@ export class ManagerService {
 
     // calls AI to make move on its turn
     if (currentPlayer.type === PlayerType.AI) {
-      const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
+      const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
       const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
 
