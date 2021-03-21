@@ -36,7 +36,6 @@ export class GameNetworkingService {
   public createTCPServer(): void {
     this.socket = io("http://localhost:8000");
     console.log("TCP Server Created!");
-    
   }
 
   public setGame(settings: NetworkGameSettings): void {
@@ -76,5 +75,9 @@ export class GameNetworkingService {
     this.socket.emit('ask-game-settings');
   }
 
-  
+  public requestJoin()
+  {
+    this.socket.emit('request-join');
+  }
+
 }

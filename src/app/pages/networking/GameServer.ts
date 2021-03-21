@@ -35,10 +35,17 @@ server.on('connection', (socket:any) => {
 
   socket.on('create-lobby', (lobbyInfo: NetworkGameSettings) => {
     gameSettings = lobbyInfo;
+    socket.broadcast.emit('get-game-settings');
   });
 
   socket.on('ask-game-settings', () => {
     console.log("settings requested");
     socket.emit('get-game-settings', gameSettings);
+  });
+
+  socket.on('request-join', () => {
+    //check if lobby full
+    //if not full
+    socket.broadcast.emit('opponent-connected');
   });
 });

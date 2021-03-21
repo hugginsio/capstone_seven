@@ -61,20 +61,6 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
 
   }
 
-  HostGame(): void {
-    //1. Lead to normal game creation screen
-    //2. Create network game
-
-    //3. Create game server
-    const board = '';
-    const isPlayer1 = true;
-    this.networkingService.createTCPServer();
-    this.initializeListeners();
-
-    //4. Broadcast the game until someone joins
-    this.matchmakingService.broadcastGame(); //Every 1000ms or so
-  }
-
   JoinGame(oppAddress:string): void {
     //get gameInfo from object clicked
     this.networkingService.connectTCPserver(oppAddress);
@@ -88,22 +74,11 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
    
     this.networkingService.listen('get-game-settings').subscribe((settings: NetworkGameSettings) => {
       this.gameSettings = settings;
-      console.log("Joined game");
       console.log(this.gameSettings);
       this.routerService.navigate(['/game']);
     });
 
-    this.networkingService.getNetGameSettings();
-  }
-
-  initializeListeners(): void {
-    
-  }
-
-  startJoinedGame(): void {
-    //set game settings in storage
-    
-    //route to Game
+    this.networkingService.requestJoin();
   }
 
 }

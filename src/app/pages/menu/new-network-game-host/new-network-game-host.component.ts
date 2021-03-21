@@ -44,6 +44,8 @@ export class NewNetworkGameHostComponent implements OnInit {
       console.log("A opponent has connected");
       this.isWaitingForPlayer = false;
       this.subscription.unsubscribe();
+      //FOR TESTING: CALL IN GAME CORE ONCE BOARD IS MADE
+      this.networkingService.setGame({board : this.boardSeed, background: "BG1", isHostFirst: this.isHostFirst});
       this.routerService.navigate(['/game']);
     });
   }
@@ -63,7 +65,6 @@ export class NewNetworkGameHostComponent implements OnInit {
   startHosting(): void {
     // Set board seed before hosting begins
     this.storageService.update('board-seed', this.boardSeed);
-    this.networkingService.setGame({board : this.boardSeed, background: "BG1", isHostFirst: this.isHostFirst});
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
 
