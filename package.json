@@ -24,6 +24,7 @@
     "test": "ng test --watch=false",
     "test:nge": "ng test --watch=false --browsers NgE",
     "test:watch": "ng test",
+    "update:back": "tsc src/app/pages/networking/GameServer.ts & tsc src/app/pages/networking/MatchmakingServer.ts",
     "web": "npm run ng:serve"
   },
   "devDependencies": {
