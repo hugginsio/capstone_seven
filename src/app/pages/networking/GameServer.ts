@@ -38,10 +38,10 @@ server.on('connection', (socket:any) => {
     socket.broadcast.emit('get-game-settings');
   });
 
-  socket.on('ask-game-settings', () => {
-    console.log("settings requested");
-    socket.emit('get-game-settings', gameSettings);
-  });
+  //socket.on('ask-game-settings', () => {
+  //  console.log("settings requested");
+  //  socket.emit('get-game-settings', gameSettings);
+  //});
 
   socket.on('request-join', () => {
     //check if lobby full
