@@ -35,7 +35,7 @@ server.on('connection', (socket:any) => {
 
   socket.on('create-lobby', (lobbyInfo: NetworkGameSettings) => {
     gameSettings = lobbyInfo;
-    socket.broadcast.emit('get-game-settings');
+    socket.broadcast.emit('get-game-settings', gameSettings);
   });
 
   //socket.on('ask-game-settings', () => {
