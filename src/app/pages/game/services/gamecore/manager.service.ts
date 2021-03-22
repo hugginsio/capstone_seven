@@ -645,7 +645,7 @@ export class ManagerService {
   // Trade resources
 
   makeTrade(currentPlayer: Player, selectedResource: number, tradeMap: ResourceMap): void {
-
+    currentPlayer.hasTraded = true;
     // tradeMap had number tied to each resource color that 
     // increments to the number of that color being traded 
 

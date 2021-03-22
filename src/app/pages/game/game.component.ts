@@ -244,7 +244,6 @@ export class GameComponent implements OnInit {
   executeTrade(): void {
     this.isTrading = false;
     this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
-    this.gameManager.getCurrentPlayer().hasTraded = true;
     this.tradingModel.reset();
   }
 
