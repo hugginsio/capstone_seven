@@ -99,9 +99,11 @@ export class ManagerService {
     } 
     else {
       this.currentGameMode = GameType.NETWORK;
+      console.log("Network Game");
       
       if(this.isHost === 'true')
       {
+        console.log("We are the host");
         this.networkingService.createTCPServer();
         this.netSettings.background = "BG1";
 
@@ -251,7 +253,8 @@ export class ManagerService {
       this.netSettings.board = this.boardString;
       if(this.isHost === 'true')
       {
-        this.networkingService.setGame(this.netSettings)
+        console.log("We are sending the board!");
+        this.networkingService.setGame(this.netSettings);
       }
     }
   }

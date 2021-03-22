@@ -31,6 +31,7 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     // instantiate class here
     this.gamesList = new Array<NetworkGameInfo>();
+    this.storageService.update('mode', 'net');
     this.matchmakingService.initialize(this.username);
 
     this.matchmakingService.listen('you-connected').subscribe(() => {
