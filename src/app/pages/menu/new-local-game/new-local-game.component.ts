@@ -23,13 +23,14 @@ export class NewLocalGameComponent implements OnInit {
     private readonly storageService: LocalStorageService,
     private readonly routerService: Router
   ) {
-    this.gameModeString = this.pvp;
-    this.aiDifficultyString = this.aiEasy;
+    // Initialize datastore to game context
+    storageService.setContext('game');
+
+    this.gameModeString = this.storageService.fetch('mode') === 'pvp' ? this.pvp : this.pva;
+    this.aiDifficultyString = this.storageService.fetch('ai-difficulty') === 'easy' ? this.aiEasy : this.aiMedium;
     this.advancedOpts = false;
     this.guidedTutorial = false;
 
-    // Initialize datastore to game context
-    storageService.setContext('game');
   }
 
   ngOnInit(): void {}
