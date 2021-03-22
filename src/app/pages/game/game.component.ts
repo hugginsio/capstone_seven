@@ -106,7 +106,6 @@ export class GameComponent implements OnInit {
       case 'T':
         if (this.gameManager.getBoard().tiles[id].color === "BLANK") {
           result += `unavailable tile-${this.gameManager.getBoard().tiles[id].color}`;
-          break;
         } else {
           result += `tile-${this.gameManager.getBoard().tiles[id].color}`;
         }
@@ -116,7 +115,7 @@ export class GameComponent implements OnInit {
           break;
         }
 
-        if (this.gameManager.getBoard().tiles[id].isExhausted) {
+        if (this.gameManager.getBoard().tiles[id].isExhausted && this.gameManager.getBoard().tiles[id].color !== "BLANK") {
           result += '-exhausted';
           break;
         }
