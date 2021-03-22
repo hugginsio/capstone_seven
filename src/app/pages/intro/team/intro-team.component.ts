@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-intro-team',
   templateUrl: './intro-team.component.html',
-  styleUrls: ['./intro-team.component.scss']
+  styleUrls: ['../intro-common.scss']
 })
 export class IntroTeamComponent implements OnInit, OnDestroy {
   private introInterval: NodeJS.Timeout;
