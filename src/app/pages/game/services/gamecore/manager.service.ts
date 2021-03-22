@@ -72,6 +72,8 @@ export class ManagerService {
     this.tilesBeingChecked = [];
     this.tradedResources = [];
 
+    this.netSettings = {board: "", background: "", isHostFirst: true};
+
     // getting/setting data via UI
     this.storageService.setContext('game');
     const gameMode = this.storageService.fetch('mode');
