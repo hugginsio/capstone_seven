@@ -412,7 +412,7 @@ export class ManagerService {
       console.warn(AIStringMove);
       this.applyMove(AIStringMove);
     }
-    else if (currentPlayer.type === PlayerType.NETWORK) {
+    else if (currentPlayer.type === PlayerType.NETWORK && otherPlayer.numNodesPlaced !== 1) {
       console.log(pastMoveString);
       this.networkingService.sendMove(pastMoveString);
 
@@ -680,8 +680,9 @@ export class ManagerService {
           //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
         // allow playerTwo's second initial turn 
-        if (this.currentGameMode === GameType.NETWORK && this.playerOne.type === PlayerType.NETWORK)
+        if (this.currentGameMode === GameType.NETWORK && endPlayer.type === PlayerType.HUMAN)
         {
+          console.log(this.serializeStack());
           this.networkingService.sendMove(this.serializeStack());
         }
         this.nextTurn(endPlayer);
