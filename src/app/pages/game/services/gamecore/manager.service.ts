@@ -135,6 +135,7 @@ export class ManagerService {
         }
       }
       this.networkingService.listen('recieve-move').subscribe((move: string) => {
+        console.log(move);
         this.applyMove(move);
       });
     }
@@ -412,6 +413,7 @@ export class ManagerService {
       this.applyMove(AIStringMove);
     }
     else if (currentPlayer.type === PlayerType.NETWORK) {
+      console.log(pastMoveString);
       this.networkingService.sendMove(pastMoveString);
 
 
