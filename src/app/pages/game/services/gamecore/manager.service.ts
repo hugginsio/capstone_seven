@@ -680,6 +680,10 @@ export class ManagerService {
           //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
         // allow playerTwo's second initial turn 
+        if (this.currentGameMode === GameType.NETWORK && this.playerOne.type === PlayerType.NETWORK)
+        {
+          this.networkingService.sendMove(this.serializeStack());
+        }
         this.nextTurn(endPlayer);
         return;
       }
