@@ -134,7 +134,9 @@ export class ManagerService {
           this.playerTwo.type = PlayerType.NETWORK;
         }
       }
-      
+      this.networkingService.listen('recieve-move').subscribe((move: string) => {
+        this.applyMove(move);
+      });
     }
 
 
@@ -408,6 +410,11 @@ export class ManagerService {
 
       console.warn(AIStringMove);
       this.applyMove(AIStringMove);
+    }
+    else if (currentPlayer.type === PlayerType.NETWORK) {
+      this.networkingService.sendMove(pastMoveString);
+
+
     }
 
     // Empty the move stack prior to the next placed turns
