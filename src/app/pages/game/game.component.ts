@@ -55,6 +55,8 @@ export class GameComponent implements OnInit {
           const currentPlayer = this.gameManager.getCurrentPlayer();
           if (currentPlayer.numNodesPlaced < 2 || currentPlayer.ownedBranches.length < 2) {
             this.snackbarService.add({ message: 'You cannot trade right now.' });
+          } else if (currentPlayer.hasTraded) {
+            this.snackbarService.add({ message: 'You have already traded this turn.' });
           } else {
             this.isTrading = true;
             this.toggleTrade();
@@ -243,6 +245,7 @@ export class GameComponent implements OnInit {
   executeTrade(): void {
     this.isTrading = false;
     this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
+    this.gameManager.getCurrentPlayer().hasTraded = true;
     this.tradingModel.reset();
   }
 
