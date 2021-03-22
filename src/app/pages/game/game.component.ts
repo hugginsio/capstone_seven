@@ -18,6 +18,7 @@ import { SnackbarService } from '../../shared/components/snackbar/services/snack
 export class GameComponent implements OnInit {
   public gamePaused: boolean;
   public isTrading: boolean;
+  public showHelp: boolean;
   public gameOver: boolean;
   public gameOverText: string;
   public winningPlayer: Player;
@@ -262,5 +263,10 @@ export class GameComponent implements OnInit {
   cancelTrading(): void {
     this.isTrading = false;
     this.tradingModel.reset();
+  }
+
+  toggleHelp(): void {
+    this.togglePaused();
+    this.showHelp = !this.showHelp;
   }
 }
