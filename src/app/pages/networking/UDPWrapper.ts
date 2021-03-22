@@ -71,6 +71,9 @@ export class UDPWrapper {
       else if (interfaces.includes('Wi-Fi')) {
         return 'Wi-Fi';
       }
+      else if (interfaces.includes('en0')) {
+        return 'en0';
+      }
     }
     else {
       console.error("No viable OS found.");
