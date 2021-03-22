@@ -4,6 +4,7 @@ import { MatchmakingService } from '../../networking/matchmaking.service';
 import { NetworkGameInfo } from './interfaces/new-network-game.interface';
 import { NetworkGameSettings } from '../../networking/NetworkGameSettings';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 
 @Component({
   selector: 'app-new-network-game',
@@ -17,6 +18,7 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
   private gameSettings: NetworkGameSettings;
 
   constructor(
+    private readonly storageService: LocalStorageService,
     private readonly matchmakingService: MatchmakingService,
     private readonly networkingService: GameNetworkingService,
     private readonly routerService: Router
@@ -74,6 +76,8 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
    
     this.networkingService.listen('get-game-settings').subscribe((settings: NetworkGameSettings) => {
       this.gameSettings = settings;
+      this.storageService.update('isHost', 'false');
+      this.storageService.update('oppAddress', oppAddress);
       console.log(this.gameSettings);
       this.routerService.navigate(['/game']);
     });

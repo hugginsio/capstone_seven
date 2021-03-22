@@ -9,6 +9,8 @@ import { Subject } from 'rxjs';
 import { CommPackage, ResourceMap } from '../../interfaces/game.interface';
 import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
+import { GameNetworkingService } from '../../../networking/game-networking.service';
+import { NetworkGameSettings } from '../../../networking/NetworkGameSettings';
 
 
 @Injectable({
@@ -29,6 +31,11 @@ export class ManagerService {
 
   // used for UI integration
   private firstPlayer: string;
+
+  //Networking stuff
+  private isHost: string;
+  private isHostFirst: string;
+  private netSettings: NetworkGameSettings;
 
   // initializes AI service
   private readonly ai: AiService;
@@ -53,7 +60,8 @@ export class ManagerService {
 
   constructor(
     // UI integration
-    private readonly storageService: LocalStorageService
+    private readonly storageService: LocalStorageService,
+    private readonly networkingService: GameNetworkingService
   ) {
 
     // begin initializing ManagerService fields
@@ -69,6 +77,8 @@ export class ManagerService {
     const gameMode = this.storageService.fetch('mode');
     const boardSeed = this.storageService.fetch('board-seed');
     this.firstPlayer = this.storageService.fetch('firstplayer');
+    this.isHost = this.storageService.fetch('isHost');
+    this.isHostFirst = this.storageService.fetch('isHostFirst');
 
     // determines currentGameMode field
     // determines player type fields for playerOne + playerTwo
@@ -86,9 +96,41 @@ export class ManagerService {
         this.playerOne.type = PlayerType.AI;
         this.playerTwo.type = PlayerType.HUMAN;
       }
-    } else {
+    } 
+    else {
       this.currentGameMode = GameType.NETWORK;
-      this.playerTwo.type = PlayerType.NETWORK;
+      
+      if(this.isHost === 'true')
+      {
+        this.networkingService.createTCPServer();
+        this.netSettings.background = "BG1";
+
+        if (this.isHostFirst === 'true') {
+          this.playerOne.type = PlayerType.HUMAN;
+          this.playerTwo.type = PlayerType.NETWORK;
+          this.netSettings.isHostFirst = true;
+        }
+        else {
+          this.playerOne.type = PlayerType.NETWORK;
+          this.playerTwo.type = PlayerType.HUMAN;
+          this.netSettings.isHostFirst = false;
+        }
+      }
+      else
+      {
+        let IP = this.storageService.fetch('oppAddress');
+        this.networkingService.connectTCPserver(IP);
+
+        if (this.isHostFirst === 'true') {
+          this.playerOne.type = PlayerType.NETWORK;
+          this.playerTwo.type = PlayerType.HUMAN;
+        }
+        else {
+          this.playerOne.type = PlayerType.HUMAN;
+          this.playerTwo.type = PlayerType.NETWORK;
+        }
+      }
+      
     }
 
 
@@ -203,6 +245,15 @@ export class ManagerService {
       }
     }
     this.serializeBoard();
+
+    if(this.currentGameMode === GameType.NETWORK)
+    {
+      this.netSettings.board = this.boardString;
+      if(this.isHost === 'true')
+      {
+        this.networkingService.setGame(this.netSettings)
+      }
+    }
   }
 
   // creates string representing gameBoard for AI/Networking

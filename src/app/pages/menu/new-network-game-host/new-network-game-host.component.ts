@@ -32,7 +32,7 @@ export class NewNetworkGameHostComponent implements OnInit {
     this.firstPlayer = this.playerOneFirst;
     this.isHostFirst = true;
 
-    this.storageService.setContext('network');
+    this.storageService.setContext('game');
     this.storageService.store('firstPlayer', this.firstPlayer);
   }
 
@@ -45,7 +45,7 @@ export class NewNetworkGameHostComponent implements OnInit {
       this.isWaitingForPlayer = false;
       this.subscription.unsubscribe();
       //FOR TESTING: CALL IN GAME CORE ONCE BOARD IS MADE
-      this.networkingService.setGame({board : this.boardSeed, background: "BG1", isHostFirst: this.isHostFirst});
+      //this.networkingService.setGame({board : this.boardSeed, background: "BG1", isHostFirst: this.isHostFirst});
       this.routerService.navigate(['/game']);
     });
   }
@@ -59,11 +59,12 @@ export class NewNetworkGameHostComponent implements OnInit {
       this.isHostFirst = true;
     }
 
-    this.storageService.update('firstPlayer', this.firstPlayer);
+    this.storageService.update('isHostFirst', this.firstPlayer);
   }
 
   startHosting(): void {
     // Set board seed before hosting begins
+    this.storageService.update('isHost', 'true');
     this.storageService.update('board-seed', this.boardSeed);
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
