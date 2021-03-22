@@ -229,7 +229,7 @@
   }
 
   .resource-button-trade {
-    @apply border-4 border-gray-600 flex-grow hover:border-gray-300 cursor-pointer transition-colors duration-100;
+    @apply border-4 border-gray-600 hover:border-gray-300 cursor-pointer transition-colors duration-100 w-1/4;
   }
 
   .selected {
@@ -284,7 +284,14 @@
   background: url('/assets/game/locations/bg1.png') no-repeat;
   background-size: cover;
   image-rendering: pixelated;
-  opacity: 0.75;
+  opacity: 1;
+}
+
+.bg-2 {
+  background: url('/assets/game/locations/bg2.png') no-repeat;
+  background-size: cover;
+  image-rendering: pixelated;
+  opacity: 0.9;
 }
 
 .teleporter-bg-1 {
