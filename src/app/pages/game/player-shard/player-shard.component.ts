@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { Player } from '../classes/gamecore/game.class.Player';
 import { CommPackage } from '../interfaces/game.interface';
 import { CommCode } from '../interfaces/game.enum';
+import { PlayerType } from '../enums/game.enums';
 
 @Component({
   selector: 'app-player-shard',
@@ -21,7 +22,7 @@ export class PlayerShardComponent implements OnInit {
   ngOnInit(): void { }
 
   getDynamicClass(): string {
-    return this.currentPlayer ? 'button-std' : 'button-disabled';
+    return `${this.currentPlayer ? 'button-std' : 'button-disabled'} ${this.playerDetail.type !== PlayerType.HUMAN ? 'button-hidden' : ''}`;
   }
 
   generateMessage(action: CommCode): CommPackage {
