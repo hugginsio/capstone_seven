@@ -79,6 +79,16 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
       this.gameSettings = settings;
       this.storageService.update('isHost', 'false');
       this.storageService.update('oppAddress', oppAddress);
+      this.storageService.update('board-seed', this.gameSettings.board);
+      if (this.gameSettings.isHostFirst === true)
+      {
+        this.storageService.update('isHostFirst', 'true');
+      }
+      else
+      {
+        this.storageService.update('isHostFirst', 'false');
+      }
+      
       console.log(this.gameSettings);
       this.routerService.navigate(['/game']);
     });
