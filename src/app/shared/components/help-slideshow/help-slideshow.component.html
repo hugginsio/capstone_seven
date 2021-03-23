@@ -1,10 +1,10 @@
 <div class="flex space-between w-full justify-center h-full" id="help-slideshow-container">
   <div class="flex justify-center items-center w-full h-full px-4 space-x-4">
-    <div class="menu-btn" (click)="decrementSlides()">
+    <div class="flex menu-btn" (click)="decrementSlides()">
       prev
     </div>
 
-    <div class="px-4 h-full" id="actual-slides">
+    <div class="flex px-4 h-full" id="actual-slides">
       <div class="flex flex-col space-y-4 h-full" *ngIf="currentSlide === 1">
         <h1>MasterMine</h1>
         <div class="flex space-x-4 w-full items-center">
@@ -32,6 +32,7 @@
         <div class="flex w-full items-center space-x-4">
           <div class="flex-1 flex-col space-y-4">
             <p>Pick your minin' background<br></p>
+            <p>Just click on the buttons to toggle between all the other options:</p>
             <div class="flex space-between">
               <div>
                 <p>Single Player vs. AI</p>
@@ -82,7 +83,12 @@
         <h1>Newfangled "On The Line" Technology</h1>
         <div class="flex space-between w-full">
           <div class="flex-1">
-            <p>not sure how this works</p>
+            <p>Here y'all get to pick if you wanna host a duel or 
+              join one with a miner on the other side just waitin' to compete.</p>
+            <p>Want to start the duel yourself? Click "Host Game" and pick them there settings
+              like you'd do in any other matches. Now just sit and wait 'til somebody comes along
+              to accept your challange
+            </p>
           </div>
           <div class="flex-1">
             <img src="/assets/help/testBoard.png" />
@@ -97,7 +103,7 @@
           <div class="flex-1 space-y-4">
             <div class="flex flex-col space-y-4">
               <div>
-                <img src="/assets/help/testBoard.png" />
+                <img src="/assets/game/tiles/Green-2.png" />
               </div>
               <div>
                 <p>
@@ -109,7 +115,7 @@
           <div class="flex-1 space-y-4">
             <div class="flex flex-col space-y-4">
               <div>
-                <img src="/assets/help/testBoard.png" />
+                <img src="/assets/game/Blank-Branch.png" />
               </div>
               <div>
                 <p>
@@ -122,7 +128,7 @@
           <div class="flex-1 space-y-4">
             <div class="flex flex-col space-y-4">
               <div>
-                <img src="/assets/help/testBoard.png" />
+                <img src="/assets/game/Blank-Node.png" />
               </div>
               <div>
                 <p>
@@ -237,7 +243,7 @@
             </p>
           </div>
           <div class="flex-1">
-            <img class="boardImg" src="/assets/help/testBoard.png" />
+            <img class="boardImg" src="/assets/game/tiles/Yellow-Exhausted.png" />
           </div>
         </div>
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
@@ -267,7 +273,7 @@
             </p>
           </div>
           <div class="flex-1">
-            <img class="boardImg" src="/assets/help/testBoard.png" />
+            <img class="boardImg" src="/assets/game/tiles/Blue-Capture-Orange.png" />
           </div>
         </div>
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
@@ -279,44 +285,44 @@
           <!-- branches addition images -->
           <div class="flex space-x-4 w-full">
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Resource-Red.png" />
             </div>
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Purple-Branch.png" />
             </div>
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Resource-Blue.png" />
             </div>
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Purple-Branch.png" />
             </div>
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Purple-Branch.png" />
             </div>
           </div>
 
           <!-- marker addition image -->
           <div class="flex space-x-4 w-full">
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Resource-Yellow.png" />
             </div>
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Resource-Yellow.png" />
             </div>
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Purple-Branch.png" />
             </div>
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Resource-Green.png" />
             </div>
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Resource-Green.png" />
             </div>
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Purple-Branch.png" />
             </div>
             <div>
-              <img src="/assets/help/testBoard.png" />
+              <img src="/assets/game/Orange-Node.png" />
             </div>
           </div>
         </div>
@@ -378,7 +384,7 @@
 
     </div>
 
-    <div class="menu-btn" (click)="incrementSlides()">
+    <div class="flex menu-btn" (click)="incrementSlides()">
       next
     </div>
   </div>
