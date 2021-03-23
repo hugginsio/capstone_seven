@@ -174,7 +174,20 @@ export class CoreLogic {
       }
 
       //determine possible trades for red
-      const tradeForRed = blueStringArray.slice();
+      const tradeForRed = [];
+      const blueRedAvailableDiff = blueAvailable - redAvailable;
+      if(blueRedAvailableDiff > 0){
+        if(blueRedAvailableDiff > 1){
+          tradeForRed.push('B');
+        }
+        if(blueRedAvailableDiff > 2){
+          tradeForRed.push('B');
+        }
+        if(blueRedAvailableDiff > 3){
+          tradeForRed.push('B');
+        }
+      }
+      
       for(const green of greenStringArray){
         tradeForRed.push(green);
       }
@@ -186,7 +199,19 @@ export class CoreLogic {
       
 
       //determine possible trades for blue
-      const tradeForBlue = redStringArray.slice();
+      const tradeForBlue = [];
+      const redBlueAvailableDiff = redAvailable - blueAvailable;
+      if(redBlueAvailableDiff > 0){
+        if(redBlueAvailableDiff > 1){
+          tradeForBlue.push('R');
+        }
+        if(redBlueAvailableDiff > 2){
+          tradeForBlue.push('R');
+        }
+        if(redBlueAvailableDiff > 3){
+          tradeForBlue.push('R');
+        }
+      }
       for(const green of greenStringArray){
         tradeForBlue.push(green);
       }
@@ -197,23 +222,41 @@ export class CoreLogic {
       const tradeForBlueCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForBlue,3));
 
       //determine possible trades for green
-      const tradeForGreen = blueStringArray.slice();
+      const tradeForGreen =[];
+      for(const blue of blueStringArray){
+        tradeForRed.push(blue);
+      }
       for(const red of redStringArray){
         tradeForGreen.push(red);
       }
-      for(const yellow of yellowStringArray){
-        tradeForGreen.push(yellow);
+      if(yellowAvailable-1 === greenAvailable+1){
+        tradeForGreen.push('Y');
+      }
+      else if(yellowAvailable-2 >= greenAvailable+1){
+        tradeForGreen.push('Y');
+      }
+      else if(yellowAvailable-3 >= greenAvailable+1){
+        tradeForGreen.push('Y');
       }
       
       const tradeForGreenCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForGreen,3));
 
       //determine possible trades for yellow
-      const tradeForYellow = blueStringArray.slice();
-      for(const green of greenStringArray){
-        tradeForYellow.push(green);
+      const tradeForYellow =[];
+      for(const blue of blueStringArray){
+        tradeForRed.push(blue);
       }
       for(const red of redStringArray){
         tradeForYellow.push(red);
+      }
+      if(greenAvailable-1 === yellowAvailable+1){
+        tradeForYellow.push('G');
+      }
+      else if(greenAvailable-2 >= yellowAvailable+1){
+        tradeForGreen.push('G');
+      }
+      else if(greenAvailable-3 >= yellowAvailable+1){
+        tradeForGreen.push('G');
       }
       
       const tradeForYellowCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForYellow,3));

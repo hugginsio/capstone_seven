@@ -1248,6 +1248,9 @@ export class ManagerService {
       // decrement the tile's nodeCount
       trTile.nodeCount--;
 
+      //decrement players resources
+      this.decrementResource(currentPlayer,trTile.getColor());
+
       // checking if need to un-exhaust tile
       if (trTile.isExhausted) {
         if (trTile.nodeCount <=
@@ -1265,6 +1268,9 @@ export class ManagerService {
 
       // decrement the nodeCount
       tlTile.nodeCount--;
+
+      //decrement players resources
+      this.decrementResource(currentPlayer,tlTile.getColor());
 
       // checking if need to un-exhaust tile
       if (tlTile.isExhausted) {
@@ -1284,6 +1290,9 @@ export class ManagerService {
       // decrement the tile's nodeCount 
       brTile.nodeCount--;
 
+      //decrement players resources
+      this.decrementResource(currentPlayer,brTile.getColor());
+
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
         if (brTile.nodeCount <=
@@ -1301,6 +1310,9 @@ export class ManagerService {
 
       // decrement the tile's nodeCount
       blTile.nodeCount--;
+
+      //decrement players resources
+      this.decrementResource(currentPlayer,blTile.getColor());
 
       // checking if need to un-exhaust tile
       if (blTile.isExhausted) {

@@ -40,7 +40,7 @@ export class MonteCarlo {
 
     const rootNode = this.tree.getRoot();
 
-
+    let simCount = 0;
     while (Date.now() < end) {
     //for(let iteration = 0; iteration < 10; iteration++){
       const promisingNode = this.selectPromisingNode(rootNode);
@@ -53,8 +53,10 @@ export class MonteCarlo {
       }
       const playoutResult = this.simulateRandomPlayout(nodeToExplore);
       this.backPropogation(nodeToExplore, playoutResult);
+      simCount++;
     }
 
+    console.log(`Number of Simulations = ${simCount}`);
     if(rootNode.getChildArray().length > 0){
       const winnerNode = rootNode.getChildWithMaxScore();
       this.tree.setRoot(winnerNode);
@@ -116,7 +118,7 @@ export class MonteCarlo {
       return boardStatus;
     }
     let counter = 0; //decrease counter and assign winner based on score if game not finished
-    while (boardStatus === 0 && counter < 15) {
+    while (boardStatus === 0 && counter < 5) {
       if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
         tempState.player1.redResources = 1;
         tempState.player1.blueResources = 1;
@@ -124,6 +126,7 @@ export class MonteCarlo {
         tempState.player1.yellowResources = 2;
       }
       tempState.randomPlay();
+      //tempState.heuristicPlay();
       boardStatus = CoreLogic.getWinner(tempState);
       tempState.togglePlayer();
       //console.log(`Inside simulation: count = ${counter}`);
@@ -131,15 +134,7 @@ export class MonteCarlo {
     }
 
     if(boardStatus === 0){
-
-      let player1WinProb = tempState.player1.currentScore;
-      let player2WinProb = tempState.player2.currentScore;
-
-      player1WinProb += tempState.player1.redPerTurn + tempState.player1.bluePerTurn + tempState.player1.greenPerTurn + tempState.player1.yellowPerTurn;
-      player2WinProb += tempState.player2.redPerTurn + tempState.player2.bluePerTurn + tempState.player2.greenPerTurn + tempState.player2.yellowPerTurn;
-
-
-      if(player1WinProb > player2WinProb){
+      if(tempState.getHeuristicValue() > 0){
         boardStatus = 1;
       }
       else{
@@ -157,7 +152,7 @@ class UCT {
     if (nodeVisit == 0) {
       return Number.MAX_VALUE;
     }
-    return (nodeWinScore / nodeVisit) + 1.21 * Math.sqrt(Math.log(totalVisit) / nodeVisit);
+    return (nodeWinScore / nodeVisit) + 1.31 * Math.sqrt(Math.log(totalVisit) / nodeVisit);
   }
 
   static findBestNodeWithUCT(node:MCTSNode):MCTSNode {
