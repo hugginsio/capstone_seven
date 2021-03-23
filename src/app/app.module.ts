@@ -14,9 +14,10 @@ import { MenuModule } from './pages/menu/menu.module';
 
 import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
+import { GuidedTutorialComponent } from './pages/game/guided-tutorial/guided-tutorial.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, GuidedTutorialComponent],
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,
