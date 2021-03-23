@@ -268,4 +268,19 @@ export class GameComponent implements OnInit {
     this.isTrading = false;
     this.tradingModel.reset();
   }
+
+  copyBoardSeed(): void {
+    const boardSeed = this.gameManager.boardString;
+    const temporarySelectBox = document.createElement('textarea');
+    console.log(`Board seed: ${boardSeed}`);
+    temporarySelectBox.style.position = 'fixed';
+    temporarySelectBox.style.opacity = '0';
+    temporarySelectBox.value = boardSeed;
+    document.body.appendChild(temporarySelectBox);
+    temporarySelectBox.focus();
+    temporarySelectBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(temporarySelectBox);
+    this.snackbarService.add({ message: "Copied to clipboard." });
+  }
 }
