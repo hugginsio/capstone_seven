@@ -283,4 +283,15 @@ export class GameComponent implements OnInit {
     document.body.removeChild(temporarySelectBox);
     this.snackbarService.add({ message: "Copied to clipboard." });
   }
+
+  getBackground(): string {
+    const selectedBackground = this.storageService.fetch('location');
+    if (selectedBackground === 'bg3') {
+      return selectedBackground;
+    } else if (selectedBackground === 'bg2') {
+      return selectedBackground;
+    } else {
+      return 'bg1';
+    }
+  }
 }

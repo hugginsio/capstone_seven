@@ -13,6 +13,7 @@ export class NewLocalGameComponent implements OnInit {
   public advancedOpts: boolean;
   public boardSeed: string;
   public guidedTutorial: boolean;
+  public selectedLocation: number;
 
   public readonly pvp = "Player vs. Player";
   public readonly pva = "Player vs. AI";
@@ -31,6 +32,14 @@ export class NewLocalGameComponent implements OnInit {
     this.advancedOpts = false;
     this.guidedTutorial = false;
 
+    const storedLocation =  this.storageService.fetch('location');
+    if (storedLocation === 'bg3') {
+      this.selectedLocation = 3;
+    } else if (storedLocation === 'bg2') {
+      this.selectedLocation = 2;
+    } else {
+      this.selectedLocation = 1;
+    }
   }
 
   ngOnInit(): void {}
@@ -41,6 +50,11 @@ export class NewLocalGameComponent implements OnInit {
 
     // Update datastore
     this.gameModeString === this.pvp ? this.storageService.update('mode', 'pvp') : this.storageService.update('mode', 'pva');
+
+    if (this.gameModeString === this.pva) {
+      this.guidedTutorial = false;
+      this.storageService.update('guided-tutorial', 'false');
+    }
   }
 
   changeAiDifficulty(): void {
@@ -63,5 +77,19 @@ export class NewLocalGameComponent implements OnInit {
     // Set board seed before routing
     this.storageService.update('board-seed', this.boardSeed);
     this.routerService.navigate(['/game']);
+  }
+
+  selectLocation(clicked: number): void {
+    console.log(clicked);
+    this.selectedLocation = clicked;
+    this.storageService.update('location', `bg${clicked}`);
+  }
+
+  isLocSelected(button: number): string {
+    if (this.selectedLocation === button) {
+      return 'border-gray-300';
+    } else {
+      return 'border-gray-900';
+    }
   }
 }
