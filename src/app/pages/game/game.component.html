@@ -19,7 +19,7 @@
 
   <!-- Top Information Container -->
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 z-50 mt-3 pointer-events-none">
-    <p class="p-3">{{ this.gameManager.getCurrentPlayerEnum() }}'s Turn</p>
+    <p class="p-3">{{ this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE' ? 'Player One' : 'Player Two' }}'s Turn</p>
   </div>
 
   <!-- Pause Modal Container -->
