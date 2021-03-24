@@ -118,7 +118,7 @@ export class MonteCarlo {
       return boardStatus;
     }
     let counter = 0; //decrease counter and assign winner based on score if game not finished
-    while (boardStatus === 0 && counter < 5) {
+    while (boardStatus === 0 && counter < 15) {
       if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
         tempState.player1.redResources = 1;
         tempState.player1.blueResources = 1;
@@ -152,7 +152,7 @@ class UCT {
     if (nodeVisit == 0) {
       return Number.MAX_VALUE;
     }
-    return (nodeWinScore / nodeVisit) + 1.31 * Math.sqrt(Math.log(totalVisit) / nodeVisit);
+    return (nodeWinScore / nodeVisit) + 4 * Math.sqrt(Math.log(totalVisit) / nodeVisit);
   }
 
   static findBestNodeWithUCT(node:MCTSNode):MCTSNode {
