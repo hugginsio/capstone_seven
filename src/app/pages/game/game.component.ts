@@ -16,12 +16,13 @@ import { SnackbarService } from '../../shared/components/snackbar/services/snack
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit {
-  public gamePaused: boolean;
-  public isTrading: boolean;
+  public gameIntro: boolean;
   public gameOver: boolean;
   public gameOverText: string;
-  public winningPlayer: Player;
+  public gamePaused: boolean;
+  public isTrading: boolean;
   public tradingModel: TradingModel;
+  public winningPlayer: Player;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -31,11 +32,12 @@ export class GameComponent implements OnInit {
     private readonly storageService: LocalStorageService,
     private readonly snackbarService: SnackbarService
   ) {
-    // Set defaults for modal triggers
-    this.gamePaused = false;
-    this.isTrading = false;
+    // Set defaults for UI triggers
+    this.gameIntro = true;
     this.gameOver = false;
     this.gameOverText = "Victory!";
+    this.gamePaused = false;
+    this.isTrading = false;
     this.tradingModel = new TradingModel();
 
     this.storageService.setContext('game');
@@ -290,5 +292,10 @@ export class GameComponent implements OnInit {
     } else {
       return 'bg1';
     }
+  }
+
+  introEnded(): void {
+    console.log('Intro video ended');
+    this.gameIntro = false;
   }
 }

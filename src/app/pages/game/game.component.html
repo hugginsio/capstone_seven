@@ -4,6 +4,16 @@
   <img src="/assets/game/locations/teleporter-bg1.png" draggable="false" id="teleporter"/>
 </div> -->
 
+<!-- Teleporter -->
+<div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-black z-inf"
+  *ngIf="this.gameIntro">
+  <div class="flex flex-row items-center content-center h-full">
+    <video autoplay preload="auto" (ended)="introEnded()" #video>
+      <source src="assets/game/locations/bg1-teleporter.mp4" type="video/mp4" />
+    </video>
+  </div>
+</div>
+
 <!-- Everything Else -->
 <div class="h-screen w-screen overscroll-none text-center">
 
