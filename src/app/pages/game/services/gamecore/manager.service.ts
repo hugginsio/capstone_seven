@@ -521,6 +521,13 @@ export class ManagerService {
     const otherOwner = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
     const currentOwner = endPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
+    //Sends move in network game
+    if (this.currentGameMode === GameType.NETWORK && endPlayer.type === PlayerType.HUMAN)
+    {
+      console.log(this.serializeStack());
+      this.networkingService.sendMove(this.serializeStack());
+    }
+
     // passes every tile to checkForCaptures for purposes of multi-tile captures
     for (let i = 0; i < this.gameBoard.tiles.length; i++) {
       if (this.checkForCaptures(endPlayer, i) === true) {
@@ -672,13 +679,6 @@ export class ManagerService {
       //   endPlayer.yellowResources = 2;
       //   endPlayer.greenResources = 2;
       // }
-
-      if (this.currentGameMode === GameType.NETWORK && endPlayer.type === PlayerType.HUMAN)
-      {
-        console.log(this.serializeStack());
-        this.networkingService.sendMove(this.serializeStack());
-      }
-
 
       // if AI is PlayerOne, send the first move of playerTwo to AI, keeping track of all moves placed
       if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
