@@ -122,7 +122,7 @@ export class ManagerService {
       }
       else
       {
-        let IP = this.storageService.fetch('oppAddress');
+        const IP = this.storageService.fetch('oppAddress');
         this.networkingService.connectTCPserver(IP);
 
         if (this.isHostFirst === 'true') {
@@ -412,7 +412,7 @@ export class ManagerService {
       console.warn(AIStringMove);
       this.applyMove(AIStringMove);
     }
-    else if (currentPlayer.type === PlayerType.NETWORK && otherPlayer.numNodesPlaced !== 1) {
+    else if (currentPlayer.type === PlayerType.NETWORK && currentPlayer.numNodesPlaced !== 1) {
       console.log(pastMoveString);
       this.networkingService.sendMove(pastMoveString);
 
