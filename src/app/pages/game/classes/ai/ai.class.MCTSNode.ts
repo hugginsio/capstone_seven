@@ -1,137 +1,74 @@
 import { Owner } from '../../enums/game.enums';
+import { CoreLogic } from '../../util/core-logic.util';
+import { GameBoard } from '../gamecore/game.class.GameBoard';
 import { State } from './ai.class.State';
 
 
-interface MCTSNodeInterface {
-  node:MCTSNode | null
+export class Tree{
+  root:MCTSNode;
+
+  getRoot():MCTSNode{
+    return this.root;
+  }
+
+  setRoot(newRoot:MCTSNode):void{
+    this.root = newRoot;
+  }
 }
 
 export class MCTSNode {
-  move:string | null;
-  parent:MCTSNode | null ;
-  visits:number;
-  wins:number;
-  childrenKeys:string[];
-  childrenValues:MCTSNodeInterface[];
-
   state:State;
+  parent:MCTSNode | null;
+  childArray:Array<MCTSNode>;
 
-  constructor(parent:MCTSNode | null, move:string | null, state:State, unexpandedMoves:string[]) {
-    this.move = move;
+  constructor(state:State){
     this.state = state;
-
-    this.wins = 0;
-    this.visits = 0;
-
-
-    this.parent = parent;
-    this.childrenKeys = [];
-    this.childrenValues = [];
-
-    //console.log(unexpandedMoves);
-    for(let i = 0; i < unexpandedMoves.length; i++){
-      this.childrenKeys.push(unexpandedMoves[i]);
-      this.childrenValues.push({node:null});
-    }
-    //console.log(this.childrenKeys, this.childrenValues);
+    this.parent = null;
+    this.childArray = [];
   }
 
-  getChildNode(move:string):MCTSNode{
-    const child = this.childrenValues[this.childrenKeys.indexOf(move)];
-    //console.log(move);
-    //console.log(this.childrenKeys.indexOf(move));
-    //console.log(this.childrenValues[this.childrenKeys.indexOf(move)]);
-    if(child === undefined){
-      throw new Error("There is no such move!");
-    }
-    else if (child.node === null){
-      throw new Error("Child is not expanded");
-    }
+  static copyConstructor(node:MCTSNode):MCTSNode{
+    const newNode = new MCTSNode(node.getState().cloneState());
+    newNode.parent = node.parent;
     
-    return child.node;
+    newNode.childArray = node.childArray;
+
+    return newNode;
+    
   }
 
-  expand(move:string, childState:State, unexpandedMoves:string[]):MCTSNode {
-    if(!this.childrenKeys.includes(move)){
-      throw new Error("No such move!");
-    }
-
-    const childNode = new MCTSNode(this,move,childState,unexpandedMoves);
-    const index = this.childrenKeys.indexOf(move);
-    this.childrenValues[index] = {node:childNode};
-
-    return childNode;
+  getRandomChildNode():MCTSNode{
+    return this.childArray[Math.floor(Math.random() * this.childArray.length)];
   }
 
-  getAllMoves():string[] {
-    const result = [];
+  getChildWithMaxScore():MCTSNode{
+    let maxChild = this.childArray[0];
+    let maxScore = this.childArray[0].getState().getWinScore();
 
-    for(const child of this.childrenKeys){
-      result.push(child);
-    }
-
-    return result;
-  }
-
-  getUnexpandedMoves():string[] {
-    const result = [];
-    for(let i = 0; i < this.childrenValues.length; i++){
-      if(this.childrenValues[i].node === null){
-        result.push(this.childrenKeys[i]);
+    for(let i = 0; i < this.childArray.length;i++){
+      const tempScore = this.childArray[i].getState().getWinScore();
+      if(tempScore > maxScore){
+        maxScore = tempScore;
+        maxChild = this.childArray[i];
       }
     }
 
-    return result;
+    return maxChild;
   }
 
-  isFullyExpanded():boolean {
-    let result = true;
-    for(let i = 0; i < this.childrenValues.length; i++){
-      if(this.childrenValues[i].node === null){
-        result = false;
-      }
-    }
-    return result;
+  getState():State{
+    return this.state;
   }
 
-  isLeaf():boolean {
-    let result = false;
-    
-
-    if(!this.state.inInitialMoves && 
-      (this.state.player1.redResources === 0 && this.state.player1.redPerTurn === 0 &&
-      this.state.player1.blueResources === 0 && this.state.player1.bluePerTurn === 0 && 
-      this.state.player1.greenResources === 0 && this.state.player1.greenPerTurn === 0 &&
-      this.state.player1.yellowResources === 0 && this.state.player1.yellowPerTurn === 0) &&
-      (this.state.player2.redResources === 0 && this.state.player2.redPerTurn === 0 &&
-        this.state.player2.blueResources === 0 && this.state.player2.bluePerTurn === 0 && 
-        this.state.player2.greenResources === 0 && this.state.player2.greenPerTurn === 0 &&
-        this.state.player2.yellowResources === 0 && this.state.player2.yellowPerTurn === 0)){
-      result = true;
-
-    }
-    // else{
-    //   if (this.state.currentPlayer === 1){
-    //     if(this.state.player1.currentScore >= 10){
-    //       result = true;
-    //     }
-    //   }
-    //   else {
-    //     if(this.state.player2.currentScore >= 10){
-    //       result = true;
-    //     }
-    //   }
-    // }
-
-
-    return result;
+  getChildArray():Array<MCTSNode>{
+    return this.childArray;
   }
 
-  getUCBValue(biasParam:number):number {
-    let visitNumber = 0;
-    if(this.parent !== null){
-      visitNumber = this.parent.visits;
-    }
-    return (this.wins / this.visits) + Math.sqrt(biasParam * Math.log(visitNumber) / this.visits);
+  getParent():MCTSNode|null{
+    return this.parent;
+  }
+
+  setParent(node:MCTSNode):void{
+    this.parent = node;
   }
 }
