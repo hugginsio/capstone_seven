@@ -413,8 +413,8 @@ export class ManagerService {
       this.applyMove(AIStringMove);
     }
     else if (currentPlayer.type === PlayerType.NETWORK && currentPlayer.numNodesPlaced !== 1) {
-      console.log(pastMoveString);
-      this.networkingService.sendMove(pastMoveString);
+      //console.log(pastMoveString);
+      //this.networkingService.sendMove(pastMoveString);
 
 
     }
@@ -673,6 +673,12 @@ export class ManagerService {
       //   endPlayer.greenResources = 2;
       // }
 
+      if (this.currentGameMode === GameType.NETWORK && endPlayer.type === PlayerType.HUMAN)
+      {
+        console.log(this.serializeStack());
+        this.networkingService.sendMove(this.serializeStack());
+      }
+
 
       // if AI is PlayerOne, send the first move of playerTwo to AI, keeping track of all moves placed
       if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
@@ -680,11 +686,7 @@ export class ManagerService {
           //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
         // allow playerTwo's second initial turn 
-        if (this.currentGameMode === GameType.NETWORK && endPlayer.type === PlayerType.HUMAN)
-        {
-          console.log(this.serializeStack());
-          this.networkingService.sendMove(this.serializeStack());
-        }
+        
         this.nextTurn(endPlayer);
         return;
       }
