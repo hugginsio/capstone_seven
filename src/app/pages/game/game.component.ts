@@ -8,6 +8,8 @@ import { ClickEvent, CommPackage } from './interfaces/game.interface';
 import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
+import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
+//import { GuidedTutorialComponent } from './guided-tutorial/guided-tutorial.component'
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -19,15 +21,18 @@ export class GameComponent implements OnInit {
   public gamePaused: boolean;
   public isTrading: boolean;
   public gameOver: boolean;
+  public guidedTutorialCheck: boolean;
   public gameOverText: string;
   public winningPlayer: Player;
   public tradingModel: TradingModel;
+  //public guidedTutorial: GuidedTutorialComponent;
 
   public readonly commLink = new Subject<CommPackage>();
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     public readonly gameManager: ManagerService,
+    public guidedTutorial: GuidedTutorialService,
     private readonly storageService: LocalStorageService,
     private readonly snackbarService: SnackbarService
   ) {
@@ -35,8 +40,10 @@ export class GameComponent implements OnInit {
     this.gamePaused = false;
     this.isTrading = false;
     this.gameOver = false;
+    this.guidedTutorialCheck = false;
     this.gameOverText = "Victory!";
     this.tradingModel = new TradingModel();
+    //this.guidedTutorial = new GuidedTutorialComponent(document, gameManager, storageService, snackbarService);
 
     this.storageService.setContext('game');
   }
@@ -44,6 +51,14 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     // ✨ ANIMATIONS ✨
     // this.scrollToBottom();
+
+    if(this.storageService.fetch('guided-tutorial')==='true' 
+        && this.storageService.fetch('mode')==='pva'
+        && this.storageService.fetch('ai-difficulty')==='easy') 
+        {
+          this.guidedTutorialCheck = true;
+          this.guidedTutorial.startTutorial();
+        }
 
     // Subscribe to own communications link
     this.commLink.subscribe(message => {
