@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 
@@ -7,18 +7,21 @@ import { LocalStorageService } from '../../../shared/services/local-storage/loca
   templateUrl: './new-local-game.component.html',
   styleUrls: ['../menu-common.scss']
 })
-export class NewLocalGameComponent implements OnInit {
-  public gameModeString: string;
-  public aiDifficultyString: string;
+export class NewLocalGameComponent {
   public advancedOpts: boolean;
+  public aiDifficultyString: string;
   public boardSeed: string;
+  public gameModeString: string;
   public guidedTutorial: boolean;
+  public playerOrder: number;
   public selectedLocation: number;
 
-  public readonly pvp = "Player vs. Player";
-  public readonly pva = "Player vs. AI";
   public readonly aiEasy = "Easy";
   public readonly aiMedium = "Medium";
+  public readonly playerOrderOne = "Player Goes First";
+  public readonly playerOrderTwo = "AI Goes First";
+  public readonly pva = "Player vs. AI";
+  public readonly pvp = "Player vs. Player";
 
   constructor(
     private readonly storageService: LocalStorageService,
@@ -31,6 +34,7 @@ export class NewLocalGameComponent implements OnInit {
     this.aiDifficultyString = this.storageService.fetch('ai-difficulty') === 'easy' ? this.aiEasy : this.aiMedium;
     this.advancedOpts = false;
     this.guidedTutorial = false;
+    this.playerOrder = this.storageService.fetch('firstplayer') === '1' ? 1 : 2;
 
     const storedLocation =  this.storageService.fetch('location');
     if (storedLocation === 'bg3') {
@@ -42,8 +46,6 @@ export class NewLocalGameComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {}
-
   changeGameMode(): void {
     // Update UI
     this.gameModeString = this.gameModeString === this.pvp ? this.pva : this.pvp;
@@ -54,6 +56,9 @@ export class NewLocalGameComponent implements OnInit {
     if (this.gameModeString === this.pva) {
       this.guidedTutorial = false;
       this.storageService.update('guided-tutorial', 'false');
+      
+      this.playerOrder = 1;
+      this.storageService.update('firstplayer', this.playerOrder.toString());
     }
   }
 
@@ -91,5 +96,10 @@ export class NewLocalGameComponent implements OnInit {
     } else {
       return 'border-gray-900';
     }
+  }
+
+  changePlayerOrder(): void {
+    this.playerOrder = this.playerOrder === 1 ? 2 : 1;
+    this.storageService.update('firstplayer', this.playerOrder.toString());
   }
 }

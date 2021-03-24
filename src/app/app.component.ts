@@ -31,7 +31,7 @@ export class AppComponent {
     this.storageService.store('ai-difficulty', 'easy');
     this.storageService.store('guided-tutorial', 'false');
     this.storageService.update('board-seed', '!random');
-    this.storageService.update('firstplayer', 'one');
+    this.storageService.update('firstplayer', '1');
     this.storageService.update('location', 'bg1');
   }
 }

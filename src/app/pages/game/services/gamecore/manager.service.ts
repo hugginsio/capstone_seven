@@ -28,7 +28,7 @@ export class ManagerService {
   private playerTwo: Player;
 
   // used for UI integration
-  private firstPlayer: string;
+  private firstPlayer: number;
 
   // initializes AI service
   private readonly ai: AiService;
@@ -68,7 +68,7 @@ export class ManagerService {
     this.storageService.setContext('game');
     const gameMode = this.storageService.fetch('mode');
     const boardSeed = this.storageService.fetch('board-seed');
-    this.firstPlayer = this.storageService.fetch('firstplayer');
+    this.firstPlayer = +this.storageService.fetch('firstplayer');
 
     // determines currentGameMode field
     // determines player type fields for playerOne + playerTwo
@@ -78,11 +78,11 @@ export class ManagerService {
     }
     else if (gameMode === 'pva') {
       this.currentGameMode = GameType.AI;
-      if (this.firstPlayer === 'one') {
+      if (this.firstPlayer === 1) {
         this.playerOne.type = PlayerType.HUMAN;
         this.playerTwo.type = PlayerType.AI;
       }
-      if (this.firstPlayer === 'two') {
+      if (this.firstPlayer === 2) {
         this.playerOne.type = PlayerType.AI;
         this.playerTwo.type = PlayerType.HUMAN;
       }
@@ -92,11 +92,11 @@ export class ManagerService {
     }
 
     // instantiating AiService, calling its contructor w/ gameBoard and both players
-    if (this.firstPlayer === 'one') {
+    if (this.firstPlayer === 1) {
       if (this.currentGameMode === GameType.AI) {
         this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
       }
-    } else if (this.firstPlayer === 'two') {
+    } else if (this.firstPlayer === 2) {
       if (this.currentGameMode === GameType.AI) {
         this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
       }
