@@ -42,9 +42,6 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // ✨ ANIMATIONS ✨
-    // this.scrollToBottom();
-
     // Subscribe to own communications link
     this.commLink.subscribe(message => {
       const status = message.code;

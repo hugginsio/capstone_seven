@@ -229,7 +229,7 @@
   }
 
   .resource-button-trade {
-    @apply border-4 border-gray-600 hover:border-gray-300 cursor-pointer transition-colors duration-100 w-1/4;
+    @apply border-4 border-gray-600 hover:border-gray-300 cursor-pointer transition-colors duration-100 w-1/4 bg-black;
   }
 
   .selected {

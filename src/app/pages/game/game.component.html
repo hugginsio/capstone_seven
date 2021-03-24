@@ -63,20 +63,20 @@
               this.gameManager.getCurrentPlayer().blueResources === 0 && this.gameManager.getCurrentPlayer().yellowResources === 0">
               <p>You have no resources to trade.</p>
             </div>
-            <div id="1" class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().redResources > 0" (click)="tradingModel.increment(1)">
-              <span>{{ tradingModel.redResources }}</span>
+            <div id="1" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().redResources > 0" (click)="tradingModel.increment(1)">
+              <span class="flex w-full h-full absolute items-center justify-center text-3xl">{{ tradingModel.redResources }}</span>
               <img src="/assets/game/Resource-Red.png" class="w-full h-full" draggable="false" />
             </div>
-            <div id="2" class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().greenResources > 0" (click)="tradingModel.increment(2)">
-              <span>{{ tradingModel.greenResources }}</span>
+            <div id="2" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().greenResources > 0" (click)="tradingModel.increment(2)">
+              <span class="flex w-full h-full absolute items-center justify-center text-3xl">{{ tradingModel.greenResources }}</span>
               <img src="/assets/game/Resource-Green.png" class="w-full h-full" draggable="false" />
             </div>
-            <div id="3" class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().blueResources > 0" (click)="tradingModel.increment(3)">
-              <span>{{ tradingModel.blueResources }}</span>
+            <div id="3" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().blueResources > 0" (click)="tradingModel.increment(3)">
+              <span class="flex w-full h-full absolute items-center justify-center text-3xl">{{ tradingModel.blueResources }}</span>
               <img src="/assets/game/Resource-Blue.png" class="w-full h-full" draggable="false" />
             </div>
-            <div id="4" class="resource-button-trade" *ngIf="this.gameManager.getCurrentPlayer().yellowResources > 0" (click)="tradingModel.increment(4)">
-              <span>{{ tradingModel.yellowResources }}</span>
+            <div id="4" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().yellowResources > 0" (click)="tradingModel.increment(4)">
+              <span class="flex w-full h-full absolute items-center justify-center text-3xl">{{ tradingModel.yellowResources }}</span>
               <img src="/assets/game/Resource-Yellow.png" class="w-full h-full" draggable="false" />
             </div>
           </div>
