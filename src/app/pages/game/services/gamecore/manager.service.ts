@@ -350,7 +350,7 @@ export class ManagerService {
     if (currentPlayer.type === PlayerType.AI) {
       const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
-      const AIStringMove = this.ai.getAIMove(pastMoveString);
+      const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
 
       console.warn(AIStringMove);
       this.applyMove(AIStringMove);
