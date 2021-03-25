@@ -205,6 +205,11 @@ export class ManagerService {
     this.serializeBoard();
   }
 
+  // clears board for next game
+  clearBoard(): void {
+      
+  }
+
   // creates string representing gameBoard for AI/Networking
   serializeBoard(): void {
 
@@ -1129,6 +1134,7 @@ export class ManagerService {
       this.stack.push(nodePlacement);
       return true;
     }
+    return false;
   }
     else {
       return false;
