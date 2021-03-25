@@ -25,7 +25,8 @@
             "scripts": [],
             "customWebpackConfig": {
               "path": "./angular.webpack.js"
-            }
+            },
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "dev": {
@@ -129,6 +130,9 @@
             "lintFilePatterns": [
               "src/**/*.ts",
               "electron/**/*.ts"
+            ],
+            "tsConfig": [
+              "tsconfig.worker.json"
             ]
           }
         }

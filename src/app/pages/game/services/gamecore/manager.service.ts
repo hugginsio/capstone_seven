@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 import { CommPackage, ResourceMap } from '../../interfaces/game.interface';
 import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
+import { AiMethods } from '../../interfaces/worker.interface';
 
 
 @Injectable({
@@ -51,11 +52,12 @@ export class ManagerService {
   // <---------------------------------------------------------------------------------------------------------------------------------------what is this?
   public readonly commLink = new Subject<CommPackage>();
 
+  private aiWorker: Worker;
+
   constructor(
     // UI integration
     private readonly storageService: LocalStorageService
   ) {
-
     // begin initializing ManagerService fields
     this.currentPlayer = Owner.PLAYERONE;
     this.gameBoard = new GameBoard();
@@ -100,14 +102,20 @@ export class ManagerService {
       this.createBoard(false, boardSeed);
     }
 
-    if (this.firstPlayer === 'one') {
-      if (this.currentGameMode === GameType.AI) {
-        this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
-      }
-    } else if (this.firstPlayer === 'two') {
-      if (this.currentGameMode === GameType.AI) {
-        this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
-      }
+    // Web worker magic
+    this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
+
+    if (this.currentGameMode === GameType.AI) {
+      this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
+      this.aiWorker.onmessage = ({ data }) => {
+        if (data) {
+          console.log('Initialized AI web worker.');
+        } else {
+          console.error('Could not initialize AI web worker.');
+        }
+      };
+
+      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo]});
     }
 
     if (this.currentGameMode === GameType.AI && this.getCurrentPlayer().type === PlayerType.AI) {
