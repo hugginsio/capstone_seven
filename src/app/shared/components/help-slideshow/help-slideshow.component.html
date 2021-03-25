@@ -1,11 +1,11 @@
-<div class="flex space-between w-full justify-center h-full" id="help-slideshow-container">
-  <div class="flex justify-center items-center w-full h-full px-4 space-x-4">
+<div class="flex space-between w-full justify-center h-full flex-grow" id="help-slideshow-container">
+  <div class="flex justify-center items-center w-full h-full px-4 space-x-4 flex-grow">
     <div class="flex menu-btn" (click)="decrementSlides()">
       prev
     </div>
 
-    <div class="flex px-4 h-full" id="actual-slides">
-      <div class="flex flex-col space-y-4 h-full" *ngIf="currentSlide === 1">
+    <div class="flex px-4 h-full w-full flex-grow" id="actual-slides">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 1">
         <h1>MasterMine</h1>
         <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 flex-col space-y-4">
@@ -27,7 +27,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 2">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 2">
         <h1>Settin' Up a Local Competition (do we need this slide?)</h1>
         <div class="flex w-full items-center space-x-4">
           <div class="flex-1 flex-col space-y-4">
@@ -58,7 +58,7 @@
       </div>
 
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 3">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 3">
         <h1>Settin' Up the Mine</h1>
         <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 flex-col space-y-4">
@@ -79,9 +79,9 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 4">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 4">
         <h1>Newfangled "On The Line" Technology</h1>
-        <div class="flex space-between w-full">
+        <div class="flex space-x-4 w-full items-center">
           <div class="flex-1">
             <p>Here y'all get to pick if you wanna host a duel or 
               join one with a miner on the other side just waitin' to compete.</p>
@@ -97,11 +97,11 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 5">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 5">
         <h1>Game Pieces</h1>
-        <div class="flex space-x-4 w-full">
+        <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 space-y-4">
-            <div class="flex flex-col space-y-4">
+            <div class="flex flex-col space-y-4 items-center">
               <div>
                 <img src="/assets/game/tiles/Green-2.png" />
               </div>
@@ -113,7 +113,7 @@
             </div>
           </div>
           <div class="flex-1 space-y-4">
-            <div class="flex flex-col space-y-4">
+            <div class="flex flex-col space-y-4 items-center">
               <div>
                 <img src="/assets/game/Blank-Branch.png" />
               </div>
@@ -126,7 +126,7 @@
             </div>
           </div>
           <div class="flex-1 space-y-4">
-            <div class="flex flex-col space-y-4">
+            <div class="flex flex-col space-y-4 items-center">
               <div>
                 <img src="/assets/game/Blank-Node.png" />
               </div>
@@ -141,7 +141,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 6">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 6">
         <h1>Startin' the Game</h1>
         <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 flex-col space-y-4">
@@ -162,7 +162,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 7">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 7">
         <h1>Helpful Hints</h1>
         <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 flex-col space-y-4">
@@ -183,7 +183,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 8">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 8">
         <h1>Start of Each Turn</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -203,10 +203,10 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 9">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 9">
         <h1>Building Your Operation</h1>
         <div class="flex space-x-4 items-center w-full">
-          <div class="flex-1 flex-col space-y-4">
+          <div class="flex flex-col space-y-4 flex-grow">
             <p>
               Now that y’all got two startin’ points to your mining operation you can build rails and place mining markers off either of your startin’ points.
             </p>
@@ -221,7 +221,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 10">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 10">
         <h1>All Tuckered Out</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -242,14 +242,14 @@
               from that site.
             </p>
           </div>
-          <div class="flex-1">
+          <div class="flex flex-grow justify-center items-center">
             <img class="boardImg" src="/assets/game/tiles/Yellow-Exhausted.png" />
           </div>
         </div>
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 11">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 11">
         <h1>Claimin' a Site</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -272,14 +272,14 @@
               giving you a gem for each touchin' marker before each turn.
             </p>
           </div>
-          <div class="flex-1">
+          <div class="flex flex-grow justify-center items-center">
             <img class="boardImg" src="/assets/game/tiles/Blue-Capture-Orange.png" />
           </div>
         </div>
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 12">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 12">
         <h1>Buyin' More Minin' Markers and Tracks</h1>
         <div class="flex-1 flex-col space-y-4 items-center">
           <!-- branches addition images -->
@@ -329,7 +329,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 13">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 13">
         <h1>How To Win</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -354,7 +354,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4" *ngIf="currentSlide === 14">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 14">
         <h1>Options Menu</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">

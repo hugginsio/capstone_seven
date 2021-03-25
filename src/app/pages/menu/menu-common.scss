@@ -20,7 +20,7 @@
   }
 
   .submenu-body {
-    @apply flex flex-col items-center justify-center space-y-5 mx-auto;
+    @apply flex flex-col items-center space-y-5 mx-auto flex-grow h-full;
   }
 
   .submenu-footer {
