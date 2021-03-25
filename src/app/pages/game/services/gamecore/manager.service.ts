@@ -1057,7 +1057,6 @@ export class ManagerService {
           brTile.capturedBy !== otherOwner) {
           this.incrementResource(currentPlayer, brTile.getColor());
         }
-      }
 
       // check if bottomLeftTile of the possibleNode exists
       if (blTileIndex != -1) {
@@ -1130,6 +1129,7 @@ export class ManagerService {
       this.stack.push(nodePlacement);
       return true;
     }
+  }
     else {
       return false;
     }
