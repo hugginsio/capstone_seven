@@ -34,3 +34,7 @@ export class AppComponent {
     this.storageService.update('firstplayer', 'one');
   }
 }
+
+if (typeof Worker === 'undefined') {
+  alert('Error initializing web workers.');
+}
