@@ -152,7 +152,7 @@ class UCT {
     if (nodeVisit == 0) {
       return Number.MAX_VALUE;
     }
-    return (nodeWinScore / nodeVisit) + 4 * Math.sqrt(Math.log(totalVisit) / nodeVisit);
+    return (nodeWinScore / nodeVisit) + 4.2 * Math.sqrt(Math.log(totalVisit) / nodeVisit);
   }
 
   static findBestNodeWithUCT(node:MCTSNode):MCTSNode {
