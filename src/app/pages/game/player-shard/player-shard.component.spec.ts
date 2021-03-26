@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlayerShardComponent } from './player-shard.component';
 
-fdescribe('PlayerShardComponent', () => {
+describe('PlayerShardComponent', () => {
   let component: PlayerShardComponent;
   let fixture: ComponentFixture<PlayerShardComponent>;
 

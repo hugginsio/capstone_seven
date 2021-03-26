@@ -10,8 +10,7 @@ describe('NewLocalGameComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ RouterTestingModule ],
       declarations: [ NewLocalGameComponent ]
-    })
-      .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -25,17 +24,17 @@ describe('NewLocalGameComponent', () => {
   });
 
   it('changeGameMode should flip game modes', () => {
-    // Assumes PVP as default.
-    component.changeGameMode();
-
-    expect(component.gameModeString).toEqual(component.pva);
+    component.gameModeString = component.pva;
     component.changeGameMode();
 
     expect(component.gameModeString).toEqual(component.pvp);
+    component.changeGameMode();
+
+    expect(component.gameModeString).toEqual(component.pva);
   });
 
   it('changeAiDifficulty should flip AI difficulty', () => {
-    // Assumes AI is set to easy by default.
+    component.aiDifficultyString = component.aiEasy;
     component.changeAiDifficulty();
 
     expect(component.aiDifficultyString).toEqual(component.aiMedium);
