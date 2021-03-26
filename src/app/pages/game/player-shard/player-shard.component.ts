@@ -22,7 +22,7 @@ export class PlayerShardComponent implements OnInit {
   ngOnInit(): void { }
 
   getDynamicClass(): string {
-    return `${this.currentPlayer ? 'button-std' : 'button-disabled'} ${this.playerDetail.type !== PlayerType.HUMAN ? 'button-hidden' : ''}`;
+    return `${this.currentPlayer ? 'button-std' : 'button-disabled'} ${this.playerDetail?.type !== PlayerType.HUMAN ? 'button-hidden' : ''}`;
   }
 
   generateMessage(action: CommCode): CommPackage {

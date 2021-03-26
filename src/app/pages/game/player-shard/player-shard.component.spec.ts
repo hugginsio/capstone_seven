@@ -2,15 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlayerShardComponent } from './player-shard.component';
 
-describe('PlayerShardComponent', () => {
+fdescribe('PlayerShardComponent', () => {
   let component: PlayerShardComponent;
   let fixture: ComponentFixture<PlayerShardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ PlayerShardComponent ]
-    })
-      .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
