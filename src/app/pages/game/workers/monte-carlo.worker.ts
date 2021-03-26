@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 
 import { AiMethods, WorkerPayload } from '../interfaces/worker.interface';
-// import { AiService } from '../services/ai/ai.service';
+import { AiService } from '../services/ai/ai.service';
 
 interface PayloadWrapper {
   data: WorkerPayload
@@ -24,7 +24,7 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
 
 function initAiService(data: WorkerPayload): boolean {
   console.log(data);
-  // aiService = new AiService();
+  //aiService = new AiService();
   return true;
 }
 
