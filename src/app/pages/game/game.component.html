@@ -25,17 +25,15 @@
   <!-- Chat Container -->
   
     <div class="absolute top-3 right-3" *ngIf="this.isNetwork || this.isTutorial">
-      <div id="chat-container" style="width: 275px; height:150px; border-width: 1px; overflow: auto; text-align: left; font-size: 12px;">
+      <div id="chat-container" style="width: 275px; height:150px; border-width: 1px; overflow: auto; text-align: left; font-size: 18px;">
       </div>
 
       <div class="flex flex-col space-y-3 pt-3 text-center" >
           <div id="network-controls" class="flex space-x-3 w-full" *ngIf="this.isNetwork">
-            <form>
               <input id="chat-input" class="input" type="text" style="color: black;">
               <div class="menu-btn absolute right-0" (click)="sendMessage()" style="float:right" type="submit">
                 <p>Send</p>
               </div>
-            </form>
           </div>
 
         <div id="tut-controls" class="flex space-x-3 w-full" *ngIf="this.isTutorial">
