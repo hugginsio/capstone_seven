@@ -115,6 +115,7 @@ export class GameComponent implements OnInit {
         this.networkingService.connectTCPserver(this.storageService.fetch('oppAddress'));
       }
       this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
+        console.log(message);
         this.appendMessage(message);
       });
     }
@@ -287,12 +288,12 @@ export class GameComponent implements OnInit {
   }
 
   sendMessage(): void {
-    const textbox = document.getElementById('chat-input');
+    const textbox:any = document.getElementById('chat-input');
     if(textbox === null)
       return;
 
-    const message = textbox?.innerText;
-    textbox.innerText = "";
+    const message = textbox.value;
+    textbox.innerHTML = "";
     this.networkingService.sendChatMessage(message);
     this.appendMessage(message);
   }
@@ -300,7 +301,7 @@ export class GameComponent implements OnInit {
   appendMessage(message:string): void {
     const container = document.getElementById('chat-container');
     const element = document.createElement('div');
-    element.innerText = message;
+    element.innerHTML = message;
     container?.appendChild(element);
   }
 }
