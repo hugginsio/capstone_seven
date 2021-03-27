@@ -37,7 +37,7 @@
         <p>AI Difficulty: {{ this.aiDifficultyString }}</p>
       </div>
     </div>
-    <div class="menu-btn" (click)="changeTutorialSetting()" *ngIf="this.gameModeString === this.pvp">
+    <div class="menu-btn" (click)="changeTutorialSetting()" *ngIf="this.gameModeString === this.pva && this.aiDifficultyString === this.aiEasy">
       <div>
         <p>Guided Tutorial: {{ this.guidedTutorial ? 'On' : 'Off' }}</p>
       </div>
@@ -47,16 +47,16 @@
         <p>{{ this.playerOrder === 1 ? this.playerOrderOne : this.playerOrderTwo }}</p>
       </div>
     </div>
-    <div class="menu-btn" (click)="this.advancedOpts = !this.advancedOpts">
+    <div class="menu-btn" (click)="this.advancedOpts = !this.advancedOpts" *ngIf="!this.guidedTutorial">
       <div>
         <p>Advanced Options...</p>
       </div>
     </div>
-    <div class="menu-input" *ngIf="advancedOpts">
+    <div class="menu-input" *ngIf="this.advancedOpts && !this.guidedTutorial">
       <!-- oninput all uppercase credit to https://stackoverflow.com/users/5476516/yehuda-schwartz -->
       <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed" oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
     </div>
-    <p class="leading-none text-base font-normal" *ngIf="advancedOpts">Leave blank for random seed</p>
+    <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts && !this.guidedTutorial">Leave blank for random seed</p>
   </div>
   <div class="submenu-footer">
     <div class="flex space-x-4 w-1/3">

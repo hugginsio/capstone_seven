@@ -18,6 +18,7 @@ export class NewLocalGameComponent {
 
   public readonly aiEasy = "Easy";
   public readonly aiMedium = "Medium";
+  public readonly aiHard = "Hard";
   public readonly playerOrderOne = "Player Goes First";
   public readonly playerOrderTwo = "AI Goes First";
   public readonly pva = "Player vs. AI";
@@ -53,7 +54,7 @@ export class NewLocalGameComponent {
     // Update datastore
     this.gameModeString === this.pvp ? this.storageService.update('mode', 'pvp') : this.storageService.update('mode', 'pva');
 
-    if (this.gameModeString === this.pva) {
+    if (this.gameModeString !== this.pva) {
       this.guidedTutorial = false;
       this.storageService.update('guided-tutorial', 'false');
       
@@ -64,10 +65,26 @@ export class NewLocalGameComponent {
 
   changeAiDifficulty(): void {
     // Update UI
-    this.aiDifficultyString = this.aiDifficultyString === this.aiEasy ? this.aiMedium : this.aiEasy;
+    if (this.aiDifficultyString === this.aiEasy) {
+      this.aiDifficultyString = this.aiMedium;
+    } else if (this.aiDifficultyString === this.aiMedium) {
+      this.aiDifficultyString = this.aiHard;
+    } else {
+      this.aiDifficultyString = this.aiEasy;
+    }
+
+    if(this.aiDifficultyString !== this.aiEasy) {
+      this.guidedTutorial = false;
+      this.storageService.update('guided-tutorial', 'false');
+    }
 
     // Update datastore
     this.storageService.update('ai-difficulty', this.aiDifficultyString.toLowerCase());
+
+    // Disable guided tutorial if not PVA && aiEasy
+    if (this.aiDifficultyString !== this.aiEasy) {
+      this.storageService.update('guided-tutorial', 'false');
+    }
   }
 
   changeTutorialSetting(): void {
@@ -76,11 +93,17 @@ export class NewLocalGameComponent {
 
     // Update datastore
     this.storageService.update('guided-tutorial', this.guidedTutorial.toString());
+
+    // Close options pane if it was open
+    this.advancedOpts = false;
   }
 
   startGame(): void {
-    // Set board seed before routing
-    this.storageService.update('board-seed', this.boardSeed);
+    // Set board seed before routing if not tutorial
+    if (!this.guidedTutorial) {
+      this.storageService.update('board-seed', this.boardSeed);
+    }
+
     this.routerService.navigate(['/game']);
   }
 
