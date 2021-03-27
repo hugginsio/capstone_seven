@@ -8,6 +8,7 @@ import { ClickEvent, CommPackage } from './interfaces/game.interface';
 import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
+import { GameNetworkingService } from '../networking/game-networking.service';
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -22,6 +23,8 @@ export class GameComponent implements OnInit {
   public gameOverText: string;
   public winningPlayer: Player;
   public tradingModel: TradingModel;
+  public isTutorial: boolean;
+  public isNetwork: boolean;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -29,7 +32,8 @@ export class GameComponent implements OnInit {
     @Inject(DOCUMENT) private document: Document,
     public readonly gameManager: ManagerService,
     private readonly storageService: LocalStorageService,
-    private readonly snackbarService: SnackbarService
+    private readonly snackbarService: SnackbarService,
+    private readonly networkingService: GameNetworkingService
   ) {
     // Set defaults for modal triggers
     this.gamePaused = false;
@@ -37,6 +41,8 @@ export class GameComponent implements OnInit {
     this.gameOver = false;
     this.gameOverText = "Victory!";
     this.tradingModel = new TradingModel();
+    this.isNetwork = false;
+    this.isTutorial = false;
 
     this.storageService.setContext('game');
   }
@@ -96,6 +102,22 @@ export class GameComponent implements OnInit {
         this.gameOver = true;
       }
     });
+
+    if(this.storageService.fetch('mode') === "net")
+    {
+      this.isNetwork = true;
+      if(this.storageService.fetch('isHost') === 'true')
+      {
+        this.networkingService.createTCPServer();
+      }
+      else
+      {
+        this.networkingService.connectTCPserver(this.storageService.fetch('oppAddress'));
+      }
+      this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
+        this.appendMessage(message);
+      });
+    }
   }
 
   assemblePieceClass(piece: 'T' | 'N' | 'BX' | 'BY', id: number): string {
@@ -262,5 +284,23 @@ export class GameComponent implements OnInit {
   cancelTrading(): void {
     this.isTrading = false;
     this.tradingModel.reset();
+  }
+
+  sendMessage(): void {
+    const textbox = document.getElementById('chat-input');
+    if(textbox === null)
+      return;
+
+    const message = textbox?.innerText;
+    textbox.innerText = "";
+    this.networkingService.sendChatMessage(message);
+    this.appendMessage(message);
+  }
+
+  appendMessage(message:string): void {
+    const container = document.getElementById('chat-container');
+    const element = document.createElement('div');
+    element.innerText = message;
+    container?.appendChild(element);
   }
 }
