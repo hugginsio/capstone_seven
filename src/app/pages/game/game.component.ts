@@ -116,7 +116,7 @@ export class GameComponent implements OnInit {
       }
       this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
         console.log(message);
-        this.appendMessage(message);
+        this.appendMessage(message, "Opponent");
       });
     }
   }
@@ -298,10 +298,10 @@ export class GameComponent implements OnInit {
     const message = textbox.value;
     textbox.value = "";
     this.networkingService.sendChatMessage(message);
-    this.appendMessage(message);
+    this.appendMessage(message, "You");
   }
 
-  appendMessage(message:string): void {
+  appendMessage(message:string, name:string): void {
     const container = document.getElementById('chat-container');
     if(container === null)
     {
@@ -310,7 +310,7 @@ export class GameComponent implements OnInit {
     }
 
     const element = document.createElement('div');
-    element.innerHTML = message;
+    element.innerHTML = name + ": " + message;
     container.appendChild(element);
   }
 }
