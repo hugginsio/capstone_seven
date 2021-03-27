@@ -33,13 +33,16 @@ describe('NewLocalGameComponent', () => {
     expect(component.gameModeString).toEqual(component.pva);
   });
 
-  it('changeAiDifficulty should flip AI difficulty', () => {
+  it('changeAiDifficulty should modify AI difficulty', () => {
     component.aiDifficultyString = component.aiEasy;
     component.changeAiDifficulty();
 
     expect(component.aiDifficultyString).toEqual(component.aiMedium);
     component.changeAiDifficulty();
 
+    expect(component.aiDifficultyString).toEqual(component.aiHard);
+    component.changeAiDifficulty();
+    
     expect(component.aiDifficultyString).toEqual(component.aiEasy);
   });
 });
