@@ -108,7 +108,6 @@ export class NewLocalGameComponent {
   }
 
   selectLocation(clicked: number): void {
-    console.log(clicked);
     this.selectedLocation = clicked;
     this.storageService.update('location', `bg${clicked}`);
   }
