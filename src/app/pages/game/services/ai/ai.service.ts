@@ -7,9 +7,6 @@ import { Player } from '../../classes/gamecore/game.class.Player';
 import { Owner } from '../../enums/game.enums';
 import { CoreLogic } from '../../util/core-logic.util';
 
-// @Injectable({
-//   providedIn: 'root'
-// })
 
 interface Resources{
   red:number,

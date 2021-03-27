@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GameType, Owner, PlayerType, TileColor } from '../../enums/game.enums';
 import { CoreLogic } from '../../util/core-logic.util';
-import { AiService } from '../../services/ai/ai.service';
+//import { AiService } from '../../services/ai/ai.service';
 
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Player } from '../../classes/gamecore/game.class.Player';
@@ -32,7 +32,7 @@ export class ManagerService {
   private firstPlayer: string;
 
   // initializes AI service
-  private readonly ai: AiService;
+  //private readonly ai: AiService;
 
   // used in checkForCaptures() function
   private tilesBeingChecked: number[];
@@ -106,7 +106,7 @@ export class ManagerService {
     this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
 
     if (this.currentGameMode === GameType.AI) {
-      this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
+      //this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
       this.aiWorker.onmessage = ({ data }) => {
         if (data) {
           console.log('Initialized AI web worker.');
@@ -356,10 +356,10 @@ export class ManagerService {
     if (currentPlayer.type === PlayerType.AI) {
       const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
-      const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
+      //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
 
-      console.warn(AIStringMove);
-      this.applyMove(AIStringMove);
+      //console.warn(AIStringMove);
+      //this.applyMove(AIStringMove);
     }
 
     // Empty the move stack prior to the next placed turns

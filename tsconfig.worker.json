@@ -11,7 +11,7 @@
   },
   "include": [
     "src/**/*.worker.ts",
-    "src/app/pages/game/services/ai.service.ts",
+    "src/app/pages/game/classes/ai/ai.class.ai.ts",
     "src/app/pages/game/classes/ai/ai.class.MonteCarlo.ts",
     "src/app/pages/game/classes/ai/ai.class.MCTSNode.ts",
     "src/app/pages/game/classes/ai/ai.class.State.ts",

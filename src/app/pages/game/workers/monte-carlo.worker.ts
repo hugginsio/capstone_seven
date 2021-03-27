@@ -1,13 +1,13 @@
 /// <reference lib="webworker" />
 
 import { AiMethods, WorkerPayload } from '../interfaces/worker.interface';
-import { AiService } from '../services/ai/ai.service';
+import { AI } from "../classes/ai/ai.class.ai";
 
 interface PayloadWrapper {
   data: WorkerPayload
 }
 
-// const aiService: AiService;
+let ai: AI;
 
 addEventListener('message', ({ data }: PayloadWrapper) => {
   let response: boolean | string;
@@ -24,12 +24,12 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
 
 function initAiService(data: WorkerPayload): boolean {
   console.log(data);
-  //aiService = new AiService();
+  //ai = new AI();
   return true;
 }
 
 function getAiMove(data: WorkerPayload): string {
   // get the ol move hereabouts
-  // aiService.getAIMove();
+  // ai.getAIMove();
   return 'no';
 }
