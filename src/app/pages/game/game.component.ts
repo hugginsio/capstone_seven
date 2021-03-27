@@ -290,8 +290,11 @@ export class GameComponent implements OnInit {
   sendMessage(): void {
     const textbox:any = document.getElementById('chat-input');
     if(textbox === null)
+    {
+      console.log("can't find input");
       return;
-
+    }
+      
     const message = textbox.value;
     textbox.innerHTML = "";
     this.networkingService.sendChatMessage(message);
@@ -300,8 +303,14 @@ export class GameComponent implements OnInit {
 
   appendMessage(message:string): void {
     const container = document.getElementById('chat-container');
+    if(container === null)
+    {
+      console.log("Can't find container");
+      return;
+    }
+
     const element = document.createElement('div');
     element.innerHTML = message;
-    container?.appendChild(element);
+    container.appendChild(element);
   }
 }
