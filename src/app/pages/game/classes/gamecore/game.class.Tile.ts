@@ -11,20 +11,20 @@ export class Tile {
 
   capturedBy: Owner;
 
-  private topLeftNode: number;
-  private topRightNode: number;
-  private bottomLeftNode: number;
-  private bottomRightNode: number;
+  topLeftNode: number;
+  topRightNode: number;
+  bottomLeftNode: number;
+  bottomRightNode: number;
 
-  private topBranch: number;
-  private rightBranch: number;
-  private bottomBranch: number;
-  private leftBranch : number;
+  topBranch: number;
+  rightBranch: number;
+  bottomBranch: number;
+  leftBranch : number;
 
-  private topTile: number;
-  private rightTile: number;
-  private bottomTile: number;
-  private leftTile: number;
+  topTile: number;
+  rightTile: number;
+  bottomTile: number;
+  leftTile: number;
 
 
   constructor(tln = -1, trn = -1, 

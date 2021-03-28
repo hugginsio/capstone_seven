@@ -2,8 +2,7 @@ import { MonteCarlo } from '../..//classes/ai/ai.class.MonteCarlo';
 import { State } from '../../classes/ai/ai.class.State';
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Player } from '../../classes/gamecore/game.class.Player';
-import { Owner } from '../../enums/game.enums';
-import { CoreLogic } from '../../util/core-logic.util';
+
 
 
 interface Resources{

@@ -15,11 +15,11 @@
     "src/app/pages/game/classes/ai/ai.class.MonteCarlo.ts",
     "src/app/pages/game/classes/ai/ai.class.MCTSNode.ts",
     "src/app/pages/game/classes/ai/ai.class.State.ts",
-    "src/app/pages/game/classes/gamecore/game.class.GameBoard.ts",
     "src/app/pages/game/classes/gamecore/game.class.Player.ts",
     "src/app/pages/game/classes/gamecore/game.class.Branch.ts",
     "src/app/pages/game/classes/gamecore/game.class.Node.ts",
     "src/app/pages/game/classes/gamecore/game.class.Tile.ts",
+    "src/app/pages/game/classes/gamecore/game.class.GameBoard.ts",
     "src/app/pages/game/util/core-logic.util.ts"
   ]
 }

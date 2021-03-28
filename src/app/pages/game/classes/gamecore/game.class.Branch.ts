@@ -2,10 +2,10 @@ import { Owner } from '../../enums/game.enums';
 import { BranchesInterface } from '../../interfaces/game.interface';
 
 export class Branch {
-  private ownedBy: Owner;
+  ownedBy: Owner;
 
   // branch1-branch6 for associations
-  private branches: BranchesInterface;
+  branches: BranchesInterface;
     
   // NOTE: branches counted in clockwise fashion beginning at top
 

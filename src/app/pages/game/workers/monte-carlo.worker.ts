@@ -2,6 +2,12 @@
 
 import { AiMethods, WorkerPayload } from '../interfaces/worker.interface';
 import { AI } from "../classes/ai/ai.class.ai";
+import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
+import { Tile } from '../classes/gamecore/game.class.Tile';
+import { Player } from '../classes/gamecore/game.class.Player';
+import { Branch } from '../classes/gamecore/game.class.Branch';
+import { Node } from '../classes/gamecore/game.class.Node';
+import { CoreLogic } from '../util/core-logic.util';
 
 interface PayloadWrapper {
   data: WorkerPayload
@@ -23,13 +29,22 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
 });
 
 function initAiService(data: WorkerPayload): boolean {
-  console.log(data);
-  //ai = new AI();
+  const gameBoard = CoreLogic.workerCloneGameBoard(data.data[0]);
+  const player1 = CoreLogic.workerClonePlayer(data.data[1]);
+  const player2 = CoreLogic.workerClonePlayer(data.data[2]);
+  
+  ai = new AI(gameBoard,player1,player2);
   return true;
 }
 
 function getAiMove(data: WorkerPayload): string {
   // get the ol move hereabouts
-  // ai.getAIMove();
-  return 'no';
+  const gameBoard = CoreLogic.workerCloneGameBoard(data.data[0]);
+  const player1 = CoreLogic.workerClonePlayer(data.data[1]);
+  const player2 = CoreLogic.workerClonePlayer(data.data[2]);
+  return ai.getAIMove(gameBoard,player1,player2,data.data[3],data.data[4]);
+  
 }
+
+
+

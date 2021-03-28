@@ -23,6 +23,9 @@ export class State {
     this.setBoard(newBoard);
     this.setPlayer1(player1);
     this.setPlayer2(player2);
+    // this.board = newBoard;
+    // this.player1 = player1;
+    // this.player2 = player2;
 
     this.playerNumber = 1;
     this.visitCount = 0;

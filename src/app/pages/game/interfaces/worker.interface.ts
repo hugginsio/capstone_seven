@@ -5,5 +5,5 @@ export enum AiMethods {
 
 export interface WorkerPayload {
   method: AiMethods
-  data?: Array<any>
+  data: Array<any>
 }

@@ -1,6 +1,3 @@
-import { Owner } from '../../enums/game.enums';
-import { CoreLogic } from '../../util/core-logic.util';
-import { GameBoard } from '../gamecore/game.class.GameBoard';
 import { State } from './ai.class.State';
 
 

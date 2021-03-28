@@ -1212,4 +1212,127 @@ export class CoreLogic {
 
     return clonedNode;
   }
+
+  static workerClonePlayer(player:Player):Player{
+    const result = new Player();
+  
+    result.redResources = player.redResources;
+    result.blueResources = player.blueResources;
+    result.greenResources = player.greenResources;
+    result.yellowResources = player.yellowResources;
+  
+    result.redPerTurn = player.redPerTurn;
+    result.bluePerTurn = player.bluePerTurn;
+    result.greenPerTurn = player.greenPerTurn;
+    result.yellowPerTurn = player.yellowPerTurn;
+  
+    result.hasTraded = player.hasTraded;
+  
+    result.currentLength = player.currentLength;
+    result.currentLongest = player.currentLongest;
+    result.hasLongestNetwork = player.hasLongestNetwork;
+    result.ownedBranches = player.ownedBranches.slice();
+    result.branchScanner = player.branchScanner.slice();
+  
+    result.numTilesCaptured = player.numTilesCaptured;
+    result.capturedTiles = player.capturedTiles.slice();
+  
+    result.numNodesPlaced = player.numNodesPlaced;
+  
+    result.currentScore = player.currentScore;
+  
+    return result;
+  }
+  
+  static workerCloneTile(tile:Tile):Tile{
+  
+    const clonedTile = new Tile();
+  
+    clonedTile.color = tile.color;
+    clonedTile.isExhausted = tile.isExhausted;
+    clonedTile.maxNodes = tile.maxNodes;
+    clonedTile.nodeCount = tile.nodeCount;
+  
+    clonedTile.setTopLeftNode(tile.topLeftNode);
+    clonedTile.setTopRightNode(tile.topRightNode);
+    clonedTile.setBottomLeftNode(tile.bottomLeftNode);
+    clonedTile.setBottomRightNode(tile.bottomRightNode);
+  
+    clonedTile.setTopBranch(tile.topRightNode);
+    clonedTile.setLeftBranch(tile.leftBranch);
+    clonedTile.setBottomBranch(tile.bottomBranch);
+    clonedTile.setRightBranch(tile.rightBranch);
+  
+    clonedTile.setTopTile(tile.topTile);
+    clonedTile.setLeftTile(tile.leftTile);
+    clonedTile.setBottomTile(tile.bottomTile);
+    clonedTile.setRightTile(tile.rightTile);
+  
+    return clonedTile;
+  
+  }
+  
+  static workerCloneBranch(branch:Branch):Branch{
+    const clonedBranch = new Branch();
+  
+    clonedBranch.setOwner(branch.ownedBy);
+  
+    clonedBranch.setBranch("branch1",branch.branches.branch1);
+    clonedBranch.setBranch("branch2",branch.branches.branch2);
+    clonedBranch.setBranch("branch3",branch.branches.branch3);
+    clonedBranch.setBranch("branch4",branch.branches.branch4);
+    clonedBranch.setBranch("branch5",branch.branches.branch5);
+    clonedBranch.setBranch("branch6",branch.branches.branch6);
+  
+    return clonedBranch;
+  }
+  
+  static workerCloneNode(node:Node):Node{
+    const clonedNode = new Node();
+  
+    clonedNode.setOwner(node.ownedBy);
+    
+    clonedNode.setRedProvided(node.redProvided);
+    clonedNode.setBlueProvided(node.blueProvided);
+    clonedNode.setGreenProvided(node.greenProvided);
+    clonedNode.setYellowProvided(node.yellowProvided);
+  
+    clonedNode.setTopBranch(node.topBranch);
+    clonedNode.setLeftBranch(node.leftBranch);
+    clonedNode.setBottomBranch(node.bottomBranch);
+    clonedNode.setRightBranch(node.rightBranch);
+  
+    clonedNode.setTopLeftTile(node.topLeftTile);
+    clonedNode.setTopRightTile(node.topRightTile);
+    clonedNode.setBottomRightTile(node.bottomRightTile);
+    clonedNode.setBottomLeftTile(node.bottomLeftTile);
+  
+    return clonedNode;
+  }
+  
+  static workerCloneGameBoard(gameBoard:GameBoard):GameBoard{
+    const clonedGameBoard = new GameBoard();
+  
+    const clonedTiles:Tile[] = [];
+    for(let i = 0; i < gameBoard.tiles.length; i++){
+      clonedTiles.push(CoreLogic.workerCloneTile(gameBoard.tiles[i]));
+    }
+  
+    const clonedNodes:Node[] = [];
+    for(let i = 0; i < gameBoard.nodes.length; i++){
+      clonedNodes.push(CoreLogic.workerCloneNode(gameBoard.nodes[i]));
+    }
+  
+    const clonedBranches:Branch[] = [];
+    for(let i = 0; i < gameBoard.branches.length; i++){
+      clonedBranches.push(CoreLogic.workerCloneBranch(gameBoard.branches[i]));
+    }
+  
+    clonedGameBoard.tiles = clonedTiles;
+    clonedGameBoard.nodes = clonedNodes;
+    clonedGameBoard.branches = clonedBranches;
+  
+    return clonedGameBoard;
+  
+  }
 }

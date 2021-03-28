@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 import { CommPackage, ResourceMap } from '../../interfaces/game.interface';
 import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
-import { AiMethods } from '../../interfaces/worker.interface';
+import { AiMethods, WorkerPayload } from '../../interfaces/worker.interface';
 
 
 @Injectable({
@@ -358,8 +358,21 @@ export class ManagerService {
       // string to store AI move
       //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
 
-      //console.warn(AIStringMove);
-      //this.applyMove(AIStringMove);
+  
+      this.aiWorker.onmessage = ({ data }) => {
+        let AIStringMove:string = ';;';
+        if(typeof(data) === 'string' && data !== ''){
+          
+          AIStringMove = data;
+          console.warn(AIStringMove);
+          this.applyMove(AIStringMove);
+        }
+        
+      };
+
+      this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo,prevPlayerInt,pastMoveString]});
+
+
     }
 
     // Empty the move stack prior to the next placed turns
