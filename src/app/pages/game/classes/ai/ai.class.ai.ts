@@ -16,8 +16,8 @@ export class AI {
   
   mcts: MonteCarlo;
   
-  constructor(gameBoard:GameBoard, player1:Player,player2:Player) {
-    this.mcts = new MonteCarlo(gameBoard, player1, player2); 
+  constructor(gameBoard:GameBoard, player1:Player,player2:Player,explorationParameter:number) {
+    this.mcts = new MonteCarlo(gameBoard, player1, player2,explorationParameter); 
   }
 
   getAIMove(gameboard:GameBoard,player1:Player,player2:Player,previousPlayerNo:number,pastMoveString:string):string{

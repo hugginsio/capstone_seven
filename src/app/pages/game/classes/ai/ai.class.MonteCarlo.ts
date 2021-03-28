@@ -6,10 +6,12 @@ import { Player } from '../gamecore/game.class.Player';
 
 export class MonteCarlo {
   WINSCORE = 10;
+  explorationParameter:number;
   opponent:number;
   tree:Tree;
 
-  constructor(gameBoard:GameBoard,player1:Player,player2:Player){
+  constructor(gameBoard:GameBoard,player1:Player,player2:Player,explorationParameter:number){
+    this.explorationParameter = explorationParameter;
     this.tree = new Tree();
     const startingState = new State(gameBoard,player1,player2);
     const startingRoot = new MCTSNode(startingState);
@@ -71,7 +73,7 @@ export class MonteCarlo {
     //const start = Date.now();
     let node = rootNode;
     while (node.getChildArray().length != 0) {
-      node = UCT.findBestNodeWithUCT(node);
+      node = UCT.findBestNodeWithUCT(node,this.explorationParameter);
     }
     //console.log(`SelectPromisingNode TIME: ${Date.now() - start}ms`);
     return node;
@@ -148,19 +150,19 @@ export class MonteCarlo {
 }
 
 class UCT {
-  static uctValue(totalVisit:number, nodeWinScore:number, nodeVisit:number):number {
+  static uctValue(totalVisit:number, nodeWinScore:number, nodeVisit:number, explorationParameter:number):number {
     if (nodeVisit == 0) {
       return Number.MAX_VALUE;
     }
-    return (nodeWinScore / nodeVisit) + 4 * Math.sqrt(Math.log(totalVisit) / nodeVisit);
+    return (nodeWinScore / nodeVisit) + explorationParameter * Math.sqrt(Math.log(totalVisit) / nodeVisit);
   }
 
-  static findBestNodeWithUCT(node:MCTSNode):MCTSNode {
+  static findBestNodeWithUCT(node:MCTSNode,explorationParameter:number):MCTSNode {
     const parentVisit = node.getState().getVisitCount();
-    let maxUctValue = this.uctValue(parentVisit,node.getChildArray()[0].getState().getWinScore(),node.getChildArray()[0].getState().getVisitCount());
+    let maxUctValue = this.uctValue(parentVisit,node.getChildArray()[0].getState().getWinScore(),node.getChildArray()[0].getState().getVisitCount(),explorationParameter);
     let maxNode = node.getChildArray()[0];
     for(let i = 1; i < node.getChildArray().length; i++){
-      const uctValue = this.uctValue(parentVisit,node.getChildArray()[i].getState().getWinScore(),node.getChildArray()[i].getState().getVisitCount());
+      const uctValue = this.uctValue(parentVisit,node.getChildArray()[i].getState().getWinScore(),node.getChildArray()[i].getState().getVisitCount(),explorationParameter);
       if(uctValue > maxUctValue){
         maxUctValue = uctValue;
         maxNode = node.getChildArray()[i];
