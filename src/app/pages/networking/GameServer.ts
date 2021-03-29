@@ -16,14 +16,13 @@ let isDisconnected = false;
 
 server.on('connection', (socket:any) => {
 
-  if(isDisconnected)
-  {
-    isDisconnected = false;
-    socket.broadcast.emit('opponent-reconnected');
-  }
-
-  socket.on('notify-reconnect', () => {
-    socket.broadcast.emit('user-reconnected');
+  socket.on('connected', () => {
+    if(isDisconnected)
+    {
+      isDisconnected = false;
+      socket.broadcast.emit('opponent-reconnected');
+      socket.broadcast.emit('user-reconnected');
+    }
   });
 
   socket.on('send-move', (move:string) => {
