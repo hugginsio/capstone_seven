@@ -131,7 +131,7 @@ export class GameComponent implements OnInit {
         this.appendMessage("You disconnected");
         //grey out EndTurn Button
       });
-      this.networkingService.listen('reconnect').subscribe( () => {
+      this.networkingService.listen('user-reconnected').subscribe( () => {
         this.appendMessage("You reconnected");
         //un-grey out EndTurn Button
       });
