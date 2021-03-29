@@ -62,6 +62,11 @@ export class GameNetworkingService {
     });
   }
 
+  public notifyReconnect()
+  {
+    this.socket.emit('notify-reconnect');
+  }
+
   public sendMove(move: string): void {
     this.socket.emit('send-move', move);
   }

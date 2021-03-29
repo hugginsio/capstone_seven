@@ -125,6 +125,7 @@ export class GameComponent implements OnInit {
       });
       this.networkingService.listen('opponent-reconnected').subscribe( () => {
         this.appendMessage("Opponent reconnected");
+        this.networkingService.notifyReconnect();
         //un-grey EndTurn Button
       });
       this.networkingService.listen('disconnect').subscribe( () => {

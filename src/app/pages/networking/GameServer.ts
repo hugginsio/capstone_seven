@@ -20,8 +20,11 @@ server.on('connection', (socket:any) => {
   {
     isDisconnected = false;
     socket.broadcast.emit('opponent-reconnected');
-    socket.emit('user-reconnected');
   }
+
+  socket.on('notify-reconnect', () => {
+    socket.broadcast.emit('user-reconnected');
+  });
 
   socket.on('send-move', (move:string) => {
     socket.broadcast.emit("recieve-move", move);
