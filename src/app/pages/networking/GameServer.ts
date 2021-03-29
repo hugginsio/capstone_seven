@@ -12,21 +12,16 @@ const server = require('socket.io')(8000, {
 
 let users:any = [];
 let gameSettings:NetworkGameSettings;
+let isDisconnected = false;
 
 server.on('connection', (socket:any) => {
 
-  //users.forEach(user => {
-  //  if(user === socket.id)
-  //  {
-  //    socket.broadcast.emit('opponent-reconnected');
-  //    socket.emit('reconnect');
-  //  }
-  //});
-
-  socket.on('reconnect', () => {
+  if(isDisconnected)
+  {
+    isDisconnected = false;
     socket.broadcast.emit('opponent-reconnected');
     socket.emit('user-reconnected');
-  });
+  }
 
   socket.on('send-move', (move:string) => {
     socket.broadcast.emit("recieve-move", move);
@@ -37,6 +32,7 @@ server.on('connection', (socket:any) => {
   });
 
   socket.on('disconnecting', () => {
+    isDisconnected = true;
     socket.broadcast.emit('opponent-disconnected');
     //delete users[socket.id];
   });
