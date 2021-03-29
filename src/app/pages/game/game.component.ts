@@ -9,6 +9,7 @@ import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
+import { timeStamp } from 'console';
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -117,6 +118,22 @@ export class GameComponent implements OnInit {
       this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
         console.log(message);
         this.appendMessage("Opponent: " + message);
+      });
+      this.networkingService.listen('opponent-disconnected').subscribe( () => {
+        this.appendMessage("Opponent disconnected");
+        //Grey out EndTurn Button
+      });
+      this.networkingService.listen('opponent-reconnected').subscribe( () => {
+        this.appendMessage("Opponent reconnected");
+        //un-grey EndTurn Button
+      });
+      this.networkingService.listen('disconnect').subscribe( () => {
+        this.appendMessage("You disconnected");
+        //grey out EndTurn Button
+      });
+      this.networkingService.listen('reconnect').subscribe( () => {
+        this.appendMessage("You reconnected");
+        //un-grey out EndTurn Button
       });
     }
   }

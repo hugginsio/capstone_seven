@@ -7,18 +7,10 @@ const server = require('socket.io')(8000, {
   },
 });
 
-const users:any = {};
+let users:any = [];
 let gameSettings:NetworkGameSettings;
 
 server.on('connection', (socket:any) => {
-
-  //socket.emit("lobby-joined", gameSettings);
-  socket.emit('get-gameSettings', gameSettings);
-
-  socket.on('new-user', (username:string) => {
-    users[socket.id] = username;
-    socket.broadcast.emit("player-join", "A new player has joined");
-  });
 
   socket.on('send-move', (move:string) => {
     socket.broadcast.emit("recieve-move", move);
@@ -29,12 +21,14 @@ server.on('connection', (socket:any) => {
   });
 
   socket.on('disconnect', () => {
-    socket.broadcast.emit('user-disconnected', users[socket.id]);
-    delete users[socket.id];
+    socket.broadcast.emit('opponent-disconnected');
+    //delete users[socket.id];
   });
 
   socket.on('create-lobby', (lobbyInfo: NetworkGameSettings) => {
     gameSettings = lobbyInfo;
+    users = [];
+    users.push(socket.id);
     socket.broadcast.emit('get-game-settings', gameSettings);
   });
 
@@ -44,8 +38,14 @@ server.on('connection', (socket:any) => {
   //});
 
   socket.on('request-join', () => {
-    //check if lobby full
-    //if not full
-    socket.broadcast.emit('opponent-connected');
+    if(users.length >= 2)
+    {
+      socket.emit('lobby-full');
+    }
+    else
+    {
+      users.push(socket.id);
+      socket.broadcast.emit('opponent-connected');
+    }
   });
 });

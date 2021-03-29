@@ -68,9 +68,6 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
     //get gameInfo from object clicked
     this.networkingService.connectTCPserver(oppAddress);
 
-    this.networkingService.listen('lobby-joined').subscribe((gameInfo:any) => {
-    });
-
     this.networkingService.listen('lobby-full').subscribe(() => {
       console.log('Lobby is full. Sucks bro');
     });

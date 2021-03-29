@@ -70,12 +70,12 @@ export class GameNetworkingService {
     this.socket.emit('send-chat-message', message);
   }
 
-  public getNetGameSettings()
+  public getNetGameSettings(): void
   {
     this.socket.emit('ask-game-settings');
   }
 
-  public requestJoin()
+  public requestJoin(): void
   {
     this.socket.emit('request-join');
   }
