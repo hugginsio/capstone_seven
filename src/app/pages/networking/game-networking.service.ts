@@ -36,6 +36,7 @@ export class GameNetworkingService {
   public createTCPServer(): void {
     this.socket = io("http://localhost:8000");
     console.log("TCP Server Created!");
+    this.setListners();
   }
 
   public setGame(settings: NetworkGameSettings): void {
@@ -60,11 +61,14 @@ export class GameNetworkingService {
     this.socket.on('connect_timeout', function(err:any) {
       console.log("client connect_timeout: ", err);
     });
+    this.setListners();
   }
 
-  public notifyReconnect()
+  private setListners()
   {
-    this.socket.emit('notify-reconnect');
+    this.socket.io.on('reconnect', () => {
+      this.socket.emit('reconnection');
+    });
   }
 
   public sendMove(move: string): void {

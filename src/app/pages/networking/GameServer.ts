@@ -16,15 +16,6 @@ let isDisconnected = false;
 
 server.on('connection', (socket:any) => {
 
-  socket.io.on('reconnect', () => {
-    if(isDisconnected)
-    {
-      isDisconnected = false;
-      socket.broadcast.emit('opponent-reconnected');
-      socket.emit('user-reconnected');
-    }
-  });
-
   socket.on('send-move', (move:string) => {
     socket.broadcast.emit("recieve-move", move);
   });
@@ -61,5 +52,10 @@ server.on('connection', (socket:any) => {
       users.push(socket.id);
       socket.broadcast.emit('opponent-connected');
     }
+  });
+
+  socket.on('reconnection', () => {
+    socket.emit('user-reconnected');
+    socket.broadcast.emit('opponent-reconnected');
   });
 });
