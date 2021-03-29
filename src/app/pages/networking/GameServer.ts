@@ -16,7 +16,7 @@ let isDisconnected = false;
 
 server.on('connection', (socket:any) => {
 
-  socket.on('connected', () => {
+  socket.io.on('reconnect', () => {
     if(isDisconnected)
     {
       isDisconnected = false;
