@@ -9,7 +9,6 @@ import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
 import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
-//import { GuidedTutorialComponent } from './guided-tutorial/guided-tutorial.component'
 import { GameNetworkingService } from '../networking/game-networking.service';
 
 //import { GameType } from './enums/game.enums';
@@ -58,14 +57,6 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     // ✨ ANIMATIONS ✨
     // this.scrollToBottom();
-
-    if(this.storageService.fetch('guided-tutorial')==='true' 
-        && this.storageService.fetch('mode')==='pva'
-        && this.storageService.fetch('ai-difficulty')==='easy') 
-        {
-          this.guidedTutorialCheck = true;
-          this.guidedTutorial.startTutorial();
-        }
 
     // Subscribe to own communications link
     this.commLink.subscribe(message => {
@@ -135,6 +126,19 @@ export class GameComponent implements OnInit {
         this.appendMessage("Opponent: " + message);
       });
     }
+
+    if(this.storageService.fetch('guided-tutorial')==='true' 
+        && this.storageService.fetch('mode')==='pva'
+        && this.storageService.fetch('ai-difficulty')==='easy') 
+        {
+          // chatbox bool
+          this.isTutorial = true;
+          // my bool
+          this.guidedTutorialCheck = true;
+          let message = this.guidedTutorial.startTutorial();
+          console.log("test message" + message);
+          this.appendMessage(message);
+        }
   }
 
   assemblePieceClass(piece: 'T' | 'N' | 'BX' | 'BY', id: number): string {
@@ -328,5 +332,24 @@ export class GameComponent implements OnInit {
     const element = document.createElement('div');
     element.innerHTML = message;
     container.appendChild(element);
+  }
+
+  GTBtn(event: ClickEvent): void {
+    const button = event.target.id;
+    const step = this.guidedTutorial.getstepNum();
+    let message = "nope";
+    if (button === 'GT-Back' && step > 0)
+    {
+      this.guidedTutorial.decrementStepNum();
+      message = this.guidedTutorial.tutorialManager();
+    }
+    // how many steps we have
+    // variable depending on who goes first???
+    else if (button === 'GT-Next' && step < 5){
+      this.guidedTutorial.incrementStepNum();
+      message = this.guidedTutorial.tutorialManager();
+    }
+
+    this.appendMessage(message);
   }
 }

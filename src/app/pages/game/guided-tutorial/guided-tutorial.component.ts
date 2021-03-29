@@ -36,12 +36,14 @@ export class GuidedTutorialComponent implements OnInit {
     const step = this.GTService.getstepNum();
     if (button === 'Back' && step > 0)
     {
+      // can't go back moves, only instructions
       this.GTService.decrementStepNum();
       this.GTService.tutorialManager();
     }
     // how many steps we have
     // variable depending on who goes first???
     else if (button === 'Next' && step < 5){
+      // check if need to block move next button bc game nneds to be played 
       this.GTService.incrementStepNum();
       this.GTService.tutorialManager();
     }

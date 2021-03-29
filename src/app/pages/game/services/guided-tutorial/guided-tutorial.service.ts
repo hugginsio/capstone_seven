@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { SnackbarService } from '../../../../shared/components/snackbar/services/snackbar.service';
 import { ManagerService } from './../../services/gamecore/manager.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
+//import { GameComponent } from '../../game.component';
 
 
 
@@ -20,7 +21,8 @@ export class GuidedTutorialService {
   constructor(
     public readonly gameManager: ManagerService,
     private readonly storageService: LocalStorageService,
-    private readonly snackbarService: SnackbarService
+    private readonly snackbarService: SnackbarService,
+    //private readonly gameComp: GameComponent
   ) { 
     this.humanPlayer = this.storageService.fetch('firstplayer');
     this.stepNum = 0;
@@ -46,31 +48,48 @@ export class GuidedTutorialService {
     this.moveNum++;
   }
 
-  startTutorial():void {
-    this.messageOne();
+  message(message:string): void {
+    const container = document.getElementById('chat-container');
+    if(container === null)
+    {
+      console.log("Can't find container");
+      return;
+    }
+
+    const element = document.createElement('div');
+    element.innerHTML = message;
+    container.appendChild(element);
   }
 
-  tutorialManager():void{
+  startTutorial():string {
+    let message = this.messageOne();
+    return message;
+  }
+
+  tutorialManager():string{
+    let message = "no message found";
     switch (this.stepNum)
     {
       case 1:
-        this.messageOne();
+        message = this.messageOne();
         break;
       case 2:
-        this.messageTwo();
+        message = this.messageTwo();
         break;
       case 3:
-        this.messageThree();
+        //message = this.messageThree();
         break;
       case 4:
-        this.messageFour();
+        //message = this.messageFour();
         break;
       case 5: 
-        this.messageFive();
+        //message = this.messageFive();
         break;
       default:
         console.log('something went wrong, tutorialManager switch');
     }
+
+    return message;
   }
 
   moveManager(piece: string):void {
@@ -117,19 +136,25 @@ export class GuidedTutorialService {
     }
   }
 
-  messageOne():void{
+  messageOne():string{
       // message 1, start tutorial
       this.snackbarService.add({ message: 'Welcome in to the mines!' });
       this.snackbarService.add({ message: 'Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.' });
       this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
+
+      return "Welcome in to the mines!";
+
       // click next
   }
 
-  messageTwo():void {
+  messageTwo():string {
     // message 2
     this.snackbarService.add({ message: 'Learn some mining lingo before we get going: Pickaxes and Drills are what we call "Mining Markers"' });
     this.snackbarService.add({ message: 'Tracks get you from place to place, and these here squares here all abouts the mine are mining sites.' });
     this.snackbarService.add({ message: 'These sites have gems in ‘em that hold the type and number of gem you can mine from there.' });
+
+    return "hey it works";
+
     // click next
   }
 

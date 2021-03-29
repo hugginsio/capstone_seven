@@ -9,7 +9,6 @@
 
   <!-- Snacks Container -->
   <app-snackbar [timeout]="5000"></app-snackbar>
-  <app-guided-tutorial></app-guided-tutorial>
 
   <!-- Top Right Menu Container -->
   <div class="absolute left-3 top-3 flex space-x-3">
@@ -38,10 +37,10 @@
           </div>
 
         <div id="tut-controls" class="flex space-x-3 w-full" *ngIf="this.isTutorial">
-          <div class="menu-btn absolute left-0">
+          <div id="GT-Back" class="menu-btn absolute left-0" (click)="GTBtn()">
             <p>Back</p>
           </div>
-          <div class="menu-btn absolute right-0">
+          <div id="GT-Next" class="menu-btn absolute right-0" (click)="GTBtn()">
             <p>Next</p>
           </div>
         </div>
