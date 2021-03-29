@@ -5,7 +5,10 @@ const server = require('socket.io')(8000, {
     origin: true,
     credentials: true
   },
+  pingTimout: 1000,
+  pingInterval: 1500
 });
+
 
 let users:any = [];
 let gameSettings:NetworkGameSettings;
