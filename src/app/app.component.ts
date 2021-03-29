@@ -30,7 +30,10 @@ export class AppComponent {
     this.storageService.store('mode', 'pvp');
     this.storageService.store('ai-difficulty', 'easy');
     this.storageService.store('guided-tutorial', 'false');
-    this.storageService.update('board-seed', '!random');
+    this.storageService.store('board-seed', '!random');
     this.storageService.update('firstplayer', 'one');
+    this.storageService.store('isHost', 'true');
+    this.storageService.store('isHostFirst', 'true');
+    this.storageService.store('oppAddress', '');
   }
 }

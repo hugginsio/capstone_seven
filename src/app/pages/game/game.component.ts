@@ -10,6 +10,8 @@ import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
 import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
 //import { GuidedTutorialComponent } from './guided-tutorial/guided-tutorial.component'
+import { GameNetworkingService } from '../networking/game-networking.service';
+
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -26,6 +28,8 @@ export class GameComponent implements OnInit {
   public winningPlayer: Player;
   public tradingModel: TradingModel;
   //public guidedTutorial: GuidedTutorialComponent;
+  public isTutorial: boolean;
+  public isNetwork: boolean;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -34,7 +38,8 @@ export class GameComponent implements OnInit {
     public readonly gameManager: ManagerService,
     public guidedTutorial: GuidedTutorialService,
     private readonly storageService: LocalStorageService,
-    private readonly snackbarService: SnackbarService
+    private readonly snackbarService: SnackbarService,
+    private readonly networkingService: GameNetworkingService
   ) {
     // Set defaults for modal triggers
     this.gamePaused = false;
@@ -44,6 +49,8 @@ export class GameComponent implements OnInit {
     this.gameOverText = "Victory!";
     this.tradingModel = new TradingModel();
     //this.guidedTutorial = new GuidedTutorialComponent(document, gameManager, storageService, snackbarService);
+    this.isNetwork = false;
+    this.isTutorial = false;
 
     this.storageService.setContext('game');
   }
@@ -111,6 +118,23 @@ export class GameComponent implements OnInit {
         this.gameOver = true;
       }
     });
+
+    if(this.storageService.fetch('mode') === "net")
+    {
+      this.isNetwork = true;
+      if(this.storageService.fetch('isHost') === 'true')
+      {
+        this.networkingService.createTCPServer();
+      }
+      else
+      {
+        this.networkingService.connectTCPserver(this.storageService.fetch('oppAddress'));
+      }
+      this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
+        console.log(message);
+        this.appendMessage("Opponent: " + message);
+      });
+    }
   }
 
   assemblePieceClass(piece: 'T' | 'N' | 'BX' | 'BY', id: number): string {
@@ -277,5 +301,32 @@ export class GameComponent implements OnInit {
   cancelTrading(): void {
     this.isTrading = false;
     this.tradingModel.reset();
+  }
+
+  sendMessage(): void {
+    const textbox:any = document.getElementById('chat-input');
+    if(textbox === null)
+    {
+      console.log("can't find input");
+      return;
+    }
+      
+    const message:string = textbox.value;
+    textbox.value = "";
+    this.networkingService.sendChatMessage(message);
+    this.appendMessage("You: " + message);
+  }
+
+  appendMessage(message:string): void {
+    const container = document.getElementById('chat-container');
+    if(container === null)
+    {
+      console.log("Can't find container");
+      return;
+    }
+
+    const element = document.createElement('div');
+    element.innerHTML = message;
+    container.appendChild(element);
   }
 }

@@ -24,6 +24,7 @@
     "test": "ng test --watch=false",
     "test:nge": "ng test --watch=false --browsers NgE",
     "test:watch": "ng test",
+    "update:back": "tsc src/app/pages/networking/GameServer.ts & tsc src/app/pages/networking/MatchmakingServer.ts",
     "web": "npm run ng:serve"
   },
   "devDependencies": {
@@ -96,5 +97,10 @@
   },
   "browserslist": [
     "chrome 83"
-  ]
+  ],
+  "dependencies": {
+    "broadcast-address": "1.0.2",
+    "socket.io": "4.0.0",
+    "socket.io-client": "4.0.0"
+  }
 }
