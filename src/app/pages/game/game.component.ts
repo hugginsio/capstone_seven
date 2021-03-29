@@ -21,6 +21,7 @@ export class GameComponent implements OnInit {
   public gameOverText: string;
   public gamePaused: boolean;
   public isTrading: boolean;
+  public showHelp: boolean;
   public tradingModel: TradingModel;
   public winningPlayer: Player;
 
@@ -297,5 +298,10 @@ export class GameComponent implements OnInit {
   introEnded(): void {
     console.log('Intro video ended');
     this.gameIntro = false;
+  }
+  
+  toggleHelp(): void {
+    this.togglePaused();
+    this.showHelp = !this.showHelp;
   }
 }
