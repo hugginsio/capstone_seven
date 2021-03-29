@@ -313,6 +313,10 @@ export class GameComponent implements OnInit {
     }
       
     const message:string = textbox.value;
+
+    if(message === "")
+      return;
+
     textbox.value = "";
     this.networkingService.sendChatMessage(message);
     this.appendMessage("You: " + message);

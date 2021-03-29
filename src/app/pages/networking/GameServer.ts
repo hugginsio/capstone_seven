@@ -55,7 +55,12 @@ server.on('connection', (socket:any) => {
   });
 
   socket.on('reconnection', () => {
-    socket.emit('user-reconnected');
-    socket.broadcast.emit('opponent-reconnected');
+    if(isDisconnected)
+    {
+      isDisconnected = false;
+      socket.emit('user-reconnected');
+      socket.broadcast.emit('opponent-reconnected');
+    }
+    
   });
 });
