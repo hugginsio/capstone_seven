@@ -33,7 +33,7 @@ server.on('connection', (socket:any) => {
     socket.broadcast.emit("recieve-chat-message", message);
   });
 
-  socket.on('disconnect', () => {
+  socket.on('disconnecting', () => {
     socket.broadcast.emit('opponent-disconnected');
     //delete users[socket.id];
   });
