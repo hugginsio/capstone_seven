@@ -25,9 +25,11 @@ server.on('connection', (socket:any) => {
   });
 
   socket.on('disconnecting', () => {
-    isDisconnected = true;
-    socket.broadcast.emit('opponent-disconnected');
-    //delete users[socket.id];
+    if(!isDisconnected)
+    {
+      isDisconnected = true;
+      socket.broadcast.emit('opponent-disconnected');
+    }
   });
 
   socket.on('create-lobby', (lobbyInfo: NetworkGameSettings) => {
