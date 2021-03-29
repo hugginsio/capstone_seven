@@ -21,7 +21,7 @@ server.on('connection', (socket:any) => {
     {
       isDisconnected = false;
       socket.broadcast.emit('opponent-reconnected');
-      socket.broadcast.emit('user-reconnected');
+      socket.emit('user-reconnected');
     }
   });
 
