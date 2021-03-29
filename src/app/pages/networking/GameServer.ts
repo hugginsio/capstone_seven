@@ -12,6 +12,14 @@ let gameSettings:NetworkGameSettings;
 
 server.on('connection', (socket:any) => {
 
+  users.forEach(user => {
+    if(user === socket.id)
+    {
+      socket.broadcast.emit('opponent-reconnected');
+      socket.emit('reconnect');
+    }
+  });
+
   socket.on('send-move', (move:string) => {
     socket.broadcast.emit("recieve-move", move);
   });
