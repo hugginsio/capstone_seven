@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
 import { Player } from './classes/gamecore/game.class.Player';
@@ -18,7 +18,7 @@ import { GameNetworkingService } from '../networking/game-networking.service';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, AfterViewInit {
   public gamePaused: boolean;
   public isTrading: boolean;
   public gameOver: boolean;
@@ -57,6 +57,17 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     // ✨ ANIMATIONS ✨
     // this.scrollToBottom();
+
+    if(this.storageService.fetch('guided-tutorial')==='true' 
+    && this.storageService.fetch('mode')==='pva'
+    && this.storageService.fetch('ai-difficulty')==='easy') 
+    {
+      // chatbox bool
+      this.isTutorial = true;
+      // my bool
+      this.guidedTutorialCheck = true;
+      this.guidedTutorial.setTutorialBoard();
+    }
 
     // Subscribe to own communications link
     this.commLink.subscribe(message => {
@@ -126,19 +137,19 @@ export class GameComponent implements OnInit {
         this.appendMessage("Opponent: " + message);
       });
     }
+    
+  }
 
-    if(this.storageService.fetch('guided-tutorial')==='true' 
-        && this.storageService.fetch('mode')==='pva'
-        && this.storageService.fetch('ai-difficulty')==='easy') 
-        {
-          // chatbox bool
-          this.isTutorial = true;
-          // my bool
-          this.guidedTutorialCheck = true;
-          let message = this.guidedTutorial.startTutorial();
-          console.log("test message" + message);
-          this.appendMessage(message);
-        }
+  ngAfterViewInit():void{
+    if (this.isTutorial === true)
+    {
+      let message = this.guidedTutorial.startTutorial();
+      console.log("test message" + message);
+      this.appendMessage(message);
+      // why is this not showing up?
+      this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
+
+    }
   }
 
   assemblePieceClass(piece: 'T' | 'N' | 'BX' | 'BY', id: number): string {
@@ -334,22 +345,36 @@ export class GameComponent implements OnInit {
     container.appendChild(element);
   }
 
+  clearMessage(): void {
+    const container = document.getElementById('chat-container');
+    if(container === null)
+    {
+      console.log("Can't find container");
+      return;
+    }
+
+    container.textContent = '';
+  }
+
   GTBtn(event: ClickEvent): void {
     const button = event.target.id;
     const step = this.guidedTutorial.getstepNum();
-    let message = "nope";
+    let message = "not registering button";
     if (button === 'GT-Back' && step > 0)
     {
+      this.clearMessage();
       this.guidedTutorial.decrementStepNum();
       message = this.guidedTutorial.tutorialManager();
     }
     // how many steps we have
     // variable depending on who goes first???
     else if (button === 'GT-Next' && step < 5){
+      this.clearMessage();
       this.guidedTutorial.incrementStepNum();
       message = this.guidedTutorial.tutorialManager();
     }
-
+    console.log("step count: " + step);
+    console.log(button);
     this.appendMessage(message);
   }
 }

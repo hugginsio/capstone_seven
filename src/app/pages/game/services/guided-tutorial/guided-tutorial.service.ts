@@ -25,10 +25,9 @@ export class GuidedTutorialService {
     //private readonly gameComp: GameComponent
   ) { 
     this.humanPlayer = this.storageService.fetch('firstplayer');
-    this.stepNum = 0;
+    this.stepNum = 1;
     this.moveNum = 1;
     this.freezeNext = false;
-    this.gameManager.createBoard(false, "R2,Y2,B3,G3,G2,00,G1,Y3,R1,B2,Y1,R3,B1");
   }
 
   getstepNum():number {
@@ -47,18 +46,12 @@ export class GuidedTutorialService {
   incrementMoveNum():void {
     this.moveNum++;
   }
+  decrementMoveNumForUndoOnly():void {
+    this.moveNum--;
+  }
 
-  message(message:string): void {
-    const container = document.getElementById('chat-container');
-    if(container === null)
-    {
-      console.log("Can't find container");
-      return;
-    }
-
-    const element = document.createElement('div');
-    element.innerHTML = message;
-    container.appendChild(element);
+  setTutorialBoard():void {
+    this.gameManager.createBoard(false, "R2,Y2,B3,G3,G2,00,G1,Y3,R1,B2,Y1,R3,B1");
   }
 
   startTutorial():string {
@@ -77,7 +70,7 @@ export class GuidedTutorialService {
         message = this.messageTwo();
         break;
       case 3:
-        //message = this.messageThree();
+        message = this.messageThree();
         break;
       case 4:
         //message = this.messageFour();
@@ -92,11 +85,14 @@ export class GuidedTutorialService {
     return message;
   }
 
-  moveManager(piece: string):void {
+  // if move was ma
+  moveManager(piece: string):boolean {
     const m = this.moveNum;
+    const s = this.stepNum;
+    let validMove = false;
 
     if (this.humanPlayer === 'one'){
-      if(m === 1 && piece ==='') {
+      if(m === 1 && s === 1 && piece ==='') {
         // place node
         // call in game manager
         this.moveNum++;
@@ -112,6 +108,7 @@ export class GuidedTutorialService {
       }
       else {
         this.snackbarService.add({ message: 'Do me a favor and only click where I\'m tellin\' you to.' });
+        validMove = false;
       }
     }
     else if (this.humanPlayer === 'two'){
@@ -130,43 +127,48 @@ export class GuidedTutorialService {
         // end move
         this.moveNum++;
       }
-      else {
-        this.snackbarService.add({ message: 'Do me a favor and only click where I\'m tellin\' you to.' });
+      else {this.snackbarService.add({ message:'Do me a favor and only click where I\'m tellin\' you to.'});
+        validMove = false;
       }
     }
+    return validMove;
   }
 
   messageOne():string{
+    let message = "Welcome in to the mines! <br><br> Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.";
       // message 1, start tutorial
-      this.snackbarService.add({ message: 'Welcome in to the mines!' });
-      this.snackbarService.add({ message: 'Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.' });
-      this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
+      //this.snackbarService.add({ message: 'Welcome in to the mines!' });
+      //this.snackbarService.add({ message: 'Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.' });
+    //this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
 
-      return "Welcome in to the mines!";
+      return message;
 
       // click next
   }
 
   messageTwo():string {
     // message 2
-    this.snackbarService.add({ message: 'Learn some mining lingo before we get going: Pickaxes and Drills are what we call "Mining Markers"' });
-    this.snackbarService.add({ message: 'Tracks get you from place to place, and these here squares here all abouts the mine are mining sites.' });
-    this.snackbarService.add({ message: 'These sites have gems in ‘em that hold the type and number of gem you can mine from there.' });
+    let message = "Pickaxes and Drills are what we call \"Mining Markers\" Tracks get you from place to place, and these here squares here all abouts the mine are mining sites. These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
 
-    return "hey it works";
+    this.snackbarService.add({ message: 'Learn some mining lingo before we get going' });
+    //this.snackbarService.add({ message: 'Tracks get you from place to place, and these here squares here all abouts the mine are mining sites.' });
+    //this.snackbarService.add({ message: 'These sites have gems in ‘em that hold the type and number of gem you can mine from there.' });
+
+    return message;
 
     // click next
   }
 
-  messageThree():void {
+  messageThree():string {
     if(this.humanPlayer === 'one') {
       // message 3
-      this.snackbarService.add({ message: 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine'});
-      this.snackbarService.add({ message: 'Click the indicated marker and track to make your move' });
-      this.freezeNext = true; 
+      return "test message 3";
+      //this.snackbarService.add({ message: 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine'});
+      //this.snackbarService.add({ message: 'Click the indicated marker and track to make your move' });
+      //this.freezeNext = true; 
       // must click pieces before next
     }
-
+    return "if statement error message 3";
   }
 
   messageFour():void {
