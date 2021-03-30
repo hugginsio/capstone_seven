@@ -9,8 +9,7 @@ describe('PlayerShardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ PlayerShardComponent ]
-    })
-      .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
