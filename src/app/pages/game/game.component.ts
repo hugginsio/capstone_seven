@@ -373,7 +373,7 @@ export class GameComponent implements OnInit, AfterViewInit {
       this.guidedTutorial.incrementStepNum();
       message = this.guidedTutorial.tutorialManager();
     }
-    console.log("step count: " + step);
+    console.log("step count: " + this.guidedTutorial.getstepNum());
     console.log(button);
     this.appendMessage(message);
   }
