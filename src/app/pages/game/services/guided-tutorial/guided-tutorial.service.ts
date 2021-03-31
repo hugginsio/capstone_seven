@@ -14,10 +14,13 @@ import { LocalStorageService } from '../../../../shared/services/local-storage/l
 })
 export class GuidedTutorialService {
 
+  // could be 1 instead of one 
   private humanPlayer: string;
   private stepNum: number;
   private moveNum: number;
   private freezeNext: boolean;
+  private maxMove: number;
+  private maxStep: number;
 
   constructor(
     public readonly gameManager: ManagerService,
@@ -29,6 +32,12 @@ export class GuidedTutorialService {
     this.stepNum = 1;
     this.moveNum = 1;
     this.freezeNext = false;
+    if (this.humanPlayer === 'one') {
+      this.maxMove = 18;
+    }
+    else {
+      this.maxMove = 22;
+    }
   }
 
   getstepNum():number {
@@ -93,25 +102,128 @@ export class GuidedTutorialService {
     return message;
   }
 
+  // learn how to actually highlight one haha 
+  highlightManager():void {
+    const m = this.moveNum;
+
+    // maybe just assign the piece as a string then send to a "highlight" function?? 
+    // just change the piece to have a boarder then remove the boarder when it is 
+    // a correct placement in moveManager
+    if(this.humanPlayer === 'one'){
+      switch(m){
+        case 1: // highlight this piece - N9
+          break;
+        case 2: // highlight this piece - B13
+          break;
+        case 3: // END TURN
+          break;
+        case 4: // N8
+          break;
+        case 5: // N12
+          break;
+        case 6: // UNDO
+          break;
+        case 7: // UNDO
+          break;
+        case 8: // N16
+          break;
+        case 9: // B19
+          break;
+        case 10: // END TURN
+          break;
+        case 11: // B8
+          break;
+        case 12: // END TURN
+          break;
+        case 13: // N4
+          break;
+        case 14: // B4
+          break;
+        case 15: // TRADE
+          break;
+        case 16: // VERIFY TRADE ------- ?????
+          break;
+        case 17: // B3
+          break;
+        case 18: // END TURN 
+          break;
+        default:
+          console.log("highlightManager error");
+      }
+    }
+    else {
+      switch(m){
+        case 1: // highlight this piece - N15
+          break;
+        case 2: // highlight this piece - B28
+          break;
+        case 3: // END TURN
+          break;
+        case 4: // N8
+          break;
+        case 5: // N12
+          break;
+        case 6: // UNDO
+          break;
+        case 7: // UNDO
+          break;
+        case 8: // N3
+          break;
+        case 9: // B7
+          break;
+        case 10: // END TURN
+          break;
+        case 11: // B18
+          break;
+        case 12: // TRADE
+          break;
+        case 13: // HOW TO VERIFY A TRADE ????
+          break;
+        case 14: // B17
+          break;
+        case 15: // END TURN
+          break;
+        case 16: // B31
+          break;
+        case 17: // TRADE
+          break;
+        case 18: // HOW TO VERIFY A TRADE ???? 
+          break;
+        case 19: // B12
+          break;
+        case 20: // END TURN
+          break;
+        case 21: // B27
+          break;
+        case 22: // END TURN
+          break;
+        default:
+          console.log("highlightManager error");
+    }
+    
+  }
+}
+
   // whenever need to have a next button, unfreeze next
   moveManager(piece: string):boolean {
     const m = this.moveNum;
     const s = this.stepNum;
-    let validMove = false;
+    let validMove = true;
 
     if (this.humanPlayer === 'one'){
-      if(m === 1 && s === 1 && piece ==='') {
+      if(m === 1 && s === 3 && piece ==='N9') {
         // place node
         // call in game manager
         this.moveNum++;
       }
-      else if(m === 2 && piece === ''){
+      else if(m === 2 && s === 3 && piece === 'B13'){
         // place branch
         // call in game manager
         this.moveNum++;
       }
-      else if(m === 3 && piece === ''){
-          
+      else if(m === 3 && s === 4 && piece === 'ENDTURN'){
+        // end turn
+        this.freezeNext = false;
         this.moveNum++;
       }
       else {
@@ -174,6 +286,7 @@ export class GuidedTutorialService {
       message = 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine';
       this.snackbarService.add({ message: 'Click the indicated marker and track to make your move.' });
       this.freezeNext = true; 
+      this.highlightManager();
       // must click pieces before next
     }
     return message;
@@ -182,9 +295,10 @@ export class GuidedTutorialService {
   messageFour():void {
     if(this.humanPlayer === 'one') {
       // message 4
-     // this.snackbarService.add({ message: 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'' });
-      //this.snackbarService.add({ message: 'You gotta have gems in the future to get more pickaxes and tracks down the road' });
-      //this.snackbarService.add({ message: 'Don\'t like where you clicked? Click the "Undo" button' });
+                      // put these in later ones --- or maybe not? how does it work for being triggered by things other than buttons?? also putting action into snack bar only 
+                  // this.snackbarService.add({ message: 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'' });
+                  //this.snackbarService.add({ message: 'You gotta have gems in the future to get more pickaxes and tracks down the road' });
+                  //this.snackbarService.add({ message: 'Don\'t like where you clicked? Click the "Undo" button' });
       //this.snackbarService.add({ message: 'Settled on your move? Click the "End Turn" button to keep the game movin\'' });
       // moves when "End Turn" is clicked
     }
