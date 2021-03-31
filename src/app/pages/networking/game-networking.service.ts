@@ -9,7 +9,7 @@ import { NetworkGameSettings } from './NetworkGameSettings';
 export class GameNetworkingService {
 
   socket: any;
-  isGameSocket: boolean = false;
+  isGameSocket = false;
 
   constructor() {}
 
@@ -71,14 +71,15 @@ export class GameNetworkingService {
       this.socket.emit('reconnection');
       if(this.isGameSocket)
       {
-        this.socket.emit('rejoin-room');
+        this.socket.emit('join-room');
       }
     });
   }
 
-  public setIsGameSocket()
+  public setIsGameSocket(): void
   {
     this.isGameSocket = true;
+    this.socket.emit('join-room');
   }
 
   public sendMove(move: string): void {

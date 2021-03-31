@@ -36,6 +36,7 @@ export class ManagerService {
   private isHost: string;
   private isHostFirst: string;
   private netSettings: NetworkGameSettings;
+  private networkingService: GameNetworkingService;
 
   // initializes AI service
   private readonly ai: AiService;
@@ -61,7 +62,7 @@ export class ManagerService {
   constructor(
     // UI integration
     private readonly storageService: LocalStorageService,
-    private readonly networkingService: GameNetworkingService
+    //private readonly networkingService: GameNetworkingService
   ) {
 
     // begin initializing ManagerService fields
@@ -101,7 +102,7 @@ export class ManagerService {
     } 
     else {
       this.currentGameMode = GameType.NETWORK;
-      console.log("Network Game");
+      this.networkingService = new GameNetworkingService();
       
       if(this.isHost === 'true')
       {

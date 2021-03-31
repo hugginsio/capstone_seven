@@ -67,7 +67,7 @@ server.on('connection', (socket:any) => {
     }
   });
 
-  socket.on('rejoin-room', () => {
+  socket.on('join-room', () => {
     socket.join("game");
   });
 });
