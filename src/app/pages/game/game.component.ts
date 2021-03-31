@@ -36,7 +36,7 @@ export class GameComponent implements OnInit {
     public readonly gameManager: ManagerService,
     private readonly storageService: LocalStorageService,
     private readonly snackbarService: SnackbarService,
-    //private readonly networkingService: GameNetworkingService
+    private readonly networkingService: GameNetworkingService
   ) {
     // Set defaults for UI triggers
     this.gameIntro = true;
@@ -105,7 +105,7 @@ export class GameComponent implements OnInit {
         this.gameOver = true;
       }
     });
-/*
+
     if(this.storageService.fetch('mode') === "net")
     {
       this.isNetwork = true;
@@ -138,7 +138,7 @@ export class GameComponent implements OnInit {
         //un-grey out EndTurn Button
       });
     }
-    */
+    
   }
 
   assemblePieceClass(piece: 'T' | 'N' | 'BX' | 'BY', id: number): string {
@@ -324,7 +324,7 @@ export class GameComponent implements OnInit {
       return;
 
     textbox.value = "";
-    //this.networkingService.sendChatMessage(message);
+    this.networkingService.sendChatMessage(message);
     this.appendMessage("You: " + message);
   }
 

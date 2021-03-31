@@ -9,6 +9,7 @@ import { NetworkGameSettings } from './NetworkGameSettings';
 export class GameNetworkingService {
 
   socket: any;
+  isGameSocket: boolean = false;
 
   constructor() {}
 
@@ -68,7 +69,16 @@ export class GameNetworkingService {
   {
     this.socket.io.on('reconnect', () => {
       this.socket.emit('reconnection');
+      if(this.isGameSocket)
+      {
+        this.socket.emit('rejoin-room');
+      }
     });
+  }
+
+  public setIsGameSocket()
+  {
+    this.isGameSocket = true;
   }
 
   public sendMove(move: string): void {

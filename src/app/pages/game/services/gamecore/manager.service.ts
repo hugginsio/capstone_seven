@@ -134,6 +134,7 @@ export class ManagerService {
           this.playerTwo.type = PlayerType.NETWORK;
         }
       }
+      this.networkingService.setIsGameSocket();
       this.networkingService.listen('recieve-move').subscribe((move: string) => {
         console.log(move);
         this.applyMove(move);

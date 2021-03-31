@@ -17,7 +17,7 @@ let isDisconnected = false;
 server.on('connection', (socket:any) => {
 
   socket.on('send-move', (move:string) => {
-    socket.broadcast.emit("recieve-move", move);
+    socket.to("game").emit("recieve-move", move);
   });
 
   socket.on('send-chat-message', (message:string) => {
@@ -36,6 +36,7 @@ server.on('connection', (socket:any) => {
     gameSettings = lobbyInfo;
     users = [];
     users.push(socket.id);
+    socket.join("game");
     socket.broadcast.emit('get-game-settings', gameSettings);
   });
 
@@ -52,6 +53,7 @@ server.on('connection', (socket:any) => {
     else
     {
       users.push(socket.id);
+      socket.join("game");
       socket.broadcast.emit('opponent-connected');
     }
   });
@@ -63,6 +65,9 @@ server.on('connection', (socket:any) => {
       socket.emit('user-reconnected');
       socket.broadcast.emit('opponent-reconnected');
     }
-    
+  });
+
+  socket.on('rejoin-room', () => {
+    socket.join("game");
   });
 });
