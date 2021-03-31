@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { SnackbarService } from '../../../../shared/components/snackbar/services/snackbar.service';
 import { ManagerService } from './../../services/gamecore/manager.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
+//import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 //import { GameComponent } from '../../game.component';
 
 
@@ -50,6 +51,13 @@ export class GuidedTutorialService {
     this.moveNum--;
   }
 
+  getFreezeNext():boolean{
+    return this.freezeNext;
+  }
+  falseFreezeNext():void {
+    this.freezeNext = false;
+  }
+
   setTutorialBoard():void {
     this.gameManager.createBoard(false, "R2,Y2,B3,G3,G2,00,G1,Y3,R1,B2,Y1,R3,B1");
   }
@@ -85,7 +93,7 @@ export class GuidedTutorialService {
     return message;
   }
 
-  // if move was ma
+  // whenever need to have a next button, unfreeze next
   moveManager(piece: string):boolean {
     const m = this.moveNum;
     const s = this.stepNum;
@@ -160,15 +168,15 @@ export class GuidedTutorialService {
   }
 
   messageThree():string {
+    let message = '';
     if(this.humanPlayer === 'one') {
       // message 3
-      return "test message 3";
-      //this.snackbarService.add({ message: 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine'});
-      //this.snackbarService.add({ message: 'Click the indicated marker and track to make your move' });
-      //this.freezeNext = true; 
+      message = 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine';
+      this.snackbarService.add({ message: 'Click the indicated marker and track to make your move.' });
+      this.freezeNext = true; 
       // must click pieces before next
     }
-    return "if statement error message 3";
+    return message;
   }
 
   messageFour():void {

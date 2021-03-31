@@ -220,6 +220,16 @@ export class GameComponent implements OnInit, AfterViewInit {
     const pieceId = +event.target.id.slice(1);
     const pieceType = event.target.id.slice(0, 1) === 'T' ? 'tile' : event.target.id.slice(0, 1) === 'B' ? 'branch' : 'node';
     
+    if (this.guidedTutorialCheck === true)
+    {
+      let currentMove = event.target.id;
+      // if it it not the anticipated guided tutorial move, return from the function
+      if(!this.guidedTutorial.moveManager(currentMove))
+      {
+        return;
+      }
+    }
+
     if (pieceClass.indexOf('unavailable') !== -1) {
       console.warn(`Clicked ${pieceType} ${pieceId}, but piece is unavailable.`);
     } else if (pieceClass.indexOf('available') !== -1) {
@@ -363,12 +373,13 @@ export class GameComponent implements OnInit, AfterViewInit {
     if (button === 'GT-Back' && step > 0)
     {
       this.clearMessage();
+      this,this.guidedTutorial.falseFreezeNext();
       this.guidedTutorial.decrementStepNum();
       message = this.guidedTutorial.tutorialManager();
     }
     // how many steps we have
     // variable depending on who goes first???
-    else if (button === 'GT-Next' && step < 5){
+    else if (button === 'GT-Next' && step < 5 && !this.guidedTutorial.getFreezeNext()){
       this.clearMessage();
       this.guidedTutorial.incrementStepNum();
       message = this.guidedTutorial.tutorialManager();
