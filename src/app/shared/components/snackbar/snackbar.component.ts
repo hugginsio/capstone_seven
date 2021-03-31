@@ -11,12 +11,14 @@ export class SnackbarComponent {
 
   @Input() max = 3;
   @Input() timeout: number;
+  @Input() position: 'top' | 'bottom';
 
   public snacks: Array<Snack> = [];
 
   constructor(
     private readonly snackbarService: SnackbarService
   ) {
+    this.position ?? 'bottom';
     this.snackbarService.get().subscribe(snack => {
       if (snack.action === SnackAction.ADD) {
         this.add(snack.data);
@@ -67,4 +69,7 @@ export class SnackbarComponent {
     });
   }
 
+  getPositioning(): string {
+    return this.position === 'top' ? 'top-0 pt-4' : 'bottom-0 pb-4';
+  }
 }

@@ -18,17 +18,20 @@ import { GameNetworkingService } from '../networking/game-networking.service';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
+
 export class GameComponent implements OnInit, AfterViewInit {
-  public gamePaused: boolean;
-  public isTrading: boolean;
+  public gameIntro: boolean;
   public gameOver: boolean;
   public guidedTutorialCheck: boolean;
   public gameOverText: string;
-  public winningPlayer: Player;
+  public gamePaused: boolean;
+  public isTrading: boolean;
+  public showHelp: boolean;
   public tradingModel: TradingModel;
   //public guidedTutorial: GuidedTutorialComponent;
   public isTutorial: boolean;
   public isNetwork: boolean;
+  public winningPlayer: Player;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -40,12 +43,13 @@ export class GameComponent implements OnInit, AfterViewInit {
     private readonly snackbarService: SnackbarService,
     private readonly networkingService: GameNetworkingService
   ) {
-    // Set defaults for modal triggers
-    this.gamePaused = false;
-    this.isTrading = false;
+    // Set defaults for UI triggers
+    this.gameIntro = true;
     this.gameOver = false;
     this.guidedTutorialCheck = false;
     this.gameOverText = "Victory!";
+    this.gamePaused = false;
+    this.isTrading = false;
     this.tradingModel = new TradingModel();
     //this.guidedTutorial = new GuidedTutorialComponent(document, gameManager, storageService, snackbarService);
     this.isNetwork = false;
@@ -79,6 +83,8 @@ export class GameComponent implements OnInit, AfterViewInit {
           const currentPlayer = this.gameManager.getCurrentPlayer();
           if (currentPlayer.numNodesPlaced < 2 || currentPlayer.ownedBranches.length < 2) {
             this.snackbarService.add({ message: 'You cannot trade right now.' });
+          } else if (currentPlayer.hasTraded) {
+            this.snackbarService.add({ message: 'You have already traded this turn.' });
           } else {
             this.isTrading = true;
             this.toggleTrade();
@@ -158,7 +164,6 @@ export class GameComponent implements OnInit, AfterViewInit {
       case 'T':
         if (this.gameManager.getBoard().tiles[id].color === "BLANK") {
           result += `unavailable tile-${this.gameManager.getBoard().tiles[id].color}`;
-          break;
         } else {
           result += `tile-${this.gameManager.getBoard().tiles[id].color}`;
         }
@@ -168,7 +173,7 @@ export class GameComponent implements OnInit, AfterViewInit {
           break;
         }
 
-        if (this.gameManager.getBoard().tiles[id].isExhausted) {
+        if (this.gameManager.getBoard().tiles[id].isExhausted && this.gameManager.getBoard().tiles[id].color !== "BLANK") {
           result += '-exhausted';
           break;
         }
@@ -305,9 +310,13 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   executeTrade(): void {
-    this.isTrading = false;
-    this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
-    this.tradingModel.reset();
+    if (!this.tradingModel.selectedResource) {
+      this.snackbarService.add({ message: "Select a resource to receive." });
+    } else {
+      this.isTrading = false;
+      this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
+      this.tradingModel.reset();
+    }
   }
 
   scrollToBottom(): void {
@@ -387,5 +396,41 @@ export class GameComponent implements OnInit, AfterViewInit {
     console.log("step count: " + this.guidedTutorial.getstepNum());
     console.log(button);
     this.appendMessage(message);
+  }
+  
+  copyBoardSeed(): void {
+    const boardSeed = this.gameManager.boardString;
+    const temporarySelectBox = document.createElement('textarea');
+    console.log(`Board seed: ${boardSeed}`);
+    temporarySelectBox.style.position = 'fixed';
+    temporarySelectBox.style.opacity = '0';
+    temporarySelectBox.value = boardSeed;
+    document.body.appendChild(temporarySelectBox);
+    temporarySelectBox.focus();
+    temporarySelectBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(temporarySelectBox);
+    this.snackbarService.add({ message: "Copied to clipboard." });
+  }
+
+  getBackground(): string {
+    const selectedBackground = this.storageService.fetch('location');
+    if (selectedBackground === 'bg3') {
+      return selectedBackground;
+    } else if (selectedBackground === 'bg2') {
+      return selectedBackground;
+    } else {
+      return 'bg1';
+    }
+  }
+
+  introEnded(): void {
+    console.log('Intro video ended');
+    this.gameIntro = false;
+  }
+  
+  toggleHelp(): void {
+    this.togglePaused();
+    this.showHelp = !this.showHelp;
   }
 }
