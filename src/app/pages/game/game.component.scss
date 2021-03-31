@@ -59,6 +59,14 @@
   background: url('/assets/game/tiles/Blank.png') no-repeat center;
 }
 
+.tile-blank-capture-orange {
+  background: url('/assets/game/tiles/Blank-Capture-Orange.png') no-repeat center;
+}
+
+.tile-blank-capture-purple {
+  background: url('/assets/game/tiles/Blank-Capture-Purple.png') no-repeat center;
+}
+
 // Captured Tiles
 
 .tile-red-capture-orange {
@@ -221,7 +229,7 @@
   }
 
   .resource-button-trade {
-    @apply border-4 border-gray-600 flex-grow hover:border-gray-300 cursor-pointer transition-colors duration-100;
+    @apply border-4 border-gray-600 hover:border-gray-300 cursor-pointer transition-colors duration-100 w-1/4 bg-black;
   }
 
   .selected {
@@ -272,11 +280,25 @@
   background-color: rgba(0, 0, 0, var(--tw-bg-opacity));
 }
 
-.bg-1 {
+.bg1 {
   background: url('/assets/game/locations/bg1.png') no-repeat;
   background-size: cover;
   image-rendering: pixelated;
-  opacity: 0.75;
+  opacity: 1;
+}
+
+.bg2 {
+  background: url('/assets/game/locations/bg2.png') no-repeat;
+  background-size: cover;
+  image-rendering: pixelated;
+  opacity: 1;
+}
+
+.bg3 {
+  background: url('/assets/game/locations/bg3.png') no-repeat;
+  background-size: cover;
+  image-rendering: pixelated;
+  opacity: 1;
 }
 
 .teleporter-bg-1 {
