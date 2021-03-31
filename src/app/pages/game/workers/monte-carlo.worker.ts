@@ -2,11 +2,6 @@
 
 import { AiMethods, WorkerPayload } from '../interfaces/worker.interface';
 import { AI } from "../classes/ai/ai.class.ai";
-import { GameBoard } from '../classes/gamecore/game.class.GameBoard';
-import { Tile } from '../classes/gamecore/game.class.Tile';
-import { Player } from '../classes/gamecore/game.class.Player';
-import { Branch } from '../classes/gamecore/game.class.Branch';
-import { Node } from '../classes/gamecore/game.class.Node';
 import { CoreLogic } from '../util/core-logic.util';
 
 interface PayloadWrapper {

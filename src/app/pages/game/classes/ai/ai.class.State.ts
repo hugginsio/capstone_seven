@@ -36,6 +36,18 @@ export class State {
 
   }
 
+  cloneState():State{
+    const newState = new State(this.getBoard(), this.player1, this.player2);
+
+    newState.move = this.move;
+    newState.playerNumber = this.playerNumber;
+    newState.visitCount = this.visitCount;
+    newState.winScore = this.winScore;
+    newState.tilesBeingChecked = this.tilesBeingChecked.slice();
+
+    return newState;
+  }
+
 
   getAllPossibleStates():Array<State>{
     // constructs a list of all possible states from current state
@@ -75,9 +87,6 @@ export class State {
     const moves = CoreLogic.getLegalMoves(this,true);
     //console.log(`In simulation: Time to generate moves = ${Date.now()-start}ms`);
 
-    // start = Date.now();
-    // const index = Math.floor(Math.random() * moves.length);
-    // console.log( `Inside simulation: Time to pick random move = ${Date.now()-start}ms`);
     let maxWeight = 0;
     let maxWeightIndex = Math.floor(Math.random() * moves.length);
     //start = Date.now();
@@ -88,9 +97,9 @@ export class State {
         maxWeightIndex = i;
       }
     }
-    //console.log( `Inside simulation: Time to pick weighted move = ${Date.now()-start}ms`);
 
-    //start = Date.now();
+    //const index = Math.floor(Math.random()*moves.length);
+
     this.applyMove(moves[maxWeightIndex]);
     //console.log(`Inside simulation: Time to apply chosen move = ${Date.now()-start}ms`);
   }
@@ -99,119 +108,153 @@ export class State {
 
   moveWeighting(move:string):number{
     const currentOwner = this.playerNumber === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
-    const moveObj = CoreLogic.stringToMove(move);
+    //let resultWeights = [];
+    let result= 0;
+    //const length = moves.length;
+    //for(let moveNum = 0; moveNum < length; moveNum++){
+      const moveObj = CoreLogic.stringToMove(move);
 
-    const horizontalBranches = [0,3,4,5,10,11,12,13,14,21,22,23,24,25,30,31,32,35];
+      const horizontalBranches = [0,3,4,5,10,11,12,13,14,21,22,23,24,25,30,31,32,35];
 
-    let resultWeight = 0;
+      
 
-    resultWeight += moveObj.nodesPlaced.length;
 
-    for(let n = 0; n < moveObj.nodesPlaced.length; n++){
-      const topRight = this.board.nodes[moveObj.nodesPlaced[n]].getTopRightTile();
-      const bottomRight = this.board.nodes[moveObj.nodesPlaced[n]].getBottomRightTile();
-      const bottomLeft = this.board.nodes[moveObj.nodesPlaced[n]].getBottomLeftTile();
-      const topLeft = this.board.nodes[moveObj.nodesPlaced[n]].getTopLeftTile();
+      for(let n = 0; n < moveObj.nodesPlaced.length; n++){
+        //resultWeights.push(moves[moveNum]);
+        result++;
+        const topRight = this.board.nodes[moveObj.nodesPlaced[n]].getTopRightTile();
+        const bottomRight = this.board.nodes[moveObj.nodesPlaced[n]].getBottomRightTile();
+        const bottomLeft = this.board.nodes[moveObj.nodesPlaced[n]].getBottomLeftTile();
+        const topLeft = this.board.nodes[moveObj.nodesPlaced[n]].getTopLeftTile();
 
-      if(topRight != -1){
-        if(!this.board.tiles[topRight].getIsExhaused()){
-          if(this.board.tiles[topRight].getCapturedBy() === currentOwner){
-            resultWeight ++;
+        if(topRight != -1){
+          if(!this.board.tiles[topRight].getIsExhaused()){
+            if(this.board.tiles[topRight].getCapturedBy() === currentOwner){
+              //resultWeights.push(moves[moveNum]);
+              result++;
+            }
+            else if(this.board.tiles[topRight].getCapturedBy() === Owner.NONE){
+              if(this.board.tiles[topRight].getNodeCount() <= this.board.tiles[topRight].getMaxNodes()){
+                //resultWeights.push(moves[moveNum]);
+                result++;
+              }
+            }
           }
-          else if(this.board.tiles[topRight].getCapturedBy() === Owner.NONE){
-            if(this.board.tiles[topRight].getNodeCount() <= this.board.tiles[topRight].getMaxNodes()){
-              resultWeight++;
+        }
+
+        if(bottomRight != -1){
+          if(!this.board.tiles[bottomRight].getIsExhaused()){
+            if(this.board.tiles[bottomRight].getCapturedBy() === currentOwner){
+              //resultWeights.push(moves[moveNum]);
+              result++;
+            }
+            else if(this.board.tiles[bottomRight].getCapturedBy() === Owner.NONE){
+              if(this.board.tiles[bottomRight].getNodeCount() <= this.board.tiles[bottomRight].getMaxNodes()){
+                //resultWeights.push(moves[moveNum]);
+                result++;
+              }
+            }
+          }
+        }
+
+        if(bottomLeft != -1){
+          if(!this.board.tiles[bottomLeft].getIsExhaused()){
+            if(this.board.tiles[bottomLeft].getCapturedBy() === currentOwner){
+              //resultWeights.push(moves[moveNum]);
+              result++;
+            }
+            else if(this.board.tiles[bottomLeft].getCapturedBy() === Owner.NONE){
+              if(this.board.tiles[bottomLeft].getNodeCount() <= this.board.tiles[bottomLeft].getMaxNodes()){
+                //resultWeights.push(moves[moveNum]);
+                result++;
+              }
+            }
+          }
+        }
+
+        if(topLeft != -1){
+          if(!this.board.tiles[topLeft].getIsExhaused()){
+            if(this.board.tiles[topLeft].getCapturedBy() === currentOwner){
+              //resultWeights.push(moves[moveNum]);
+              result++;
+            }
+            else if(this.board.tiles[topLeft].getCapturedBy() === Owner.NONE){
+              if(this.board.tiles[topLeft].getNodeCount() <= this.board.tiles[topLeft].getMaxNodes()){
+                //resultWeights.push(moves[moveNum]);
+                result++;
+              }
             }
           }
         }
       }
 
-      if(bottomRight != -1){
-        if(!this.board.tiles[bottomRight].getIsExhaused()){
-          if(this.board.tiles[bottomRight].getCapturedBy() === currentOwner){
-            resultWeight ++;
-          }
-          else if(this.board.tiles[bottomRight].getCapturedBy() === Owner.NONE){
-            if(this.board.tiles[bottomRight].getNodeCount() <= this.board.tiles[bottomRight].getMaxNodes()){
-              resultWeight++;
-            }
-          }
-        }
-      }
-
-      if(bottomLeft != -1){
-        if(!this.board.tiles[bottomLeft].getIsExhaused()){
-          if(this.board.tiles[bottomLeft].getCapturedBy() === currentOwner){
-            resultWeight ++;
-          }
-          else if(this.board.tiles[bottomLeft].getCapturedBy() === Owner.NONE){
-            if(this.board.tiles[bottomLeft].getNodeCount() <= this.board.tiles[bottomLeft].getMaxNodes()){
-              resultWeight++;
-            }
-          }
-        }
-      }
-
-      if(topLeft != -1){
-        if(!this.board.tiles[topLeft].getIsExhaused()){
-          if(this.board.tiles[topLeft].getCapturedBy() === currentOwner){
-            resultWeight ++;
-          }
-          else if(this.board.tiles[topLeft].getCapturedBy() === Owner.NONE){
-            if(this.board.tiles[topLeft].getNodeCount() <= this.board.tiles[topLeft].getMaxNodes()){
-              resultWeight++;
-            }
-          }
-        }
-      }
-    }
-
-    resultWeight += moveObj.branchesPlaced.length;
-
-    for(let i = 0; i < moveObj.branchesPlaced.length; i++){
-      if(horizontalBranches.includes(moveObj.branchesPlaced[i])){
-        const topNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2')];
-        const sideNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
-        const bottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
-        if(!topNeighbors.includes(-1)){
-          if(this.board.branches[topNeighbors[0]].getOwner() === currentOwner && this.board.branches[topNeighbors[1]].getOwner() === currentOwner){
-            resultWeight+=10;
-          }
-        }
-        else if(!sideNeighbors.includes(-1)){
-          if(this.board.branches[sideNeighbors[0]].getOwner() === currentOwner && this.board.branches[sideNeighbors[1]].getOwner() === currentOwner){
-            resultWeight+=10;
-          }
-        }
-        else if(!bottomNeighbors.includes(-1)){
-          if(this.board.branches[bottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[bottomNeighbors[1]].getOwner() === currentOwner){
-            resultWeight+=10;
-          }
-        }
-      }
-      else{
-        const rightNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
-        const topAndBottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4')];
-        const leftNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
-        if(!rightNeighbors.includes(-1)){
-          if(this.board.branches[rightNeighbors[0]].getOwner() === currentOwner && this.board.branches[rightNeighbors[1]].getOwner() === currentOwner){
-            resultWeight+=10;
-          }
-        }
-        else if(!topAndBottomNeighbors.includes(-1)){
-          if(this.board.branches[topAndBottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[topAndBottomNeighbors[1]].getOwner() === currentOwner){
-            resultWeight+=10;
-          }
-        }
-        else if(!leftNeighbors.includes(-1)){
-          if(this.board.branches[leftNeighbors[0]].getOwner() === currentOwner && this.board.branches[leftNeighbors[1]].getOwner() === currentOwner){
-            resultWeight+=10;
-          }
-        }
-      }
-    }
     
-    return resultWeight;
+
+      for(let i = 0; i < moveObj.branchesPlaced.length; i++){
+        //resultWeights.push(moves[moveNum]);
+        result++;
+
+        if(horizontalBranches.includes(moveObj.branchesPlaced[i])){
+          const topNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2')];
+          const sideNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
+          const bottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
+          if(!topNeighbors.includes(-1)){
+            if(this.board.branches[topNeighbors[0]].getOwner() === currentOwner && this.board.branches[topNeighbors[1]].getOwner() === currentOwner){
+              // for(let i = 0; i < 10; i++){
+              //   //resultWeights.push(moves[moveNum]);
+              // }
+              result+=10;
+            }
+          }
+          else if(!sideNeighbors.includes(-1)){
+            if(this.board.branches[sideNeighbors[0]].getOwner() === currentOwner && this.board.branches[sideNeighbors[1]].getOwner() === currentOwner){
+             // for(let i = 0; i < 10; i++){
+              //   //resultWeights.push(moves[moveNum]);
+              // }
+              result+=10;
+            }
+          }
+          else if(!bottomNeighbors.includes(-1)){
+            if(this.board.branches[bottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[bottomNeighbors[1]].getOwner() === currentOwner){
+              // for(let i = 0; i < 10; i++){
+              //   //resultWeights.push(moves[moveNum]);
+              // }
+              result+=10;
+            }
+          }
+        }
+        else{
+          const rightNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
+          const topAndBottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4')];
+          const leftNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
+          if(!rightNeighbors.includes(-1)){
+            if(this.board.branches[rightNeighbors[0]].getOwner() === currentOwner && this.board.branches[rightNeighbors[1]].getOwner() === currentOwner){
+              // for(let i = 0; i < 10; i++){
+              //   //resultWeights.push(moves[moveNum]);
+              // }
+              result+=10;
+            }
+          }
+          else if(!topAndBottomNeighbors.includes(-1)){
+            if(this.board.branches[topAndBottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[topAndBottomNeighbors[1]].getOwner() === currentOwner){
+              // for(let i = 0; i < 10; i++){
+              //   //resultWeights.push(moves[moveNum]);
+              // }
+              result+=10;
+            }
+          }
+          else if(!leftNeighbors.includes(-1)){
+            if(this.board.branches[leftNeighbors[0]].getOwner() === currentOwner && this.board.branches[leftNeighbors[1]].getOwner() === currentOwner){
+              // for(let i = 0; i < 10; i++){
+              //   //resultWeights.push(moves[moveNum]);
+              // }
+              result+=10;
+            }
+          }
+        }
+      }
+    //}
+    return result;
   }
 
   heuristicPlay(){
@@ -321,17 +364,7 @@ export class State {
     return result;
   }
 
-  cloneState():State{
-    const newState = new State(this.getBoard(), this.player1, this.player2);
-
-    newState.move = this.move;
-    newState.playerNumber = this.playerNumber;
-    newState.visitCount = this.visitCount;
-    newState.winScore = this.winScore;
-    newState.tilesBeingChecked = this.tilesBeingChecked.slice();
-
-    return newState;
-  }
+  
 
   applyMove(moveString: string):void{
     let currentPlayer;

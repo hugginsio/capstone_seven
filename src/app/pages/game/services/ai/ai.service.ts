@@ -15,26 +15,26 @@ interface Resources{
   yellow:number,
 }
 
-export class AiService {
+// export class AiService {
   
-  mcts: MonteCarlo;
+//   mcts: MonteCarlo;
   
-  constructor(gameBoard:GameBoard, player1:Player,player2:Player) {
-    this.mcts = new MonteCarlo(gameBoard, player1, player2); 
-  }
+//   constructor(gameBoard:GameBoard, player1:Player,player2:Player) {
+//     this.mcts = new MonteCarlo(gameBoard, player1, player2); 
+//   }
 
-  getAIMove(gameboard:GameBoard,player1:Player,player2:Player,previousPlayerNo:number,pastMoveString:string):string{
+//   getAIMove(gameboard:GameBoard,player1:Player,player2:Player,previousPlayerNo:number,pastMoveString:string):string{
 
-    const start = Date.now();
-    const newState = new State(gameboard,player1, player2);
-    newState.playerNumber = previousPlayerNo;
-    newState.move = pastMoveString;
+//     const start = Date.now();
+//     const newState = new State(gameboard,player1, player2);
+//     newState.playerNumber = previousPlayerNo;
+//     newState.move = pastMoveString;
 
-    const result = this.mcts.findNextMove(newState,5700);
+//     const result = this.mcts.findNextMove(newState,5700);
 
-    console.warn(`Time for AI move = ${Date.now() - start}ms`);
-    return result;
-  }
+//     console.warn(`Time for AI move = ${Date.now() - start}ms`);
+//     return result;
+//   }
 
 
   // randomAIFirstMove():string{
@@ -324,7 +324,7 @@ export class AiService {
   // }
 
   
-}
+//}
 
 
 

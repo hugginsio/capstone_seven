@@ -4,11 +4,19 @@ import { State } from './ai.class.State';
 import { CoreLogic } from '../../util/core-logic.util';
 import { Player } from '../gamecore/game.class.Player';
 
+interface PlayoutResult{
+  playerNumber:number;
+}
 export class MonteCarlo {
   WINSCORE = 10;
   explorationParameter:number;
   opponent:number;
   tree:Tree;
+
+  NUMWORKERS = 4;
+  workers:Array<Worker>;
+
+  
 
   constructor(gameBoard:GameBoard,player1:Player,player2:Player,explorationParameter:number){
     this.explorationParameter = explorationParameter;
@@ -16,6 +24,12 @@ export class MonteCarlo {
     const startingState = new State(gameBoard,player1,player2);
     const startingRoot = new MCTSNode(startingState);
     this.tree.setRoot(startingRoot);
+ 
+
+    this.workers = [];
+    for(let i = 0; i < this.NUMWORKERS; i++){
+      this.workers.push(new Worker('../../workers/simulation.worker.ts', { type: 'module' }));
+    }
   }
 
   
@@ -41,8 +55,8 @@ export class MonteCarlo {
     }
 
     const rootNode = this.tree.getRoot();
-
-    let simCount = 0;
+    let simNum = 0;
+    
     while (Date.now() < end) {
     //for(let iteration = 0; iteration < 10; iteration++){
       const promisingNode = this.selectPromisingNode(rootNode);
@@ -55,10 +69,11 @@ export class MonteCarlo {
       }
       const playoutResult = this.simulateRandomPlayout(nodeToExplore);
       this.backPropogation(nodeToExplore, playoutResult);
-      simCount++;
+      //this.simulateRandomPlayout(nodeToExplore);
+      simNum++;
     }
 
-    console.log(`Number of Simulations = ${simCount}`);
+    console.log(`Number of Simulations = ${simNum}`);
     if(rootNode.getChildArray().length > 0){
       const winnerNode = rootNode.getChildWithMaxScore();
       this.tree.setRoot(winnerNode);
@@ -93,12 +108,12 @@ export class MonteCarlo {
     //console.log(`expandNode TIME: ${Date.now() - start}ms`);
   }
 
-  backPropogation(nodeToExplore:MCTSNode, playerNo:number):void {
+  backPropogation(nodeToExplore:MCTSNode, playoutResult:number):void {
     //const start = Date.now();
     let tempNode:MCTSNode|null = nodeToExplore;
     while (tempNode != null) {
       tempNode.getState().incrementVisit();
-      if (tempNode.getState().getPlayerNo() == playerNo) {
+      if (tempNode.getState().getPlayerNo() == playoutResult) {
         tempNode.getState().addScore(this.WINSCORE);
       }
       tempNode = tempNode.getParent();
@@ -111,14 +126,17 @@ export class MonteCarlo {
     const tempNode = MCTSNode.copyConstructor(node);
     const tempState = tempNode.getState();
     let boardStatus = CoreLogic.getWinner(tempState);
+    //let result = {playerNumber:boardStatus,multiplier:1};
     if (boardStatus == this.opponent) {
       const tempParent = tempNode.getParent();
       if(tempParent !== null){
         tempParent.getState().setWinScore(Number.MIN_VALUE);
       }
-
+      //this.backPropogation(node, boardStatus);
       return boardStatus;
     }
+
+   
     let counter = 0; //decrease counter and assign winner based on score if game not finished
     while (boardStatus === 0 && counter < 15) {
       if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
@@ -143,11 +161,55 @@ export class MonteCarlo {
         boardStatus = 2;
       }
     }
-    //console.log(`simulateRandomPlayout TIME: ${Date.now() - start}ms`);
+
+    
     return boardStatus;
+    // let player1Wins = 0;
+    // let player2Wins = 0;
+
+    
+    // var promises = [];
+    // for(var i = 0; i < this.NUMWORKERS; i++) {
+    //     promises.push(new Promise((resolve)=>{
+    //       this.workers[i].postMessage(tempState);
+    //       this.workers[i].onmessage = ({data})=>{
+    //           resolve(data);
+    //       };
+    //   }));
+    // }
+    
+    // let promise = await Promise.all(promises)
+    //     .then((data) =>{
+    //       console.log('inside promise');
+    //         // `data` has the results, compute the final solution
+    //         for(let j = 0; j < data.length;j++){
+
+    //           this.backPropogation(node,data[j]as number);
+    //         }
+    //     });
+
+    // console.log('blah blah');
+    
+    // if(player1Wins > player2Wins){
+    //   result = {playerNumber:1,multiplier:player1Wins};
+    // }
+    // else{
+    //   result = {playerNumber:2,multiplier:player2Wins};
+    // }
+    
+
+    //console.log(`simulateRandomPlayout TIME: ${Date.now() - start}ms`);
+
+    //console.log(result);
+    //return result;
   }
 
+
+
+
+
 }
+
 
 class UCT {
   static uctValue(totalVisit:number, nodeWinScore:number, nodeVisit:number, explorationParameter:number):number {
