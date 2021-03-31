@@ -20,6 +20,7 @@ import { timeStamp } from 'console';
 export class GameComponent implements OnInit {
   public gamePaused: boolean;
   public isTrading: boolean;
+  public showHelp: boolean;
   public gameOver: boolean;
   public gameOverText: string;
   public winningPlayer: Player;
@@ -333,5 +334,10 @@ export class GameComponent implements OnInit {
     const element = document.createElement('div');
     element.innerHTML = message;
     container.appendChild(element);
+  }
+  
+  toggleHelp(): void {
+    this.togglePaused();
+    this.showHelp = !this.showHelp;
   }
 }
