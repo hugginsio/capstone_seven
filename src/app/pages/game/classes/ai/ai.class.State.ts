@@ -87,18 +87,18 @@ export class State {
     const moves = CoreLogic.getLegalMoves(this,true);
     //console.log(`In simulation: Time to generate moves = ${Date.now()-start}ms`);
 
-    let maxWeight = 0;
-    let maxWeightIndex = Math.floor(Math.random() * moves.length);
-    //start = Date.now();
-    for(let i = 0; i < moves.length; i++){
-      const localWeight = this.moveWeighting(moves[i]);
-      if(localWeight > maxWeight){
-        maxWeight = localWeight;
-        maxWeightIndex = i;
-      }
-    }
+    // let maxWeight = 0;
+    // let maxWeightIndex = Math.floor(Math.random() * moves.length);
+    // //start = Date.now();
+    // for(let i = 0; i < moves.length; i++){
+    //   const localWeight = this.moveWeighting(moves[i]);
+    //   if(localWeight > maxWeight){
+    //     maxWeight = localWeight;
+    //     maxWeightIndex = i;
+    //   }
+    // }
 
-    //const index = Math.floor(Math.random()*moves.length);
+    const maxWeightIndex = Math.floor(Math.random()*moves.length);
 
     this.applyMove(moves[maxWeightIndex]);
     //console.log(`Inside simulation: Time to apply chosen move = ${Date.now()-start}ms`);

@@ -15,7 +15,7 @@ export class MonteCarlo {
 
   NUMWORKERS = 4;
   workers:Array<Worker>;
-
+  simNum = 0;
   
 
   constructor(gameBoard:GameBoard,player1:Player,player2:Player,explorationParameter:number){
@@ -55,10 +55,10 @@ export class MonteCarlo {
     }
 
     const rootNode = this.tree.getRoot();
-    let simNum = 0;
-    
-    while (Date.now() < end) {
-    //for(let iteration = 0; iteration < 10; iteration++){
+   
+    this.simNum = 0;
+    //while (Date.now() < end) {
+    for(let iteration = 0; iteration < 10; iteration++){
       const promisingNode = this.selectPromisingNode(rootNode);
       if (CoreLogic.getWinner(promisingNode.getState()) === 0) {
         this.expandNode(promisingNode);
@@ -67,13 +67,13 @@ export class MonteCarlo {
       if (promisingNode.getChildArray().length > 0) {
         nodeToExplore = promisingNode.getRandomChildNode();
       }
-      const playoutResult = this.simulateRandomPlayout(nodeToExplore);
-      this.backPropogation(nodeToExplore, playoutResult);
-      //this.simulateRandomPlayout(nodeToExplore);
-      simNum++;
+      //const playoutResult = this.simulateRandomPlayout(nodeToExplore);
+      //this.backPropogation(nodeToExplore, playoutResult);
+      this.simulateRandomPlayout(nodeToExplore);
+      
     }
 
-    console.log(`Number of Simulations = ${simNum}`);
+    console.log(`Number of Simulations = ${this.simNum}`);
     if(rootNode.getChildArray().length > 0){
       const winnerNode = rootNode.getChildWithMaxScore();
       this.tree.setRoot(winnerNode);
@@ -121,7 +121,7 @@ export class MonteCarlo {
     //console.log(`backPropagation TIME: ${Date.now() - start}ms`);
   }
 
-  simulateRandomPlayout(node:MCTSNode):number {
+  async simulateRandomPlayout(node:MCTSNode):Promise<void> {
     //const start = Date.now();
     const tempNode = MCTSNode.copyConstructor(node);
     const tempState = tempNode.getState();
@@ -132,61 +132,66 @@ export class MonteCarlo {
       if(tempParent !== null){
         tempParent.getState().setWinScore(Number.MIN_VALUE);
       }
-      //this.backPropogation(node, boardStatus);
-      return boardStatus;
+      this.backPropogation(node, boardStatus);
+      //return boardStatus;
     }
+
 
    
-    let counter = 0; //decrease counter and assign winner based on score if game not finished
-    while (boardStatus === 0 && counter < 15) {
-      if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
-        tempState.player1.redResources = 1;
-        tempState.player1.blueResources = 1;
-        tempState.player1.greenResources = 2;
-        tempState.player1.yellowResources = 2;
-      }
-      tempState.randomPlay();
-      //tempState.heuristicPlay();
-      boardStatus = CoreLogic.getWinner(tempState);
-      tempState.togglePlayer();
-      //console.log(`Inside simulation: count = ${counter}`);
-      counter++;
-    }
+    // let counter = 0; //decrease counter and assign winner based on score if game not finished
+    // while (boardStatus === 0 && counter < 15) {
+    //   if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
+    //     tempState.player1.redResources = 1;
+    //     tempState.player1.blueResources = 1;
+    //     tempState.player1.greenResources = 2;
+    //     tempState.player1.yellowResources = 2;
+    //   }
+    //   tempState.randomPlay();
+    //   //tempState.heuristicPlay();
+    //   boardStatus = CoreLogic.getWinner(tempState);
+    //   tempState.togglePlayer();
+    //   //console.log(`Inside simulation: count = ${counter}`);
+    //   counter++;
+    // }
 
-    if(boardStatus === 0){
-      if(tempState.getHeuristicValue() > 0){
-        boardStatus = 1;
-      }
-      else{
-        boardStatus = 2;
-      }
-    }
+    // if(boardStatus === 0){
+    //   if(tempState.getHeuristicValue() > 0){
+    //     boardStatus = 1;
+    //   }
+    //   else{
+    //     boardStatus = 2;
+    //   }
+    // }
+
+    //this.backPropogation(node,boardStatus);
 
     
-    return boardStatus;
+    // return boardStatus;
     // let player1Wins = 0;
     // let player2Wins = 0;
 
     
-    // var promises = [];
-    // for(var i = 0; i < this.NUMWORKERS; i++) {
-    //     promises.push(new Promise((resolve)=>{
-    //       this.workers[i].postMessage(tempState);
-    //       this.workers[i].onmessage = ({data})=>{
-    //           resolve(data);
-    //       };
-    //   }));
-    // }
+    var promises = [];
+    for(var i = 0; i < this.NUMWORKERS; i++) {
+        promises.push(new Promise((resolve)=>{
+          this.workers[i].postMessage(tempState);
+          this.workers[i].onmessage = ({data})=>{
+              this.simNum++;
+              resolve(data);
+          };
+      }));
+    }
     
-    // let promise = await Promise.all(promises)
-    //     .then((data) =>{
-    //       console.log('inside promise');
-    //         // `data` has the results, compute the final solution
-    //         for(let j = 0; j < data.length;j++){
+    let promise = await Promise.all(promises)
+        .then((data) =>{
+          console.log('inside promise');
+          console.log(data.toString());
+            // `data` has the results, compute the final solution
+            for(let j = 0; j < data.length;j++){
 
-    //           this.backPropogation(node,data[j]as number);
-    //         }
-    //     });
+              this.backPropogation(node,data[j]as number);
+            }
+        });
 
     // console.log('blah blah');
     
