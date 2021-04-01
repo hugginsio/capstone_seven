@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GameNetworkingService } from '../../networking/game-networking.service';
 import { MatchmakingService } from '../../networking/matchmaking.service';
 import { NetworkGameInfo } from './interfaces/new-network-game.interface';
@@ -11,10 +11,9 @@ import { LocalStorageService } from '../../../shared/services/local-storage/loca
   templateUrl: './new-network-game.component.html',
   styleUrls: ['../menu-common.scss']
 })
-export class NewNetworkGameComponent implements OnInit, AfterViewInit {
+export class NewNetworkGameComponent implements OnInit {
   private username: string;
-  private list:any;
-  private gamesList: Array<NetworkGameInfo>;
+  public gamesList: Array<NetworkGameInfo>;
   private gameSettings: NetworkGameSettings;
 
   constructor(
@@ -23,10 +22,6 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
     private readonly networkingService: GameNetworkingService,
     private readonly routerService: Router
   ) {}
-
-  ngAfterViewInit(): void {
-    this.list = document.getElementById("gameList");
-  }
 
   ngOnInit(): void {
     // instantiate class here

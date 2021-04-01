@@ -15,8 +15,9 @@ export class NewNetworkGameHostComponent implements OnInit {
   public boardSeed: string;
 
   private isHostFirst: boolean;
-  private isWaitingForPlayer = false;
-  private isSettingUpGame = true;
+  public isWaitingForPlayer = false;
+  public isSettingUpGame = true;
+  public advancedOpts = true;
   private readonly username: string = "Client McGee";
   private subscription: Subscription;
 
@@ -54,12 +55,11 @@ export class NewNetworkGameHostComponent implements OnInit {
     if (this.firstPlayer === 'Player One Goes First') {
       this.firstPlayer = this.playerTwoFirst;
       this.isHostFirst = false;
+      this.storageService.update('isHostFirst', 'false');
     } else {
       this.firstPlayer = this.playerOneFirst;
       this.isHostFirst = true;
     }
-
-    this.storageService.update('isHostFirst', this.firstPlayer);
   }
 
   startHosting(): void {
@@ -68,6 +68,15 @@ export class NewNetworkGameHostComponent implements OnInit {
     this.storageService.update('board-seed', this.boardSeed);
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
+
+    if(this.isHostFirst)
+    {
+      this.storageService.update('isHostFirst', 'true');
+    }
+    else
+    {
+      this.storageService.update('isHostFirst', 'false');
+    }
 
     // host ye ol game
     // ✨ broadcastify ✨
