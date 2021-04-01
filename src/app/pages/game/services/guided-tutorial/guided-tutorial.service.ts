@@ -96,6 +96,9 @@ export class GuidedTutorialService {
       case 5: 
         message = this.messageFive();
         break;
+      case 6:
+        message = this.messageSix();
+        break;
       default:
         console.log('something went wrong, tutorialManager switch');
     }
@@ -228,13 +231,16 @@ export class GuidedTutorialService {
       else if(m === 2 && s === 3 && piece === 'B13'){
         this.moveNum++;
         // call to output message 4 
-        this.stepNum++;
-        this.tutorialManager();
+        this.freezeNext = false;
+
+        //this.stepNum++;
+       // this.tutorialManager();
       }
       else if(m === 3 && s === 4 && piece === 'ENDTURN'){
         // end turn
-        this.freezeNext = false;
         this.moveNum++;
+        this.freezeNext = false;
+
       }
       else {
         this.snackbarService.add({ message: 'Now don\'t be clickin\' just anywhere! Please follow these here instructions.' });
@@ -285,8 +291,17 @@ export class GuidedTutorialService {
 
   messageTwo():string {
     // message 2
-    let message = "Learn some mining lingo before we get going:<br><br>Pickaxes and Drills are what we call \"Mining Markers\"<br><br>Tracks get you from place to place, and these here squares here all abouts the mine are mining sites.<br><br>These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
+    let message = "Learn some mining lingo before we get going:<br><br>Pickaxes and Drills are what we call \"Mining Markers\"<br><br>Tracks get you from place to place."; 
 
+    /*let nodes = document.getElementsByClassName("node");
+    let branchY = document.getElementsByClassName("branch-y");
+    let branchX = document.getElementsByClassName("branch-x");
+    
+    if(nodes !== null && branchY !== null && branchX !== null){
+      nodes.style.border = "1px solid white";
+      branchY.style.border = "1px solid yellow";
+      branchX.style.border = "1px solid yellow";
+    }*/
     //this.snackbarService.add({ message: 'Learn some mining lingo before we get going' });
     //this.snackbarService.add({ message: 'Tracks get you from place to place, and these here squares here all abouts the mine are mining sites.' });
     //this.snackbarService.add({ message: 'These sites have gems in ‘em that hold the type and number of gem you can mine from there.' });
@@ -297,6 +312,11 @@ export class GuidedTutorialService {
   }
 
   messageThree():string {
+    let message = "These squares here all abouts the mine are mining sites.<br><br>These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
+    return message;
+  }
+
+  messageFour():string {
     let message = '';
     if(this.humanPlayer === '1') {
       // message 3
@@ -312,12 +332,12 @@ export class GuidedTutorialService {
     return message;
   }
 
-  messageFour():string {
+  messageFive():string {
     let message = '';
     if(this.humanPlayer === '1') {
       // message 4
       message = 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'<br><br>You gotta have gems in the future to get more pickaxes and tracks down the road<br><br>Settled on your move? Click the "End Turn" button to keep the game movin\'';
-
+      this.freezeNext = true;
                       // put these in later ones --- or maybe not? how does it work for being triggered by things other than buttons?? also putting action into snack bar only 
                   // this.snackbarService.add({ message: 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'' });
                   //this.snackbarService.add({ message: 'You gotta have gems in the future to get more pickaxes and tracks down the road' });
@@ -328,11 +348,12 @@ export class GuidedTutorialService {
     return message;
   }
 
-  messageFive():string {
+  messageSix():string {
     let message='';
     // AI's first move
     if(this.humanPlayer === '1') {
       message = 'Now the Machine selects its moves...<br><br>You see these here gems on each site? Those show the maximum amount of gems this site can give according to the law here in the mines.<br><br>Now if yours and you opponent’s number of mining markers on a site are more than the allotted gems then y’all exhausted that site and neither y’all will be gettin’ gems from the site.';
+      // change!! if N15 isnt owned... do this !! 
       if (this.moveNum === 4)
       {
         this.gameManager.applyMove(";N15;B28");

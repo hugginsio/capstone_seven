@@ -694,7 +694,7 @@ export class ManagerService {
 
       // if AI is PlayerOne, send the first move of playerTwo to AI, keeping track of all moves placed
       if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
-        if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI) {
+        if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI && this.isTutorial ==="false") {
           //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
         // allow playerTwo's second initial turn 
