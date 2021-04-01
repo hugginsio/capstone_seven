@@ -1,6 +1,9 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import { fork } from 'child_process';
+const ms = fork('./src/app/pages/networking/MatchmakingServer.js');
+const gs = fork('./src/app/pages/networking/GameServer.js');
 
 let window: BrowserWindow;
 const args = process.argv.slice(1), serve = args.some(val => val === '--serve');
