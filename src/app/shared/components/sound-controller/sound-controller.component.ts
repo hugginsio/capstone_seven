@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 
 @Component({
   selector: 'app-sound-controller',
@@ -6,9 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SoundControllerComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private readonly storageService: LocalStorageService
+  ){}
 
   ngOnInit(): void {
+    console.log('Sound controller loaded.');
+    this.storageService.setContext('sound');
   }
 
+  checkForUpdates(): void {
+    // check localstorage
+  }
 }
