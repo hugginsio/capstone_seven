@@ -90,19 +90,23 @@ export class GameComponent implements OnInit, AfterViewInit {
             this.toggleTrade();
           }
         } else if (status === CommCode.END_TURN) {
-          // if guided tutorial, check if they are supposed to end their turn
-          if (this.guidedTutorialCheck) {
-            if(!this.guidedTutorial.moveManager("ENDTURN")){
-              return;
-            }
-          }
+          
           const currentPlayer = this.gameManager.getCurrentPlayer();
           if ((currentPlayer.numNodesPlaced < 2 || currentPlayer.ownedBranches.length < 2) &&
             (currentPlayer.redResources !== 0 || currentPlayer.greenResources !== 0 ||
               currentPlayer.blueResources !== 0 || currentPlayer.yellowResources !== 0)) {
             this.snackbarService.add({ message: 'You must place a node and a branch.' });
           } else {
-            this.gameManager.endTurn(this.gameManager.getCurrentPlayer());
+            // if guided tutorial, check if they are supposed to end their turn
+            if (this.guidedTutorialCheck)
+            {
+              if(this.guidedTutorial.moveManager("ENDTURN")) {
+                this.gameManager.endTurn(this.gameManager.getCurrentPlayer());
+              }
+            } 
+            else {
+              this.gameManager.endTurn(this.gameManager.getCurrentPlayer());
+            }
           }
         } else if (status === CommCode.END_GAME) {
           this.gameOverText = `${this.gameManager.getCurrentPlayerEnum()} Victorious!`;
@@ -159,7 +163,7 @@ export class GameComponent implements OnInit, AfterViewInit {
       console.log("test message" + message);
       this.appendMessage(message);
       // why is this not showing up?
-      this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
+      //this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
 
     }
   }
@@ -394,7 +398,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     }
     // how many steps we have
     // variable depending on who goes first???
-    else if (button === 'GT-Next' && step < 5 && !this.guidedTutorial.getFreezeNext()){
+    else if (button === 'GT-Next' && step < 5 && this.guidedTutorial.getFreezeNext() === false){
       this.clearMessage();
       this.guidedTutorial.incrementStepNum();
       message = this.guidedTutorial.tutorialManager();

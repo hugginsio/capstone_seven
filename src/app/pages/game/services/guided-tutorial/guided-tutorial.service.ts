@@ -91,10 +91,10 @@ export class GuidedTutorialService {
         message = this.messageThree();
         break;
       case 4:
-        //message = this.messageFour();
+        message = this.messageFour();
         break;
       case 5: 
-        //message = this.messageFive();
+        message = this.messageFive();
         break;
       default:
         console.log('something went wrong, tutorialManager switch');
@@ -226,9 +226,10 @@ export class GuidedTutorialService {
         this.highlightManager();
       }
       else if(m === 2 && s === 3 && piece === 'B13'){
-        // place branch
-        // call in game manager
         this.moveNum++;
+        // call to output message 4 
+        this.stepNum++;
+        this.tutorialManager();
       }
       else if(m === 3 && s === 4 && piece === 'ENDTURN'){
         // end turn
@@ -236,7 +237,7 @@ export class GuidedTutorialService {
         this.moveNum++;
       }
       else {
-        this.snackbarService.add({ message: 'Do me a favor and only click where I\'m tellin\' you to.' });
+        this.snackbarService.add({ message: 'Now don\'t be clickin\' just anywhere! Please follow these here instructions.' });
         validMove = false;
       }
     }
@@ -256,7 +257,7 @@ export class GuidedTutorialService {
         // end move
         this.moveNum++;
       }
-      else {this.snackbarService.add({ message:'Do me a favor and only click where I\'m tellin\' you to.'});
+      else {this.snackbarService.add({ message:'Now don\'t be clickin\' just anywhere! Please follow these here instructions.'});
         validMove = false;
       }
     }
@@ -272,7 +273,7 @@ export class GuidedTutorialService {
   }
 
   messageOne():string{
-    let message = "Welcome in to the mines! <br><br> Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.";
+    let message = "Welcome in to the mines! <br><br> Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.<br><br>Click the \"Next\" button to start the tutorial.";
       // message 1, start tutorial
       //this.snackbarService.add({ message: 'Welcome in to the mines!' });
       //this.snackbarService.add({ message: 'Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.' });
@@ -284,9 +285,9 @@ export class GuidedTutorialService {
 
   messageTwo():string {
     // message 2
-    let message = "Pickaxes and Drills are what we call \"Mining Markers\" Tracks get you from place to place, and these here squares here all abouts the mine are mining sites. These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
+    let message = "Learn some mining lingo before we get going:<br><br>Pickaxes and Drills are what we call \"Mining Markers\"<br><br>Tracks get you from place to place, and these here squares here all abouts the mine are mining sites.<br><br>These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
 
-    this.snackbarService.add({ message: 'Learn some mining lingo before we get going' });
+    //this.snackbarService.add({ message: 'Learn some mining lingo before we get going' });
     //this.snackbarService.add({ message: 'Tracks get you from place to place, and these here squares here all abouts the mine are mining sites.' });
     //this.snackbarService.add({ message: 'These sites have gems in ‘em that hold the type and number of gem you can mine from there.' });
 
@@ -299,18 +300,24 @@ export class GuidedTutorialService {
     let message = '';
     if(this.humanPlayer === '1') {
       // message 3
-      message = 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine';
-      this.snackbarService.add({ message: 'Click the indicated marker and track to make your move.' });
-      this.freezeNext = true; 
-      this.highlightManager();
+      message = 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine<br><br>Click the indicated marker and track to make your move.';
+      // if we want to have the action items as pop ups in the snack bar it has to stay around 
+      //this.snackbarService.add({ message: 'Click the indicated marker and track to make your move.' });
+      if(this.moveNum === 1){
+        this.freezeNext = true; 
+        this.highlightManager();
+      }
       // must click pieces before next
     }
     return message;
   }
 
-  messageFour():void {
+  messageFour():string {
+    let message = '';
     if(this.humanPlayer === '1') {
       // message 4
+      message = 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'<br><br>You gotta have gems in the future to get more pickaxes and tracks down the road<br><br>Settled on your move? Click the "End Turn" button to keep the game movin\'';
+
                       // put these in later ones --- or maybe not? how does it work for being triggered by things other than buttons?? also putting action into snack bar only 
                   // this.snackbarService.add({ message: 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'' });
                   //this.snackbarService.add({ message: 'You gotta have gems in the future to get more pickaxes and tracks down the road' });
@@ -318,9 +325,19 @@ export class GuidedTutorialService {
       //this.snackbarService.add({ message: 'Settled on your move? Click the "End Turn" button to keep the game movin\'' });
       // moves when "End Turn" is clicked
     }
+    return message;
   }
 
-  messageFive():void {
-
+  messageFive():string {
+    let message='';
+    // AI's first move
+    if(this.humanPlayer === '1') {
+      message = 'Now the Machine selects its moves...<br><br>You see these here gems on each site? Those show the maximum amount of gems this site can give according to the law here in the mines.<br><br>Now if yours and you opponent’s number of mining markers on a site are more than the allotted gems then y’all exhausted that site and neither y’all will be gettin’ gems from the site.';
+      if (this.moveNum === 4)
+      {
+        this.gameManager.applyMove(";N15;B28");
+      }
+    }
+    return message;
   }
 }

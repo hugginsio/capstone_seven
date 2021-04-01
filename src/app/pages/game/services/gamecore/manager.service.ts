@@ -32,7 +32,10 @@ export class ManagerService {
   // used for UI integration
   private firstPlayer: number;
 
-  //Networking stuff
+  // guided tutorial
+  private isTutorial: string;
+
+  // Networking stuff
   private isHost: string;
   private isHostFirst: string;
   private netSettings: NetworkGameSettings;
@@ -78,10 +81,12 @@ export class ManagerService {
     this.storageService.setContext('game');
     const gameMode = this.storageService.fetch('mode');
     const boardSeed = this.storageService.fetch('board-seed');
+    this.isTutorial = this.storageService.fetch('guided-tutorial');
     //this.firstPlayer = this.storageService.fetch('firstplayer');
     this.isHost = this.storageService.fetch('isHost');
     this.isHostFirst = this.storageService.fetch('isHostFirst');
     this.firstPlayer = +this.storageService.fetch('firstplayer');
+
 
     // determines currentGameMode field
     // determines player type fields for playerOne + playerTwo
@@ -267,6 +272,10 @@ export class ManagerService {
     }
   }
 
+  setIsTutorialFalse():void {
+    this.isTutorial = "false";
+  }
+
   // creates string representing gameBoard for AI/Networking
   serializeBoard(): void {
 
@@ -407,7 +416,7 @@ export class ManagerService {
     this.stack.splice(0, this.stack.length);
 
     // calls AI to make move on its turn
-    if (currentPlayer.type === PlayerType.AI) {
+    if (currentPlayer.type === PlayerType.AI && this.isTutorial === "false") {
       const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
       const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
