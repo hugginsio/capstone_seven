@@ -119,7 +119,16 @@ export class GameComponent implements OnInit, AfterViewInit {
         } else if (status === CommCode.UNDO) {
           const gamePiece = this.gameManager.stack.pop();
           if (gamePiece) {
-            this.gameManager.undoPlacement(gamePiece[0] as string, gamePiece[1] as number, this.gameManager.getCurrentPlayer());
+            if(this.guidedTutorialCheck){
+              if(this.guidedTutorial.moveManager("UNDO"))
+              {
+                this.gameManager.undoPlacement(gamePiece[0] as string, gamePiece[1] as number, this.gameManager.getCurrentPlayer());
+                this.guidedTutorial.highlightManager();
+              }
+            }
+            else {
+              this.gameManager.undoPlacement(gamePiece[0] as string, gamePiece[1] as number, this.gameManager.getCurrentPlayer());
+            }
           } else {
             this.snackbarService.add({ message: 'No moves to undo.' });
           }
@@ -401,7 +410,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     }
     // how many steps we have
     // variable depending on who goes first???
-    else if (button === 'GT-Next' && step < 6 && this.guidedTutorial.getFreezeNext() === false){
+    else if (button === 'GT-Next' && step < this.guidedTutorial.getMaxStep() && this.guidedTutorial.getFreezeNext() === false){
       this.clearMessage();
       this.guidedTutorial.incrementStepNum();
       message = this.guidedTutorial.tutorialManager();

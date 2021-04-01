@@ -35,9 +35,11 @@ export class GuidedTutorialService {
     this.freezeNext = false;
     if (this.humanPlayer === '1') {
       this.maxMove = 18;
+      this.maxStep = 18;
     }
     else {
       this.maxMove = 22;
+      this.maxStep = 22;
     }
   }
 
@@ -59,6 +61,13 @@ export class GuidedTutorialService {
   }
   decrementMoveNumForUndoOnly():void {
     this.moveNum--;
+  }
+
+  getMaxStep():number{
+    return this.maxStep;
+  }
+  getMaxMove():number{
+    return this.maxMove;
   }
 
   getFreezeNext():boolean{
@@ -99,6 +108,21 @@ export class GuidedTutorialService {
       case 6:
         message = this.messageSix();
         break;
+      case 7: 
+        message = this.messageSeven();
+        break;
+      case 8: 
+        message = this.messageEight();
+        break;
+      case 9: 
+        message = this.messageNine();
+        break;
+      case 10: 
+        message = this.messageTen();
+        break;
+      case 11:
+        message = "end of what i have coded";
+        break;
       default:
         console.log('something went wrong, tutorialManager switch');
     }
@@ -123,7 +147,7 @@ export class GuidedTutorialService {
           break;
         case 4: piece = "N8"
           break;
-        case 5: piece = "N12"
+        case 5: piece = "B12"
           break;
         case 6: // UNDO - no highlight
           break;
@@ -232,15 +256,45 @@ export class GuidedTutorialService {
         this.moveNum++;
         // call to output message 4 
         this.freezeNext = false;
-
-        //this.stepNum++;
-       // this.tutorialManager();
       }
       else if(m === 3 && s === 5 && piece === 'ENDTURN'){
         // end turn
         this.moveNum++;
         this.freezeNext = false;
+      }
 
+      else if(m === 4 && s === 8 && piece === 'N8')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 5 && s === 8 && piece === 'B12')
+      {
+        this.moveNum++;
+        this.freezeNext = false;
+      }
+      else if(m === 6 && s === 9 && piece === 'UNDO')
+      {
+        this.moveNum++;
+      }
+      else if(m === 7 && s === 9 && piece === 'UNDO')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 8 && s === 9 && piece === 'N16')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 9 && s === 9 && piece === 'B19')
+      {
+        this.moveNum++;
+      }
+      else if(m === 10 && s === 9 && piece === 'ENDTURN')
+      {
+        this.moveNum++;
+        this.freezeNext = false;
       }
       else {
         this.snackbarService.add({ message: 'Now don\'t be clickin\' just anywhere! Please follow these here instructions.' });
@@ -291,7 +345,7 @@ export class GuidedTutorialService {
 
   messageTwo():string {
     // message 2
-    let message = "Learn some mining lingo before we get going:<br><br>Pickaxes and Drills are what we call \"Mining Markers\"<br><br>Tracks get you from place to place."; 
+    let message = "Learn some mining lingo before we get going:<br><br>Pickaxes and Drills are what we call \"Mining Markers.\"<br><br>These here Tracks get you from place to place down in the depths of the mine."; 
 
     /*let nodes = document.getElementsByClassName("node");
     let branchY = document.getElementsByClassName("branch-y");
@@ -320,7 +374,7 @@ export class GuidedTutorialService {
     let message = '';
     if(this.humanPlayer === '1') {
       // message 3
-      message = 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine<br><br>Click the indicated marker and track to make your move.';
+      message = 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine.<br><br>Click the indicated marker and track to make your move.';
       // if we want to have the action items as pop ups in the snack bar it has to stay around 
       //this.snackbarService.add({ message: 'Click the indicated marker and track to make your move.' });
       if(this.moveNum === 1){
@@ -335,8 +389,8 @@ export class GuidedTutorialService {
   messageFive():string {
     let message = '';
     if(this.humanPlayer === '1') {
-      // message 4
-      message = 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'<br><br>You gotta have gems in the future to get more pickaxes and tracks down the road<br><br>Settled on your move? Click the "End Turn" button to keep the game movin\'';
+      // message 5
+      message = 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'.<br><br>You gotta be collectin\' gems to get more pickaxes and tracks down the road<br><br>Settled on your move? Click "End Turn" and then "Next" to keep the game movin\'.';
       this.freezeNext = true;
                       // put these in later ones --- or maybe not? how does it work for being triggered by things other than buttons?? also putting action into snack bar only 
                   // this.snackbarService.add({ message: 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'' });
@@ -348,16 +402,65 @@ export class GuidedTutorialService {
     return message;
   }
 
+  // this one is pretty long
   messageSix():string {
     let message='';
     // AI's first move
     if(this.humanPlayer === '1') {
-      message = 'Now the Machine selects its moves...<br><br>You see these here gems on each site? Those show the maximum amount of gems this site can give according to the law here in the mines.<br><br>Now if yours and you opponent’s number of mining markers on a site are more than the allotted gems then y’all exhausted that site and neither y’all will be gettin’ gems from the site.';
+      message = 'Now the Machine selects its moves...<br><br>You see these here gems on each site? Those show the maximum amount of gems this site can give according to the law here in the mines.<br><br>If yours and you opponent’s number of mining markers on a site are more than the allotted gems then y’all exhausted that site and neither y’all will be gettin’ gems from the site.';
      
-      console.log("owner: " + this.gameManager.getBoard().nodes[15].getOwner());
       if (this.gameManager.getBoard().nodes[15].getOwner() === 'NONE')
       {
-        console.log("inside if");
+        this.gameManager.applyMove(";15;28");
+      }
+    }
+    return message;
+  }
+
+  messageSeven():string {
+    let message='';
+    // AI's second move
+    if(this.humanPlayer === '1') {
+      message = 'To keep things fair and square with the turn order, the Machine goes again.';
+     
+      if (this.gameManager.getBoard().nodes[3].getOwner() === 'NONE')
+      {
+        this.gameManager.applyMove(";3;7");
+      }
+    }
+    return message;
+  }
+
+  messageEight():string {
+    let message='';
+    // set up player to learn undo
+    if(this.humanPlayer === '1') {
+      message = 'One last time for your starting picks.<br><br>Click the indicated pieces then click "Next."';
+     
+      this.highlightManager();
+      this.freezeNext = true;
+    }
+    return message;
+  }
+
+  messageNine():string {
+    let message='';
+    // teaching undo 
+    if(this.humanPlayer === '1') {
+      message = 'Don’t like where you clicked? Click the undo button twice to reverse your past two moves.<br><br>Finish your turn by clicking the new indicated pieces and then "End Turn."<br><br>Click "Next" to continue.';
+      this.freezeNext = true;
+    }
+    return message;
+  }
+
+  messageTen():string {
+    let message='';
+    // AI's first move
+    if(this.humanPlayer === '1') {
+      message = 'end of messages so far';
+     
+      if (this.gameManager.getBoard().nodes[15].getOwner() === 'NONE')
+      {
         this.gameManager.applyMove(";15;28");
       }
     }
