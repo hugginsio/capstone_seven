@@ -9,7 +9,6 @@ import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
-import { timeStamp } from 'console';
 //import { GameType } from './enums/game.enums';
 
 @Component({
