@@ -101,7 +101,11 @@ export class GameComponent implements OnInit, AfterViewInit {
             if (this.guidedTutorialCheck)
             {
               if(this.guidedTutorial.moveManager("ENDTURN")) {
+
                 this.gameManager.endTurn(this.gameManager.getCurrentPlayer());
+                console.log ("after end turn");
+                //this.clearMessage();
+                //this.appendMessage(this.guidedTutorial.tutorialManager());
               }
             } 
             else {
@@ -160,7 +164,6 @@ export class GameComponent implements OnInit, AfterViewInit {
     if (this.isTutorial === true)
     {
       let message = this.guidedTutorial.startTutorial();
-      console.log("test message" + message);
       this.appendMessage(message);
       // why is this not showing up?
       //this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
@@ -398,7 +401,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     }
     // how many steps we have
     // variable depending on who goes first???
-    else if (button === 'GT-Next' && step < 5 && this.guidedTutorial.getFreezeNext() === false){
+    else if (button === 'GT-Next' && step < 6 && this.guidedTutorial.getFreezeNext() === false){
       this.clearMessage();
       this.guidedTutorial.incrementStepNum();
       message = this.guidedTutorial.tutorialManager();

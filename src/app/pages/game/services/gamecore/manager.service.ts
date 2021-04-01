@@ -33,7 +33,7 @@ export class ManagerService {
   private firstPlayer: number;
 
   // guided tutorial
-  private isTutorial: string;
+  //private isTutorial: string;
 
   // Networking stuff
   private isHost: string;
@@ -81,7 +81,7 @@ export class ManagerService {
     this.storageService.setContext('game');
     const gameMode = this.storageService.fetch('mode');
     const boardSeed = this.storageService.fetch('board-seed');
-    this.isTutorial = this.storageService.fetch('guided-tutorial');
+    //this.isTutorial = this.storageService.fetch('guided-tutorial');
     //this.firstPlayer = this.storageService.fetch('firstplayer');
     this.isHost = this.storageService.fetch('isHost');
     this.isHostFirst = this.storageService.fetch('isHostFirst');
@@ -272,9 +272,9 @@ export class ManagerService {
     }
   }
 
-  setIsTutorialFalse():void {
-    this.isTutorial = "false";
-  }
+  //setIsTutorialFalse():void {
+   // this.isTutorial = "false";
+  //}
 
   // creates string representing gameBoard for AI/Networking
   serializeBoard(): void {
@@ -414,9 +414,10 @@ export class ManagerService {
     this.tradedResources.splice(0, this.tradedResources.length);
     // clear stack of node and branch placements
     this.stack.splice(0, this.stack.length);
-
+    console.log("in Next turn");
     // calls AI to make move on its turn
-    if (currentPlayer.type === PlayerType.AI && this.isTutorial === "false") {
+    if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
+      console.log("manager service, next turn, tutorial: ");
       const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
       const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
@@ -694,7 +695,7 @@ export class ManagerService {
 
       // if AI is PlayerOne, send the first move of playerTwo to AI, keeping track of all moves placed
       if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
-        if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI && this.isTutorial ==="false") {
+        if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI) {
           //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
         // allow playerTwo's second initial turn 

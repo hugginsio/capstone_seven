@@ -224,11 +224,11 @@ export class GuidedTutorialService {
     let validMove = true; 
 
     if (this.humanPlayer === '1'){
-      if(m === 1 && s === 3 && piece ==='N9') {
+      if(m === 1 && s === 4 && piece ==='N9') {
         this.moveNum++;
         this.highlightManager();
       }
-      else if(m === 2 && s === 3 && piece === 'B13'){
+      else if(m === 2 && s === 4 && piece === 'B13'){
         this.moveNum++;
         // call to output message 4 
         this.freezeNext = false;
@@ -236,7 +236,7 @@ export class GuidedTutorialService {
         //this.stepNum++;
        // this.tutorialManager();
       }
-      else if(m === 3 && s === 4 && piece === 'ENDTURN'){
+      else if(m === 3 && s === 5 && piece === 'ENDTURN'){
         // end turn
         this.moveNum++;
         this.freezeNext = false;
@@ -353,10 +353,12 @@ export class GuidedTutorialService {
     // AI's first move
     if(this.humanPlayer === '1') {
       message = 'Now the Machine selects its moves...<br><br>You see these here gems on each site? Those show the maximum amount of gems this site can give according to the law here in the mines.<br><br>Now if yours and you opponent’s number of mining markers on a site are more than the allotted gems then y’all exhausted that site and neither y’all will be gettin’ gems from the site.';
-      // change!! if N15 isnt owned... do this !! 
-      if (this.moveNum === 4)
+     
+      console.log("owner: " + this.gameManager.getBoard().nodes[15].getOwner());
+      if (this.gameManager.getBoard().nodes[15].getOwner() === 'NONE')
       {
-        this.gameManager.applyMove(";N15;B28");
+        console.log("inside if");
+        this.gameManager.applyMove(";15;28");
       }
     }
     return message;
