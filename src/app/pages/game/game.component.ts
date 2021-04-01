@@ -90,6 +90,12 @@ export class GameComponent implements OnInit, AfterViewInit {
             this.toggleTrade();
           }
         } else if (status === CommCode.END_TURN) {
+          // if guided tutorial, check if they are supposed to end their turn
+          if (this.guidedTutorialCheck) {
+            if(!this.guidedTutorial.moveManager("ENDTURN")){
+              return;
+            }
+          }
           const currentPlayer = this.gameManager.getCurrentPlayer();
           if ((currentPlayer.numNodesPlaced < 2 || currentPlayer.ownedBranches.length < 2) &&
             (currentPlayer.redResources !== 0 || currentPlayer.greenResources !== 0 ||
