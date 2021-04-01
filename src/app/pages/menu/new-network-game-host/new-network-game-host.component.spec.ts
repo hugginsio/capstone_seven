@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { NewNetworkGameHostComponent } from './new-network-game-host.component';
 
@@ -8,6 +9,7 @@ describe('NewNetworkGameHostComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
       declarations: [ NewNetworkGameHostComponent ]
     }).compileComponents();
   });
