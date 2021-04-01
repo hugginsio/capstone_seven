@@ -16,6 +16,7 @@ var UDPWrapper = /** @class */ (function () {
         //this.broadcast = "This is a test broadcast, please remain calm.";
         this.username = 'Person McHuman';
         this.server.on('error', function (err) {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             console.log("server error:\n" + err.stack);
             _this.server.close();
         });
@@ -26,6 +27,7 @@ var UDPWrapper = /** @class */ (function () {
         this.server.on("listening", function () {
             _this.server.setBroadcast(true);
             var address = _this.server.address();
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             console.log("server listening " + address.address + ":" + address.port);
         });
     }
