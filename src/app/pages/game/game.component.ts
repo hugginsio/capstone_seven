@@ -86,8 +86,17 @@ export class GameComponent implements OnInit, AfterViewInit {
           } else if (currentPlayer.hasTraded) {
             this.snackbarService.add({ message: 'You have already traded this turn.' });
           } else {
-            this.isTrading = true;
-            this.toggleTrade();
+            if (this.guidedTutorialCheck)
+            {
+              if(this.guidedTutorial.moveManager("tradeBtn")) {
+                this.isTrading = true;
+                this.toggleTrade();
+              }
+            }
+            else {
+              this.isTrading = true;
+              this.toggleTrade();
+            }
           }
         } else if (status === CommCode.END_TURN) {
           
@@ -418,6 +427,16 @@ export class GameComponent implements OnInit, AfterViewInit {
     console.log("step count: " + this.guidedTutorial.getstepNum());
     console.log(button);
     this.appendMessage(message);
+    if (this.guidedTutorial.getstepNum() === this.guidedTutorial.getMaxStep())
+    {
+      this.endTutorial();
+    }
+  }
+
+  endTutorial():void {
+    this.guidedTutorialCheck = false;
+    this.isTutorial = false;
+    this.storageService.update("guided-tutorial", "false");
   }
   
   copyBoardSeed(): void {

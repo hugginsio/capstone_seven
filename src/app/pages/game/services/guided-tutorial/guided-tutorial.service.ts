@@ -34,8 +34,8 @@ export class GuidedTutorialService {
     this.moveNum = 1;
     this.freezeNext = false;
     if (this.humanPlayer === '1') {
-      this.maxMove = 18;
-      this.maxStep = 18;
+      this.maxMove = 21;
+      this.maxStep = 25;
     }
     else {
       this.maxMove = 22;
@@ -146,6 +146,22 @@ export class GuidedTutorialService {
         break;
       case 19: 
         message = this.messageNineteen();
+        break;
+      case 20: 
+        message = this.messageTwenty();
+        break;
+      case 21:
+        message = this.messageTwentyOne();
+        break;
+      case 22:
+        message = this.messageTwentyTwo();
+        break;
+      case 23:
+        message = this.messageTwentyThree();
+        break;
+      case 24:
+        message = this.messageTwentyFour();
+        break;
       default:
         console.log('something went wrong, tutorialManager switch');
     }
@@ -164,40 +180,47 @@ export class GuidedTutorialService {
       switch(m){
         case 1: piece = "N9";
           break;
-        case 2: piece = "B13"
+        case 2: piece = "B13";
           break;
         case 3: // END TURN - no highlight
           break;
-        case 4: piece = "N8"
+        case 4: piece = "N8";
           break;
-        case 5: piece = "B12"
+        case 5: piece = "B12";
           break;
         case 6: // UNDO - no highlight
           break;
         case 7: // UNDO - no highlight
           break;
-        case 8: piece = "N16"
+        case 8: piece = "N16";
           break;
-        case 9: piece = "B19"
+        case 9: piece = "B19";
           break;
         case 10: // END TURN - no highlight
           break;
-        case 11: piece = "B8"
+        case 11: piece = "B8";
           break;
         case 12: // END TURN - no highlight
           break;
-        case 13: piece = "N4"
+        case 13: piece = "N4";
           break;
-        case 14: piece = "B4"
+        case 14: piece = "tradeBtn";
           break;
-        case 15: // TRADE
+        /*case 15: piece = "4"; // yellow trade
           break;
-        case 16: // VERIFY TRADE ------- ?????
+        case 16: piece = "4"; // yellow trade
           break;
-        case 17: piece = "B3"
+        case 17: piece = "1"; // red trade
           break;
-        case 18: // END TURN 
+        case 18: piece = "confirmTrade"; 
+          break;*/
+        case 19: piece = "B4"; 
           break;
+        case 20: piece = "B3";
+          break;
+        case 20: piece = "ENDTURN";
+          break;
+        case 21: piece = "Pause";
         default:
           console.log("highlightManager error");
       }
@@ -335,6 +358,29 @@ export class GuidedTutorialService {
         this.moveNum++;
         this.freezeNext = false;
       }
+      else if(m === 14 && s === 19 && piece === 'tradeBtn')
+      {
+        this.moveNum++;
+        this.moveNum++;
+        this.moveNum++;
+        this.moveNum++;
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 19 && s === 19 && piece === 'B4')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 20 && s === 19 && piece === 'B3')
+      {
+        this.moveNum++;
+      }
+      else if(m === 21 && s === 19 && piece === 'ENDTURN')
+      {
+        this.moveNum++;
+        this.freezeNext = false;
+      }
 
       else {
         this.snackbarService.add({ message: 'Now don\'t be clickin\' just anywhere! Please follow these here instructions.' });
@@ -431,7 +477,10 @@ export class GuidedTutorialService {
     if(this.humanPlayer === '1') {
       // message 5
       message = 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'.<br><br>You gotta be collectin\' gems to get more pickaxes and tracks down the road<br><br>Settled on your move? Click "End Turn" and then "Next" to keep the game movin\'.';
-      this.freezeNext = true;
+      
+      if(this.moveNum === 3){
+        this.freezeNext = true;
+      }
                       // put these in later ones --- or maybe not? how does it work for being triggered by things other than buttons?? also putting action into snack bar only 
                   // this.snackbarService.add({ message: 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'' });
                   //this.snackbarService.add({ message: 'You gotta have gems in the future to get more pickaxes and tracks down the road' });
@@ -476,9 +525,11 @@ export class GuidedTutorialService {
     // set up player to learn undo
     if(this.humanPlayer === '1') {
       message = 'One last time for your starting picks.<br><br>Click the indicated pieces then click "Next."';
-     
-      this.highlightManager();
-      this.freezeNext = true;
+      if (this.moveNum === 4){
+        this.highlightManager();
+        this.freezeNext = true;
+      }
+      
     }
     return message;
   }
@@ -488,7 +539,9 @@ export class GuidedTutorialService {
     // teaching undo 
     if(this.humanPlayer === '1') {
       message = 'Don’t like where you clicked? Click the undo button twice to reverse your past two moves.<br><br>Finish your turn by clicking the new indicated pieces and then "End Turn."<br><br>Click "Next" to continue.';
-      this.freezeNext = true;
+      if (this.moveNum === 6) {
+        this.freezeNext = true;
+      }
     }
     return message;
   }
@@ -508,7 +561,7 @@ export class GuidedTutorialService {
     let message='';
     // talk about trading 
     if(this.humanPlayer === '1') {
-      message = 'Lookin’ to trade some gems?<br>When it’s on your turn, you can make a trade of gems 3-->1 OR you can end your turn and wait to get more.<br><br>Gems get saved in your stash at the end of each round.';
+      message = 'Lookin’ to trade some gems?<br>When it’s on your turn, you can make a trade of gems 3-->1 OR you can end your turn and wait to get more.<br><br>Gems get saved in your stash shown for each miner at the bottom of the screen at the end of each round.';
     }
     return message;
   }
@@ -517,7 +570,7 @@ export class GuidedTutorialService {
     let message='';
     // AI move - 2 branches and a trade
     if(this.humanPlayer === '1') {
-      message = 'The Machine is up again and gets resources to make any amount of moves it can afford<br><br>Y\'all see the machine tradin’ 3 yellow gems for a blue to be able to buy and put two tracks on this turn';
+      message = 'The Machine is up again and gets resources to make any amount of moves it can afford.<br><br>Y\'all see the machine tradin’ 3 yellow gems for a blue to be able to buy and put two tracks on this turn.';
      
       if (this.gameManager.getBoard().branches[18].getOwner() === 'NONE')
       {
@@ -529,28 +582,30 @@ export class GuidedTutorialService {
 
   messageThirteen():string {
     let message='';
-    // AI move - 2 branches and a trade
+    // start p1 turn
     if(this.humanPlayer === '1') {
-      message = 'Now it’s your turn again! -- Take a gander at your inventory to see what you could do next<br><br>Any new tracks or pickaxes have gotta be connected to one of your other tracks. Cain’t have any off railing in these here parts';
+      message = 'Now it’s your turn again! -- Take a gander at your inventory to see what you could do next.<br><br>Any new tracks or pickaxes have gotta be connected to one of your other tracks. Cain’t have any off railing in these here parts.';
     }
     return message;
   }
 
   messageFourteen():string {
     let message='';
-    // AI move - 2 branches and a trade
+    // how to move
     if(this.humanPlayer === '1') {
-      message = 'Just click the axe or rail in the mine to buy it!<br><br>Click here to place a rail track.<br><br>Click “End Turn” when you’re done.';
-     
-      this.highlightManager();
-      this.freezeNext=true;
+      message = 'Just click the axe or rail in the mine to buy it!<br><br>Click here to place a rail track.<br><br>Click “End Turn” when you’re done and "Next" to move on.';
+      if (this.moveNum === 11){
+        this.highlightManager();
+        this.freezeNext=true;
+      }
+      
     }
     return message;
   }
 
   messageFifteen():string {
     let message='';
-    // AI move - 2 branches and a trade
+    // explain longest net
     if(this.humanPlayer === '1') {
       message = 'Now you have the longest connected mining rail network in the duel. This means you get +2 points on your way to the goal of 10 to win. But beware, this can be snatched right out from under you by your opponent.';
     }
@@ -561,8 +616,8 @@ export class GuidedTutorialService {
     let message='';
     // AI move - 2 branches and a trade
     if(this.humanPlayer === '1') {
-      message = 'Now it’s the Machine’s turn to take a crack at it. He brings his two separate rail networks into one big one and takes those two points from you!';
-      if (this.gameManager.getBoard().nodes[3].getOwner() === 'NONE')
+      message = 'Now it’s the Machine’s turn to take a crack at it.<br>He brings his two separate rail networks into one big one and takes those two points from you!';
+      if (this.gameManager.getBoard().branches[12].getOwner() === 'NONE')
       {
         this.gameManager.applyMove("Y,Y,Y,B;;12,31");
       }
@@ -572,7 +627,7 @@ export class GuidedTutorialService {
 
   messageSeventeen():string {
     let message='';
-    // AI move - 2 branches and a trade
+    // show where to see score
     if(this.humanPlayer === '1') {
       message = 'Here at the bottom of the your screen is where you can see the current standings for the duel.<br><br>Both y’all got one point for each mining marker you placed. Now the machine’s got 2 more for the longest set of tracks.';
       let player1 = document.getElementById("player1");
@@ -589,21 +644,103 @@ export class GuidedTutorialService {
 
   messageEighteen():string {
     let message='';
-    // AI move - 2 branches and a trade
+    // player 1 last tutorial move start
     if(this.humanPlayer === '1') {
+      // reversing border of player shard
+      let player1 = document.getElementById("player1");
+      let player2 = document.getElementById("player2");
+      // i want to put a border around the player shard 
+      if(player1 !== null && player2 !== null) 
+      {
+        player1.style.border = "0px";
+        player2.style.border = '0px';
+      }
       message = 'Now you got enough gems to put a pickaxe.<br><br>Remember, you cain’t just be mining in a place where you don\'t have the tracks to get you there! It’s just common sense!<br><br>Now, place one here and get another point in the competition.';
-      this.highlightManager();
-      this.freezeNext = true;
+      if (this.moveNum === 13){
+        this.highlightManager();
+        this.freezeNext = true;
+      }
+      
     }
     return message;
   }
 
   messageNineteen():string {
     let message='';
-    // AI move - 2 branches and a trade
+    // human makes a trade
     if(this.humanPlayer === '1') {
-      message = 'Try your hand at makin’ a trade for the right gems to lay two more tracks.<br><br>Click the trade button, select two yellow and a red to trade for one blue and confirm your trade!';
+      message = 'Try your hand at makin’ a trade for the right gems to lay two more tracks.<br><br>Click the trade button, select two yellow and a red to trade for one blue and confirm your trade!<br><br>Go on and pick those two indicated tracks before clickin\' "End Turn" and then the "Next" button.';
+      if(this.moveNum === 14)
+      {
+        this.highlightManager();
+        this.freezeNext = true; 
+      }
     }
     return message;
   }
+
+  messageTwenty():string {
+    let message='';
+    // last AI turn 
+    if(this.humanPlayer === '1') {
+      message = 'Alright, one last turn for the Machine before we turn y’all loose in the mine to finish up this here “friendly” competition.';
+     
+      
+    }
+    return message;
+  }
+
+  messageTwentyOne():string {
+    let message='';
+    // explain capture
+    if(this.humanPlayer === '1') {
+      message = 'See here these minin’ sites changed when all the rails surroundin’ them belonged to the Machine.<br><br>Well this is how either miner gets exclusive minin’ rights to these sites.<br><br>These captured sites give the Machine 1 point for each captured site AND can get as many gems of these colors as it has mining markers on the captured sites before each turn.<br><br>See also that only the Machine can now get gems from the site that was exhausted just before.';
+      if (this.gameManager.getBoard().branches[27].getOwner() === 'NONE')
+      {
+        this.gameManager.applyMove(";;27");
+      }
+    }
+    return message;
+  }
+
+  messageTwentyTwo():string {
+    let message='';
+    // more capture explaination
+    if(this.humanPlayer === '1') {
+      message = 'If you had any or put a pickaxe touchin\' a captured site later you won’t be gettin’ any more gems from that site at the beginning of your turn.<br><br>Now remember to capture a group of sites, you cain’t have your opponents rails inside the group, but once the claiming’s been done your opponent ain’t gonna be able to put any rails inside that captured set either!';
+
+    }
+    return message;
+  }
+
+  messageTwentyThree():string {
+    let message='';
+    // options menu
+    if(this.humanPlayer === '1') {
+      message = 'Need more help or want to change the settings? Click here for options';
+      let pause = document.getElementById("Pause");
+        if (pause !== null)
+        {
+          pause.style.border = "2px solid white";
+        }
+    }
+    return message;
+  }
+
+  messageTwentyFour():string {
+    let message='';
+    // options menu
+    if(this.humanPlayer === '1') {
+      let pause = document.getElementById("Pause");
+        if (pause !== null)
+        {
+          pause.style.border = "0px";
+        }
+      message = 'Seems like you’ve got a good handle on how we do things down here in the mine. Time to see how you do on your own.<br><br>First player to 10 points wins gold. Good luck, Prospector!<br><br>Click "Next" to end the tutorial.';
+    }
+    return message;
+  }
+
+  
+
 }
