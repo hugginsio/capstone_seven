@@ -206,76 +206,27 @@ export class GuidedTutorialService {
           break;
         case 14: piece = "tradeBtn";
           break;
-        /*case 15: piece = "4"; // yellow trade
+        case 15: piece = "4"; // yellow trade
           break;
         case 16: piece = "1"; // yellow trade
           break;
         case 17: piece = "4"; // red trade
           break;
-        case 18: piece = "confirmTrade"; 
-          break;*/
-        case 19: piece = "B4"; 
+        case 18: piece = "blue"; 
           break;
-        case 20: piece = "B3";
+        case 19: piece = "confirmTrade"; 
           break;
-        case 20: piece = "ENDTURN";
+        case 20: piece = "B4"; 
           break;
-        case 21: piece = "Pause";
+        case 21: piece = "B3";
+          break;
+        case 22: piece = "ENDTURN";
+          break;
+        case 23: piece = "Pause";
         default:
           console.log("highlightManager error");
       }
     }
-    else {
-      switch(m){
-        case 1: // highlight this piece - N15
-          break;
-        case 2: // highlight this piece - B28
-          break;
-        case 3: // END TURN
-          break;
-        case 4: // N8
-          break;
-        case 5: // N12
-          break;
-        case 6: // UNDO
-          break;
-        case 7: // UNDO
-          break;
-        case 8: // N3
-          break;
-        case 9: // B7
-          break;
-        case 10: // END TURN
-          break;
-        case 11: // B18
-          break;
-        case 12: // TRADE
-          break;
-        case 13: // HOW TO VERIFY A TRADE ???? could be one click for each or verifying the whole trade
-          break;
-        case 14: // B17
-          break;
-        case 15: // END TURN
-          break;
-        case 16: // B31
-          break;
-        case 17: // TRADE
-          break;
-        case 18: // HOW TO VERIFY A TRADE ???? 
-          break;
-        case 19: // B12
-          break;
-        case 20: // END TURN
-          break;
-        case 21: // B27
-          break;
-        case 22: // END TURN
-          break;
-        default:
-          console.log("highlightManager error");
-    }
-    
-  }
       // change border and change back after move has been made
       if(piece !== "no selected piece") {
         let pieceID = document.getElementById(piece);
@@ -361,22 +312,43 @@ export class GuidedTutorialService {
       else if(m === 14 && s === 19 && piece === 'tradeBtn')
       {
         this.moveNum++;
-        this.moveNum++;
-        this.moveNum++;
-        this.moveNum++;
-        this.moveNum++;
         this.highlightManager();
       }
-      else if(m === 19 && s === 19 && piece === 'B4')
+      else if(m === 15 && s === 19 && piece === 'yellow')
       {
         this.moveNum++;
         this.highlightManager();
       }
-      else if(m === 20 && s === 19 && piece === 'B3')
+      else if(m === 16 && s === 19 && piece === 'red')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 17 && s === 19 && piece === 'yellow')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 18 && s === 19 && piece === '3')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 19 && s === 19 && piece === 'confirmTrade')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 20 && s === 19 && piece === 'B4')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 21 && s === 19 && piece === 'B3')
       {
         this.moveNum++;
       }
-      else if(m === 21 && s === 19 && piece === 'ENDTURN')
+      else if(m === 22 && s === 19 && piece === 'ENDTURN')
       {
         this.moveNum++;
         this.freezeNext = false;
@@ -384,26 +356,6 @@ export class GuidedTutorialService {
 
       else {
         this.snackbarService.add({ message: 'Now don\'t be clickin\' just anywhere! Please follow these here instructions.' });
-        validMove = false;
-      }
-    }
-    else if (this.humanPlayer === '2'){
-      // place all moves for when the human is player 2
-      if(m === 1 && piece ==='') {
-        // place node
-        // call in game manager
-        this.moveNum++;
-      }
-      else if(m === 2 && piece === ''){
-        // place branch
-        // call in game manager
-        this.moveNum++;
-      }
-      else if(m === 3 && piece === ''){
-        // end move
-        this.moveNum++;
-      }
-      else {this.snackbarService.add({ message:'Now don\'t be clickin\' just anywhere! Please follow these here instructions.'});
         validMove = false;
       }
     }
@@ -669,7 +621,7 @@ export class GuidedTutorialService {
     let message='';
     // human makes a trade
     if(this.humanPlayer === '1') {
-      message = 'Try your hand at makin’ a trade for the right gems to lay two more tracks.<br><br>Click the trade button, select two yellow and a red to trade for one blue and confirm your trade!<br><br>Go on and pick those two indicated tracks before clickin\' "End Turn" and then the "Next" button.';
+      message = 'Try your hand at makin’ a trade for the right gems to lay two more tracks.<br><br>Click the trade button, select two yellow and a red gem to trade for one blue and confirm your trade!<br><br>Go on and pick those two indicated tracks before clickin\' "End Turn" and then the "Next" button.';
       if(this.moveNum === 14)
       {
         this.highlightManager();

@@ -1,5 +1,6 @@
 import { ResourceMap } from "../interfaces/game.interface";
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
+import { GuidedTutorialService } from '../services/guided-tutorial/guided-tutorial.service';
 
 
 export class TradingModel {
@@ -14,7 +15,8 @@ export class TradingModel {
   isTutorial: boolean;
 
   constructor(
-    private readonly storageService: LocalStorageService
+    private readonly storageService: LocalStorageService,
+    public guidedTutorial: GuidedTutorialService
   ) {
     this.redResources = 0;
     this.greenResources = 0;
@@ -38,8 +40,11 @@ export class TradingModel {
       }
       switch (num) {
         case 1:
-          if(this.isTutorial && this.currentResources.red < 3) {
-            return;
+          if(this.isTutorial) {
+            if(!this.guidedTutorial.moveManager('red'))
+            {
+              return;
+            }
           }
           if (this.currentResources.red > 0) {
             this.redResources++;
@@ -65,6 +70,12 @@ export class TradingModel {
           break;
 
         case 4:
+          if(this.isTutorial) {
+            if(!this.guidedTutorial.moveManager('yellow'))
+            {
+              return;
+            }
+          }
           if (this.currentResources.yellow > 0) {
             this.yellowResources++;
             this.currentResources.yellow--;
@@ -79,6 +90,13 @@ export class TradingModel {
 
   select(num: number): void {
     if (this.selectedResource != num) {
+      if(this.isTutorial){
+        let stringNum = num.toString();
+        if(!this.guidedTutorial.moveManager(stringNum))
+        {
+          return;
+        }
+      }
       this.selectedResource = num;
     } else {
       this.selectedResource = 0;

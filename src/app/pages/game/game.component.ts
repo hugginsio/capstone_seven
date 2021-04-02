@@ -50,7 +50,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.gameOverText = "Victory!";
     this.gamePaused = false;
     this.isTrading = false;
-    this.tradingModel = new TradingModel(this.storageService);
+    this.tradingModel = new TradingModel(this.storageService, this.guidedTutorial);
     //this.guidedTutorial = new GuidedTutorialComponent(document, gameManager, storageService, snackbarService);
     this.isNetwork = false;
     this.isTutorial = false;
@@ -344,6 +344,11 @@ export class GameComponent implements OnInit, AfterViewInit {
     if (!this.tradingModel.selectedResource) {
       this.snackbarService.add({ message: "Select a resource to receive." });
     } else {
+      if(this.isTutorial){
+        if(!this.guidedTutorial.moveManager('confirmTrade')){
+          return;
+        }
+      }
       this.isTrading = false;
       this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
       this.tradingModel.reset();
@@ -364,6 +369,9 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   cancelTrading(): void {
+    if(this.guidedTutorialCheck) {
+      return;
+    }
     this.isTrading = false;
     this.tradingModel.reset();
   }
