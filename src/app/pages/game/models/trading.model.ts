@@ -1,4 +1,6 @@
 import { ResourceMap } from "../interfaces/game.interface";
+import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
+
 
 export class TradingModel {
   redResources: number;
@@ -9,19 +11,36 @@ export class TradingModel {
   selectedResource: number;
   currentResources: ResourceMap;
 
-  constructor() {
+  isTutorial: boolean;
+
+  constructor(
+    private readonly storageService: LocalStorageService
+  ) {
     this.redResources = 0;
     this.greenResources = 0;
     this.blueResources = 0;
     this.yellowResources = 0;
 
     this.selectedResource = 0;
+
+    if (this.storageService.fetch('guided-tutorial') === "false"){
+      this.isTutorial = false;
+    }
+    else {
+      this.isTutorial = true;
+    }
   }
 
   increment(num: number): void {
     if (this.redResources + this.greenResources + this.blueResources + this.yellowResources < 3) {
+      if(this.isTutorial && (num === 2 || num === 3)){
+        return;
+      }
       switch (num) {
         case 1:
+          if(this.isTutorial && this.currentResources.red < 3) {
+            return;
+          }
           if (this.currentResources.red > 0) {
             this.redResources++;
             this.currentResources.red--;

@@ -50,7 +50,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.gameOverText = "Victory!";
     this.gamePaused = false;
     this.isTrading = false;
-    this.tradingModel = new TradingModel();
+    this.tradingModel = new TradingModel(this.storageService);
     //this.guidedTutorial = new GuidedTutorialComponent(document, gameManager, storageService, snackbarService);
     this.isNetwork = false;
     this.isTutorial = false;
@@ -437,6 +437,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.guidedTutorialCheck = false;
     this.isTutorial = false;
     this.storageService.update("guided-tutorial", "false");
+    this.tradingModel.isTutorial = false;
   }
   
   copyBoardSeed(): void {

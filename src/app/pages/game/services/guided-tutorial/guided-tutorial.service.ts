@@ -208,9 +208,9 @@ export class GuidedTutorialService {
           break;
         /*case 15: piece = "4"; // yellow trade
           break;
-        case 16: piece = "4"; // yellow trade
+        case 16: piece = "1"; // yellow trade
           break;
-        case 17: piece = "1"; // red trade
+        case 17: piece = "4"; // red trade
           break;
         case 18: piece = "confirmTrade"; 
           break;*/
