@@ -43,14 +43,31 @@ export class MCTSNode {
   getChildWithMaxScore():MCTSNode{
     let maxChild = this.childArray[0];
     let maxScore = this.childArray[0].getState().getWinScore();
+    let maxVisitRatio = maxScore / this.childArray[0].getState().visitCount;
 
-    for(let i = 0; i < this.childArray.length;i++){
-      const tempScore = this.childArray[i].getState().getWinScore();
-      if(tempScore > maxScore){
-        maxScore = tempScore;
-        maxChild = this.childArray[i];
+    const method = 'RATIO';
+    if(method === 'RATIO'){
+      for(let i = 1; i < this.childArray.length;i++){
+        const tempScore = this.childArray[i].getState().getWinScore();
+        const visits = this.childArray[i].getState().visitCount;
+        const visitRatio = tempScore/visits;
+        if(visitRatio > maxVisitRatio){
+          maxVisitRatio = visitRatio;
+          maxChild = this.childArray[i];
+        }
       }
     }
+    else{
+      for(let i = 1; i < this.childArray.length;i++){
+        const tempScore = this.childArray[i].getState().getWinScore();
+        
+        if(tempScore > maxScore){
+          maxScore = tempScore;
+          maxChild = this.childArray[i];
+        }
+      }
+    }
+
 
     return maxChild;
   }
