@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 import { GameNetworkingService } from '../../networking/game-networking.service';
@@ -10,7 +10,7 @@ import { interval, Subscription } from 'rxjs';
   templateUrl: './new-network-game-host.component.html',
   styleUrls: ['../menu-common.scss']
 })
-export class NewNetworkGameHostComponent implements OnInit {
+export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   public firstPlayer: string;
   public boardSeed: string;
 
@@ -45,10 +45,15 @@ export class NewNetworkGameHostComponent implements OnInit {
       console.log("A opponent has connected");
       this.isWaitingForPlayer = false;
       this.subscription.unsubscribe();
-      //FOR TESTING: CALL IN GAME CORE ONCE BOARD IS MADE
-      //this.networkingService.setGame({board : this.boardSeed, background: "BG1", isHostFirst: this.isHostFirst});
       this.routerService.navigate(['/game']);
     });
+  }
+
+  ngOnDestroy(): void {
+    if(this.isWaitingForPlayer)
+    {
+      this.subscription.unsubscribe();
+    }
   }
 
   changeFirstPlayer(): void {
@@ -86,6 +91,12 @@ export class NewNetworkGameHostComponent implements OnInit {
 
   broadcast(): void {
     this.matchmakingService.broadcastGame();
+  }
+
+  cancelHosting(): void {
+    this.isWaitingForPlayer = false;
+    this.isSettingUpGame = true;
+    this.subscription.unsubscribe();
   }
 
 }

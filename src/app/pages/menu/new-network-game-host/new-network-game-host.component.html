@@ -34,14 +34,19 @@
   </div>
   <div class="submenu-footer">
     <div class="flex space-x-5 w-2/3">
-      <div class="menu-btn flex-grow" routerLink="/menu/landing">
+      <div class="menu-btn flex-grow" routerLink="/menu/new/online">
         <div>
           <p>Back</p>
         </div>
       </div>
-      <div class="menu-btn flex-grow" (click)="startHosting()">
+      <div class="menu-btn flex-grow" (click)="startHosting()" *ngIf="isSettingUpGame">
         <div>
           <p>Start Hosting</p>
+        </div>
+      </div>
+      <div class="menu-btn flex-grow" (click)="cancelHosting()" *ngIf="isWaitingForPlayer">
+        <div>
+          <p>Cancel</p>
         </div>
       </div>
     </div>

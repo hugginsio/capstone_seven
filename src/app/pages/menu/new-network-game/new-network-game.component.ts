@@ -88,4 +88,8 @@ export class NewNetworkGameComponent implements OnInit {
     this.networkingService.requestJoin();
   }
 
+  refresh(): void {
+    this.gamesList = new Array<NetworkGameInfo>();
+  }
+
 }
