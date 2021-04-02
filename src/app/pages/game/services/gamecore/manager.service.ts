@@ -409,6 +409,7 @@ export class ManagerService {
 
     // serializing otherPlayer's previous move
     const pastMoveString = this.serializeStack();
+    console.log(pastMoveString);
 
     // clear tradedResources[]
     this.tradedResources.splice(0, this.tradedResources.length);

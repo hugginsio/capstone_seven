@@ -212,11 +212,11 @@
   <!-- Player Shards Container -->
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 pointer-events-none right-0 z-40">
     <div class="mx-auto relative w-full h-full"> <!-- keeping this div if max-w becomes an issue here -->
-      <div class="absolute bottom-3 left-3">
+      <div id = "player1" class="absolute bottom-3 left-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerOne()" [actionSubject]="this.commLink"
           [playerName]="'Player One'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERONE'"></app-player-shard>
       </div>
-      <div class="absolute bottom-3 right-3">
+      <div id = "player2" class="absolute bottom-3 right-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerTwo()" [actionSubject]="this.commLink"
           [playerName]="'Player Two'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERTWO'"></app-player-shard>
       </div>

@@ -121,8 +121,31 @@ export class GuidedTutorialService {
         message = this.messageTen();
         break;
       case 11:
-        message = "end of what i have coded";
+        message = this.messageEleven();
         break;
+      case 12:
+        message = this.messageTwelve();
+        break;
+      case 13:
+        message = this.messageThirteen();
+        break;
+      case 14:
+        message = this.messageFourteen();
+        break;
+      case 15: 
+        message = this.messageFifteen();
+        break;
+      case 16:
+        message = this.messageSixteen();
+        break;
+      case 17: 
+        message = this.messageSeventeen();
+        break;
+      case 18: 
+        message = this.messageEighteen();
+        break;
+      case 19: 
+        message = this.messageNineteen();
       default:
         console.log('something went wrong, tutorialManager switch');
     }
@@ -296,6 +319,23 @@ export class GuidedTutorialService {
         this.moveNum++;
         this.freezeNext = false;
       }
+
+      else if(m === 11 && s === 14 && piece === 'B8')
+      {
+        this.moveNum++;
+      }
+      else if(m === 12 && s === 14 && piece === 'ENDTURN')
+      {
+        this.moveNum++;
+        this.freezeNext = false;
+      }
+
+      else if(m === 13 && s === 18 && piece === 'N4')
+      {
+        this.moveNum++;
+        this.freezeNext = false;
+      }
+
       else {
         this.snackbarService.add({ message: 'Now don\'t be clickin\' just anywhere! Please follow these here instructions.' });
         validMove = false;
@@ -455,14 +495,114 @@ export class GuidedTutorialService {
 
   messageTen():string {
     let message='';
-    // AI's first move
+    // resource cost
     if(this.humanPlayer === '1') {
-      message = 'end of messages so far';
+      message = 'These gems ain’t just for lookin’ at. You can keep building your operation by buying mining markers and tracks with the gems.<br><br>We in the mine charge a fair price of 2 yellow and 2 green gems for 1 mining marker and a track costs 1 red and 1 blue gem.';
      
-      if (this.gameManager.getBoard().nodes[15].getOwner() === 'NONE')
+      // would be cool to display a visual of piece costs
+    }
+    return message;
+  }
+
+  messageEleven():string {
+    let message='';
+    // talk about trading 
+    if(this.humanPlayer === '1') {
+      message = 'Lookin’ to trade some gems?<br>When it’s on your turn, you can make a trade of gems 3-->1 OR you can end your turn and wait to get more.<br><br>Gems get saved in your stash at the end of each round.';
+    }
+    return message;
+  }
+
+  messageTwelve():string {
+    let message='';
+    // AI move - 2 branches and a trade
+    if(this.humanPlayer === '1') {
+      message = 'The Machine is up again and gets resources to make any amount of moves it can afford<br><br>Y\'all see the machine tradin’ 3 yellow gems for a blue to be able to buy and put two tracks on this turn';
+     
+      if (this.gameManager.getBoard().branches[18].getOwner() === 'NONE')
       {
-        this.gameManager.applyMove(";15;28");
+        this.gameManager.applyMove("Y,Y,Y,B;;17,18");
       }
+    }
+    return message;
+  }
+
+  messageThirteen():string {
+    let message='';
+    // AI move - 2 branches and a trade
+    if(this.humanPlayer === '1') {
+      message = 'Now it’s your turn again! -- Take a gander at your inventory to see what you could do next<br><br>Any new tracks or pickaxes have gotta be connected to one of your other tracks. Cain’t have any off railing in these here parts';
+    }
+    return message;
+  }
+
+  messageFourteen():string {
+    let message='';
+    // AI move - 2 branches and a trade
+    if(this.humanPlayer === '1') {
+      message = 'Just click the axe or rail in the mine to buy it!<br><br>Click here to place a rail track.<br><br>Click “End Turn” when you’re done.';
+     
+      this.highlightManager();
+      this.freezeNext=true;
+    }
+    return message;
+  }
+
+  messageFifteen():string {
+    let message='';
+    // AI move - 2 branches and a trade
+    if(this.humanPlayer === '1') {
+      message = 'Now you have the longest connected mining rail network in the duel. This means you get +2 points on your way to the goal of 10 to win. But beware, this can be snatched right out from under you by your opponent.';
+    }
+    return message;
+  }
+
+  messageSixteen():string {
+    let message='';
+    // AI move - 2 branches and a trade
+    if(this.humanPlayer === '1') {
+      message = 'Now it’s the Machine’s turn to take a crack at it. He brings his two separate rail networks into one big one and takes those two points from you!';
+      if (this.gameManager.getBoard().nodes[3].getOwner() === 'NONE')
+      {
+        this.gameManager.applyMove("Y,Y,Y,B;;12,31");
+      }
+    }
+    return message;
+  }
+
+  messageSeventeen():string {
+    let message='';
+    // AI move - 2 branches and a trade
+    if(this.humanPlayer === '1') {
+      message = 'Here at the bottom of the your screen is where you can see the current standings for the duel.<br><br>Both y’all got one point for each mining marker you placed. Now the machine’s got 2 more for the longest set of tracks.';
+      let player1 = document.getElementById("player1");
+      let player2 = document.getElementById("player2");
+      // i want to put a border around the player shard 
+      if(player1 !== null && player2 !== null) 
+      {
+        player1.style.border = "2px solid white";
+        player2.style.border = '2px solid white';
+      }
+    }
+    return message;
+  }
+
+  messageEighteen():string {
+    let message='';
+    // AI move - 2 branches and a trade
+    if(this.humanPlayer === '1') {
+      message = 'Now you got enough gems to put a pickaxe.<br><br>Remember, you cain’t just be mining in a place where you don\'t have the tracks to get you there! It’s just common sense!<br><br>Now, place one here and get another point in the competition.';
+      this.highlightManager();
+      this.freezeNext = true;
+    }
+    return message;
+  }
+
+  messageNineteen():string {
+    let message='';
+    // AI move - 2 branches and a trade
+    if(this.humanPlayer === '1') {
+      message = 'Try your hand at makin’ a trade for the right gems to lay two more tracks.<br><br>Click the trade button, select two yellow and a red to trade for one blue and confirm your trade!';
     }
     return message;
   }
