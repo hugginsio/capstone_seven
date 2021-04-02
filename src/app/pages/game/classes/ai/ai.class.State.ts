@@ -284,9 +284,67 @@ export class State {
     (this.player1.greenPerTurn - this.player2.greenPerTurn) +
     (this.player1.yellowPerTurn - this.player2.yellowPerTurn);
 
+    let playre1UnExhaustedCount = 0;
+    let player2UnExhaustedCount = 0;
+
+    for(const node of this.board.nodes){
+      const tr = node.getTopRightTile();
+      const br = node.getBottomRightTile();
+      const bl = node.getBottomLeftTile();
+      const tl = node.getTopLeftTile();
+
+
+      if(node.getOwner() === Owner.PLAYERONE){
+        if(tr !== -1){
+          if(!this.board.tiles[tr].isExhausted){
+            playre1UnExhaustedCount++;
+          }
+        }
+        if(br  !== -1){
+          if(!this.board.tiles[br].isExhausted){
+            playre1UnExhaustedCount++;
+          }
+        }
+        if(bl  !== -1){
+          if(!this.board.tiles[bl].isExhausted){
+            playre1UnExhaustedCount++;
+          }
+        }
+        if(tl  !== -1){
+          if(!this.board.tiles[tl].isExhausted){
+            playre1UnExhaustedCount++;
+          }
+        }
+      }
+      else if(node.getOwner() === Owner.PLAYERTWO){
+        if(tr  !== -1){
+          if(!this.board.tiles[tr].isExhausted){
+            player2UnExhaustedCount++;
+          }
+        }
+        if(br  !== -1){
+          if(!this.board.tiles[br].isExhausted){
+            player2UnExhaustedCount++;
+          }
+        }
+        if(bl  !== -1){
+          if(!this.board.tiles[bl].isExhausted){
+            player2UnExhaustedCount++;
+          }
+        }
+        if(tl !== -1){
+          if(!this.board.tiles[tl].isExhausted){
+            player2UnExhaustedCount++;
+          }
+        }
+      }
+
+    }
+
+    const exhaustValue = playre1UnExhaustedCount - player2UnExhaustedCount;
     const captures = this.player1.numTilesCaptured - this.player2.numTilesCaptured;
     const score = this.player1.currentScore - this.player2.currentScore;
-    value = numNodesDiff + longestNetwork + resourceProduction + captures + score;
+    value = numNodesDiff + longestNetwork + resourceProduction + captures + score + exhaustValue;
 
 
     return value;

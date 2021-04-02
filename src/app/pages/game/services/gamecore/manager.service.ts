@@ -115,7 +115,7 @@ export class ManagerService {
         }
       };
 
-      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 4]});
+      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 4.5]});
     }
 
     if (this.currentGameMode === GameType.AI && this.getCurrentPlayer().type === PlayerType.AI) {

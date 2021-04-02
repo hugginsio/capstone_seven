@@ -164,44 +164,6 @@ export class MonteCarlo {
 
     
     return boardStatus;
-    // let player1Wins = 0;
-    // let player2Wins = 0;
-
-    
-    // var promises = [];
-    // for(var i = 0; i < this.NUMWORKERS; i++) {
-    //     promises.push(new Promise((resolve)=>{
-    //       this.workers[i].postMessage(tempState);
-    //       this.workers[i].onmessage = ({data})=>{
-    //           resolve(data);
-    //       };
-    //   }));
-    // }
-    
-    // let promise = await Promise.all(promises)
-    //     .then((data) =>{
-    //       console.log('inside promise');
-    //         // `data` has the results, compute the final solution
-    //         for(let j = 0; j < data.length;j++){
-
-    //           this.backPropogation(node,data[j]as number);
-    //         }
-    //     });
-
-    // console.log('blah blah');
-    
-    // if(player1Wins > player2Wins){
-    //   result = {playerNumber:1,multiplier:player1Wins};
-    // }
-    // else{
-    //   result = {playerNumber:2,multiplier:player2Wins};
-    // }
-    
-
-    //console.log(`simulateRandomPlayout TIME: ${Date.now() - start}ms`);
-
-    //console.log(result);
-    //return result;
   }
 
 

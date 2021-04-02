@@ -36,7 +36,8 @@ export class MCTSNode {
   }
 
   getRandomChildNode():MCTSNode{
-    return this.childArray[Math.floor(Math.random() * this.childArray.length)];
+     return this.chooseWeightedChildren()
+    //return this.childArray[Math.floor(Math.random() * this.childArray.length)];
   }
 
   getChildWithMaxScore():MCTSNode{
@@ -68,5 +69,21 @@ export class MCTSNode {
 
   setParent(node:MCTSNode):void{
     this.parent = node;
+  }
+
+  chooseWeightedChildren():MCTSNode{
+    const weights = Array<MCTSNode>();
+    const currentPlayer = this.state.playerNumber === 1 ? this.state.player1 : this.state.player2;
+
+    for(const child of this.childArray){
+      weights.push(child);
+      const value = child.state.getHeuristicValue();
+      for(let c = 0; c < value; c++){
+        weights.push(child);
+      }
+    }
+   
+    const index = this.childArray.indexOf(weights[Math.floor(Math.random() * weights.length)]);
+    return this.childArray[index];
   }
 }
