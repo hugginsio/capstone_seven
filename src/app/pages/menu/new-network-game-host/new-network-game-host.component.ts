@@ -11,15 +11,15 @@ import { interval, Subscription } from 'rxjs';
   styleUrls: ['../menu-common.scss']
 })
 export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
-  public firstPlayer: string;
-  public boardSeed: string;
-
   private isHostFirst: boolean;
-  public isWaitingForPlayer = false;
-  public isSettingUpGame = true;
-  public advancedOpts = true;
   private readonly username: string = "Client McGee";
   private subscription: Subscription;
+  public advancedOpts = false;
+  public boardSeed: string;
+  public firstPlayer: string;
+  public isSettingUpGame = true;
+  public isWaitingForPlayer = false;
+  public selectedLocation: number;
 
   public readonly playerOneFirst = 'Player One Goes First';
   public readonly playerTwoFirst = 'Player Two Goes First';
@@ -35,6 +35,15 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
 
     this.storageService.setContext('game');
     this.storageService.store('firstPlayer', this.firstPlayer);
+    
+    const storedLocation = this.storageService.fetch('location');
+    if (storedLocation === 'bg3') {
+      this.selectedLocation = 3;
+    } else if (storedLocation === 'bg2') {
+      this.selectedLocation = 2;
+    } else {
+      this.selectedLocation = 1;
+    }
   }
 
   ngOnInit(): void {
@@ -99,4 +108,16 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  selectLocation(clicked: number): void {
+    this.selectedLocation = clicked;
+    this.storageService.update('location', `bg${clicked}`);
+  }
+
+  isLocSelected(button: number): string {
+    if (this.selectedLocation === button) {
+      return 'border-gray-300';
+    } else {
+      return 'border-gray-900';
+    }
+  }
 }

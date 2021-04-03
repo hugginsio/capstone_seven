@@ -27,45 +27,45 @@
         </div>
       </div>
     </div>
-    <div class="menu-btn" (click)="changeGameMode()">
+    <div class="menu-btn w-1/3" (click)="changeGameMode()">
       <div>
         <p>Game Mode: {{ this.gameModeString }}</p>
       </div>
     </div>
-    <div class="menu-btn" (click)="changeAiDifficulty()" *ngIf="this.gameModeString === this.pva">
+    <div class="menu-btn w-1/3" (click)="changeAiDifficulty()" *ngIf="this.gameModeString === this.pva">
       <div>
         <p>AI Difficulty: {{ this.aiDifficultyString }}</p>
       </div>
     </div>
-    <div class="menu-btn" (click)="changeTutorialSetting()" *ngIf="this.gameModeString === this.pva && this.aiDifficultyString === this.aiEasy">
+    <div class="menu-btn w-1/3" (click)="changeTutorialSetting()" *ngIf="this.gameModeString === this.pva && this.aiDifficultyString === this.aiEasy">
       <div>
         <p>Guided Tutorial: {{ this.guidedTutorial ? 'On' : 'Off' }}</p>
       </div>
     </div>
-    <div class="menu-btn" (click)="changePlayerOrder()" *ngIf="this.gameModeString === this.pva">
+    <div class="menu-btn w-1/3" (click)="changePlayerOrder()" *ngIf="this.gameModeString === this.pva">
       <div>
         <p>{{ this.playerOrder === 1 ? this.playerOrderOne : this.playerOrderTwo }}</p>
       </div>
     </div>
-    <div class="menu-btn" (click)="this.advancedOpts = !this.advancedOpts" *ngIf="!this.guidedTutorial">
+    <div class="menu-btn w-1/3" (click)="this.advancedOpts = !this.advancedOpts" *ngIf="!this.guidedTutorial">
       <div>
         <p>Advanced Options...</p>
       </div>
     </div>
-    <div class="menu-input" *ngIf="this.advancedOpts && !this.guidedTutorial">
+    <div class="menu-input w-1/3" *ngIf="this.advancedOpts && !this.guidedTutorial">
       <!-- oninput all uppercase credit to https://stackoverflow.com/users/5476516/yehuda-schwartz -->
       <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed" oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
     </div>
     <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts && !this.guidedTutorial">Leave blank for random seed</p>
   </div>
   <div class="submenu-footer">
-    <div class="flex space-x-4 w-1/3">
-      <div class="menu-btn flex-grow" routerLink="/menu/landing">
+    <div class="flex space-x-4 w-2/3">
+      <div class="menu-btn w-1/2" routerLink="/menu/landing">
         <div>
           <p>Back</p>
         </div>
       </div>
-      <div class="menu-btn w-full flex-grow" (click)="startGame()">
+      <div class="menu-btn w-1/2" (click)="startGame()">
         <div>
           <p>Start Game</p>
         </div>
