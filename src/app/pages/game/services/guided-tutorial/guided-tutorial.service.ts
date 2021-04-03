@@ -223,12 +223,10 @@ export class GuidedTutorialService {
         case 14: piece = "tradeBtn";
           break;
         case 15: piece = "4"; // yellow trade
-          console.log("in highlight manager for first yellow");
-
           break;
-        case 16: piece = "1"; // red trade
+        case 16: piece = "1"; // yellow trade
           break;
-        case 17: piece = "4"; // yellow trade
+        case 17: piece = "4"; // red trade
           break;
         case 18: piece = "blue"; 
           break;
@@ -250,8 +248,15 @@ export class GuidedTutorialService {
         let pieceID = document.getElementById(piece);
         if (pieceID !== null)
         {
-          pieceID.style.border = "2px solid white";
+          if (piece === '4' || piece === '1' || piece === 'blue')
+          {
+            pieceID.style.border = "4px solid white";
+          }
+          else {
+            pieceID.style.border = "2px solid white"
+          }
         }
+        
       }
       
 }
@@ -262,6 +267,7 @@ export class GuidedTutorialService {
     const s = this.stepNum;
     let validMove = true; 
     let ifButton = false;
+    let tradeScreenButton = false;
 
     if (this.humanPlayer === '1'){
       if(m === 1 && s === 4 && piece ==='N9') {
@@ -353,25 +359,25 @@ export class GuidedTutorialService {
         console.log("in move manager for first yellow");
         this.moveNum++;
         this.highlightManager();
-        ifButton = true;
+        tradeScreenButton = true;
       }
       else if(m === 16 && s === 19 && piece === '1')
       {
         this.moveNum++;
         this.highlightManager();
-        ifButton = true;
+        tradeScreenButton = true;
       }
       else if(m === 17 && s === 19 && piece === '4')
       {
         this.moveNum++;
         this.highlightManager();
-        ifButton = true;
+        tradeScreenButton = true;
       }
       else if(m === 18 && s === 19 && piece === 'blue')
       {
         this.moveNum++;
         this.highlightManager();
-        ifButton = true;
+        tradeScreenButton = true;
       }
       else if(m === 19 && s === 19 && piece === 'confirmTrade')
       {
@@ -408,6 +414,12 @@ export class GuidedTutorialService {
       let pieceID = document.getElementById(piece);
       if(pieceID !== null) {
         pieceID.style.border = "4px solid rgb(17, 24, 39)";
+      }
+    }
+    if(validMove && tradeScreenButton){
+      let pieceID = document.getElementById(piece);
+      if(pieceID !== null) {
+        pieceID.style.border = "4px solid rgb(75, 85, 99)";
       }
     }
     else if(validMove){
@@ -707,7 +719,7 @@ export class GuidedTutorialService {
     let message='';
     // human makes a trade
     if(this.humanPlayer === '1') {
-      message = 'Try your hand at makin’ a trade for the right gems to lay two more tracks.<br><br>Click the trade button, select two yellow and a red gem to trade for one blue and confirm your trade!<br><br>Go on and pick those two indicated tracks before clickin\' "End Turn" and then the "Next" button.';
+      message = 'Try your hand at makin’ a trade for the right gems to lay two more tracks.<br><br>Click the trade button, select a yellow, a red, then another yellow gem to trade for one blue and confirm your trade!<br><br>Go on and pick those two indicated tracks before clickin\' "End Turn" and then the "Next" button.';
       if(this.moveNum === 14)
       {
         this.highlightManager();

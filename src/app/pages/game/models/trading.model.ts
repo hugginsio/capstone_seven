@@ -113,6 +113,9 @@ export class TradingModel {
   }
 
   dynamicClass(num: number): string {
+    if(this.isTutorial && num === 44) {
+      return 'selected';
+    }
     if (this.selectedResource === num) {
       return 'selected';
     } else {
