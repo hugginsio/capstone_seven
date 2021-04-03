@@ -86,6 +86,22 @@ export class GuidedTutorialService {
     return message;
   }
 
+  highlightNext():void {
+    let pieceID = document.getElementById('GT-Next');
+          if (pieceID !== null)
+          {
+            pieceID.style.border = "2px solid white";
+          }
+  }
+
+  unhighlightNext():void{
+    let pieceID = document.getElementById('GT-Next');
+          if (pieceID !== null)
+          {
+            pieceID.style.border = "4px solid rgb(17, 24, 39)";
+          }
+  }
+
   tutorialManager():string{
     let message = "no message found";
     switch (this.stepNum)
@@ -182,35 +198,37 @@ export class GuidedTutorialService {
           break;
         case 2: piece = "B13";
           break;
-        case 3: // END TURN - no highlight
+        case 3: piece = "endTurnBtn";
           break;
         case 4: piece = "N8";
           break;
         case 5: piece = "B12";
           break;
-        case 6: // UNDO - no highlight
+        case 6: piece = "undoBtn";
           break;
-        case 7: // UNDO - no highlight
+        case 7: piece = "undoBtn";
           break;
         case 8: piece = "N16";
           break;
         case 9: piece = "B19";
           break;
-        case 10: // END TURN - no highlight
+        case 10: piece = "endTurnBtn";
           break;
         case 11: piece = "B8";
           break;
-        case 12: // END TURN - no highlight
+        case 12: piece = "endTurnBtn";
           break;
         case 13: piece = "N4";
           break;
         case 14: piece = "tradeBtn";
           break;
         case 15: piece = "4"; // yellow trade
+          console.log("in highlight manager for first yellow");
+
           break;
-        case 16: piece = "1"; // yellow trade
+        case 16: piece = "1"; // red trade
           break;
-        case 17: piece = "4"; // red trade
+        case 17: piece = "4"; // yellow trade
           break;
         case 18: piece = "blue"; 
           break;
@@ -220,7 +238,7 @@ export class GuidedTutorialService {
           break;
         case 21: piece = "B3";
           break;
-        case 22: piece = "ENDTURN";
+        case 22: piece = "endTurnBtn";
           break;
         case 23: piece = "Pause";
         default:
@@ -243,6 +261,7 @@ export class GuidedTutorialService {
     const m = this.moveNum;
     const s = this.stepNum;
     let validMove = true; 
+    let ifButton = false;
 
     if (this.humanPlayer === '1'){
       if(m === 1 && s === 4 && piece ==='N9') {
@@ -253,11 +272,14 @@ export class GuidedTutorialService {
         this.moveNum++;
         // call to output message 4 
         this.freezeNext = false;
+        this.highlightNext();
       }
-      else if(m === 3 && s === 5 && piece === 'ENDTURN'){
+      else if(m === 3 && s === 5 && piece === 'endTurnBtn'){
         // end turn
         this.moveNum++;
         this.freezeNext = false;
+        this.highlightNext();
+        ifButton = true;
       }
 
       else if(m === 4 && s === 8 && piece === 'N8')
@@ -269,15 +291,19 @@ export class GuidedTutorialService {
       {
         this.moveNum++;
         this.freezeNext = false;
+        this.highlightNext();
       }
-      else if(m === 6 && s === 9 && piece === 'UNDO')
-      {
-        this.moveNum++;
-      }
-      else if(m === 7 && s === 9 && piece === 'UNDO')
+      else if(m === 6 && s === 9 && piece === 'undoBtn')
       {
         this.moveNum++;
         this.highlightManager();
+        ifButton = true;
+      }
+      else if(m === 7 && s === 9 && piece === 'undoBtn')
+      {
+        this.moveNum++;
+        this.highlightManager();
+        ifButton = true;
       }
       else if(m === 8 && s === 9 && piece === 'N16')
       {
@@ -287,57 +313,71 @@ export class GuidedTutorialService {
       else if(m === 9 && s === 9 && piece === 'B19')
       {
         this.moveNum++;
+        this.highlightManager();
       }
-      else if(m === 10 && s === 9 && piece === 'ENDTURN')
+      else if(m === 10 && s === 9 && piece === 'endTurnBtn')
       {
         this.moveNum++;
         this.freezeNext = false;
+        this.highlightNext();
+        ifButton = true;
       }
 
       else if(m === 11 && s === 14 && piece === 'B8')
       {
         this.moveNum++;
+        this.highlightManager();
       }
-      else if(m === 12 && s === 14 && piece === 'ENDTURN')
+      else if(m === 12 && s === 14 && piece === 'endTurnBtn')
       {
         this.moveNum++;
         this.freezeNext = false;
+        this.highlightNext();
+        ifButton = true;
       }
 
       else if(m === 13 && s === 18 && piece === 'N4')
       {
         this.moveNum++;
         this.freezeNext = false;
+        this.highlightNext();
       }
       else if(m === 14 && s === 19 && piece === 'tradeBtn')
       {
         this.moveNum++;
         this.highlightManager();
+        ifButton = true;
       }
-      else if(m === 15 && s === 19 && piece === 'yellow')
+      else if(m === 15 && s === 19 && piece === '4')
+      {
+        console.log("in move manager for first yellow");
+        this.moveNum++;
+        this.highlightManager();
+        ifButton = true;
+      }
+      else if(m === 16 && s === 19 && piece === '1')
       {
         this.moveNum++;
         this.highlightManager();
+        ifButton = true;
       }
-      else if(m === 16 && s === 19 && piece === 'red')
+      else if(m === 17 && s === 19 && piece === '4')
       {
         this.moveNum++;
         this.highlightManager();
+        ifButton = true;
       }
-      else if(m === 17 && s === 19 && piece === 'yellow')
+      else if(m === 18 && s === 19 && piece === 'blue')
       {
         this.moveNum++;
         this.highlightManager();
-      }
-      else if(m === 18 && s === 19 && piece === '3')
-      {
-        this.moveNum++;
-        this.highlightManager();
+        ifButton = true;
       }
       else if(m === 19 && s === 19 && piece === 'confirmTrade')
       {
         this.moveNum++;
         this.highlightManager();
+        ifButton = true;
       }
       else if(m === 20 && s === 19 && piece === 'B4')
       {
@@ -347,11 +387,14 @@ export class GuidedTutorialService {
       else if(m === 21 && s === 19 && piece === 'B3')
       {
         this.moveNum++;
+        this.highlightManager();
       }
-      else if(m === 22 && s === 19 && piece === 'ENDTURN')
+      else if(m === 22 && s === 19 && piece === 'endTurnBtn')
       {
         this.moveNum++;
         this.freezeNext = false;
+        this.highlightNext();
+        ifButton = true;
       }
 
       else {
@@ -361,7 +404,13 @@ export class GuidedTutorialService {
     }
 
     // unhighlight if needed
-    if(validMove){
+    if(validMove && ifButton){
+      let pieceID = document.getElementById(piece);
+      if(pieceID !== null) {
+        pieceID.style.border = "4px solid rgb(17, 24, 39)";
+      }
+    }
+    else if(validMove){
       let pieceID = document.getElementById(piece);
       if(pieceID !== null) {
         pieceID.style.border = "0px";
@@ -376,6 +425,8 @@ export class GuidedTutorialService {
       //this.snackbarService.add({ message: 'Welcome in to the mines!' });
       //this.snackbarService.add({ message: 'Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.' });
     //this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
+
+    this.highlightNext();
       return message;
 
       // click next
@@ -385,18 +436,32 @@ export class GuidedTutorialService {
     // message 2
     let message = "Learn some mining lingo before we get going:<br><br>Pickaxes and Drills are what we call \"Mining Markers.\"<br><br>These here Tracks get you from place to place down in the depths of the mine."; 
 
+    /*for (let i = 0; i<6; i++)
+    {
+      let nodeContainer = document.getElementsByClassName("node-container")[i];
+      for(let n = 0; n < nodeContainer.)
+
+    }*/
+
+    /*let piece = document.getElementById("imgInput");
+    if (piece !== null){
+      piece.innerHTML = "<img src=\"http://placehold.it/350x350\" width=\"400px\" height=\"150px\">";
+    }*/
     /*let nodes = document.getElementsByClassName("node");
     let branchY = document.getElementsByClassName("branch-y");
     let branchX = document.getElementsByClassName("branch-x");
     
     if(nodes !== null && branchY !== null && branchX !== null){
-      nodes.style.border = "1px solid white";
+      for(let i = 0; i<nodes.length; i++){
+        nodes[i].style.border = "1px solid white";
+      }
       branchY.style.border = "1px solid yellow";
       branchX.style.border = "1px solid yellow";
     }*/
     //this.snackbarService.add({ message: 'Learn some mining lingo before we get going' });
     //this.snackbarService.add({ message: 'Tracks get you from place to place, and these here squares here all abouts the mine are mining sites.' });
     //this.snackbarService.add({ message: 'These sites have gems in ‘em that hold the type and number of gem you can mine from there.' });
+    this.highlightNext();
 
     return message;
 
@@ -405,6 +470,8 @@ export class GuidedTutorialService {
 
   messageThree():string {
     let message = "These squares here all abouts the mine are mining sites.<br><br>These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
+    this.highlightNext();
+    
     return message;
   }
 
@@ -431,6 +498,7 @@ export class GuidedTutorialService {
       message = 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'.<br><br>You gotta be collectin\' gems to get more pickaxes and tracks down the road<br><br>Settled on your move? Click "End Turn" and then "Next" to keep the game movin\'.';
       
       if(this.moveNum === 3){
+        this.highlightManager();
         this.freezeNext = true;
       }
                       // put these in later ones --- or maybe not? how does it work for being triggered by things other than buttons?? also putting action into snack bar only 
@@ -453,7 +521,10 @@ export class GuidedTutorialService {
       if (this.gameManager.getBoard().nodes[15].getOwner() === 'NONE')
       {
         this.gameManager.applyMove(";15;28");
+       this.highlightNext();
+
       }
+      //this.highlightNext();
     }
     return message;
   }
@@ -467,7 +538,10 @@ export class GuidedTutorialService {
       if (this.gameManager.getBoard().nodes[3].getOwner() === 'NONE')
       {
         this.gameManager.applyMove(";3;7");
+        this.highlightNext();
+
       }
+
     }
     return message;
   }
@@ -492,6 +566,7 @@ export class GuidedTutorialService {
     if(this.humanPlayer === '1') {
       message = 'Don’t like where you clicked? Click the undo button twice to reverse your past two moves.<br><br>Finish your turn by clicking the new indicated pieces and then "End Turn."<br><br>Click "Next" to continue.';
       if (this.moveNum === 6) {
+        this.highlightManager();
         this.freezeNext = true;
       }
     }
@@ -503,6 +578,7 @@ export class GuidedTutorialService {
     // resource cost
     if(this.humanPlayer === '1') {
       message = 'These gems ain’t just for lookin’ at. You can keep building your operation by buying mining markers and tracks with the gems.<br><br>We in the mine charge a fair price of 2 yellow and 2 green gems for 1 mining marker and a track costs 1 red and 1 blue gem.';
+      this.highlightNext();
      
       // would be cool to display a visual of piece costs
     }
@@ -514,6 +590,7 @@ export class GuidedTutorialService {
     // talk about trading 
     if(this.humanPlayer === '1') {
       message = 'Lookin’ to trade some gems?<br>When it’s on your turn, you can make a trade of gems 3-->1 OR you can end your turn and wait to get more.<br><br>Gems get saved in your stash shown for each miner at the bottom of the screen at the end of each round.';
+      this.highlightNext();
     }
     return message;
   }
@@ -527,6 +604,8 @@ export class GuidedTutorialService {
       if (this.gameManager.getBoard().branches[18].getOwner() === 'NONE')
       {
         this.gameManager.applyMove("Y,Y,Y,B;;17,18");
+        this.highlightNext();
+
       }
     }
     return message;
@@ -537,6 +616,7 @@ export class GuidedTutorialService {
     // start p1 turn
     if(this.humanPlayer === '1') {
       message = 'Now it’s your turn again! -- Take a gander at your inventory to see what you could do next.<br><br>Any new tracks or pickaxes have gotta be connected to one of your other tracks. Cain’t have any off railing in these here parts.';
+      this.highlightNext();
     }
     return message;
   }
@@ -560,6 +640,8 @@ export class GuidedTutorialService {
     // explain longest net
     if(this.humanPlayer === '1') {
       message = 'Now you have the longest connected mining rail network in the duel. This means you get +2 points on your way to the goal of 10 to win. But beware, this can be snatched right out from under you by your opponent.';
+      this.highlightNext();
+    
     }
     return message;
   }
@@ -572,6 +654,8 @@ export class GuidedTutorialService {
       if (this.gameManager.getBoard().branches[12].getOwner() === 'NONE')
       {
         this.gameManager.applyMove("Y,Y,Y,B;;12,31");
+        this.highlightNext();
+
       }
     }
     return message;
@@ -590,6 +674,8 @@ export class GuidedTutorialService {
         player1.style.border = "2px solid white";
         player2.style.border = '2px solid white';
       }
+    this.highlightNext();
+
     }
     return message;
   }
@@ -637,6 +723,7 @@ export class GuidedTutorialService {
     if(this.humanPlayer === '1') {
       message = 'Alright, one last turn for the Machine before we turn y’all loose in the mine to finish up this here “friendly” competition.';
      
+      this.highlightNext();
       
     }
     return message;
@@ -650,6 +737,8 @@ export class GuidedTutorialService {
       if (this.gameManager.getBoard().branches[27].getOwner() === 'NONE')
       {
         this.gameManager.applyMove(";;27");
+        this.highlightNext();
+
       }
     }
     return message;
@@ -660,6 +749,7 @@ export class GuidedTutorialService {
     // more capture explaination
     if(this.humanPlayer === '1') {
       message = 'If you had any or put a pickaxe touchin\' a captured site later you won’t be gettin’ any more gems from that site at the beginning of your turn.<br><br>Now remember to capture a group of sites, you cain’t have your opponents rails inside the group, but once the claiming’s been done your opponent ain’t gonna be able to put any rails inside that captured set either!';
+      this.highlightNext();
 
     }
     return message;
@@ -675,6 +765,8 @@ export class GuidedTutorialService {
         {
           pause.style.border = "2px solid white";
         }
+    this.highlightNext();
+
     }
     return message;
   }
@@ -689,10 +781,10 @@ export class GuidedTutorialService {
           pause.style.border = "0px";
         }
       message = 'Seems like you’ve got a good handle on how we do things down here in the mine. Time to see how you do on your own.<br><br>First player to 10 points wins gold. Good luck, Prospector!<br><br>Click "Next" to end the tutorial.';
+    this.highlightNext();
+
     }
     return message;
   }
-
-  
 
 }

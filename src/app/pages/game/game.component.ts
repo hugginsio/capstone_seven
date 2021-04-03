@@ -109,10 +109,9 @@ export class GameComponent implements OnInit, AfterViewInit {
             // if guided tutorial, check if they are supposed to end their turn
             if (this.guidedTutorialCheck)
             {
-              if(this.guidedTutorial.moveManager("ENDTURN")) {
+              if(this.guidedTutorial.moveManager("endTurnBtn")) {
 
                 this.gameManager.endTurn(this.gameManager.getCurrentPlayer());
-                console.log ("after end turn");
                 //this.clearMessage();
                 //this.appendMessage(this.guidedTutorial.tutorialManager());
               }
@@ -129,7 +128,7 @@ export class GameComponent implements OnInit, AfterViewInit {
           const gamePiece = this.gameManager.stack.pop();
           if (gamePiece) {
             if(this.guidedTutorialCheck){
-              if(this.guidedTutorial.moveManager("UNDO"))
+              if(this.guidedTutorial.moveManager("undoBtn"))
               {
                 this.gameManager.undoPlacement(gamePiece[0] as string, gamePiece[1] as number, this.gameManager.getCurrentPlayer());
                 this.guidedTutorial.highlightManager();
@@ -417,24 +416,26 @@ export class GameComponent implements OnInit, AfterViewInit {
   GTBtn(event: ClickEvent): void {
     const button = event.target.id;
     const step = this.guidedTutorial.getstepNum();
-    let message = "not registering button";
+    let message = "";
     if (button === 'GT-Back' && step > 0)
     {
       this.clearMessage();
       this,this.guidedTutorial.falseFreezeNext();
       this.guidedTutorial.decrementStepNum();
       message = this.guidedTutorial.tutorialManager();
+      this.appendMessage(message);
+
     }
     // how many steps we have
     // variable depending on who goes first???
     else if (button === 'GT-Next' && step < this.guidedTutorial.getMaxStep() && this.guidedTutorial.getFreezeNext() === false){
+      this.guidedTutorial.unhighlightNext();
       this.clearMessage();
       this.guidedTutorial.incrementStepNum();
       message = this.guidedTutorial.tutorialManager();
+      this.appendMessage(message);
+
     }
-    console.log("step count: " + this.guidedTutorial.getstepNum());
-    console.log(button);
-    this.appendMessage(message);
     if (this.guidedTutorial.getstepNum() === this.guidedTutorial.getMaxStep())
     {
       this.endTutorial();

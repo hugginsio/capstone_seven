@@ -41,7 +41,7 @@ export class TradingModel {
       switch (num) {
         case 1:
           if(this.isTutorial) {
-            if(!this.guidedTutorial.moveManager('red'))
+            if(!this.guidedTutorial.moveManager('1'))
             {
               return;
             }
@@ -71,7 +71,7 @@ export class TradingModel {
 
         case 4:
           if(this.isTutorial) {
-            if(!this.guidedTutorial.moveManager('yellow'))
+            if(!this.guidedTutorial.moveManager('4'))
             {
               return;
             }
@@ -91,8 +91,17 @@ export class TradingModel {
   select(num: number): void {
     if (this.selectedResource != num) {
       if(this.isTutorial){
-        let stringNum = num.toString();
-        if(!this.guidedTutorial.moveManager(stringNum))
+        let stringToSend = 'none';
+        switch(num){
+          case 1: stringToSend = 'red';
+            break;
+          case 2: stringToSend = 'green';
+            break;
+          case 3: stringToSend = 'blue';
+            break;
+          case 4: stringToSend = 'yellow';
+        }
+        if(!this.guidedTutorial.moveManager(stringToSend))
         {
           return;
         }

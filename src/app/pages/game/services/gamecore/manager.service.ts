@@ -415,10 +415,8 @@ export class ManagerService {
     this.tradedResources.splice(0, this.tradedResources.length);
     // clear stack of node and branch placements
     this.stack.splice(0, this.stack.length);
-    console.log("in Next turn");
     // calls AI to make move on its turn
     if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
-      console.log("manager service, next turn, tutorial: ");
       const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
       const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
