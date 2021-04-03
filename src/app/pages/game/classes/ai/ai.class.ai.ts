@@ -27,9 +27,9 @@ export class AI {
     newState.playerNumber = previousPlayerNo;
     newState.move = pastMoveString;
 
-    //const result = this.mcts.findNextMove(newState,5900);
+    const result = this.mcts.findNextMove(newState,5900);
 
-    const result = newState.heuristicPlay();
+    //const result = newState.heuristicPlay();
 
     console.warn(`Time for AI move = ${Date.now() - start}ms`);
     return result;

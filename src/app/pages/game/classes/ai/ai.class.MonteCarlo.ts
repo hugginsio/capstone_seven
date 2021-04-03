@@ -24,19 +24,13 @@ export class MonteCarlo {
     const startingState = new State(gameBoard,player1,player2);
     const startingRoot = new MCTSNode(startingState);
     this.tree.setRoot(startingRoot);
- 
-
-    this.workers = [];
-    for(let i = 0; i < this.NUMWORKERS; i++){
-      this.workers.push(new Worker('../../workers/simulation.worker.ts', { type: 'module' }));
-    }
   }
 
   
   findNextMove(gameState:State,time:number):string {
     // define an end time in milliseconds which will act as a terminating condition
     const end = Date.now() + time;
-    this.explorationParameter -= 0.09876543;
+    
 
     const newNode = new MCTSNode(gameState);
     const currentRoot = this.tree.getRoot();
@@ -160,6 +154,7 @@ export class MonteCarlo {
       else{
         boardStatus = 2;
       }
+
     }
 
     
@@ -173,7 +168,7 @@ export class MonteCarlo {
 }
 
 
-class UCT {
+export class UCT {
   static uctValue(totalVisit:number, nodeWinScore:number, nodeVisit:number, explorationParameter:number):number {
     if (nodeVisit == 0) {
       return Number.MAX_VALUE;
@@ -187,7 +182,7 @@ class UCT {
     let maxNode = node.getChildArray()[0];
     for(let i = 1; i < node.getChildArray().length; i++){
       const uctValue = this.uctValue(parentVisit,node.getChildArray()[i].getState().getWinScore(),node.getChildArray()[i].getState().getVisitCount(),explorationParameter);
-      if(uctValue > maxUctValue){
+      if(uctValue >= maxUctValue){
         maxUctValue = uctValue;
         maxNode = node.getChildArray()[i];
       }

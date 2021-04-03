@@ -1,5 +1,7 @@
 import { CoreLogic } from '../../util/core-logic.util';
 import { State } from './ai.class.State';
+import { UCT } from './ai.class.MonteCarlo';
+import { core } from '@angular/compiler';
 
 
 export class Tree{
@@ -36,8 +38,10 @@ export class MCTSNode {
   }
 
   getRandomChildNode():MCTSNode{
-     return this.chooseWeightedChildren()
+    return this.chooseWeightedChildren()
     //return this.childArray[Math.floor(Math.random() * this.childArray.length)];
+    
+
   }
 
   getChildWithMaxScore():MCTSNode{
@@ -89,18 +93,33 @@ export class MCTSNode {
   }
 
   chooseWeightedChildren():MCTSNode{
-    const weights = Array<MCTSNode>();
+    //const weights = Array<MCTSNode>();
     const currentPlayer = this.state.playerNumber === 1 ? this.state.player1 : this.state.player2;
 
+    let chosenIndex = 0;
+    let chosenPlayerOneValue = Number.NEGATIVE_INFINITY;
+    let chosenPlayerTwoValue = Number.POSITIVE_INFINITY;
+
     for(const child of this.childArray){
-      weights.push(child);
       const value = child.state.getHeuristicValue();
-      for(let c = 0; c < value; c++){
-        weights.push(child);
+      if(this.state.playerNumber === 1){
+        if(value >= chosenPlayerOneValue){
+          chosenPlayerOneValue = value;
+          chosenIndex = this.childArray.indexOf(child);
+        }
+      }
+      else{
+        if(value <= chosenPlayerTwoValue){
+          chosenPlayerTwoValue = value;
+          chosenIndex = this.childArray.indexOf(child);
+        }
       }
     }
    
-    const index = this.childArray.indexOf(weights[Math.floor(Math.random() * weights.length)]);
-    return this.childArray[index];
+    //const index = this.childArray.indexOf(weights[Math.floor(Math.random() * weights.length)]);
+
+    
+
+    return this.childArray[chosenIndex];
   }
 }

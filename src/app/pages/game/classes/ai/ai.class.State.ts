@@ -288,11 +288,12 @@ export class State {
   }
 
   heuristicPlay():string{
-    const moves = CoreLogic.getLegalMoves(this,true);
+    const moves = CoreLogic.getLegalMoves(this,false);
     let maxHeuristic = 0;
     let chosenMoveIndex = 0;
     for(let i = 0; i < moves.length;i++){
       const tempState = this.cloneState();
+      tempState.move = moves[i];
       tempState.applyMove(moves[i]);
       const heuristicValue = tempState.getHeuristicValue();
       if(heuristicValue >= maxHeuristic){
@@ -307,21 +308,16 @@ export class State {
     const currentOwner = this.playerNumber === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
     let value = 0;
 
-    const centerNodeRing = [8,9,14,15];
-    const middleNodeRing = [3,4,7,10,13,16,19,20];
-    const outerNodeRing = [0,1,2,5,6,11,12,17,18,21,22,23];
+    const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
+    const longestNetwork = this.player1.hasLongestNetwork ? 2 : -2;
+    const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) + 
+    (this.player1.bluePerTurn - this.player2.bluePerTurn) +
+    (this.player1.greenPerTurn - this.player2.greenPerTurn) +
+    (this.player1.yellowPerTurn - this.player2.yellowPerTurn);
 
-    const colorSpread = 0;
-
-    const nodes = this.board.nodes;
-
-    for(const node of nodes){
-      if(node.getOwner() === currentOwner){
-
-      }
-    }
-
-    
+    const captures = this.player1.numTilesCaptured - this.player2.numTilesCaptured;
+    const score = this.player1.currentScore - this.player2.currentScore;
+    value = numNodesDiff + longestNetwork + resourceProduction + captures + score;
 
 
     return value;

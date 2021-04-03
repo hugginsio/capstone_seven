@@ -20,13 +20,6 @@ interface Move {
 
 export class CoreLogic {
 
-  // static getStartingState(player1:Player, player2:Player, gameBoard:GameBoard, currentPlayer:number):State{
-  //   const newBoard = CoreLogic.cloneGameBoard(gameBoard);
-  //   //const clonedPlayer1 = CoreLogic.clonePlayer(player1);
-  //   //const clonedPlayer2 = CoreLogic.clonePlayer(player2);
-    
-  //   return new State([], newBoard, currentPlayer, player1, player2,true);
-  // }
 
   static getLegalMoves(state:State, inSimulation:boolean): string[] {
     
@@ -286,7 +279,7 @@ export class CoreLogic {
         
 
         redTemp++;
-        if(blueTemp >= redTemp){
+        //if(blueTemp >= redTemp){
           let possibleBranchIndices:number[] = [];
           let possibleNodeIndices:number[] = [];
 
@@ -369,7 +362,7 @@ export class CoreLogic {
               result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:[],branchesPlaced:[]}));
             }
           }
-        }
+        //}
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
@@ -393,7 +386,7 @@ export class CoreLogic {
         }
 
         blueTemp++;
-        if(redTemp >= blueTemp){
+        //if(redTemp >= blueTemp){
           let possibleBranchIndices:number[] = [];
           let possibleNodeIndices:number[] = [];
 
@@ -476,7 +469,7 @@ export class CoreLogic {
               result.push(CoreLogic.moveToString({tradedIn:trade,received:'B',nodesPlaced:[],branchesPlaced:[]}));
             }
           }
-        }
+        //}
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
@@ -500,7 +493,7 @@ export class CoreLogic {
         }
 
         greenTemp++;
-        if(yellowTemp >= greenTemp){
+        //if(yellowTemp >= greenTemp){
           let possibleBranchIndices:number[] = [];
           let possibleNodeIndices:number[] = [];
 
@@ -583,7 +576,7 @@ export class CoreLogic {
               result.push(CoreLogic.moveToString({tradedIn:trade,received:'G',nodesPlaced:[],branchesPlaced:[]}));
             }
           }
-        }
+        //}
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
@@ -607,7 +600,7 @@ export class CoreLogic {
         }
 
         yellowTemp++;
-        if(greenTemp >= yellowTemp){
+        //if(greenTemp >= yellowTemp){
           let possibleBranchIndices:number[] = [];
           let possibleNodeIndices:number[] = [];
 
@@ -690,7 +683,7 @@ export class CoreLogic {
               result.push(CoreLogic.moveToString({tradedIn:trade,received:'Y',nodesPlaced:[],branchesPlaced:[]}));
             }
           }
-        }
+        //}
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
@@ -767,8 +760,14 @@ export class CoreLogic {
       }
     }
 
-    if(result.length === 0){
-      result.push(';;');
+    
+   let finalResult = result;
+
+    if(finalResult.length === 0){
+      finalResult.push(';;');
+    }
+    else{
+      finalResult =  result.sort( ()=>Math.random()-0.5 );
     }
     
     return result;
