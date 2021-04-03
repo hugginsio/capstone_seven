@@ -3,6 +3,11 @@ import { Player } from '../../classes/gamecore/game.class.Player';
 import { CoreLogic } from '../../util/core-logic.util';
 import { Owner, TileColor } from '../../enums/game.enums';
 
+interface WeightedItem{
+  move:string;
+  weight:number;
+}
+
 export class State {
   
   move:string;
@@ -87,16 +92,44 @@ export class State {
     const moves = CoreLogic.getLegalMoves(this,true);
     //console.log(`In simulation: Time to generate moves = ${Date.now()-start}ms`);
 
-    let maxWeight = 0;
+    //let maxWeight = 0;
     let maxWeightIndex = Math.floor(Math.random() * moves.length);
-    //start = Date.now();
+    const weights:WeightedItem[] = [];
+
     for(let i = 0; i < moves.length; i++){
-      const localWeight = this.moveWeighting(moves[i]);
-      if(localWeight > maxWeight){
-        maxWeight = localWeight;
-        maxWeightIndex = i;
+      weights.push({move:moves[i], weight:this.moveWeighting(moves[i])});
+    }
+
+    weights.sort((a,b)=>{
+      if(a.weight > b.weight){
+        return 1;
+      }
+      else{
+        return -1;
+      }
+    });
+
+    //console.log(weights);
+    const maxWeight = weights[0].weight;
+    const maxWeightedMoves = [];
+    for(let n = 0; n < weights.length;n++){
+      if(weights[n].weight === maxWeight){
+        maxWeightedMoves.push(weights[n].move);
+      }
+      else{
+        n = weights.length;
       }
     }
+
+    maxWeightIndex = moves.indexOf(maxWeightedMoves[Math.floor(Math.random()*maxWeightedMoves.length)]);
+
+    // for(let i = 0; i < moves.length; i++){
+    //   const localWeight = this.moveWeighting(moves[i]);
+    //   if(localWeight > maxWeight){
+    //     maxWeight = localWeight;
+    //     maxWeightIndex = i;
+    //   }
+    // }
 
     //const index = Math.floor(Math.random()*moves.length);
 
@@ -108,152 +141,149 @@ export class State {
 
   moveWeighting(move:string):number{
     const currentOwner = this.playerNumber === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
-    //let resultWeights = [];
+
     let result= 0;
-    //const length = moves.length;
-    //for(let moveNum = 0; moveNum < length; moveNum++){
-      const moveObj = CoreLogic.stringToMove(move);
 
-      const horizontalBranches = [0,3,4,5,10,11,12,13,14,21,22,23,24,25,30,31,32,35];
+    const moveObj = CoreLogic.stringToMove(move);
 
-      
-
-
-      for(let n = 0; n < moveObj.nodesPlaced.length; n++){
-        //resultWeights.push(moves[moveNum]);
-        result++;
-        const topRight = this.board.nodes[moveObj.nodesPlaced[n]].getTopRightTile();
-        const bottomRight = this.board.nodes[moveObj.nodesPlaced[n]].getBottomRightTile();
-        const bottomLeft = this.board.nodes[moveObj.nodesPlaced[n]].getBottomLeftTile();
-        const topLeft = this.board.nodes[moveObj.nodesPlaced[n]].getTopLeftTile();
-
-        if(topRight != -1){
-          if(!this.board.tiles[topRight].getIsExhaused()){
-            if(this.board.tiles[topRight].getCapturedBy() === currentOwner){
-              //resultWeights.push(moves[moveNum]);
-              result++;
-            }
-            else if(this.board.tiles[topRight].getCapturedBy() === Owner.NONE){
-              if(this.board.tiles[topRight].getNodeCount() <= this.board.tiles[topRight].getMaxNodes()){
-                //resultWeights.push(moves[moveNum]);
-                result++;
-              }
-            }
-          }
-        }
-
-        if(bottomRight != -1){
-          if(!this.board.tiles[bottomRight].getIsExhaused()){
-            if(this.board.tiles[bottomRight].getCapturedBy() === currentOwner){
-              //resultWeights.push(moves[moveNum]);
-              result++;
-            }
-            else if(this.board.tiles[bottomRight].getCapturedBy() === Owner.NONE){
-              if(this.board.tiles[bottomRight].getNodeCount() <= this.board.tiles[bottomRight].getMaxNodes()){
-                //resultWeights.push(moves[moveNum]);
-                result++;
-              }
-            }
-          }
-        }
-
-        if(bottomLeft != -1){
-          if(!this.board.tiles[bottomLeft].getIsExhaused()){
-            if(this.board.tiles[bottomLeft].getCapturedBy() === currentOwner){
-              //resultWeights.push(moves[moveNum]);
-              result++;
-            }
-            else if(this.board.tiles[bottomLeft].getCapturedBy() === Owner.NONE){
-              if(this.board.tiles[bottomLeft].getNodeCount() <= this.board.tiles[bottomLeft].getMaxNodes()){
-                //resultWeights.push(moves[moveNum]);
-                result++;
-              }
-            }
-          }
-        }
-
-        if(topLeft != -1){
-          if(!this.board.tiles[topLeft].getIsExhaused()){
-            if(this.board.tiles[topLeft].getCapturedBy() === currentOwner){
-              //resultWeights.push(moves[moveNum]);
-              result++;
-            }
-            else if(this.board.tiles[topLeft].getCapturedBy() === Owner.NONE){
-              if(this.board.tiles[topLeft].getNodeCount() <= this.board.tiles[topLeft].getMaxNodes()){
-                //resultWeights.push(moves[moveNum]);
-                result++;
-              }
-            }
-          }
-        }
-      }
+    const horizontalBranches = [0,3,4,5,10,11,12,13,14,21,22,23,24,25,30,31,32,35];
 
     
 
-      for(let i = 0; i < moveObj.branchesPlaced.length; i++){
-        //resultWeights.push(moves[moveNum]);
-        result++;
 
-        if(horizontalBranches.includes(moveObj.branchesPlaced[i])){
-          const topNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2')];
-          const sideNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
-          const bottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
-          if(!topNeighbors.includes(-1)){
-            if(this.board.branches[topNeighbors[0]].getOwner() === currentOwner && this.board.branches[topNeighbors[1]].getOwner() === currentOwner){
-              // for(let i = 0; i < 10; i++){
-              //   //resultWeights.push(moves[moveNum]);
-              // }
-              result+=10;
-            }
+    for(let n = 0; n < moveObj.nodesPlaced.length; n++){
+      result++;
+      const topRight = this.board.nodes[moveObj.nodesPlaced[n]].getTopRightTile();
+      const bottomRight = this.board.nodes[moveObj.nodesPlaced[n]].getBottomRightTile();
+      const bottomLeft = this.board.nodes[moveObj.nodesPlaced[n]].getBottomLeftTile();
+      const topLeft = this.board.nodes[moveObj.nodesPlaced[n]].getTopLeftTile();
+
+      if(topRight != -1){
+        if(!this.board.tiles[topRight].getIsExhaused()){
+          if(this.board.tiles[topRight].getCapturedBy() === currentOwner){
+    
+            result++;
           }
-          else if(!sideNeighbors.includes(-1)){
-            if(this.board.branches[sideNeighbors[0]].getOwner() === currentOwner && this.board.branches[sideNeighbors[1]].getOwner() === currentOwner){
-             // for(let i = 0; i < 10; i++){
-              //   //resultWeights.push(moves[moveNum]);
-              // }
-              result+=10;
-            }
-          }
-          else if(!bottomNeighbors.includes(-1)){
-            if(this.board.branches[bottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[bottomNeighbors[1]].getOwner() === currentOwner){
-              // for(let i = 0; i < 10; i++){
-              //   //resultWeights.push(moves[moveNum]);
-              // }
-              result+=10;
+          else if(this.board.tiles[topRight].getCapturedBy() === Owner.NONE){
+            if(this.board.tiles[topRight].getNodeCount() <= this.board.tiles[topRight].getMaxNodes()){
+      
+              result++;
             }
           }
         }
         else{
-          const rightNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
-          const topAndBottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4')];
-          const leftNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
-          if(!rightNeighbors.includes(-1)){
-            if(this.board.branches[rightNeighbors[0]].getOwner() === currentOwner && this.board.branches[rightNeighbors[1]].getOwner() === currentOwner){
-              // for(let i = 0; i < 10; i++){
-              //   //resultWeights.push(moves[moveNum]);
-              // }
-              result+=10;
-            }
+          result--;
+        }
+      }
+
+      if(bottomRight != -1){
+        if(!this.board.tiles[bottomRight].getIsExhaused()){
+          if(this.board.tiles[bottomRight].getCapturedBy() === currentOwner){
+    
+            result++;
           }
-          else if(!topAndBottomNeighbors.includes(-1)){
-            if(this.board.branches[topAndBottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[topAndBottomNeighbors[1]].getOwner() === currentOwner){
-              // for(let i = 0; i < 10; i++){
-              //   //resultWeights.push(moves[moveNum]);
-              // }
-              result+=10;
-            }
-          }
-          else if(!leftNeighbors.includes(-1)){
-            if(this.board.branches[leftNeighbors[0]].getOwner() === currentOwner && this.board.branches[leftNeighbors[1]].getOwner() === currentOwner){
-              // for(let i = 0; i < 10; i++){
-              //   //resultWeights.push(moves[moveNum]);
-              // }
-              result+=10;
+          else if(this.board.tiles[bottomRight].getCapturedBy() === Owner.NONE){
+            if(this.board.tiles[bottomRight].getNodeCount() <= this.board.tiles[bottomRight].getMaxNodes()){
+      
+              result++;
             }
           }
         }
+        else{
+          result--;
+        }
       }
-    //}
+
+      if(bottomLeft != -1){
+        if(!this.board.tiles[bottomLeft].getIsExhaused()){
+          if(this.board.tiles[bottomLeft].getCapturedBy() === currentOwner){
+    
+            result++;
+          }
+          else if(this.board.tiles[bottomLeft].getCapturedBy() === Owner.NONE){
+            if(this.board.tiles[bottomLeft].getNodeCount() <= this.board.tiles[bottomLeft].getMaxNodes()){
+      
+              result++;
+            }
+          }
+        }
+        else{
+          result--;
+        }
+      }
+
+      if(topLeft != -1){
+        if(!this.board.tiles[topLeft].getIsExhaused()){
+          if(this.board.tiles[topLeft].getCapturedBy() === currentOwner){
+    
+            result++;
+          }
+          else if(this.board.tiles[topLeft].getCapturedBy() === Owner.NONE){
+            if(this.board.tiles[topLeft].getNodeCount() <= this.board.tiles[topLeft].getMaxNodes()){
+      
+              result++;
+            }
+          }
+        }
+        else{
+          result--;
+        }
+      }
+    }
+
+  
+
+    for(let i = 0; i < moveObj.branchesPlaced.length; i++){
+      result++;
+
+      if(horizontalBranches.includes(moveObj.branchesPlaced[i])){
+        const topNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2')];
+        const sideNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
+        const bottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
+        if(!topNeighbors.includes(-1)){
+          if(this.board.branches[topNeighbors[0]].getOwner() === currentOwner && this.board.branches[topNeighbors[1]].getOwner() === currentOwner){
+
+            result+=10;
+          }
+        }
+        else if(!sideNeighbors.includes(-1)){
+          if(this.board.branches[sideNeighbors[0]].getOwner() === currentOwner && this.board.branches[sideNeighbors[1]].getOwner() === currentOwner){
+
+            result+=10;
+          }
+        }
+        else if(!bottomNeighbors.includes(-1)){
+          if(this.board.branches[bottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[bottomNeighbors[1]].getOwner() === currentOwner){
+
+            result+=10;
+          }
+        }
+      }
+      else{
+        const rightNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
+        const topAndBottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4')];
+        const leftNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
+        if(!rightNeighbors.includes(-1)){
+          if(this.board.branches[rightNeighbors[0]].getOwner() === currentOwner && this.board.branches[rightNeighbors[1]].getOwner() === currentOwner){
+
+            result+=10;
+          }
+        }
+        else if(!topAndBottomNeighbors.includes(-1)){
+          if(this.board.branches[topAndBottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[topAndBottomNeighbors[1]].getOwner() === currentOwner){
+
+            result+=10;
+          }
+        }
+        else if(!leftNeighbors.includes(-1)){
+          if(this.board.branches[leftNeighbors[0]].getOwner() === currentOwner && this.board.branches[leftNeighbors[1]].getOwner() === currentOwner){
+
+            result+=10;
+          }
+        }
+      }
+    }
+
     return result;
   }
 
@@ -279,72 +309,15 @@ export class State {
 
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
     const longestNetwork = this.player1.hasLongestNetwork ? 2 : 0;
-    const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) + 
-    (this.player1.bluePerTurn - this.player2.bluePerTurn) +
+    const resourceProduction = 1.2*(this.player1.redPerTurn - this.player2.redPerTurn) + 
+    1.2*(this.player1.bluePerTurn - this.player2.bluePerTurn) +
     (this.player1.greenPerTurn - this.player2.greenPerTurn) +
     (this.player1.yellowPerTurn - this.player2.yellowPerTurn);
 
-    let playre1UnExhaustedCount = 0;
-    let player2UnExhaustedCount = 0;
-
-    for(const node of this.board.nodes){
-      const tr = node.getTopRightTile();
-      const br = node.getBottomRightTile();
-      const bl = node.getBottomLeftTile();
-      const tl = node.getTopLeftTile();
-
-
-      if(node.getOwner() === Owner.PLAYERONE){
-        if(tr !== -1){
-          if(!this.board.tiles[tr].isExhausted){
-            playre1UnExhaustedCount++;
-          }
-        }
-        if(br  !== -1){
-          if(!this.board.tiles[br].isExhausted){
-            playre1UnExhaustedCount++;
-          }
-        }
-        if(bl  !== -1){
-          if(!this.board.tiles[bl].isExhausted){
-            playre1UnExhaustedCount++;
-          }
-        }
-        if(tl  !== -1){
-          if(!this.board.tiles[tl].isExhausted){
-            playre1UnExhaustedCount++;
-          }
-        }
-      }
-      else if(node.getOwner() === Owner.PLAYERTWO){
-        if(tr  !== -1){
-          if(!this.board.tiles[tr].isExhausted){
-            player2UnExhaustedCount++;
-          }
-        }
-        if(br  !== -1){
-          if(!this.board.tiles[br].isExhausted){
-            player2UnExhaustedCount++;
-          }
-        }
-        if(bl  !== -1){
-          if(!this.board.tiles[bl].isExhausted){
-            player2UnExhaustedCount++;
-          }
-        }
-        if(tl !== -1){
-          if(!this.board.tiles[tl].isExhausted){
-            player2UnExhaustedCount++;
-          }
-        }
-      }
-
-    }
-
-    const exhaustValue = playre1UnExhaustedCount - player2UnExhaustedCount;
+    
     const captures = this.player1.numTilesCaptured - this.player2.numTilesCaptured;
     const score = this.player1.currentScore - this.player2.currentScore;
-    value = numNodesDiff + longestNetwork + resourceProduction + captures + score + exhaustValue;
+    value = numNodesDiff + longestNetwork + resourceProduction + captures + score;
 
 
     return value;

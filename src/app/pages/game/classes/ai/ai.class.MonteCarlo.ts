@@ -36,7 +36,7 @@ export class MonteCarlo {
   findNextMove(gameState:State,time:number):string {
     // define an end time in milliseconds which will act as a terminating condition
     const end = Date.now() + time;
-    
+    this.explorationParameter -= 0.09876543;
 
     const newNode = new MCTSNode(gameState);
     const currentRoot = this.tree.getRoot();
@@ -138,7 +138,7 @@ export class MonteCarlo {
 
    
     let counter = 0; //decrease counter and assign winner based on score if game not finished
-    while (boardStatus === 0 && counter < 5) {
+    while (boardStatus === 0 && counter < 9) {
       if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
         tempState.player1.redResources = 1;
         tempState.player1.blueResources = 1;
