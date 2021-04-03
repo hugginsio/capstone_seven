@@ -236,9 +236,9 @@ export class GuidedTutorialService {
           break;
         case 21: piece = "B3";
           break;
-        case 22: piece = "endTurnBtn";
-          break;
-        case 23: piece = "Pause";
+        //case 22: piece = "endTurnBtn";
+          //break;
+        //case 23: piece = "Pause";
         default:
           console.log("highlightManager error");
       }
@@ -383,7 +383,7 @@ export class GuidedTutorialService {
       {
         this.moveNum++;
         this.highlightManager();
-        ifButton = true;
+        tradeScreenButton = true;
       }
       else if(m === 20 && s === 19 && piece === 'B4')
       {
@@ -413,7 +413,7 @@ export class GuidedTutorialService {
     if(validMove && ifButton){
       let pieceID = document.getElementById(piece);
       if(pieceID !== null) {
-        pieceID.style.border = "4px solid rgb(17, 24, 39)";
+        //pieceID.getDynmaicClass();
       }
     }
     if(validMove && tradeScreenButton){
@@ -771,7 +771,7 @@ export class GuidedTutorialService {
     let message='';
     // options menu
     if(this.humanPlayer === '1') {
-      message = 'Need more help or want to change the settings? Click here for options';
+      message = 'Need more help or want to change the settings? Click the pause button in the tip left corner for more options.';
       let pause = document.getElementById("Pause");
         if (pause !== null)
         {
