@@ -69,7 +69,6 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     if (this.firstPlayer === 'Player One Goes First') {
       this.firstPlayer = this.playerTwoFirst;
       this.isHostFirst = false;
-      this.storageService.update('isHostFirst', 'false');
     } else {
       this.firstPlayer = this.playerOneFirst;
       this.isHostFirst = true;

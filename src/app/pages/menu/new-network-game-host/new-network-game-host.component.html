@@ -48,12 +48,12 @@
           <p>Advanced Options...</p>
         </div>
       </div>
-      <div class="menu-input" *ngIf="this.advancedOpts && !this.guidedTutorial">
+      <div class="menu-input" *ngIf="this.advancedOpts">
         <!-- oninput all uppercase credit to https://stackoverflow.com/users/5476516/yehuda-schwartz -->
         <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed"
           oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
       </div>
-      <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts && !this.guidedTutorial">Leave blank for random
+      <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts">Leave blank for random
         seed</p>
     </div>
   </div>

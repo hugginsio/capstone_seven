@@ -82,7 +82,7 @@ export class ManagerService {
     this.firstPlayer = +this.storageService.fetch('firstplayer');
     this.isHost = this.storageService.fetch('isHost');
     this.isHostFirst = this.storageService.fetch('isHostFirst');
-
+    const background = this.storageService.fetch('location');
     // determines currentGameMode field
     // determines player type fields for playerOne + playerTwo
     if (gameMode === 'pvp') {
@@ -106,9 +106,8 @@ export class ManagerService {
       
       if(this.isHost === 'true')
       {
-        console.log("We are the host");
         this.networkingService.createTCPServer();
-        this.netSettings.background = "BG1";
+        this.netSettings.background = background;
 
         if (this.isHostFirst === 'true') {
           this.playerOne.type = PlayerType.HUMAN;

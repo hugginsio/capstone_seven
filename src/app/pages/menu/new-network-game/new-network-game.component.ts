@@ -72,6 +72,7 @@ export class NewNetworkGameComponent implements OnInit {
       this.storageService.update('isHost', 'false');
       this.storageService.update('oppAddress', oppAddress);
       this.storageService.update('board-seed', this.gameSettings.board);
+      this.storageService.update('location', this.gameSettings.background);
       if (this.gameSettings.isHostFirst === true)
       {
         this.storageService.update('isHostFirst', 'true');
