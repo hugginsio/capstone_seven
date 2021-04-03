@@ -840,8 +840,9 @@ export class ManagerService {
 
         // checks if player's resource production ought to be incremented
         if (brTile.isExhausted === false &&
-          brTile.capturedBy !== otherOwner)
-          this.incrementResource(currentPlayer, brTile.getColor());
+          brTile.capturedBy !== otherOwner) {
+            this.incrementResource(currentPlayer, brTile.getColor());
+          }
       }
 
       // checks if possibleNode's bottomLeftTile exists
@@ -1362,6 +1363,9 @@ export class ManagerService {
       // decrement tile's nodeCount
       trTile.nodeCount--;
 
+      // decrement resources per turn
+      this.decrementResource(currentPlayer, trTile.getColor());
+
       // checking if need to un-exhaust tile
       if (trTile.isExhausted) {
         if (trTile.nodeCount <=
@@ -1379,6 +1383,9 @@ export class ManagerService {
 
       // decrement tile's nodeCount
       tlTile.nodeCount--;
+
+      // decrement resources per turn
+      this.decrementResource(currentPlayer, tlTile.getColor());
 
       // checking if need to un-exhaust tile
       if (tlTile.isExhausted) {
@@ -1398,6 +1405,9 @@ export class ManagerService {
       // decrement tile's nodeCount
       brTile.nodeCount--;
 
+      // decrement resources per turn
+      this.decrementResource(currentPlayer, brTile.getColor());
+
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
         if (brTile.nodeCount <=
@@ -1415,6 +1425,9 @@ export class ManagerService {
 
       // decrement tile's nodeCount
       blTile.nodeCount--;
+
+      // decrement resources per turn
+      this.decrementResource(currentPlayer, blTile.getColor());
 
       // checking if need to un-exhaust tile
       if (blTile.isExhausted) {
