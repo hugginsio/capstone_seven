@@ -102,7 +102,7 @@ export class MCTSNode {
 
     for(const child of this.childArray){
       const value = child.state.getHeuristicValue();
-      if(this.state.playerNumber === 1){
+      if(child.state.playerNumber === 1){
         if(value >= chosenPlayerOneValue){
           chosenPlayerOneValue = value;
           chosenIndex = this.childArray.indexOf(child);

@@ -132,7 +132,7 @@ export class MonteCarlo {
 
    
     let counter = 0; //decrease counter and assign winner based on score if game not finished
-    while (boardStatus === 0 && counter < 9) {
+    while (boardStatus === 0 && counter < 3) {
       if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
         tempState.player1.redResources = 1;
         tempState.player1.blueResources = 1;
