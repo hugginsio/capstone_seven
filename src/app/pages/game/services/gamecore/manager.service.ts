@@ -29,7 +29,7 @@ export class ManagerService {
   private playerTwo: Player;
 
   // used for UI integration
-  private firstPlayer: string;
+  private firstPlayer: number;
 
   // initializes AI service
   //private readonly ai: AiService;
@@ -70,7 +70,7 @@ export class ManagerService {
     this.storageService.setContext('game');
     const gameMode = this.storageService.fetch('mode');
     const boardSeed = this.storageService.fetch('board-seed');
-    this.firstPlayer = this.storageService.fetch('firstplayer');
+    this.firstPlayer = +this.storageService.fetch('firstplayer');
 
     // determines currentGameMode field
     // determines player type fields for playerOne + playerTwo
@@ -80,11 +80,11 @@ export class ManagerService {
     }
     else if (gameMode === 'pva') {
       this.currentGameMode = GameType.AI;
-      if (this.firstPlayer === 'one') {
+      if (this.firstPlayer === 1) {
         this.playerOne.type = PlayerType.HUMAN;
         this.playerTwo.type = PlayerType.AI;
       }
-      if (this.firstPlayer === 'two') {
+      if (this.firstPlayer === 2) {
         this.playerOne.type = PlayerType.AI;
         this.playerTwo.type = PlayerType.HUMAN;
       }
@@ -93,8 +93,26 @@ export class ManagerService {
       this.playerTwo.type = PlayerType.NETWORK;
     }
 
+    // instantiating AiService, calling its contructor w/ gameBoard and both players
+     // Web worker magic
+     this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
 
+     if (this.currentGameMode === GameType.AI) {
+       //this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
+       this.aiWorker.onmessage = ({ data }) => {
+         if (data) {
+           console.log('Initialized AI web worker.');
+         } else {
+           console.error('Could not initialize AI web worker.');
+         }
+       };
+ 
+       this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 3.75]});
+     }
+
+    // setting board as random or manually setting tiles
     if (boardSeed === '!random' || boardSeed === 'undefined') {
+      // create random tile location gameBoard
       this.createBoard(true);
       console.log(this.getBoard());
     } else {
@@ -102,21 +120,6 @@ export class ManagerService {
       this.createBoard(false, boardSeed);
     }
 
-    // Web worker magic
-    this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
-
-    if (this.currentGameMode === GameType.AI) {
-      //this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
-      this.aiWorker.onmessage = ({ data }) => {
-        if (data) {
-          console.log('Initialized AI web worker.');
-        } else {
-          console.error('Could not initialize AI web worker.');
-        }
-      };
-
-      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 3.75]});
-    }
 
     if (this.currentGameMode === GameType.AI && this.getCurrentPlayer().type === PlayerType.AI) {
       console.log('???');
@@ -650,7 +653,7 @@ export class ManagerService {
   // Trade resources
 
   makeTrade(currentPlayer: Player, selectedResource: number, tradeMap: ResourceMap): void {
-
+    currentPlayer.hasTraded = true;
     // tradeMap had number tied to each resource color that 
     // increments to the number of that color being traded 
 

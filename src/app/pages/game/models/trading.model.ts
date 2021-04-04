@@ -59,7 +59,11 @@ export class TradingModel {
   }
 
   select(num: number): void {
-    this.selectedResource = num;
+    if (this.selectedResource != num) {
+      this.selectedResource = num;
+    } else {
+      this.selectedResource = 0;
+    }
   }
 
   dynamicClass(num: number): string {

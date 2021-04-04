@@ -1,4 +1,5 @@
 import { app, BrowserWindow, dialog, webFrame } from 'electron';
+import { protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -8,6 +9,16 @@ const serve = args.some(val => val === '--serve');
 const isDev = !app.isPackaged;
 
 function createWindow(): BrowserWindow {
+  const WEB_FOLDER = '../dist/';
+  const PROTOCOL = 'file';
+
+  protocol.interceptFileProtocol(PROTOCOL, (req: Electron.ProtocolRequest, callback: any) => {
+    let url = req.url.substr(PROTOCOL.length + 1);
+    url = path.join(__dirname, WEB_FOLDER, url);
+    url = path.normalize(url);
+    callback({ path: url });
+  });
+
   window = new BrowserWindow({
     width: 1280,
     height: 884,
@@ -38,8 +49,8 @@ function createWindow(): BrowserWindow {
 
   } else {
     window.loadURL(url.format({
-      pathname: path.join(__dirname, '../dist/index.html'),
-      protocol: 'file:',
+      pathname: 'index.html',
+      protocol: PROTOCOL,
       slashes: true
     }));
   }
@@ -50,7 +61,7 @@ function createWindow(): BrowserWindow {
 
   window.on('close', (event) => {
     event.preventDefault();
-    dialog.showMessageBox({
+    dialog.showMessageBox(window, {
       type: 'warning',
       buttons: ['Cancel', 'Quit'],
       title: 'Warning',

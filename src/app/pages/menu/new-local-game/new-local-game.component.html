@@ -4,10 +4,28 @@
     <p>New Game</p>
   </div>
   <div class="submenu-body">
-    <div class="flex w-1/3 space-x-3">
-      <div class="menu-btn background-btn">BG1</div>
-      <div class="menu-btn background-btn">BG2</div>
-      <div class="menu-btn background-btn">BG3</div>
+    <div class="flex w-1/3 space-x-4">
+      <div class="border-4 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100 relative bg-black"
+        [ngClass]="isLocSelected(1)" (click)="selectLocation(1)">
+        <img src="/assets/menu/thumbs/bg1.png" class="opacity-90" />
+        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+          <p>Cavernous Caves</p>
+        </div>
+      </div>
+      <div class="border-4 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100 relative bg-black"
+        [ngClass]="isLocSelected(2)" (click)="selectLocation(2)">
+        <img src="/assets/menu/thumbs/bg2.png" class="opacity-90" />
+        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+          <p>Lava Lakes</p>
+        </div>
+      </div>
+      <div class="border-4 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100 relative bg-black"
+        [ngClass]="isLocSelected(3)" (click)="selectLocation(3)">
+        <img src="/assets/menu/thumbs/bg3.png" class="opacity-90" />
+        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+          <p>Oceanic Opportunity</p>
+        </div>
+      </div>
     </div>
     <div class="menu-btn" (click)="changeGameMode()">
       <div>
@@ -19,24 +37,29 @@
         <p>AI Difficulty: {{ this.aiDifficultyString }}</p>
       </div>
     </div>
-    <div class="menu-btn" (click)="changeTutorialSetting()">
+    <div class="menu-btn" (click)="changeTutorialSetting()" *ngIf="this.gameModeString === this.pva && this.aiDifficultyString === this.aiEasy">
       <div>
         <p>Guided Tutorial: {{ this.guidedTutorial ? 'On' : 'Off' }}</p>
       </div>
     </div>
-    <div class="menu-btn" (click)="this.advancedOpts = !this.advancedOpts">
+    <div class="menu-btn" (click)="changePlayerOrder()" *ngIf="this.gameModeString === this.pva">
+      <div>
+        <p>{{ this.playerOrder === 1 ? this.playerOrderOne : this.playerOrderTwo }}</p>
+      </div>
+    </div>
+    <div class="menu-btn" (click)="this.advancedOpts = !this.advancedOpts" *ngIf="!this.guidedTutorial">
       <div>
         <p>Advanced Options...</p>
       </div>
     </div>
-    <div class="menu-input" *ngIf="advancedOpts">
+    <div class="menu-input" *ngIf="this.advancedOpts && !this.guidedTutorial">
       <!-- oninput all uppercase credit to https://stackoverflow.com/users/5476516/yehuda-schwartz -->
       <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed" oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
     </div>
-    <p class="leading-none text-base font-normal" *ngIf="advancedOpts">Leave blank for random seed</p>
+    <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts && !this.guidedTutorial">Leave blank for random seed</p>
   </div>
   <div class="submenu-footer">
-    <div class="flex space-x-5 w-1/3">
+    <div class="flex space-x-4 w-1/3">
       <div class="menu-btn flex-grow" routerLink="/menu/landing">
         <div>
           <p>Back</p>
