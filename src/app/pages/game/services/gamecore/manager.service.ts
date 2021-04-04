@@ -1255,8 +1255,6 @@ export class ManagerService {
       // decrement the tile's nodeCount
       trTile.nodeCount--;
 
-      // decrement resources per turn
-      this.decrementResource(currentPlayer, trTile.getColor());
 
       // checking if need to un-exhaust tile
       if (trTile.isExhausted) {
@@ -1268,6 +1266,10 @@ export class ManagerService {
           this.tileExhaustion(trTileIndex, false);
         }
       }
+      else {
+          // decrement resources per turn
+          this.decrementResource(currentPlayer, trTile.getColor());
+      }
     }
 
     // check if topLeftTile of the node exists
@@ -1275,9 +1277,6 @@ export class ManagerService {
 
       // decrement the nodeCount
       tlTile.nodeCount--;
-
-      // decrement resources per turn
-      this.decrementResource(currentPlayer, tlTile.getColor());
 
       // checking if need to un-exhaust tile
       if (tlTile.isExhausted) {
@@ -1289,6 +1288,10 @@ export class ManagerService {
           this.tileExhaustion(tlTileIndex, false);
         }
       }
+      else {
+        // decrement resources per turn
+        this.decrementResource(currentPlayer, tlTile.getColor());
+      }
     }
 
     // check if bottomRightTile exists
@@ -1296,9 +1299,6 @@ export class ManagerService {
 
       // decrement the tile's nodeCount 
       brTile.nodeCount--;
-
-      // decrement resources per turn
-      this.decrementResource(currentPlayer, brTile.getColor());
 
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
@@ -1310,6 +1310,10 @@ export class ManagerService {
           this.tileExhaustion(brTileIndex, false);
         }
       }
+      else {
+        // decrement resources per turn
+        this.decrementResource(currentPlayer, brTile.getColor());
+      }
     }
 
     // check if bottomLeftTile exists
@@ -1317,9 +1321,6 @@ export class ManagerService {
 
       // decrement the tile's nodeCount
       blTile.nodeCount--;
-
-      // decrement resources per turn
-      this.decrementResource(currentPlayer, blTile.getColor());
 
       // checking if need to un-exhaust tile
       if (blTile.isExhausted) {
@@ -1330,6 +1331,10 @@ export class ManagerService {
           blTile.isExhausted = false;
           this.tileExhaustion(blTileIndex, false);
         }
+      }
+      else {
+        // decrement resources per turn
+        this.decrementResource(currentPlayer, blTile.getColor());
       }
     }
   }
@@ -1363,9 +1368,6 @@ export class ManagerService {
       // decrement tile's nodeCount
       trTile.nodeCount--;
 
-      // decrement resources per turn
-      this.decrementResource(currentPlayer, trTile.getColor());
-
       // checking if need to un-exhaust tile
       if (trTile.isExhausted) {
         if (trTile.nodeCount <=
@@ -1376,6 +1378,10 @@ export class ManagerService {
           this.tileExhaustion(trTileIndex, false);
         }
       }
+      else {
+          // decrement resources per turn if wasn't exhaused
+          this.decrementResource(currentPlayer, trTile.getColor());
+      }
     }
 
     // check if topLeftTile of node exists
@@ -1383,9 +1389,6 @@ export class ManagerService {
 
       // decrement tile's nodeCount
       tlTile.nodeCount--;
-
-      // decrement resources per turn
-      this.decrementResource(currentPlayer, tlTile.getColor());
 
       // checking if need to un-exhaust tile
       if (tlTile.isExhausted) {
@@ -1397,6 +1400,10 @@ export class ManagerService {
           this.tileExhaustion(tlTileIndex, false);
         }
       }
+      else {
+        // decrement resources per turn
+        this.decrementResource(currentPlayer, tlTile.getColor());
+      }
     }
 
     // check if bottomRightTile exists
@@ -1405,8 +1412,7 @@ export class ManagerService {
       // decrement tile's nodeCount
       brTile.nodeCount--;
 
-      // decrement resources per turn
-      this.decrementResource(currentPlayer, brTile.getColor());
+      
 
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
@@ -1418,6 +1424,10 @@ export class ManagerService {
           this.tileExhaustion(brTileIndex, false);
         }
       }
+      else {
+        // decrement resources per turn
+        this.decrementResource(currentPlayer, brTile.getColor());
+      }
     }
 
     // check if bottomLeftTile exists
@@ -1425,9 +1435,6 @@ export class ManagerService {
 
       // decrement tile's nodeCount
       blTile.nodeCount--;
-
-      // decrement resources per turn
-      this.decrementResource(currentPlayer, blTile.getColor());
 
       // checking if need to un-exhaust tile
       if (blTile.isExhausted) {
@@ -1438,6 +1445,10 @@ export class ManagerService {
           blTile.isExhausted = false;
           this.tileExhaustion(blTileIndex, false);
         }
+      }
+      else { 
+        // decrement resources per turn
+        this.decrementResource(currentPlayer, blTile.getColor());
       }
     }
   }
@@ -1589,6 +1600,7 @@ export class ManagerService {
 
   // decrements resourcePerTurn of currentTileColor from nodeOwner
   decrementResource(nodeOwner: Player, currentTileColor: TileColor): void {
+    console.log("decrement resource per turn");
     switch (currentTileColor) {
       case TileColor.RED:
         if (nodeOwner.redPerTurn > 0)
@@ -1611,20 +1623,32 @@ export class ManagerService {
 
   // increments resourcePerTurn of currentTileColor from nodeOwner
   incrementResource(nodeOwner: Player, currentTileColor: TileColor): void {
+    if (nodeOwner === this.playerOne){
+      console.log ("incrementResources for playerOne: ");
+    }
+    else {
+      console.log ("incrementResources for playerTwo: ");
+    }
     switch (currentTileColor) {
       case TileColor.RED:
+        console.log("before red: " + nodeOwner.redPerTurn);
         nodeOwner.redPerTurn++;
+        console.log("after red: " + nodeOwner.redPerTurn);
         break;
       case TileColor.BLUE:
         nodeOwner.bluePerTurn++;
+        console.log("increment blue");
         break;
       case TileColor.YELLOW:
         nodeOwner.yellowPerTurn++;
+        console.log("increment yellow");
         break;
       case TileColor.GREEN:
         nodeOwner.greenPerTurn++;
+        console.log("increment green");
         break;
     }
+    //console.log(nodeOwne)
   }
 
   // increments one resource of currentTileColor from currentPlayer
