@@ -1600,7 +1600,6 @@ export class ManagerService {
 
   // decrements resourcePerTurn of currentTileColor from nodeOwner
   decrementResource(nodeOwner: Player, currentTileColor: TileColor): void {
-    console.log("decrement resource per turn");
     switch (currentTileColor) {
       case TileColor.RED:
         if (nodeOwner.redPerTurn > 0)
@@ -1623,29 +1622,18 @@ export class ManagerService {
 
   // increments resourcePerTurn of currentTileColor from nodeOwner
   incrementResource(nodeOwner: Player, currentTileColor: TileColor): void {
-    if (nodeOwner === this.playerOne){
-      console.log ("incrementResources for playerOne: ");
-    }
-    else {
-      console.log ("incrementResources for playerTwo: ");
-    }
     switch (currentTileColor) {
       case TileColor.RED:
-        console.log("before red: " + nodeOwner.redPerTurn);
         nodeOwner.redPerTurn++;
-        console.log("after red: " + nodeOwner.redPerTurn);
         break;
       case TileColor.BLUE:
         nodeOwner.bluePerTurn++;
-        console.log("increment blue");
         break;
       case TileColor.YELLOW:
         nodeOwner.yellowPerTurn++;
-        console.log("increment yellow");
         break;
       case TileColor.GREEN:
         nodeOwner.greenPerTurn++;
-        console.log("increment green");
         break;
     }
     //console.log(nodeOwne)
