@@ -28,10 +28,8 @@ export class NewNetworkGameComponent implements OnInit {
 
   ngOnInit(): void {
     // instantiate class here
-    this.gamesList = new Array<NetworkGameInfo>();
     this.storageService.update('mode', 'net');
     this.username = this.storageService.fetch('username');
-    console.log(this.username);
     if(this.username === "ERR")
     {
       this.username = "";
@@ -45,6 +43,7 @@ export class NewNetworkGameComponent implements OnInit {
 
   BeginMatchmaking(): void
   {
+    this.gamesList = new Array<NetworkGameInfo>();
     this.matchmakingService.initialize(this.username);
 
     this.matchmakingService.listen('you-connected').subscribe(() => {
