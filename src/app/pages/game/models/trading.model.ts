@@ -59,10 +59,50 @@ export class TradingModel {
   }
 
   select(num: number): void {
-    this.selectedResource = num;
+    let resourceVariable = 1;
+    switch(num) {
+      case 1: // red
+        resourceVariable = this.redResources;
+        break;
+      case 2: // green
+        resourceVariable = this.greenResources;
+        break;
+      case 3: // blue
+        resourceVariable = this.blueResources;
+        break;
+      case 4: // yellow
+        resourceVariable = this.yellowResources;
+    }
+
+    if (resourceVariable === 0)
+    {
+      this.selectedResource = num;
+    }
+    else {
+      console.log("trying to trade for color you are trading");
+    }
   }
 
   dynamicClass(num: number): string {
+    let gemToSelect = 1;
+    switch(num) {
+      case 1: // red
+        gemToSelect = this.redResources;
+        break;
+      case 2: // green
+        gemToSelect = this.greenResources;
+        break;
+      case 3: // blue
+        gemToSelect = this.blueResources;
+        break;
+      case 4: // yellow
+        gemToSelect = this.yellowResources;
+    }
+
+    if(gemToSelect > 0) {
+      return '';
+    }
+
     if (this.selectedResource === num) {
       return 'selected';
     } else {

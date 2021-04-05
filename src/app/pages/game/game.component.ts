@@ -241,9 +241,11 @@ export class GameComponent implements OnInit {
   }
 
   executeTrade(): void {
-    this.isTrading = false;
-    this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
-    this.tradingModel.reset();
+    if(this.tradingModel.selectedResource !== 0){
+      this.isTrading = false;
+      this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
+      this.tradingModel.reset();
+    }
   }
 
   scrollToBottom(): void {
