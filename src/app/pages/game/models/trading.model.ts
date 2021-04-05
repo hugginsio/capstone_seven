@@ -79,7 +79,7 @@ export class TradingModel {
       this.selectedResource = num;
     }
     else {
-      console.log("trying to trade for color you are trading");
+      this.selectedResource = 0;
     }
   }
 
