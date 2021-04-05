@@ -12,10 +12,10 @@
   }
 
   .button-disabled {
-    @apply bg-gray-900 border-gray-600 text-gray-600 cursor-default;
+    @apply bg-gray-900 border-gray-600 text-gray-600 cursor-default pointer-events-none;
   }
 
   .button-hidden {
-    @apply bg-transparent text-transparent border-transparent hover:border-transparent cursor-default;
+    @apply bg-transparent text-transparent border-transparent hover:border-transparent cursor-default pointer-events-none;
   }
 }

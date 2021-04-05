@@ -9,6 +9,7 @@ import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
+import { Router } from '@angular/router';
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -29,6 +30,7 @@ export class GameComponent implements OnInit {
   public winningPlayer: Player;
   public username: string;
   public oppUsername: string;
+  public isConnected: boolean;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -37,7 +39,8 @@ export class GameComponent implements OnInit {
     public readonly gameManager: ManagerService,
     private readonly storageService: LocalStorageService,
     private readonly snackbarService: SnackbarService,
-    private readonly networkingService: GameNetworkingService
+    private readonly networkingService: GameNetworkingService,
+    private readonly routerService: Router
   ) {
     // Set defaults for UI triggers
     this.gameIntro = true;
@@ -48,6 +51,7 @@ export class GameComponent implements OnInit {
     this.tradingModel = new TradingModel();
     this.isNetwork = false;
     this.isTutorial = false;
+    this.isConnected = true;
 
     this.storageService.setContext('game');
   }
@@ -127,18 +131,22 @@ export class GameComponent implements OnInit {
       this.networkingService.listen('opponent-disconnected').subscribe( () => {
         this.appendMessage(`${this.oppUsername} Disconnected`);
         //Grey out EndTurn Button
+        this.isConnected = false;
       });
       this.networkingService.listen('opponent-reconnected').subscribe( () => {
         this.appendMessage(`${this.oppUsername} Reconnected`);
         //un-grey EndTurn Button
+        this.isConnected = true;
       });
       this.networkingService.listen('disconnect').subscribe( () => {
         this.appendMessage(`${this.username} Disconnected`);
         //grey out EndTurn Button
+        this.isConnected = false;
       });
       this.networkingService.listen('user-reconnected').subscribe( () => {
         this.appendMessage(`${this.username} Reconnected`);
         //un-grey out EndTurn Button
+        this.isConnected = true;
       });
     }
     
@@ -326,6 +334,9 @@ export class GameComponent implements OnInit {
     if(message === "")
       return;
 
+    if(!this.isConnected)
+      return;
+
     textbox.value = "";
     this.networkingService.sendChatMessage(message);
     this.appendMessage(`${this.username}: ${message}`);
@@ -377,5 +388,30 @@ export class GameComponent implements OnInit {
   toggleHelp(): void {
     this.togglePaused();
     this.showHelp = !this.showHelp;
+  }
+
+  dynamicChatButton(): string {
+    let btnClass = "";
+    if(this.isConnected)
+    {
+      btnClass = "menu-btn";
+    }
+    else
+    {
+      btnClass = "menu-btn-disabled";
+    }
+    btnClass += " w-1/3";
+    return btnClass;
+  }
+
+  playAgain(): void {
+    if(this.isNetwork)
+    {
+      this.routerService.navigate(['/menu/new/online']);
+    }
+    else
+    {
+      this.routerService.navigate(['/menu/new/local']);
+    }
   }
 }

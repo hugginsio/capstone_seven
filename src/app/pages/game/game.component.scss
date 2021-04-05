@@ -228,8 +228,20 @@
     @apply p-3 bg-gray-900 border-4 border-gray-600 flex-grow cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
   }
 
+  .menu-btn-disabled {
+    @apply bg-gray-900 border-gray-600 text-gray-600 cursor-default pointer-events-none;
+  }
+
   .resource-button-trade {
     @apply border-4 border-gray-600 hover:border-gray-300 cursor-pointer transition-colors duration-100 w-1/4 bg-black;
+  }
+
+  .menu-input {
+    @apply border-4 bg-gray-600 border-gray-900 cursor-text hover:border-gray-300 focus-within:border-gray-300;
+  }
+
+  .input-text {
+    @apply appearance-none bg-gray-600 w-full focus:ring-0 border-0 p-2 text-left;
   }
 
   .selected {

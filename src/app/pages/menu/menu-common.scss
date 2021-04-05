@@ -4,7 +4,11 @@
   }
 
   .menu-input {
-    @apply border-4 bg-gray-900 border-gray-600 cursor-text;
+    @apply border-4 bg-gray-900 border-gray-600 cursor-text hover:border-gray-300 focus-within:border-gray-300;
+  }
+
+  .menu-btn-disabled {
+    @apply bg-gray-900 border-gray-600 text-gray-600 cursor-default pointer-events-none;
   }
 
   .input-text {

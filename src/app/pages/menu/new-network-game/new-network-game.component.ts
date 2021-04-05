@@ -30,6 +30,7 @@ export class NewNetworkGameComponent implements OnInit {
     // instantiate class here
     this.storageService.update('mode', 'net');
     this.username = this.storageService.fetch('username');
+    this.gamesList = new Array<NetworkGameInfo>();
     if(this.username === "ERR")
     {
       this.username = "";
@@ -43,7 +44,6 @@ export class NewNetworkGameComponent implements OnInit {
 
   BeginMatchmaking(): void
   {
-    this.gamesList = new Array<NetworkGameInfo>();
     this.matchmakingService.initialize(this.username);
 
     this.matchmakingService.listen('you-connected').subscribe(() => {
@@ -63,7 +63,7 @@ export class NewNetworkGameComponent implements OnInit {
         }
       });
 
-      //append to arrary
+      //append to array
       if (!isDuplicate)
       {
         this.gamesList.push({
@@ -120,6 +120,20 @@ export class NewNetworkGameComponent implements OnInit {
     else{
       this.isEnteringName = false;
       this.storageService.update('username', this.username);
+      this.BeginMatchmaking();
     }
+  }
+
+  setButtons(): string {
+    let btnClass = "";
+    if(this.isEnteringName)
+    {
+      btnClass = "menu-btn-disabled";
+    }
+    else
+    {
+      btnClass = "menu-btn";
+    }
+    return btnClass;
   }
 }
