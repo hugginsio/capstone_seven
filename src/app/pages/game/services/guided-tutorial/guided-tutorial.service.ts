@@ -4,10 +4,6 @@ import { Subject } from 'rxjs';
 import { SnackbarService } from '../../../../shared/components/snackbar/services/snackbar.service';
 import { ManagerService } from './../../services/gamecore/manager.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
-import { preserveWhitespacesDefault } from '@angular/compiler';
-//import { Message } from '@angular/compiler/src/i18n/i18n_ast';
-//import { GameComponent } from '../../game.component';
-
 
 
 @Injectable({
@@ -187,13 +183,9 @@ export class GuidedTutorialService {
     return message;
   }
 
-  // learn how to actually highlight one haha 
   highlightManager():void {
     const m = this.moveNum;
     let piece = "no selected piece";
-    // maybe just assign the piece as a string then send to a "highlight" function?? 
-    // just change the piece to have a boarder then remove the boarder when it is 
-    // a correct placement in moveManager
     if(this.humanPlayer === '1'){
       switch(m){
         case 1: piece = "N9";
@@ -267,15 +259,6 @@ export class GuidedTutorialService {
       
 }
 
-  /*gameBtnHighlight(btn: string):string {
-    if(btn === this.btnToHighlight)
-    {
-      return 'selected';
-    }
-    else {
-      return '';
-    }
-  }*/
 
   // whenever need to have a next button, unfreeze next
   moveManager(piece: string):boolean {
@@ -450,9 +433,6 @@ export class GuidedTutorialService {
   messageOne():string{
     let message = "Welcome in to the mines! <br><br> Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.<br><br>Click the \"Next\" button to start the tutorial.";
       // message 1, start tutorial
-      //this.snackbarService.add({ message: 'Welcome in to the mines!' });
-      //this.snackbarService.add({ message: 'Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.' });
-    //this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
 
     this.highlightNext();
       return message;
@@ -462,33 +442,8 @@ export class GuidedTutorialService {
 
   messageTwo():string {
     // message 2
-    let message = "Learn some mining lingo before we get going:<br><br>Pickaxes and Drills are what we call \"Mining Markers.\"<br><br>These here Tracks get you from place to place down in the depths of the mine."; 
-
-    /*for (let i = 0; i<6; i++)
-    {
-      let nodeContainer = document.getElementsByClassName("node-container")[i];
-      for(let n = 0; n < nodeContainer.)
-
-    }*/
-
-    /*let piece = document.getElementById("imgInput");
-    if (piece !== null){
-      piece.innerHTML = "<img src=\"http://placehold.it/350x350\" width=\"400px\" height=\"150px\">";
-    }*/
-    /*let nodes = document.getElementsByClassName("node");
-    let branchY = document.getElementsByClassName("branch-y");
-    let branchX = document.getElementsByClassName("branch-x");
+    let message = "Learn some mining lingo before we get going:<br><br>These squares here which make up the mine are called mining sites.<br><br>These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
     
-    if(nodes !== null && branchY !== null && branchX !== null){
-      for(let i = 0; i<nodes.length; i++){
-        nodes[i].style.border = "1px solid white";
-      }
-      branchY.style.border = "1px solid yellow";
-      branchX.style.border = "1px solid yellow";
-    }*/
-    //this.snackbarService.add({ message: 'Learn some mining lingo before we get going' });
-    //this.snackbarService.add({ message: 'Tracks get you from place to place, and these here squares here all abouts the mine are mining sites.' });
-    //this.snackbarService.add({ message: 'These sites have gems in ‘em that hold the type and number of gem you can mine from there.' });
     this.highlightNext();
 
     return message;
@@ -497,7 +452,8 @@ export class GuidedTutorialService {
   }
 
   messageThree():string {
-    let message = "These squares here all abouts the mine are mining sites.<br><br>These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
+    let message = "On each corncer of a Mining Site is a place for a Pickaxe or Drill which are what we call \"Mining Markers.\"<br><br>If you have a Mining Marker down then you can collect a gem per turn from each of the touchin\' Mining Sites<br><br>These here Tracks on the side of each Mining Site get you from place to place down in the depths of the mine and keep your mining operation all nice and connected."; 
+
     this.highlightNext();
     
     return message;
@@ -508,13 +464,10 @@ export class GuidedTutorialService {
     if(this.humanPlayer === '1') {
       // message 3
       message = 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine.<br><br>Click the indicated marker and track to make your move.';
-      // if we want to have the action items as pop ups in the snack bar it has to stay around 
-      //this.snackbarService.add({ message: 'Click the indicated marker and track to make your move.' });
       if(this.moveNum === 1){
         this.freezeNext = true; 
         this.highlightManager();
       }
-      // must click pieces before next
     }
     return message;
   }
@@ -529,12 +482,6 @@ export class GuidedTutorialService {
         this.highlightManager();
         this.freezeNext = true;
       }
-                      // put these in later ones --- or maybe not? how does it work for being triggered by things other than buttons?? also putting action into snack bar only 
-                  // this.snackbarService.add({ message: 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'' });
-                  //this.snackbarService.add({ message: 'You gotta have gems in the future to get more pickaxes and tracks down the road' });
-                  //this.snackbarService.add({ message: 'Don\'t like where you clicked? Click the "Undo" button' });
-      //this.snackbarService.add({ message: 'Settled on your move? Click the "End Turn" button to keep the game movin\'' });
-      // moves when "End Turn" is clicked
     }
     return message;
   }
@@ -696,7 +643,7 @@ export class GuidedTutorialService {
       message = 'Here at the bottom of the your screen is where you can see the current standings for the duel.<br><br>Both y’all got one point for each mining marker you placed. Now the machine’s got 2 more for the longest set of tracks.';
       let player1 = document.getElementById("player1");
       let player2 = document.getElementById("player2");
-      // i want to put a border around the player shard 
+
       if(player1 !== null && player2 !== null) 
       {
         player1.style.border = "2px solid white";
@@ -715,7 +662,7 @@ export class GuidedTutorialService {
       // reversing border of player shard
       let player1 = document.getElementById("player1");
       let player2 = document.getElementById("player2");
-      // i want to put a border around the player shard 
+
       if(player1 !== null && player2 !== null) 
       {
         player1.style.border = "0px";
@@ -796,7 +743,7 @@ export class GuidedTutorialService {
 
   messageTwentyFour():string {
     let message='';
-    // options menu
+    // end of tutorial
     if(this.humanPlayer === '1') {
       message = 'Seems like you’ve got a good handle on how we do things down here in the mine. Time to see how you do on your own.<br><br>First player to 10 points wins gold. Good luck, Prospector!<br><br>Click "Next" to end the tutorial.';
     this.highlightNext();
