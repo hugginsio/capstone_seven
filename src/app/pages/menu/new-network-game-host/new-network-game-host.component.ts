@@ -21,8 +21,8 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   public isWaitingForPlayer = false;
   public selectedLocation: number;
 
-  public readonly playerOneFirst = 'Player One Goes First';
-  public readonly playerTwoFirst = 'Player Two Goes First';
+  public readonly playerOneFirst = 'Host Goes First';
+  public readonly playerTwoFirst = 'Client Goes First';
   
   constructor(
     private readonly storageService: LocalStorageService,
@@ -68,13 +68,15 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   }
 
   changeFirstPlayer(): void {
-    if (this.firstPlayer === 'Player One Goes First') {
+    if (this.firstPlayer === 'Host Goes First') {
       this.firstPlayer = this.playerTwoFirst;
       this.isHostFirst = false;
     } else {
       this.firstPlayer = this.playerOneFirst;
       this.isHostFirst = true;
     }
+
+    this.storageService.update('firstPlayer', this.firstPlayer);
   }
 
   startHosting(): void {
@@ -96,7 +98,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     // host ye ol game
     // ✨ broadcastify ✨
     const source = interval(1000);
-    this.subscription = source.subscribe(val => this.broadcast());
+    this.subscription = source.subscribe(() => this.broadcast());
   }
 
   broadcast(): void {

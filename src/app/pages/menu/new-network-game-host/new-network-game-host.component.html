@@ -43,6 +43,11 @@
           </div>
         </div>
       </div>
+      <div class="menu-btn w-full" (click)="changeFirstPlayer()">
+        <div>
+          <p>{{ this.firstPlayer }}</p>
+        </div>
+      </div>
       <div class="menu-btn w-full" (click)="this.advancedOpts = !this.advancedOpts">
         <div>
           <p>Advanced Options...</p>
