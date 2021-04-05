@@ -97,10 +97,14 @@ export class TradingModel {
         break;
       case 4: // yellow
         gemToSelect = this.yellowResources;
+        break;
+      case 44: // for guided tutorial first highlight
+        gemToSelect = 0;
     }
 
     if(gemToSelect > 0) {
-      return '';
+      console.log("in disabled if");
+      return 'disabled';
     }
 
     if (this.selectedResource === num) {
