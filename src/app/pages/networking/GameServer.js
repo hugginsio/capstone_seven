@@ -35,14 +35,14 @@ server.on('connection', function (socket) {
     //  console.log("settings requested");
     //  socket.emit('get-game-settings', gameSettings);
     //});
-    socket.on('request-join', function () {
+    socket.on('request-join', function (username) {
         if (users.length >= 2) {
             socket.emit('lobby-full');
         }
         else {
             users.push(socket.id);
             socket.join("game");
-            socket.broadcast.emit('opponent-connected');
+            socket.broadcast.emit('opponent-connected', username);
         }
     });
     socket.on('reconnection', function () {

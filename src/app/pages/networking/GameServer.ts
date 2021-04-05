@@ -45,7 +45,7 @@ server.on('connection', (socket:any) => {
   //  socket.emit('get-game-settings', gameSettings);
   //});
 
-  socket.on('request-join', () => {
+  socket.on('request-join', (username:string) => {
     if(users.length >= 2)
     {
       socket.emit('lobby-full');
@@ -54,7 +54,7 @@ server.on('connection', (socket:any) => {
     {
       users.push(socket.id);
       socket.join("game");
-      socket.broadcast.emit('opponent-connected');
+      socket.broadcast.emit('opponent-connected', username);
     }
   });
 

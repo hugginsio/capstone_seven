@@ -27,6 +27,8 @@ export class GameComponent implements OnInit {
   public isTutorial: boolean;
   public isNetwork: boolean;
   public winningPlayer: Player;
+  public username: string;
+  public oppUsername: string;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -108,6 +110,8 @@ export class GameComponent implements OnInit {
     if(this.storageService.fetch('mode') === "net")
     {
       this.isNetwork = true;
+      this.username = this.storageService.fetch('username');
+      this.oppUsername = this.storageService.fetch('oppUsername');
       if(this.storageService.fetch('isHost') === 'true')
       {
         this.networkingService.createTCPServer();
@@ -118,22 +122,22 @@ export class GameComponent implements OnInit {
       }
       this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
         console.log(message);
-        this.appendMessage("Opponent: " + message);
+        this.appendMessage(`${this.oppUsername}: ${message}`);
       });
       this.networkingService.listen('opponent-disconnected').subscribe( () => {
-        this.appendMessage("Opponent disconnected");
+        this.appendMessage(`${this.oppUsername} Disconnected`);
         //Grey out EndTurn Button
       });
       this.networkingService.listen('opponent-reconnected').subscribe( () => {
-        this.appendMessage("Opponent reconnected");
+        this.appendMessage(`${this.oppUsername} Reconnected`);
         //un-grey EndTurn Button
       });
       this.networkingService.listen('disconnect').subscribe( () => {
-        this.appendMessage("You disconnected");
+        this.appendMessage(`${this.username} Disconnected`);
         //grey out EndTurn Button
       });
       this.networkingService.listen('user-reconnected').subscribe( () => {
-        this.appendMessage("You reconnected");
+        this.appendMessage(`${this.username} Reconnected`);
         //un-grey out EndTurn Button
       });
     }

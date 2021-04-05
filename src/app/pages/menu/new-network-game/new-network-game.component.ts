@@ -5,6 +5,7 @@ import { NetworkGameInfo } from './interfaces/new-network-game.interface';
 import { NetworkGameSettings } from '../../networking/NetworkGameSettings';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
+import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
 
 @Component({
   selector: 'app-new-network-game',
@@ -14,19 +15,36 @@ import { LocalStorageService } from '../../../shared/services/local-storage/loca
 export class NewNetworkGameComponent implements OnInit {
   private username: string;
   public gamesList: Array<NetworkGameInfo>;
+  public isEnteringName = false;
   private gameSettings: NetworkGameSettings;
 
   constructor(
     private readonly storageService: LocalStorageService,
     private readonly matchmakingService: MatchmakingService,
     private readonly networkingService: GameNetworkingService,
-    private readonly routerService: Router
+    private readonly routerService: Router,
+    private readonly snackbarService: SnackbarService
   ) {}
 
   ngOnInit(): void {
     // instantiate class here
     this.gamesList = new Array<NetworkGameInfo>();
     this.storageService.update('mode', 'net');
+    this.username = this.storageService.fetch('username');
+    console.log(this.username);
+    if(this.username === "ERR")
+    {
+      this.username = "";
+      this.isEnteringName = true;
+    }
+    else
+    {
+      this.BeginMatchmaking();
+    }
+  }
+
+  BeginMatchmaking(): void
+  {
     this.matchmakingService.initialize(this.username);
 
     this.matchmakingService.listen('you-connected').subscribe(() => {
@@ -56,15 +74,16 @@ export class NewNetworkGameComponent implements OnInit {
       }
 
     });
-
   }
 
-  JoinGame(oppAddress:string): void {
+  JoinGame(oppAddress:string, oppUsername:string): void {
     //get gameInfo from object clicked
+    this.storageService.update('oppUsername', oppUsername);
     this.networkingService.connectTCPserver(oppAddress);
 
     this.networkingService.listen('lobby-full').subscribe(() => {
-      console.log('Lobby is full. Sucks bro');
+      this.snackbarService.add({message:"Lobby is full, please try again."});
+      this.refresh();
     });
    
     this.networkingService.listen('get-game-settings').subscribe((settings: NetworkGameSettings) => {
@@ -86,11 +105,22 @@ export class NewNetworkGameComponent implements OnInit {
       this.routerService.navigate(['/game']);
     });
 
-    this.networkingService.requestJoin();
+    this.networkingService.requestJoin(this.username);
   }
 
   refresh(): void {
     this.gamesList = new Array<NetworkGameInfo>();
   }
 
+  setUsername(): void {
+    console.log(this.username);
+    if(this.username === "")
+    {
+      this.snackbarService.add({message:"Please Enter a Username"});
+    }
+    else{
+      this.isEnteringName = false;
+      this.storageService.update('username', this.username);
+    }
+  }
 }

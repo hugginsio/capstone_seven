@@ -95,9 +95,9 @@ export class GameNetworkingService {
     this.socket.emit('ask-game-settings');
   }
 
-  public requestJoin(): void
+  public requestJoin(username:string): void
   {
-    this.socket.emit('request-join');
+    this.socket.emit('request-join', username);
   }
 
 }
