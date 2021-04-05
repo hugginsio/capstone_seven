@@ -22,6 +22,7 @@ export class GuidedTutorialService {
   private freezeNext: boolean;
   private maxMove: number;
   private maxStep: number;
+  private btnToHighlight: string;
 
   constructor(
     public readonly gameManager: ManagerService,
@@ -32,6 +33,7 @@ export class GuidedTutorialService {
     this.humanPlayer = this.storageService.fetch('firstplayer');
     this.stepNum = 1;
     this.moveNum = 1;
+    this.btnToHighlight = '';
     this.freezeNext = false;
     if (this.humanPlayer === '1') {
       this.maxMove = 21;
@@ -236,9 +238,9 @@ export class GuidedTutorialService {
           break;
         case 21: piece = "B3";
           break;
-        //case 22: piece = "endTurnBtn";
-          //break;
-        //case 23: piece = "Pause";
+        case 22: piece = "endTurnBtn";
+          break;
+        case 23: piece = "Pause";
         default:
           console.log("highlightManager error");
       }
@@ -252,6 +254,10 @@ export class GuidedTutorialService {
           {
             pieceID.style.border = "4px solid white";
           }
+          else if (piece === 'endTurnBtn' || piece === 'undoBtn' || piece === 'tradeBtn' || piece === 'Pause')
+          {
+            this.btnToHighlight = piece;
+          }
           else {
             pieceID.style.border = "2px solid white"
           }
@@ -260,6 +266,16 @@ export class GuidedTutorialService {
       }
       
 }
+
+  /*gameBtnHighlight(btn: string):string {
+    if(btn === this.btnToHighlight)
+    {
+      return 'selected';
+    }
+    else {
+      return '';
+    }
+  }*/
 
   // whenever need to have a next button, unfreeze next
   moveManager(piece: string):boolean {
@@ -413,7 +429,7 @@ export class GuidedTutorialService {
     if(validMove && ifButton){
       let pieceID = document.getElementById(piece);
       if(pieceID !== null) {
-        //pieceID.getDynmaicClass();
+        this.btnToHighlight = '';
       }
     }
     if(validMove && tradeScreenButton){
