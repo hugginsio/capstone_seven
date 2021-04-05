@@ -12,7 +12,7 @@ import { interval, Subscription } from 'rxjs';
 })
 export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   private isHostFirst: boolean;
-  private readonly username: string = "Client McGee";
+  private username: string;
   private subscription: Subscription;
   public advancedOpts = false;
   public boardSeed: string;
@@ -35,6 +35,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
 
     this.storageService.setContext('game');
     this.storageService.store('firstPlayer', this.firstPlayer);
+    this.username = this.storageService.fetch('username');
     
     const storedLocation = this.storageService.fetch('location');
     if (storedLocation === 'bg3') {

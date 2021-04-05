@@ -13,7 +13,7 @@ import { SnackbarService } from '../../../shared/components/snackbar/services/sn
   styleUrls: ['../menu-common.scss']
 })
 export class NewNetworkGameComponent implements OnInit {
-  private username: string;
+  public username: string;
   public gamesList: Array<NetworkGameInfo>;
   public isEnteringName = false;
   private gameSettings: NetworkGameSettings;
