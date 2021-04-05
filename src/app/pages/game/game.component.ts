@@ -34,8 +34,9 @@ export class GameComponent implements OnInit {
     private readonly snackbarService: SnackbarService
   ) {
     // Set defaults for UI triggers
-    this.gameIntro = true;
-    this.gameOver = false;
+    this.gameIntro = false;
+    this.gameOver = true;
+    this.winningPlayer = this.gameManager.getCurrentPlayer();
     this.gameOverText = "Victory!";
     this.gamePaused = false;
     this.isTrading = false;
