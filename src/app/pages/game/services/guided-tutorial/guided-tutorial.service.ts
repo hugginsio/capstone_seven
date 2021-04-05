@@ -432,7 +432,7 @@ export class GuidedTutorialService {
         this.btnToHighlight = '';
       }
     }
-    if(validMove && tradeScreenButton){
+    else if(validMove && tradeScreenButton){
       let pieceID = document.getElementById(piece);
       if(pieceID !== null) {
         pieceID.style.border = "4px solid rgb(75, 85, 99)";
@@ -592,7 +592,7 @@ export class GuidedTutorialService {
     let message='';
     // teaching undo 
     if(this.humanPlayer === '1') {
-      message = 'Don’t like where you clicked? Click the undo button twice to reverse your past two moves.<br><br>Finish your turn by clicking the new indicated pieces and then "End Turn."<br><br>Click "Next" to continue.';
+      message = 'Don’t like where you clicked? Click the "Undo" button twice to reverse your past two moves.<br><br>Finish your turn by clicking the new indicated pieces and then "End Turn."<br><br>Click "Next" to continue.';
       if (this.moveNum === 6) {
         this.highlightManager();
         this.freezeNext = true;
@@ -735,7 +735,7 @@ export class GuidedTutorialService {
     let message='';
     // human makes a trade
     if(this.humanPlayer === '1') {
-      message = 'Try your hand at makin’ a trade for the right gems to lay two more tracks.<br><br>Click the trade button, select a yellow, a red, then another yellow gem to trade for one blue and confirm your trade!<br><br>Go on and pick those two indicated tracks before clickin\' "End Turn" and then the "Next" button.';
+      message = 'Try your hand at makin’ a trade for the right gems to lay two more tracks.<br><br>Click the "Trade" button, select a yellow, a red, then another yellow gem to trade for one blue and confirm your trade!<br><br>Go on and pick those two indicated tracks before clickin\' "End Turn" and then the "Next" button.';
       if(this.moveNum === 14)
       {
         this.highlightManager();
@@ -788,11 +788,6 @@ export class GuidedTutorialService {
     // options menu
     if(this.humanPlayer === '1') {
       message = 'Need more help or want to change the settings? Click the pause button in the tip left corner for more options.';
-      let pause = document.getElementById("Pause");
-        if (pause !== null)
-        {
-          pause.style.border = "2px solid white";
-        }
     this.highlightNext();
 
     }
@@ -803,11 +798,6 @@ export class GuidedTutorialService {
     let message='';
     // options menu
     if(this.humanPlayer === '1') {
-      let pause = document.getElementById("Pause");
-        if (pause !== null)
-        {
-          pause.style.border = "0px";
-        }
       message = 'Seems like you’ve got a good handle on how we do things down here in the mine. Time to see how you do on your own.<br><br>First player to 10 points wins gold. Good luck, Prospector!<br><br>Click "Next" to end the tutorial.';
     this.highlightNext();
 
