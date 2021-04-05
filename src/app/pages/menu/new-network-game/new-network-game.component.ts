@@ -16,6 +16,8 @@ export class NewNetworkGameComponent implements OnInit {
   public username: string;
   public gamesList: Array<NetworkGameInfo>;
   public isEnteringName = false;
+  public isServerError = false;
+  public isConnected = false;
   private gameSettings: NetworkGameSettings;
 
   constructor(
@@ -46,8 +48,13 @@ export class NewNetworkGameComponent implements OnInit {
   {
     this.matchmakingService.initialize(this.username);
 
-    this.matchmakingService.listen('you-connected').subscribe(() => {
-      console.log('You are connected to your UDP server.');
+    this.matchmakingService.listen('connect').subscribe(() => {
+      this.isConnected = true;
+    });
+
+    this.matchmakingService.listen('connect_error').subscribe((err) => {
+      this.matchmakingService.disconnectSocket();
+      this.isServerError = true;
     });
 
     this.matchmakingService.listen('game-found').subscribe((gameInfo: any) => {
@@ -79,7 +86,7 @@ export class NewNetworkGameComponent implements OnInit {
     //get gameInfo from object clicked
     this.storageService.update('oppUsername', oppUsername);
     this.networkingService.connectTCPserver(oppAddress);
-
+    
     this.networkingService.listen('lobby-full').subscribe(() => {
       this.snackbarService.add({message:"Lobby is full, please try again."});
       this.refresh();
@@ -126,7 +133,7 @@ export class NewNetworkGameComponent implements OnInit {
 
   setButtons(): string {
     let btnClass = "";
-    if(this.isEnteringName)
+    if(!this.isConnected)
     {
       btnClass = "menu-btn-disabled";
     }

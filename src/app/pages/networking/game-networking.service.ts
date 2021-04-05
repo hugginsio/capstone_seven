@@ -100,4 +100,8 @@ export class GameNetworkingService {
     this.socket.emit('request-join', username);
   }
 
+  public leaveGame(): void
+  {
+    this.socket.emit('leave-game');
+  }
 }

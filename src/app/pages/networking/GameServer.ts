@@ -40,11 +40,6 @@ server.on('connection', (socket:any) => {
     socket.broadcast.emit('get-game-settings', gameSettings);
   });
 
-  //socket.on('ask-game-settings', () => {
-  //  console.log("settings requested");
-  //  socket.emit('get-game-settings', gameSettings);
-  //});
-
   socket.on('request-join', (username:string) => {
     if(users.length >= 2)
     {
@@ -69,5 +64,9 @@ server.on('connection', (socket:any) => {
 
   socket.on('join-room', () => {
     socket.join("game");
+  });
+
+  socket.on('leave-game', () => {
+    socket.broadcast.emit('opponent-quit');
   });
 });

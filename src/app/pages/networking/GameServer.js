@@ -31,10 +31,6 @@ server.on('connection', function (socket) {
         socket.join("game");
         socket.broadcast.emit('get-game-settings', gameSettings);
     });
-    //socket.on('ask-game-settings', () => {
-    //  console.log("settings requested");
-    //  socket.emit('get-game-settings', gameSettings);
-    //});
     socket.on('request-join', function (username) {
         if (users.length >= 2) {
             socket.emit('lobby-full');
@@ -54,5 +50,8 @@ server.on('connection', function (socket) {
     });
     socket.on('join-room', function () {
         socket.join("game");
+    });
+    socket.on('leave-game', function () {
+        socket.broadcast.emit('opponent-quit');
     });
 });

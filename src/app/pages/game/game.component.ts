@@ -31,6 +31,7 @@ export class GameComponent implements OnInit {
   public username: string;
   public oppUsername: string;
   public isConnected: boolean;
+  public opponentQuit: boolean;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -52,6 +53,7 @@ export class GameComponent implements OnInit {
     this.isNetwork = false;
     this.isTutorial = false;
     this.isConnected = true;
+    this.opponentQuit = false;
 
     this.storageService.setContext('game');
   }
@@ -147,6 +149,9 @@ export class GameComponent implements OnInit {
         this.appendMessage(`${this.username} Reconnected`);
         //un-grey out EndTurn Button
         this.isConnected = true;
+      });
+      this.networkingService.listen('opponent-quit').subscribe( () => {
+        this.opponentQuit = true;
       });
     }
     
@@ -413,5 +418,13 @@ export class GameComponent implements OnInit {
     {
       this.routerService.navigate(['/menu/new/local']);
     }
+  }
+
+  exitButton(): void {
+    if(this.isNetwork)
+    {
+      this.networkingService.leaveGame();
+    }
+    this.routerService.navigate(['/menu/landing']);
   }
 }
