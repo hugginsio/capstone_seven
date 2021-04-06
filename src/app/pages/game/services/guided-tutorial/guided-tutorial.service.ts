@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Component, Inject, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
 import { SnackbarService } from '../../../../shared/components/snackbar/services/snackbar.service';
 import { ManagerService } from './../../services/gamecore/manager.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
@@ -452,7 +450,7 @@ export class GuidedTutorialService {
   }
 
   messageThree():string {
-    const message = "On each corncer of a Mining Site is a place for a Pickaxe or Drill which are what we call \"Mining Markers.\"<br><br>If you have a Mining Marker down then you can collect a gem per turn from each of the touchin\' Mining Sites<br><br>These here Tracks on the side of each Mining Site get you from place to place down in the depths of the mine and keep your mining operation all nice and connected."; 
+    const message = "On each corncer of a Mining Site is a place for a Pickaxe or Drill which are what we call \"Mining Markers.\"<br><br>If you have a Mining Marker down then you can collect a gem per turn from each of the touchin' Mining Sites<br><br>These here Tracks on the side of each Mining Site get you from place to place down in the depths of the mine and keep your mining operation all nice and connected."; 
 
     this.highlightNext();
     
