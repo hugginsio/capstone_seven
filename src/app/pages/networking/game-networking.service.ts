@@ -52,6 +52,8 @@ export class GameNetworkingService {
 
   private setListners()
   {
+    this.socket.timeout = 3000;
+
     this.socket.io.on('reconnect', () => {
       this.socket.emit('reconnection');
       if(this.isGameSocket)

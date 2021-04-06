@@ -94,7 +94,14 @@ export class NewNetworkGameComponent implements OnInit {
     });
     
     this.networkingService.listen('lobby-full').subscribe(() => {
+      this.networkingService.disconnectSocket();
       this.snackbarService.add({message:"Lobby is full, please try again."});
+      this.refresh();
+    });
+
+    this.networkingService.listen('game-cancelled').subscribe(() => {
+      this.networkingService.disconnectSocket();
+      this.snackbarService.add({message:"The host cancelled this game."});
       this.refresh();
     });
    
