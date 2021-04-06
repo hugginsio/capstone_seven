@@ -307,32 +307,45 @@ export class State {
   getHeuristicValue():number{
     //const currentOwner = this.playerNumber === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
     let value = 0;
-    const innerBranches = [12,17,23,18,7,8,13,24,28,27,22,11];
+    const innerBranches = [12,17,23,18];
+    const middleBranches = [7,8,13,24,28,27,22,11]
 
-    let player1BranchesNum = 0;
-    let player2BranchesNum = 0;
+
     let player1BranchesInInnerBranches = 0;
     let player2BranchesInInnerBranches = 0;
+    let player1MiddleBranches = 0;
+    let player2MiddleBranches = 0;
+    let player1OuterBranches = 0;
+    let player2OuterBranches = 0;
     const branches = this.board.branches;
     for(const branch of branches){
       if(branch.getOwner() === Owner.PLAYERONE){
-        player1BranchesNum++;
         if(innerBranches.includes(branches.indexOf(branch))){
           player1BranchesInInnerBranches++;
         }
+        else if(middleBranches.includes(branches.indexOf(branch))){
+          player1MiddleBranches++;
+        }
+        else{
+          player1OuterBranches++;
+        }
       }
       else if(branch.getOwner() === Owner.PLAYERTWO){
-        player2BranchesNum++;
         if(innerBranches.includes(branches.indexOf(branch))){
           player2BranchesInInnerBranches++;
         }
+        else if(middleBranches.includes(branches.indexOf(branch))){
+          player2MiddleBranches++;
+        }
+        else{
+          player2OuterBranches++;
+        }
+
       }
     }
 
-    const player1PercentageInInnerBranches = player1BranchesInInnerBranches / player1BranchesNum;
-    const player2PercentageInInnerBranches = player2BranchesInInnerBranches / player2BranchesNum;
-    const branchValue = (player1PercentageInInnerBranches * player1BranchesNum) - (player2PercentageInInnerBranches * player2BranchesNum);
-
+    
+    const branchesValue = (10*player1BranchesInInnerBranches - player2BranchesInInnerBranches) + (5*(player1MiddleBranches - player2MiddleBranches)) + (2.5*(player1OuterBranches-player2OuterBranches));
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
     const longestNetwork = this.player1.hasLongestNetwork ? 2 : -2;
     const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) + 
@@ -342,7 +355,7 @@ export class State {
 
     const captures = this.player1.numTilesCaptured - this.player2.numTilesCaptured;
     const score = this.player1.currentScore - this.player2.currentScore;
-    value = numNodesDiff + longestNetwork + resourceProduction + (4*captures) + score + (player1BranchesInInnerBranches-player2BranchesInInnerBranches);
+    value = numNodesDiff + longestNetwork + resourceProduction + (4*captures) + score + branchesValue;
 
 
     return value;
