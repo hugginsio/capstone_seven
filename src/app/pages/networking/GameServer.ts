@@ -1,5 +1,7 @@
 import { NetworkGameSettings } from "./NetworkGameSettings";
 
+console.log('Launching game server...');
+
 const server = require('socket.io')(8000, {
   cors: {
     origin: true,
