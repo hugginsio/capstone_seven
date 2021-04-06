@@ -76,6 +76,9 @@ export class UDPWrapper {
       else if (interfaces.includes('en0')) {
         return 'en0';
       }
+      else if (interfaces.includes('en9')) {
+        return 'en9';
+      }
     }
     else {
       console.error("No viable OS found.");
