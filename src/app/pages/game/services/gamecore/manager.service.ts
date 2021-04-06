@@ -843,8 +843,8 @@ export class ManagerService {
         // checks if player's resource production ought to be incremented
         if (brTile.isExhausted === false &&
           brTile.capturedBy !== otherOwner) {
-            this.incrementResource(currentPlayer, brTile.getColor());
-          }
+          this.incrementResource(currentPlayer, brTile.getColor());
+        }
       }
 
       // checks if possibleNode's bottomLeftTile exists
@@ -1066,79 +1066,79 @@ export class ManagerService {
           this.incrementResource(currentPlayer, brTile.getColor());
         }
 
-      // check if bottomLeftTile of the possibleNode exists
-      if (blTileIndex != -1) {
+        // check if bottomLeftTile of the possibleNode exists
+        if (blTileIndex != -1) {
 
-        // increment nodeCount on the tile
-        blTile.nodeCount++;
+          // increment nodeCount on the tile
+          blTile.nodeCount++;
 
-        // check if tile shoudl be exhausted
-        if ((blTile.nodeCount > blTile.maxNodes) && blTile?.isExhausted === false) {
+          // check if tile shoudl be exhausted
+          if ((blTile.nodeCount > blTile.maxNodes) && blTile?.isExhausted === false) {
 
-          // checking if tile is not captured to set isExhausted and decrement tiles in tileExhaustion()
-          if (blTile.capturedBy === Owner.NONE) {
+            // checking if tile is not captured to set isExhausted and decrement tiles in tileExhaustion()
+            if (blTile.capturedBy === Owner.NONE) {
 
-            // update tile's stored exhaustion state
-            blTile.isExhausted = true;
-            this.tileExhaustion(blTileIndex, true);
+              // update tile's stored exhaustion state
+              blTile.isExhausted = true;
+              this.tileExhaustion(blTileIndex, true);
+            }
           }
-        }
-        // checks if player's resource production ought to be incremented
-        if (blTile?.isExhausted === false &&
+          // checks if player's resource production ought to be incremented
+          if (blTile?.isExhausted === false &&
           blTile.capturedBy != otherOwner) {
-          this.incrementResource(currentPlayer, blTile.getColor());
-        }
-      }
-
-      // check if topLeftTile of the possibleNode exists
-      if (tlTileIndex != -1) {
-
-        // increment nodeCount on the tile
-        tlTile.nodeCount++;
-
-        // check if tile should be exhausted 
-        if ((tlTile.nodeCount > tlTile.maxNodes) && tlTile?.isExhausted === false) {
-
-          // checking if tile is not captured to set isExhausted and decrement tiles in tileExhaustion()
-          if (tlTile.capturedBy === Owner.NONE) {
-
-            // update tile's stored exhaustion state 
-            tlTile.isExhausted = true;
-            this.tileExhaustion(tlTileIndex, true);
+            this.incrementResource(currentPlayer, blTile.getColor());
           }
         }
 
-        // checks if player's resource production ought to be incremented
-        if (tlTile?.isExhausted === false &&
+        // check if topLeftTile of the possibleNode exists
+        if (tlTileIndex != -1) {
+
+          // increment nodeCount on the tile
+          tlTile.nodeCount++;
+
+          // check if tile should be exhausted 
+          if ((tlTile.nodeCount > tlTile.maxNodes) && tlTile?.isExhausted === false) {
+
+            // checking if tile is not captured to set isExhausted and decrement tiles in tileExhaustion()
+            if (tlTile.capturedBy === Owner.NONE) {
+
+              // update tile's stored exhaustion state 
+              tlTile.isExhausted = true;
+              this.tileExhaustion(tlTileIndex, true);
+            }
+          }
+
+          // checks if player's resource production ought to be incremented
+          if (tlTile?.isExhausted === false &&
           tlTile.capturedBy !== otherOwner) {
-          this.incrementResource(currentPlayer, tlTile.getColor());
+            this.incrementResource(currentPlayer, tlTile.getColor());
+          }
         }
-      }
 
-      // updates tile owner
-      // updates currentPlayer's score metrics
-      // updates currentPlayer's resource counts
-      if (currentPlayer === this.playerOne) {
-        this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
-        this.playerOne.greenResources -= 2;
-        this.playerOne.yellowResources -= 2;
-        this.playerOne.numNodesPlaced++;
-        this.playerOne.currentScore++;
-      } else {
-        this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
-        this.playerTwo.greenResources -= 2;
-        this.playerTwo.yellowResources -= 2;
-        this.playerTwo.numNodesPlaced++;
-        this.playerTwo.currentScore++;
-      }
+        // updates tile owner
+        // updates currentPlayer's score metrics
+        // updates currentPlayer's resource counts
+        if (currentPlayer === this.playerOne) {
+          this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERONE);
+          this.playerOne.greenResources -= 2;
+          this.playerOne.yellowResources -= 2;
+          this.playerOne.numNodesPlaced++;
+          this.playerOne.currentScore++;
+        } else {
+          this.gameBoard.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
+          this.playerTwo.greenResources -= 2;
+          this.playerTwo.yellowResources -= 2;
+          this.playerTwo.numNodesPlaced++;
+          this.playerTwo.currentScore++;
+        }
 
-      // create nodePlacement object to push on current turn's stack of moves
-      const nodePlacement = ['N', possibleNode];
-      this.stack.push(nodePlacement);
-      return true;
+        // create nodePlacement object to push on current turn's stack of moves
+        const nodePlacement = ['N', possibleNode];
+        this.stack.push(nodePlacement);
+        return true;
+      }
+      return false;
     }
-    return false;
-  }
     else {
       return false;
     }
@@ -1269,8 +1269,8 @@ export class ManagerService {
         }
       }
       else {
-          // decrement resources per turn
-          this.decrementResource(currentPlayer, trTile.getColor());
+        // decrement resources per turn
+        this.decrementResource(currentPlayer, trTile.getColor());
       }
     }
 
@@ -1381,8 +1381,8 @@ export class ManagerService {
         }
       }
       else {
-          // decrement resources per turn if wasn't exhaused
-          this.decrementResource(currentPlayer, trTile.getColor());
+        // decrement resources per turn if wasn't exhaused
+        this.decrementResource(currentPlayer, trTile.getColor());
       }
     }
 
