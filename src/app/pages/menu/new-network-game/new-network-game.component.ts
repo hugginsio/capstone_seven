@@ -86,6 +86,12 @@ export class NewNetworkGameComponent implements OnInit {
     //get gameInfo from object clicked
     this.storageService.update('oppUsername', oppUsername);
     this.networkingService.connectTCPserver(oppAddress);
+
+    this.networkingService.listen('connect_error').subscribe((err) => {
+      this.networkingService.disconnectSocket();
+      this.snackbarService.add({message:"Failed to connect."});
+      this.refresh();
+    });
     
     this.networkingService.listen('lobby-full').subscribe(() => {
       this.snackbarService.add({message:"Lobby is full, please try again."});

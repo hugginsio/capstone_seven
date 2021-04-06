@@ -11,6 +11,7 @@ var server = require('socket.io')(8000, {
 var users = [];
 var gameSettings;
 var isDisconnected = false;
+var isCancelled = false;
 server.on('connection', function (socket) {
     socket.on('send-move', function (move) {
         socket.to("game").emit("recieve-move", move);
@@ -25,6 +26,7 @@ server.on('connection', function (socket) {
         }
     });
     socket.on('create-lobby', function (lobbyInfo) {
+        isCancelled = false;
         gameSettings = lobbyInfo;
         users = [];
         users.push(socket.id);
@@ -34,6 +36,9 @@ server.on('connection', function (socket) {
     socket.on('request-join', function (username) {
         if (users.length >= 2) {
             socket.emit('lobby-full');
+        }
+        else if (isCancelled) {
+            socket.emit('game-cancelled');
         }
         else {
             users.push(socket.id);
@@ -53,5 +58,8 @@ server.on('connection', function (socket) {
     });
     socket.on('leave-game', function () {
         socket.broadcast.emit('opponent-quit');
+    });
+    socket.on('cancel-game', function () {
+        isCancelled = true;
     });
 });

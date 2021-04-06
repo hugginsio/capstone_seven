@@ -13,6 +13,7 @@ const server = require('socket.io')(8000, {
 let users:any = [];
 let gameSettings:NetworkGameSettings;
 let isDisconnected = false;
+let isCancelled = false;
 
 server.on('connection', (socket:any) => {
 
@@ -33,6 +34,7 @@ server.on('connection', (socket:any) => {
   });
 
   socket.on('create-lobby', (lobbyInfo: NetworkGameSettings) => {
+    isCancelled = false;
     gameSettings = lobbyInfo;
     users = [];
     users.push(socket.id);
@@ -44,6 +46,10 @@ server.on('connection', (socket:any) => {
     if(users.length >= 2)
     {
       socket.emit('lobby-full');
+    }
+    else if(isCancelled)
+    {
+      socket.emit('game-cancelled');
     }
     else
     {
@@ -68,5 +74,9 @@ server.on('connection', (socket:any) => {
 
   socket.on('leave-game', () => {
     socket.broadcast.emit('opponent-quit');
+  });
+
+  socket.on('cancel-game', () => {
+    isCancelled = true;
   });
 });
