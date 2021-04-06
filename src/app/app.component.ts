@@ -33,5 +33,8 @@ export class AppComponent {
     this.storageService.update('board-seed', '!random');
     this.storageService.update('firstplayer', '1');
     this.storageService.update('location', 'bg1');
+
+    this.storageService.setContext('sound');
+    this.storageService.update('volume', '50');
   }
 }

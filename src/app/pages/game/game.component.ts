@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
 import { Player } from './classes/gamecore/game.class.Player';
@@ -8,6 +8,8 @@ import { ClickEvent, CommPackage } from './interfaces/game.interface';
 import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
+import { SoundService } from '../../shared/components/sound-controller/services/sound.service';
+import { SoundEndAction } from '../../shared/components/sound-controller/interfaces/sound-controller.interface';
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -15,7 +17,7 @@ import { SnackbarService } from '../../shared/components/snackbar/services/snack
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
   public gameIntro: boolean;
   public gameOver: boolean;
   public gameOverText: string;
@@ -31,12 +33,12 @@ export class GameComponent implements OnInit {
     @Inject(DOCUMENT) private document: Document,
     public readonly gameManager: ManagerService,
     private readonly storageService: LocalStorageService,
-    private readonly snackbarService: SnackbarService
+    private readonly snackbarService: SnackbarService,
+    private readonly soundService: SoundService
   ) {
     // Set defaults for UI triggers
     this.gameIntro = false;
-    this.gameOver = true;
-    this.winningPlayer = this.gameManager.getCurrentPlayer();
+    this.gameOver = false;
     this.gameOverText = "Victory!";
     this.gamePaused = false;
     this.isTrading = false;
@@ -99,6 +101,12 @@ export class GameComponent implements OnInit {
         this.gameOver = true;
       }
     });
+
+    this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP);
+  }
+
+  ngOnDestroy(): void {
+    this.soundService.clear();
   }
 
   assemblePieceClass(piece: 'T' | 'N' | 'BX' | 'BY', id: number): string {

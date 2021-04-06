@@ -83,6 +83,8 @@ function createWindow(): BrowserWindow {
   return window;
 }
 
+app.commandLine.appendSwitch('disable-autoplay-policy', 'no-user-gesture-required');
+
 app.on('ready', () => setTimeout(createWindow, 400));
 
 app.on('window-all-closed', () => {

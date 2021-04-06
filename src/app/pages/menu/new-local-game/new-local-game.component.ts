@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 
 @Component({
@@ -26,7 +27,8 @@ export class NewLocalGameComponent {
 
   constructor(
     private readonly storageService: LocalStorageService,
-    private readonly routerService: Router
+    private readonly routerService: Router,
+    private readonly soundService: SoundService
   ) {
     // Initialize datastore to game context
     storageService.setContext('game');
@@ -104,6 +106,7 @@ export class NewLocalGameComponent {
       this.storageService.update('board-seed', this.boardSeed);
     }
 
+    this.soundService.clear();
     this.routerService.navigate(['/game']);
   }
 
