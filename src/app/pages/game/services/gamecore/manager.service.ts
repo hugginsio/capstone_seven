@@ -273,7 +273,7 @@ export class ManagerService {
   }
 
   //setIsTutorialFalse():void {
-   // this.isTutorial = "false";
+  // this.isTutorial = "false";
   //}
 
   // creates string representing gameBoard for AI/Networking
