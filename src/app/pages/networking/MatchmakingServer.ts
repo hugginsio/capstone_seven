@@ -1,5 +1,8 @@
 //import socketIO from 'socket.io';
 import {UDPWrapper} from "./UDPWrapper";
+
+console.log('Launching matchmaking server...');
+
 const io = require('socket.io')(3000, {
   cors: {
     origin: true,
