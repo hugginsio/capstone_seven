@@ -83,11 +83,11 @@ export class GuidedTutorialService {
   }
 
   highlightNext():void {
-    let pieceID = document.getElementById('GT-Next');
-          if (pieceID !== null)
-          {
-            pieceID.style.border = "4px solid white";
-          }
+    const pieceID = document.getElementById('GT-Next');
+    if (pieceID !== null)
+    {
+      pieceID.style.border = "4px solid white";
+    }
   }
 
   unhighlightNext():void{
@@ -626,8 +626,8 @@ export class GuidedTutorialService {
     if(this.humanPlayer === '1') {
       message = 'Now it’s the Machine’s turn to take a crack at it.<br>He brings his two separate rail networks into one big one and takes those two points from you!';
       
-      let player1 = document.getElementById("player1");
-      let player2 = document.getElementById("player2");
+      const player1 = document.getElementById("player1");
+      const player2 = document.getElementById("player2");
 
       if(player1 !== null && player2 !== null) 
       {
