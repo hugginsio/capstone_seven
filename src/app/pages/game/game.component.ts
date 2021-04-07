@@ -242,7 +242,10 @@ export class GameComponent implements OnInit {
   }
 
   executeTrade(): void {
-    if (!this.tradingModel.selectedResource) {
+    if (this.tradingModel.redResources + this.tradingModel.blueResources + this.tradingModel.greenResources + this.tradingModel.yellowResources !== 3) {
+      this.snackbarService.add({ message: "Select three resources to trade away." });
+    }
+    else if (!this.tradingModel.selectedResource) {
       this.snackbarService.add({ message: "Select a resource to receive." });
     } 
     else if(this.tradingModel.selectedResource !== 0){

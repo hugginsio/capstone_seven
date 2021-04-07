@@ -59,27 +59,29 @@ export class TradingModel {
   }
 
   select(num: number): void {
-    let resourceVariable = 1;
-    switch(num) {
-      case 1: // red
-        resourceVariable = this.redResources;
-        break;
-      case 2: // green
-        resourceVariable = this.greenResources;
-        break;
-      case 3: // blue
-        resourceVariable = this.blueResources;
-        break;
-      case 4: // yellow
-        resourceVariable = this.yellowResources;
-    }
-
-    if (resourceVariable === 0)
-    {
-      this.selectedResource = num;
-    }
-    else {
-      this.selectedResource = 0;
+    if (this.redResources + this.blueResources + this.greenResources + this.yellowResources === 3) {
+      let resourceVariable = 1;
+      switch(num) {
+        case 1: // red
+          resourceVariable = this.redResources;
+          break;
+        case 2: // green
+          resourceVariable = this.greenResources;
+          break;
+        case 3: // blue
+          resourceVariable = this.blueResources;
+          break;
+        case 4: // yellow
+          resourceVariable = this.yellowResources;
+      }
+  
+      if (resourceVariable === 0)
+      {
+        this.selectedResource = num;
+      }
+      else {
+        this.selectedResource = 0;
+      }
     }
   }
 
@@ -103,7 +105,6 @@ export class TradingModel {
     }
 
     if(gemToSelect > 0) {
-      console.log("in disabled if");
       return 'disabled';
     }
 
