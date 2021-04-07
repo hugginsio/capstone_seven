@@ -12,11 +12,13 @@
     "types": []
   },
   "include": [
+    "**/*.d.ts",
     "main.ts",
-    "polyfill.ts"
+    "polyfills.ts"
   ],
   "exclude": [
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "**/*.worker.ts"
   ],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

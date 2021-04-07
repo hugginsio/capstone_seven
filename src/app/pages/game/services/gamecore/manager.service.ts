@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GameType, Owner, PlayerType, TileColor } from '../../enums/game.enums';
 import { CoreLogic } from '../../util/core-logic.util';
-import { AiService } from '../../services/ai/ai.service';
+//import { AiService } from '../../services/ai/ai.service';
 
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Player } from '../../classes/gamecore/game.class.Player';
@@ -11,6 +11,7 @@ import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
 import { GameNetworkingService } from '../../../networking/game-networking.service';
 import { NetworkGameSettings } from '../../../networking/NetworkGameSettings';
+import { AiMethods } from '../../interfaces/worker.interface';
 
 
 @Injectable({
@@ -42,7 +43,7 @@ export class ManagerService {
   private networkingService: GameNetworkingService;
 
   // initializes AI service
-  private readonly ai: AiService;
+  //private readonly ai: AiService;
 
   // used in checkForCaptures() function
   private tilesBeingChecked: number[];
@@ -59,15 +60,15 @@ export class ManagerService {
   // keeps track of human player's moves (used for AI & Networking)
   public stack: Array<Array<string | number>> = [];
 
-  // <---------------------------------------------------------------------------------------------------------------------------------------what is this?
   public readonly commLink = new Subject<CommPackage>();
+
+  private aiWorker: Worker;
 
   constructor(
     // UI integration
     private readonly storageService: LocalStorageService,
     //private readonly networkingService: GameNetworkingService
   ) {
-
     // begin initializing ManagerService fields
     this.currentPlayer = Owner.PLAYERONE;
     this.gameBoard = new GameBoard();
@@ -146,14 +147,20 @@ export class ManagerService {
     }
 
     // instantiating AiService, calling its contructor w/ gameBoard and both players
-    if (this.firstPlayer === 1) {
-      if (this.currentGameMode === GameType.AI) {
-        this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
-      }
-    } else if (this.firstPlayer === 2) {
-      if (this.currentGameMode === GameType.AI) {
-        this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
-      }
+    // Web worker magic
+    this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
+
+    if (this.currentGameMode === GameType.AI) {
+      //this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
+      this.aiWorker.onmessage = ({ data }) => {
+        if (data) {
+          console.log('Initialized AI web worker.');
+        } else {
+          console.error('Could not initialize AI web worker.');
+        }
+      };
+
+      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 3.75] });
     }
 
     // setting board as random or manually setting tiles
@@ -165,6 +172,7 @@ export class ManagerService {
       // create gameboard with user defined seed
       this.createBoard(false, boardSeed);
     }
+
 
     if (this.currentGameMode === GameType.AI && this.getCurrentPlayer().type === PlayerType.AI) {
       console.log('???');
@@ -273,7 +281,7 @@ export class ManagerService {
 
   // clears board for next game
   clearBoard(): void {
-      
+
   }
 
   // creates string representing gameBoard for AI/Networking
@@ -416,13 +424,28 @@ export class ManagerService {
     // clear stack of node and branch placements
     this.stack.splice(0, this.stack.length);
     // calls AI to make move on its turn
+    //if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
+      //const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
     if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
-      const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
+      const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
-      const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
+      //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
 
-      console.warn(AIStringMove);
-      this.applyMove(AIStringMove);
+
+      this.aiWorker.onmessage = ({ data }) => {
+        let AIStringMove = ';;';
+        if (typeof (data) === 'string' && data !== '') {
+
+          AIStringMove = data;
+          console.warn(AIStringMove);
+          this.applyMove(AIStringMove);
+        }
+
+      };
+
+      this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString] });
+
+
     }
     else if (currentPlayer.type === PlayerType.NETWORK && currentPlayer.numNodesPlaced !== 1) {
       //console.log(pastMoveString);
@@ -1162,7 +1185,7 @@ export class ManagerService {
           }
           // checks if player's resource production ought to be incremented
           if (blTile?.isExhausted === false &&
-          blTile.capturedBy != otherOwner) {
+            blTile.capturedBy != otherOwner) {
             this.incrementResource(currentPlayer, blTile.getColor());
           }
         }
@@ -1187,7 +1210,7 @@ export class ManagerService {
 
           // checks if player's resource production ought to be incremented
           if (tlTile?.isExhausted === false &&
-          tlTile.capturedBy !== otherOwner) {
+            tlTile.capturedBy !== otherOwner) {
             this.incrementResource(currentPlayer, tlTile.getColor());
           }
         }
@@ -1357,6 +1380,9 @@ export class ManagerService {
       // decrement the nodeCount
       tlTile.nodeCount--;
 
+      //decrement players resources
+      this.decrementResource(currentPlayer, tlTile.getColor());
+
       // checking if need to un-exhaust tile
       if (tlTile.isExhausted) {
         if (tlTile.nodeCount <=
@@ -1379,6 +1405,9 @@ export class ManagerService {
       // decrement the tile's nodeCount 
       brTile.nodeCount--;
 
+      //decrement players resources
+      this.decrementResource(currentPlayer, brTile.getColor());
+
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
         if (brTile.nodeCount <=
@@ -1400,6 +1429,9 @@ export class ManagerService {
 
       // decrement the tile's nodeCount
       blTile.nodeCount--;
+
+      //decrement players resources
+      this.decrementResource(currentPlayer, blTile.getColor());
 
       // checking if need to un-exhaust tile
       if (blTile.isExhausted) {
@@ -1491,7 +1523,7 @@ export class ManagerService {
       // decrement tile's nodeCount
       brTile.nodeCount--;
 
-      
+
 
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
@@ -1525,7 +1557,7 @@ export class ManagerService {
           this.tileExhaustion(blTileIndex, false);
         }
       }
-      else { 
+      else {
         // decrement resources per turn
         this.decrementResource(currentPlayer, blTile.getColor());
       }
