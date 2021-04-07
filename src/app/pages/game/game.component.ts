@@ -130,6 +130,7 @@ export class GameComponent implements OnInit {
         console.log(message);
         this.appendMessage(`${this.oppUsername}: ${message}`);
       });
+      /*
       this.networkingService.listen('opponent-disconnected').subscribe( () => {
         this.appendMessage(`${this.oppUsername} Disconnected`);
         //Grey out EndTurn Button
@@ -140,15 +141,21 @@ export class GameComponent implements OnInit {
         //un-grey EndTurn Button
         this.isConnected = true;
       });
+      */
       this.networkingService.listen('disconnect').subscribe( () => {
-        this.appendMessage(`${this.username} Disconnected`);
+        this.appendMessage(`Disconnection... Please Wait`);
         //grey out EndTurn Button
         this.isConnected = false;
       });
       this.networkingService.listen('user-reconnected').subscribe( () => {
-        this.appendMessage(`${this.username} Reconnected`);
+        this.appendMessage(`Reconnected`);
         //un-grey out EndTurn Button
         this.isConnected = true;
+      });
+      this.networkingService.listen('user-diconnected').subscribe( () => {
+        this.appendMessage(`Disconnection... Please Wait`);
+        //grey out EndTurn Button
+        this.isConnected = false;
       });
       this.networkingService.listen('opponent-quit').subscribe( () => {
         this.opponentQuit = true;

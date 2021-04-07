@@ -22,7 +22,7 @@ server.on('connection', function (socket) {
     socket.on('disconnecting', function () {
         if (!isDisconnected) {
             isDisconnected = true;
-            socket.broadcast.emit('opponent-disconnected');
+            server.emit('user-disconnected');
         }
     });
     socket.on('create-lobby', function (lobbyInfo) {
@@ -49,8 +49,9 @@ server.on('connection', function (socket) {
     socket.on('reconnection', function () {
         if (isDisconnected) {
             isDisconnected = false;
-            socket.emit('user-reconnected');
-            socket.broadcast.emit('opponent-reconnected');
+            server.emit('user-reconnected');
+            //socket.emit('user-reconnected');
+            //socket.broadcast.emit('opponent-reconnected');
         }
     });
     socket.on('join-room', function () {

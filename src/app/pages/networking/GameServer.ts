@@ -29,7 +29,7 @@ server.on('connection', (socket:any) => {
     if(!isDisconnected)
     {
       isDisconnected = true;
-      socket.broadcast.emit('opponent-disconnected');
+      server.emit('user-disconnected');
     }
   });
 
@@ -63,8 +63,9 @@ server.on('connection', (socket:any) => {
     if(isDisconnected)
     {
       isDisconnected = false;
-      socket.emit('user-reconnected');
-      socket.broadcast.emit('opponent-reconnected');
+      server.emit('user-reconnected');
+      //socket.emit('user-reconnected');
+      //socket.broadcast.emit('opponent-reconnected');
     }
   });
 
