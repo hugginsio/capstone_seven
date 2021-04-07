@@ -370,14 +370,14 @@ export class GameComponent implements OnInit, AfterViewInit {
       this.snackbarService.add({ message: "Select a resource to receive." });
     }
     else if(this.isTutorial){
-        if(!this.guidedTutorial.moveManager('confirmTrade')){
-          return;
-        }
-        else {
-          this.isTrading = false;
-          this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
-          this.tradingModel.reset();
-        }
+      if(!this.guidedTutorial.moveManager('confirmTrade')){
+        return;
+      }
+      else {
+        this.isTrading = false;
+        this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
+        this.tradingModel.reset();
+      }
     } 
     else {
       this.isTrading = false;

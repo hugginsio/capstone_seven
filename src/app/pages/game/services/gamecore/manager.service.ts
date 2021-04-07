@@ -425,7 +425,7 @@ export class ManagerService {
     this.stack.splice(0, this.stack.length);
     // calls AI to make move on its turn
     //if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
-      //const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
+    //const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
     if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
       const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       // string to store AI move

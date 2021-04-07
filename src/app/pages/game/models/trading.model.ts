@@ -80,24 +80,23 @@ export class TradingModel {
   }
 
   select(num: number): void {
-      if(this.storageService.fetch('guided-tutorial') === "true"){
-        let stringToSend = 'none';
-        switch(num){
-          case 1: stringToSend = 'red';
-            break;
-          case 2: stringToSend = 'green';
-            break;
-          case 3: stringToSend = 'blue';
-            break;
-          case 4: stringToSend = 'yellow';
-        }
-        if(!this.guidedTutorial.moveManager(stringToSend))
-        {
-          return;
-        }
-
-        console.log("selected: " + stringToSend);
+    if(this.storageService.fetch('guided-tutorial') === "true"){
+      let stringToSend = 'none';
+      switch(num){
+        case 1: stringToSend = 'red';
+          break;
+        case 2: stringToSend = 'green';
+          break;
+        case 3: stringToSend = 'blue';
+          break;
+        case 4: stringToSend = 'yellow';
       }
+      if(!this.guidedTutorial.moveManager(stringToSend))
+      {
+        return;
+      }
+
+    }
 
     let resourceVariable = 1;
     switch(num) {
@@ -117,7 +116,6 @@ export class TradingModel {
 
     if (resourceVariable === 0)
     {
-      console.log("select " + num);
       this.selectedResource = num;
     }
     else {
