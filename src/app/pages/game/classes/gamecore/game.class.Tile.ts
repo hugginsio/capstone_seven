@@ -11,33 +11,33 @@ export class Tile {
 
   capturedBy: Owner;
 
-  private topLeftNode: number;
-  private topRightNode: number;
-  private bottomLeftNode: number;
-  private bottomRightNode: number;
+  topLeftNode: number;
+  topRightNode: number;
+  bottomLeftNode: number;
+  bottomRightNode: number;
 
-  private topBranch: number;
-  private rightBranch: number;
-  private bottomBranch: number;
-  private leftBranch : number;
+  topBranch: number;
+  rightBranch: number;
+  bottomBranch: number;
+  leftBranch: number;
 
-  private topTile: number;
-  private rightTile: number;
-  private bottomTile: number;
-  private leftTile: number;
+  topTile: number;
+  rightTile: number;
+  bottomTile: number;
+  leftTile: number;
 
 
-  constructor(tln = -1, trn = -1, 
+  constructor(tln = -1, trn = -1,
               bln = -1, brn = -1,
               tb = -1, rb = -1,
               bb = -1, lb = -1,
               tt = -1, rt = -1,
-              bt = -1, lt = -1){
+              bt = -1, lt = -1) {
     this.color = TileColor.BLANK;
     this.nodeCount = 0;
-    this.maxNodes = 0; 
+    this.maxNodes = 0;
     this.isExhausted = false;
-    
+
     this.capturedBy = Owner.NONE;
 
     this.topLeftNode = tln;
@@ -90,10 +90,10 @@ export class Tile {
   // Node Relationships
   getTopLeftNode(): number {
     return this.topLeftNode;
-  } 
+  }
   setTopLeftNode(n: number): void {
     this.topLeftNode = n;
-  } 
+  }
 
   getTopRightNode(): number {
     return this.topRightNode;
@@ -122,28 +122,28 @@ export class Tile {
   getTopBranch(): number {
     return this.topBranch;
   }
-  setTopBranch (n: number): void {
+  setTopBranch(n: number): void {
     this.topBranch = n;
   }
 
   getRightBranch(): number {
     return this.rightBranch;
   }
-  setRightBranch (n: number): void {
+  setRightBranch(n: number): void {
     this.rightBranch = n;
   }
 
   getBottomBranch(): number {
     return this.bottomBranch;
   }
-  setBottomBranch (n: number): void {
+  setBottomBranch(n: number): void {
     this.bottomBranch = n;
   }
 
   getLeftBranch(): number {
     return this.leftBranch;
   }
-  setLeftBranch (n: number): void {  
+  setLeftBranch(n: number): void {
     this.leftBranch = n;
   }
 
@@ -152,7 +152,7 @@ export class Tile {
     return this.topTile;
   }
 
-  setTopTile (n: number): void {
+  setTopTile(n: number): void {
     this.topTile = n;
   }
 
@@ -160,7 +160,7 @@ export class Tile {
     return this.rightTile;
   }
 
-  setRightTile (n: number): void {
+  setRightTile(n: number): void {
     this.rightTile = n;
   }
 
@@ -168,7 +168,7 @@ export class Tile {
     return this.bottomTile;
   }
 
-  setBottomTile (n: number): void {
+  setBottomTile(n: number): void {
     this.bottomTile = n;
   }
 
@@ -176,7 +176,7 @@ export class Tile {
     return this.leftTile;
   }
 
-  setLeftTile (n: number): void {
+  setLeftTile(n: number): void {
     this.leftTile = n;
   }
 }
