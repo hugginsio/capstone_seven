@@ -12,12 +12,12 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
 
   const clonedState = workerCloneState(data);
   const response = runSimulation(clonedState);
-    
+
   postMessage(response);
 });
 
 
-function workerCloneState(state:State):State{
+function workerCloneState(state: State): State {
 
   const newBoard = CoreLogic.workerCloneGameBoard(state.board);
   const newPlayer1 = CoreLogic.workerClonePlayer(state.player1);
@@ -35,11 +35,11 @@ function workerCloneState(state:State):State{
 }
 
 
-function runSimulation(state:State):number{
+function runSimulation(state: State): number {
   let boardStatus = 0;
   let counter = 0; //decrease counter and assign winner based on score if game not finished
   while (boardStatus === 0 && counter < 15) {
-    if(state.player1.numNodesPlaced === 1 && state.playerNumber === 1){
+    if (state.player1.numNodesPlaced === 1 && state.playerNumber === 1) {
       state.player1.redResources = 1;
       state.player1.blueResources = 1;
       state.player1.greenResources = 2;
@@ -53,15 +53,15 @@ function runSimulation(state:State):number{
     counter++;
   }
 
-  if(boardStatus === 0){
-    if(state.getHeuristicValue() > 0){
+  if (boardStatus === 0) {
+    if (state.getHeuristicValue() > 0) {
       boardStatus = 1;
     }
-    else{
+    else {
       boardStatus = 2;
     }
   }
 
-    
+
   return boardStatus;
 }

@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 import { CommPackage, ResourceMap } from '../../interfaces/game.interface';
 import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
-import { AiMethods, WorkerPayload } from '../../interfaces/worker.interface';
+import { AiMethods } from '../../interfaces/worker.interface';
 
 
 @Injectable({
@@ -49,7 +49,6 @@ export class ManagerService {
   // keeps track of human player's moves (used for AI & Networking)
   public stack: Array<Array<string | number>> = [];
 
-  // <---------------------------------------------------------------------------------------------------------------------------------------what is this?
   public readonly commLink = new Subject<CommPackage>();
 
   private aiWorker: Worker;
@@ -107,7 +106,7 @@ export class ManagerService {
         }
       };
 
-      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 3.75]});
+      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 3.75] });
     }
 
     // setting board as random or manually setting tiles
@@ -218,7 +217,7 @@ export class ManagerService {
 
   // clears board for next game
   clearBoard(): void {
-      
+
   }
 
   // creates string representing gameBoard for AI/Networking
@@ -366,19 +365,19 @@ export class ManagerService {
       // string to store AI move
       //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
 
-  
+
       this.aiWorker.onmessage = ({ data }) => {
         let AIStringMove = ';;';
-        if(typeof(data) === 'string' && data !== ''){
-          
+        if (typeof (data) === 'string' && data !== '') {
+
           AIStringMove = data;
           console.warn(AIStringMove);
           this.applyMove(AIStringMove);
         }
-        
+
       };
 
-      this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo,prevPlayerInt,pastMoveString]});
+      this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString] });
 
 
     }
@@ -1107,7 +1106,7 @@ export class ManagerService {
           }
           // checks if player's resource production ought to be incremented
           if (blTile?.isExhausted === false &&
-          blTile.capturedBy != otherOwner) {
+            blTile.capturedBy != otherOwner) {
             this.incrementResource(currentPlayer, blTile.getColor());
           }
         }
@@ -1132,7 +1131,7 @@ export class ManagerService {
 
           // checks if player's resource production ought to be incremented
           if (tlTile?.isExhausted === false &&
-          tlTile.capturedBy !== otherOwner) {
+            tlTile.capturedBy !== otherOwner) {
             this.incrementResource(currentPlayer, tlTile.getColor());
           }
         }
@@ -1303,7 +1302,7 @@ export class ManagerService {
       tlTile.nodeCount--;
 
       //decrement players resources
-      this.decrementResource(currentPlayer,tlTile.getColor());
+      this.decrementResource(currentPlayer, tlTile.getColor());
 
       // checking if need to un-exhaust tile
       if (tlTile.isExhausted) {
@@ -1328,7 +1327,7 @@ export class ManagerService {
       brTile.nodeCount--;
 
       //decrement players resources
-      this.decrementResource(currentPlayer,brTile.getColor());
+      this.decrementResource(currentPlayer, brTile.getColor());
 
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
@@ -1353,7 +1352,7 @@ export class ManagerService {
       blTile.nodeCount--;
 
       //decrement players resources
-      this.decrementResource(currentPlayer,blTile.getColor());
+      this.decrementResource(currentPlayer, blTile.getColor());
 
       // checking if need to un-exhaust tile
       if (blTile.isExhausted) {
@@ -1445,7 +1444,7 @@ export class ManagerService {
       // decrement tile's nodeCount
       brTile.nodeCount--;
 
-      
+
 
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
@@ -1479,7 +1478,7 @@ export class ManagerService {
           this.tileExhaustion(blTileIndex, false);
         }
       }
-      else { 
+      else {
         // decrement resources per turn
         this.decrementResource(currentPlayer, blTile.getColor());
       }

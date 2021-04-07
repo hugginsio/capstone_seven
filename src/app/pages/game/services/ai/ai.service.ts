@@ -8,17 +8,17 @@ import { Owner } from '../../enums/game.enums';
 import { CoreLogic } from '../../util/core-logic.util';
 
 
-interface Resources{
-  red:number,
-  blue:number,
-  green:number,
-  yellow:number,
+interface Resources {
+  red: number,
+  blue: number,
+  green: number,
+  yellow: number,
 }
 
 // export class AiService {
-  
+
 //   mcts: MonteCarlo;
-  
+
 //   constructor(gameBoard:GameBoard, player1:Player,player2:Player) {
 //     this.mcts = new MonteCarlo(gameBoard, player1, player2); 
 //   }
@@ -42,7 +42,7 @@ interface Resources{
 //   const moves = CoreLogic.getLegalMoves(this.currentState);
 
 
-  
+
 //   const resultIndex = this.weightMoves(moves);
 //   let result = moves[resultIndex];
 
@@ -59,7 +59,7 @@ interface Resources{
 
 // randomAIMove(move:string,resources:Resources):string{
 //   this.currentState = CoreLogic.nextState(this.currentState, move);
-  
+
 //   if(!this.currentState.inInitialMoves){
 //     if(this.currentState.currentPlayer === 1){
 //       this.currentState.player1.redResources = resources.red;
@@ -80,7 +80,7 @@ interface Resources{
 //   }
 
 //   const moves = CoreLogic.getLegalMoves(this.currentState);
-  
+
 //   const resultIndex = this.weightMoves(moves);
 
 //   let result = moves[resultIndex];
@@ -168,9 +168,9 @@ interface Resources{
 
 //     const cornerNodes = [2,0,1,5,6,12,11,17,18,21,22,23];
 //     if(moveObj.nodesPlaced.length > 0){
-      
+
 //       for(const nodeIndex of moveObj.nodesPlaced){
-        
+
 //         if(this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile()].getMaxNodes() === 3){
 //           weights.push(moves[i]);
 //           weights.push(moves[i]);  
@@ -229,9 +229,9 @@ interface Resources{
 //         }
 //         weights.push(moves[i]);
 //       }
-      
-        
-      
+
+
+
 //     }
 
 
@@ -284,10 +284,10 @@ interface Resources{
 //     if(moveObj.nodesPlaced.includes(7)){
 //       weights.push(moves[i]);
 //     }
-    
+
 //     const currentOwner = this.currentState.currentPlayer === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
 //     const affectedPlayer = this.currentState.currentPlayer === 1 ? CoreLogic.clonePlayer(this.currentState.player1) : CoreLogic.clonePlayer(this.currentState.player2);
-    
+
 //     for(const branchIndex of moveObj.branchesPlaced){
 //       const clonedState = State.cloneState(this.currentState);
 //       clonedState.gameBoard.branches[branchIndex].setOwner(currentOwner);
@@ -310,7 +310,7 @@ interface Resources{
 //         }
 //       }
 //     }
-    
+
 
 
 //     if(moveObj.tradedIn.length === 0 && moveObj.nodesPlaced.length === 0 && moveObj.branchesPlaced.length === 0){
@@ -323,7 +323,7 @@ interface Resources{
 //   return moves.indexOf(weights[Math.floor(Math.random()*weights.length)]);
 // }
 
-  
+
 //}
 
 

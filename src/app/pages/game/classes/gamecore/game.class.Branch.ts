@@ -6,7 +6,7 @@ export class Branch {
 
   // branch1-branch6 for associations
   branches: BranchesInterface;
-    
+
   // NOTE: 
   // branches are counted in a clockwise fashion
   // vertical: count begins at top branch
@@ -32,7 +32,7 @@ export class Branch {
     this.ownedBy = newOwner;
   }
 
-  getBranch(branch: keyof BranchesInterface ): number {
+  getBranch(branch: keyof BranchesInterface): number {
     return this.branches[branch];
   }
 

@@ -3,28 +3,28 @@ import { Player } from '../../classes/gamecore/game.class.Player';
 import { CoreLogic } from '../../util/core-logic.util';
 import { Owner, TileColor } from '../../enums/game.enums';
 
-interface WeightedItem{
-  move:string;
-  weight:number;
+interface WeightedItem {
+  move: string;
+  weight: number;
 }
 
 export class State {
-  
-  move:string;
 
-  board:GameBoard;
-  player1:Player;
-  player2:Player;
+  move: string;
 
-  playerNumber:number;
+  board: GameBoard;
+  player1: Player;
+  player2: Player;
 
-  visitCount:number;
-  winScore:number;
+  playerNumber: number;
+
+  visitCount: number;
+  winScore: number;
 
 
-  tilesBeingChecked:number[];
+  tilesBeingChecked: number[];
 
-  constructor(newBoard:GameBoard, player1:Player, player2:Player){
+  constructor(newBoard: GameBoard, player1: Player, player2: Player) {
     this.setBoard(newBoard);
     this.setPlayer1(player1);
     this.setPlayer2(player2);
@@ -41,7 +41,7 @@ export class State {
 
   }
 
-  cloneState():State{
+  cloneState(): State {
     const newState = new State(this.getBoard(), this.player1, this.player2);
 
     newState.move = this.move;
@@ -54,29 +54,29 @@ export class State {
   }
 
 
-  getAllPossibleStates():Array<State>{
+  getAllPossibleStates(): Array<State> {
     // constructs a list of all possible states from current state
-    
+
     let nextPlayer;
-    if(this.player1.numNodesPlaced === 1 && this.player2.numNodesPlaced === 1){
+    if (this.player1.numNodesPlaced === 1 && this.player2.numNodesPlaced === 1) {
       nextPlayer = this.playerNumber;
     }
-    else{
+    else {
       nextPlayer = 3 - this.playerNumber;
     }
-  
 
 
-    const moves = CoreLogic.getLegalMoves(this,false);
+
+    const moves = CoreLogic.getLegalMoves(this, false);
 
     const states = [];
 
-    for(const move of moves){
+    for (const move of moves) {
       const newState = this.cloneState();
       newState.move = move;
-      
+
       newState.playerNumber = nextPlayer;
-      
+
       newState.applyMove(move);
 
       states.push(newState);
@@ -85,26 +85,26 @@ export class State {
     return states;
   }
 
-  randomPlay():void{
+  randomPlay(): void {
     /* get a list of all possible positions on the board and 
            play a random move */
     //let start = Date.now();
-    const moves = CoreLogic.getLegalMoves(this,true);
+    const moves = CoreLogic.getLegalMoves(this, true);
     //console.log(`In simulation: Time to generate moves = ${Date.now()-start}ms`);
 
     //let maxWeight = 0;
     let maxWeightIndex = Math.floor(Math.random() * moves.length);
-    const weights:WeightedItem[] = [];
+    const weights: WeightedItem[] = [];
 
-    for(let i = 0; i < moves.length; i++){
-      weights.push({move:moves[i], weight:this.moveWeighting(moves[i])});
+    for (let i = 0; i < moves.length; i++) {
+      weights.push({ move: moves[i], weight: this.moveWeighting(moves[i]) });
     }
 
-    weights.sort((a,b)=>{
-      if(a.weight > b.weight){
+    weights.sort((a, b) => {
+      if (a.weight > b.weight) {
         return 1;
       }
-      else{
+      else {
         return -1;
       }
     });
@@ -112,16 +112,16 @@ export class State {
     //console.log(weights);
     const maxWeight = weights[0].weight;
     const maxWeightedMoves = [];
-    for(let n = 0; n < weights.length;n++){
-      if(weights[n].weight === maxWeight){
+    for (let n = 0; n < weights.length; n++) {
+      if (weights[n].weight === maxWeight) {
         maxWeightedMoves.push(weights[n].move);
       }
-      else{
+      else {
         n = weights.length;
       }
     }
 
-    maxWeightIndex = moves.indexOf(maxWeightedMoves[Math.floor(Math.random()*maxWeightedMoves.length)]);
+    maxWeightIndex = moves.indexOf(maxWeightedMoves[Math.floor(Math.random() * maxWeightedMoves.length)]);
 
     // for(let i = 0; i < moves.length; i++){
     //   const localWeight = this.moveWeighting(moves[i]);
@@ -137,148 +137,148 @@ export class State {
     //console.log(`Inside simulation: Time to apply chosen move = ${Date.now()-start}ms`);
   }
 
-  
 
-  moveWeighting(move:string):number{
+
+  moveWeighting(move: string): number {
     const currentOwner = this.playerNumber === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
-    let result= 0;
+    let result = 0;
 
     const moveObj = CoreLogic.stringToMove(move);
 
-    const horizontalBranches = [0,3,4,5,10,11,12,13,14,21,22,23,24,25,30,31,32,35];
-
-    
+    const horizontalBranches = [0, 3, 4, 5, 10, 11, 12, 13, 14, 21, 22, 23, 24, 25, 30, 31, 32, 35];
 
 
-    for(let n = 0; n < moveObj.nodesPlaced.length; n++){
+
+
+    for (let n = 0; n < moveObj.nodesPlaced.length; n++) {
       result++;
       const topRight = this.board.nodes[moveObj.nodesPlaced[n]].getTopRightTile();
       const bottomRight = this.board.nodes[moveObj.nodesPlaced[n]].getBottomRightTile();
       const bottomLeft = this.board.nodes[moveObj.nodesPlaced[n]].getBottomLeftTile();
       const topLeft = this.board.nodes[moveObj.nodesPlaced[n]].getTopLeftTile();
 
-      if(topRight != -1){
-        if(!this.board.tiles[topRight].getIsExhaused()){
-          if(this.board.tiles[topRight].getCapturedBy() === currentOwner){
-    
+      if (topRight != -1) {
+        if (!this.board.tiles[topRight].getIsExhaused()) {
+          if (this.board.tiles[topRight].getCapturedBy() === currentOwner) {
+
             result++;
           }
-          else if(this.board.tiles[topRight].getCapturedBy() === Owner.NONE){
-            if(this.board.tiles[topRight].getNodeCount() <= this.board.tiles[topRight].getMaxNodes()){
-      
+          else if (this.board.tiles[topRight].getCapturedBy() === Owner.NONE) {
+            if (this.board.tiles[topRight].getNodeCount() <= this.board.tiles[topRight].getMaxNodes()) {
+
               result++;
             }
           }
         }
-        else{
+        else {
           result--;
         }
       }
 
-      if(bottomRight != -1){
-        if(!this.board.tiles[bottomRight].getIsExhaused()){
-          if(this.board.tiles[bottomRight].getCapturedBy() === currentOwner){
-    
+      if (bottomRight != -1) {
+        if (!this.board.tiles[bottomRight].getIsExhaused()) {
+          if (this.board.tiles[bottomRight].getCapturedBy() === currentOwner) {
+
             result++;
           }
-          else if(this.board.tiles[bottomRight].getCapturedBy() === Owner.NONE){
-            if(this.board.tiles[bottomRight].getNodeCount() <= this.board.tiles[bottomRight].getMaxNodes()){
-      
+          else if (this.board.tiles[bottomRight].getCapturedBy() === Owner.NONE) {
+            if (this.board.tiles[bottomRight].getNodeCount() <= this.board.tiles[bottomRight].getMaxNodes()) {
+
               result++;
             }
           }
         }
-        else{
+        else {
           result--;
         }
       }
 
-      if(bottomLeft != -1){
-        if(!this.board.tiles[bottomLeft].getIsExhaused()){
-          if(this.board.tiles[bottomLeft].getCapturedBy() === currentOwner){
-    
+      if (bottomLeft != -1) {
+        if (!this.board.tiles[bottomLeft].getIsExhaused()) {
+          if (this.board.tiles[bottomLeft].getCapturedBy() === currentOwner) {
+
             result++;
           }
-          else if(this.board.tiles[bottomLeft].getCapturedBy() === Owner.NONE){
-            if(this.board.tiles[bottomLeft].getNodeCount() <= this.board.tiles[bottomLeft].getMaxNodes()){
-      
+          else if (this.board.tiles[bottomLeft].getCapturedBy() === Owner.NONE) {
+            if (this.board.tiles[bottomLeft].getNodeCount() <= this.board.tiles[bottomLeft].getMaxNodes()) {
+
               result++;
             }
           }
         }
-        else{
+        else {
           result--;
         }
       }
 
-      if(topLeft != -1){
-        if(!this.board.tiles[topLeft].getIsExhaused()){
-          if(this.board.tiles[topLeft].getCapturedBy() === currentOwner){
-    
+      if (topLeft != -1) {
+        if (!this.board.tiles[topLeft].getIsExhaused()) {
+          if (this.board.tiles[topLeft].getCapturedBy() === currentOwner) {
+
             result++;
           }
-          else if(this.board.tiles[topLeft].getCapturedBy() === Owner.NONE){
-            if(this.board.tiles[topLeft].getNodeCount() <= this.board.tiles[topLeft].getMaxNodes()){
-      
+          else if (this.board.tiles[topLeft].getCapturedBy() === Owner.NONE) {
+            if (this.board.tiles[topLeft].getNodeCount() <= this.board.tiles[topLeft].getMaxNodes()) {
+
               result++;
             }
           }
         }
-        else{
+        else {
           result--;
         }
       }
     }
 
-  
 
-    for(let i = 0; i < moveObj.branchesPlaced.length; i++){
+
+    for (let i = 0; i < moveObj.branchesPlaced.length; i++) {
       result++;
 
-      if(horizontalBranches.includes(moveObj.branchesPlaced[i])){
-        const topNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2')];
-        const sideNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
-        const bottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
-        if(!topNeighbors.includes(-1)){
-          if(this.board.branches[topNeighbors[0]].getOwner() === currentOwner && this.board.branches[topNeighbors[1]].getOwner() === currentOwner){
+      if (horizontalBranches.includes(moveObj.branchesPlaced[i])) {
+        const topNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'), this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2')];
+        const sideNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'), this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
+        const bottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4'), this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
+        if (!topNeighbors.includes(-1)) {
+          if (this.board.branches[topNeighbors[0]].getOwner() === currentOwner && this.board.branches[topNeighbors[1]].getOwner() === currentOwner) {
 
-            result+=10;
+            result += 10;
           }
         }
-        else if(!sideNeighbors.includes(-1)){
-          if(this.board.branches[sideNeighbors[0]].getOwner() === currentOwner && this.board.branches[sideNeighbors[1]].getOwner() === currentOwner){
+        else if (!sideNeighbors.includes(-1)) {
+          if (this.board.branches[sideNeighbors[0]].getOwner() === currentOwner && this.board.branches[sideNeighbors[1]].getOwner() === currentOwner) {
 
-            result+=10;
+            result += 10;
           }
         }
-        else if(!bottomNeighbors.includes(-1)){
-          if(this.board.branches[bottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[bottomNeighbors[1]].getOwner() === currentOwner){
+        else if (!bottomNeighbors.includes(-1)) {
+          if (this.board.branches[bottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[bottomNeighbors[1]].getOwner() === currentOwner) {
 
-            result+=10;
+            result += 10;
           }
         }
       }
-      else{
-        const rightNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
-        const topAndBottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4')];
-        const leftNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'),this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
-        if(!rightNeighbors.includes(-1)){
-          if(this.board.branches[rightNeighbors[0]].getOwner() === currentOwner && this.board.branches[rightNeighbors[1]].getOwner() === currentOwner){
+      else {
+        const rightNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch2'), this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch3')];
+        const topAndBottomNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch1'), this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch4')];
+        const leftNeighbors = [this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch5'), this.board.branches[moveObj.branchesPlaced[i]].getBranch('branch6')];
+        if (!rightNeighbors.includes(-1)) {
+          if (this.board.branches[rightNeighbors[0]].getOwner() === currentOwner && this.board.branches[rightNeighbors[1]].getOwner() === currentOwner) {
 
-            result+=10;
+            result += 10;
           }
         }
-        else if(!topAndBottomNeighbors.includes(-1)){
-          if(this.board.branches[topAndBottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[topAndBottomNeighbors[1]].getOwner() === currentOwner){
+        else if (!topAndBottomNeighbors.includes(-1)) {
+          if (this.board.branches[topAndBottomNeighbors[0]].getOwner() === currentOwner && this.board.branches[topAndBottomNeighbors[1]].getOwner() === currentOwner) {
 
-            result+=10;
+            result += 10;
           }
         }
-        else if(!leftNeighbors.includes(-1)){
-          if(this.board.branches[leftNeighbors[0]].getOwner() === currentOwner && this.board.branches[leftNeighbors[1]].getOwner() === currentOwner){
+        else if (!leftNeighbors.includes(-1)) {
+          if (this.board.branches[leftNeighbors[0]].getOwner() === currentOwner && this.board.branches[leftNeighbors[1]].getOwner() === currentOwner) {
 
-            result+=10;
+            result += 10;
           }
         }
       }
@@ -287,16 +287,16 @@ export class State {
     return result;
   }
 
-  heuristicPlay():string{
-    const moves = CoreLogic.getLegalMoves(this,false);
+  heuristicPlay(): string {
+    const moves = CoreLogic.getLegalMoves(this, false);
     let maxHeuristic = 0;
     let chosenMoveIndex = 0;
-    for(let i = 0; i < moves.length;i++){
+    for (let i = 0; i < moves.length; i++) {
       const tempState = this.cloneState();
       tempState.move = moves[i];
       tempState.applyMove(moves[i]);
       const heuristicValue = tempState.getHeuristicValue();
-      if(heuristicValue >= maxHeuristic){
+      if (heuristicValue >= maxHeuristic) {
         maxHeuristic = heuristicValue;
         chosenMoveIndex = i;
       }
@@ -304,11 +304,11 @@ export class State {
     return moves[chosenMoveIndex];
   }
 
-  getHeuristicValue():number{
+  getHeuristicValue(): number {
     //const currentOwner = this.playerNumber === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
     let value = 0;
-    const innerBranches = [12,17,23,18];
-    const middleBranches = [7,8,13,24,28,27,22,11];
+    const innerBranches = [12, 17, 23, 18];
+    const middleBranches = [7, 8, 13, 24, 28, 27, 22, 11];
 
 
     let player1BranchesInInnerBranches = 0;
@@ -318,124 +318,124 @@ export class State {
     let player1OuterBranches = 0;
     let player2OuterBranches = 0;
     const branches = this.board.branches;
-    for(const branch of branches){
-      if(branch.getOwner() === Owner.PLAYERONE){
-        if(innerBranches.includes(branches.indexOf(branch))){
+    for (const branch of branches) {
+      if (branch.getOwner() === Owner.PLAYERONE) {
+        if (innerBranches.includes(branches.indexOf(branch))) {
           player1BranchesInInnerBranches++;
         }
-        else if(middleBranches.includes(branches.indexOf(branch))){
+        else if (middleBranches.includes(branches.indexOf(branch))) {
           player1MiddleBranches++;
         }
-        else{
+        else {
           player1OuterBranches++;
         }
       }
-      else if(branch.getOwner() === Owner.PLAYERTWO){
-        if(innerBranches.includes(branches.indexOf(branch))){
+      else if (branch.getOwner() === Owner.PLAYERTWO) {
+        if (innerBranches.includes(branches.indexOf(branch))) {
           player2BranchesInInnerBranches++;
         }
-        else if(middleBranches.includes(branches.indexOf(branch))){
+        else if (middleBranches.includes(branches.indexOf(branch))) {
           player2MiddleBranches++;
         }
-        else{
+        else {
           player2OuterBranches++;
         }
 
       }
     }
 
-    
-    const branchesValue = (10*player1BranchesInInnerBranches - player2BranchesInInnerBranches) + (5*(player1MiddleBranches - player2MiddleBranches)) + (2.5*(player1OuterBranches-player2OuterBranches));
+
+    const branchesValue = (10 * player1BranchesInInnerBranches - player2BranchesInInnerBranches) + (5 * (player1MiddleBranches - player2MiddleBranches)) + (2.5 * (player1OuterBranches - player2OuterBranches));
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
     const longestNetwork = this.player1.hasLongestNetwork ? 2 : -2;
-    const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) + 
-    (this.player1.bluePerTurn - this.player2.bluePerTurn) +
-    (this.player1.greenPerTurn - this.player2.greenPerTurn) +
-    (this.player1.yellowPerTurn - this.player2.yellowPerTurn);
+    const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) +
+      (this.player1.bluePerTurn - this.player2.bluePerTurn) +
+      (this.player1.greenPerTurn - this.player2.greenPerTurn) +
+      (this.player1.yellowPerTurn - this.player2.yellowPerTurn);
 
     const captures = this.player1.numTilesCaptured - this.player2.numTilesCaptured;
     const score = this.player1.currentScore - this.player2.currentScore;
-    value = numNodesDiff + longestNetwork + resourceProduction + (4*captures) + score + branchesValue;
+    value = numNodesDiff + longestNetwork + resourceProduction + (4 * captures) + score + branchesValue;
 
 
     return value;
   }
 
-  setBoard(gameBoard:GameBoard):void{
+  setBoard(gameBoard: GameBoard): void {
     this.board = CoreLogic.cloneGameBoard(gameBoard);
   }
 
-  setPlayer1(player:Player):void{
+  setPlayer1(player: Player): void {
     this.player1 = CoreLogic.clonePlayer(player);
   }
 
-  setPlayer2(player:Player):void{
+  setPlayer2(player: Player): void {
     this.player2 = CoreLogic.clonePlayer(player);
   }
 
-  getBoard():GameBoard{
+  getBoard(): GameBoard {
     return this.board;
   }
 
-  setPlayerNo(nextPlayer:number):void{
-    if(this.player1.numNodesPlaced >= 1 && this.player2.numNodesPlaced !== 1){
+  setPlayerNo(nextPlayer: number): void {
+    if (this.player1.numNodesPlaced >= 1 && this.player2.numNodesPlaced !== 1) {
       this.playerNumber = nextPlayer;
     }
   }
 
-  getMove():string{
+  getMove(): string {
     return this.move;
   }
 
-  getVisitCount():number{
+  getVisitCount(): number {
     return this.visitCount;
   }
 
-  getWinScore():number{
+  getWinScore(): number {
     return this.winScore;
   }
 
-  setWinScore(score:number):void{
+  setWinScore(score: number): void {
     this.winScore = score;
   }
 
-  togglePlayer():void{
-    if(this.player1.numNodesPlaced === 1 && this.player2.numNodesPlaced === 1){
+  togglePlayer(): void {
+    if (this.player1.numNodesPlaced === 1 && this.player2.numNodesPlaced === 1) {
       this.playerNumber = 2;
     }
-    else{
+    else {
       this.playerNumber = 3 - this.playerNumber;
     }
   }
 
-  incrementVisit():void{
+  incrementVisit(): void {
     this.visitCount++;
   }
 
 
 
-  getPlayerNo():number{
+  getPlayerNo(): number {
     return this.playerNumber;
   }
 
-  addScore(score:number):void{
+  addScore(score: number): void {
     this.winScore += score;
   }
 
-  getOpponent():number{
+  getOpponent(): number {
     let result;
-    if(this.player1.numNodesPlaced === 1 && this.player2.numNodesPlaced === 1){
+    if (this.player1.numNodesPlaced === 1 && this.player2.numNodesPlaced === 1) {
       result = this.playerNumber;
     }
-    else{
-      result =  3 - this.playerNumber;
+    else {
+      result = 3 - this.playerNumber;
     }
     return result;
   }
 
-  
 
-  applyMove(moveString: string):void{
+
+  applyMove(moveString: string): void {
     let currentPlayer;
     if (this.playerNumber === 1) {
       currentPlayer = this.player1;
@@ -585,7 +585,7 @@ export class State {
     if (CoreLogic.getWinner(this) === 0) {
       const newPlayer = endPlayer === this.player1 ? this.player2 : this.player1;
 
-      
+
 
       //Set resources if still opening moves
       if (endPlayer.numNodesPlaced < 2 && endPlayer.ownedBranches.length < 2) {
@@ -594,7 +594,7 @@ export class State {
         endPlayer.yellowResources = 2;
         endPlayer.greenResources = 2;
       }
-      else{
+      else {
         //update resources for newPlayer
         newPlayer.redResources += newPlayer.redPerTurn;
         newPlayer.blueResources += newPlayer.bluePerTurn;
@@ -602,7 +602,7 @@ export class State {
         newPlayer.greenResources += newPlayer.greenPerTurn;
       }
 
-      
+
 
       // if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
       //   // if (this.currentGameMode === GameType.AI && this.player1.type === PlayerType.AI) {
@@ -623,19 +623,19 @@ export class State {
     const currentOwner = currentPlayer === this.player1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
     if (this.board.nodes[possibleNode]?.getOwner() === Owner.NONE) {
-      
+
       if (this.board.nodes[possibleNode]?.getTopRightTile() !== -1) {
         this.board.tiles[this.board.nodes[possibleNode].getTopRightTile()].nodeCount++;
-        
+
         if ((this.board.tiles[this.board.nodes[possibleNode]?.getTopRightTile()].nodeCount >
           this.board.tiles[this.board.nodes[possibleNode]?.getTopRightTile()].maxNodes) &&
           this.board.tiles[this.board.nodes[possibleNode]?.getTopRightTile()].isExhausted === false) {
           // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
           if (this.board.tiles[this.board.nodes[possibleNode]?.getTopRightTile()].capturedBy === Owner.NONE) {
             this.board.tiles[this.board.nodes[possibleNode].getTopRightTile()].isExhausted = true;
-            
+
             this.tileExhaustion(this.board.nodes[possibleNode].getTopRightTile(), true);
-            
+
           }
         }
 
@@ -648,16 +648,16 @@ export class State {
 
       if (this.board.nodes[possibleNode]?.getBottomRightTile() !== -1) {
         this.board.tiles[this.board.nodes[possibleNode].getBottomRightTile()].nodeCount++;
-        
+
         if ((this.board.tiles[this.board.nodes[possibleNode].getBottomRightTile()].nodeCount >
           this.board.tiles[this.board.nodes[possibleNode].getBottomRightTile()].maxNodes) &&
           this.board.tiles[this.board.nodes[possibleNode].getBottomRightTile()].isExhausted === false) {
           // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
           if (this.board.tiles[this.board.nodes[possibleNode].getBottomRightTile()].capturedBy === Owner.NONE) {
             this.board.tiles[this.board.nodes[possibleNode].getBottomRightTile()].isExhausted = true;
-            
+
             this.tileExhaustion(this.board.nodes[possibleNode].getBottomRightTile(), true);
-           
+
           }
         }
         // checks for if resource productions ought to be incremented
@@ -668,17 +668,17 @@ export class State {
 
       if (this.board.nodes[possibleNode]?.getBottomLeftTile() !== -1) {
         this.board.tiles[this.board.nodes[possibleNode].getBottomLeftTile()].nodeCount++;
-        
+
         if ((this.board.tiles[this.board.nodes[possibleNode].getBottomLeftTile()].nodeCount >
           this.board.tiles[this.board.nodes[possibleNode].getBottomLeftTile()].maxNodes) &&
           this.board.tiles[this.board.nodes[possibleNode].getBottomLeftTile()].isExhausted === false) {
           // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
           if (this.board.tiles[this.board.nodes[possibleNode].getBottomLeftTile()].capturedBy === Owner.NONE) {
             this.board.tiles[this.board.nodes[possibleNode].getBottomLeftTile()].isExhausted = true;
-   
+
 
             this.tileExhaustion(this.board.nodes[possibleNode].getBottomLeftTile(), true);
-            
+
           }
         }
 
@@ -691,7 +691,7 @@ export class State {
 
       if (this.board.nodes[possibleNode]?.getTopLeftTile() != -1) {
         this.board.tiles[this.board.nodes[possibleNode].getTopLeftTile()].nodeCount++;
-      
+
         if ((this.board.tiles[this.board.nodes[possibleNode].getTopLeftTile()].nodeCount >
           this.board.tiles[this.board.nodes[possibleNode].getTopLeftTile()].maxNodes) &&
           this.board.tiles[this.board.nodes[possibleNode].getTopLeftTile()].isExhausted === false) {
@@ -699,10 +699,10 @@ export class State {
           // checking if tile is captured to set isExhausted and decrement tiles in tileExhaustion
           if (this.board.tiles[this.board.nodes[possibleNode].getTopLeftTile()].capturedBy === Owner.NONE) {
             this.board.tiles[this.board.nodes[possibleNode].getTopLeftTile()].isExhausted = true;
-            
+
 
             this.tileExhaustion(this.board.nodes[possibleNode].getTopLeftTile(), true);
-            
+
 
           }
         }
@@ -717,16 +717,16 @@ export class State {
         this.board.nodes[possibleNode].setOwner(Owner.PLAYERONE);
         this.player1.numNodesPlaced++;
         this.player1.currentScore++;
-        this.player1.greenResources-=2;
-        this.player1.yellowResources-=2;
+        this.player1.greenResources -= 2;
+        this.player1.yellowResources -= 2;
       } else {
         this.board.nodes[possibleNode].setOwner(Owner.PLAYERTWO);
         this.player2.numNodesPlaced++;
         this.player2.currentScore++;
-        this.player2.greenResources-=2;
-        this.player2.yellowResources-=2;
+        this.player2.greenResources -= 2;
+        this.player2.yellowResources -= 2;
       }
-      
+
       return true;
     } else {
       return false;
@@ -752,8 +752,8 @@ export class State {
           this.player2.blueResources--;
         }
 
-       
-        
+
+
         return true;
       } else {
         return false;
@@ -778,7 +778,7 @@ export class State {
         this.board.branches[this.board.nodes[possibleNode]?.getBottomBranch()]?.getOwner() === nodeOwner ||
         this.board.branches[this.board.nodes[possibleNode]?.getRightBranch()]?.getOwner() === nodeOwner) {
 
-        
+
         // add to nodeCount of tiles and check for if it has been exhaused
         if (this.board.nodes[possibleNode]?.getTopRightTile() != -1) {
           this.board.tiles[this.board.nodes[possibleNode].getTopRightTile()].nodeCount++;
@@ -1212,5 +1212,5 @@ export class State {
     return captured;
   }
 
-  
+
 }

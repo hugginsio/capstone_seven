@@ -3,19 +3,19 @@ import { Owner } from '../../enums/game.enums';
 
 export class Node {
   ownedBy: Owner;
-  
+
   // resources avalible from node
   redProvided: number;
   blueProvided: number;
   greenProvided: number;
   yellowProvided: number;
-  
+
   // branches adjacent to node
   topBranch: number;
   rightBranch: number;
   bottomBranch: number;
   leftBranch: number;
-  
+
   // tiles diagonally related to node
   topLeftTile: number;
   topRightTile: number;
@@ -32,7 +32,7 @@ export class Node {
     this.blueProvided = 0;
     this.greenProvided = 0;
     this.yellowProvided = 0;
-        
+
     this.topBranch = tb;
     this.rightBranch = rb;
     this.bottomBranch = bb;
@@ -125,7 +125,7 @@ export class Node {
   setTopRightTile(num: number): void {
     this.topRightTile = num;
   }
-    
+
   getBottomLeftTile(): number {
     return this.bottomLeftTile;
   }

@@ -19,7 +19,7 @@ export class AppComponent {
     private storageService: LocalStorageService
   ) {
     this.production = AppConfig.production;
-    
+
     console.log(`Production: ${this.production.toString()}`);
     console.log(`Environment: ${AppConfig.environment} / ${this.electronService.isElectron ? 'ELECTRON' : 'BROWSER'}`);
 

@@ -4,55 +4,55 @@ import { State } from './ai.class.State';
 import { CoreLogic } from '../../util/core-logic.util';
 import { Player } from '../gamecore/game.class.Player';
 
-interface PlayoutResult{
-  playerNumber:number;
+interface PlayoutResult {
+  playerNumber: number;
 }
 export class MonteCarlo {
   WINSCORE = 10;
-  explorationParameter:number;
-  opponent:number;
-  tree:Tree;
+  explorationParameter: number;
+  opponent: number;
+  tree: Tree;
 
   NUMWORKERS = 4;
-  workers:Array<Worker>;
+  workers: Array<Worker>;
 
-  
 
-  constructor(gameBoard:GameBoard,player1:Player,player2:Player,explorationParameter:number){
+
+  constructor(gameBoard: GameBoard, player1: Player, player2: Player, explorationParameter: number) {
     this.explorationParameter = explorationParameter;
     this.tree = new Tree();
-    const startingState = new State(gameBoard,player1,player2);
+    const startingState = new State(gameBoard, player1, player2);
     const startingRoot = new MCTSNode(startingState);
     this.tree.setRoot(startingRoot);
   }
 
-  
-  findNextMove(gameState:State,time:number):string {
+
+  findNextMove(gameState: State, time: number): string {
     // define an end time in milliseconds which will act as a terminating condition
     const end = Date.now() + time;
-    
+
 
     const newNode = new MCTSNode(gameState);
     const currentRoot = this.tree.getRoot();
     let childStateFound = false;
 
-    for(let i = 0; i < currentRoot.childArray.length;i++){
-      if(currentRoot.childArray[i].getState().move === newNode.getState().move){
+    for (let i = 0; i < currentRoot.childArray.length; i++) {
+      if (currentRoot.childArray[i].getState().move === newNode.getState().move) {
         this.tree.setRoot(currentRoot.childArray[i]);
         childStateFound = true;
         i = currentRoot.childArray.length;
       }
     }
 
-    if(!childStateFound){
+    if (!childStateFound) {
       this.tree.setRoot(newNode);
     }
 
     const rootNode = this.tree.getRoot();
     let simNum = 0;
-    
+
     while (Date.now() < end) {
-    //for(let iteration = 0; iteration < 10; iteration++){
+      //for(let iteration = 0; iteration < 10; iteration++){
       const promisingNode = this.selectPromisingNode(rootNode);
       if (CoreLogic.getWinner(promisingNode.getState()) === 0) {
         this.expandNode(promisingNode);
@@ -68,43 +68,43 @@ export class MonteCarlo {
     }
 
     console.log(`Number of Simulations = ${simNum}`);
-    if(rootNode.getChildArray().length > 0){
+    if (rootNode.getChildArray().length > 0) {
       const winnerNode = rootNode.getChildWithMaxScore();
       this.tree.setRoot(winnerNode);
       return winnerNode.getState().getMove();
     }
-    else{
+    else {
       return ';;';
     }
   }
 
-  selectPromisingNode(rootNode:MCTSNode):MCTSNode {
+  selectPromisingNode(rootNode: MCTSNode): MCTSNode {
     //const start = Date.now();
     let node = rootNode;
     while (node.getChildArray().length != 0) {
-      node = UCT.findBestNodeWithUCT(node,this.explorationParameter);
+      node = UCT.findBestNodeWithUCT(node, this.explorationParameter);
     }
     //console.log(`SelectPromisingNode TIME: ${Date.now() - start}ms`);
     return node;
   }
 
-  expandNode(node:MCTSNode):void {
+  expandNode(node: MCTSNode): void {
     //const start = Date.now();
     const possibleStates = node.getState().getAllPossibleStates();
-    for(const state of possibleStates){
+    for (const state of possibleStates) {
       const newNode = new MCTSNode(state);
       newNode.setParent(node);
 
       newNode.getState().setPlayerNo(node.getState().getOpponent());
       node.getChildArray().push(newNode);
     }
-    
+
     //console.log(`expandNode TIME: ${Date.now() - start}ms`);
   }
 
-  backPropogation(nodeToExplore:MCTSNode, playoutResult:number):void {
+  backPropogation(nodeToExplore: MCTSNode, playoutResult: number): void {
     //const start = Date.now();
-    let tempNode:MCTSNode|null = nodeToExplore;
+    let tempNode: MCTSNode | null = nodeToExplore;
     while (tempNode != null) {
       tempNode.getState().incrementVisit();
       if (tempNode.getState().getPlayerNo() == playoutResult) {
@@ -115,7 +115,7 @@ export class MonteCarlo {
     //console.log(`backPropagation TIME: ${Date.now() - start}ms`);
   }
 
-  simulateRandomPlayout(node:MCTSNode):number {
+  simulateRandomPlayout(node: MCTSNode): number {
     //const start = Date.now();
     const tempNode = MCTSNode.copyConstructor(node);
     const tempState = tempNode.getState();
@@ -123,17 +123,17 @@ export class MonteCarlo {
     //let result = {playerNumber:boardStatus,multiplier:1};
     if (boardStatus == this.opponent) {
       const tempParent = tempNode.getParent();
-      if(tempParent !== null){
+      if (tempParent !== null) {
         tempParent.getState().setWinScore(Number.MIN_VALUE);
       }
       //this.backPropogation(node, boardStatus);
       return boardStatus;
     }
 
-   
+
     let counter = 0; //decrease counter and assign winner based on score if game not finished
     while (boardStatus === 0 && counter < 5) {
-      if(tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1){
+      if (tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1) {
         tempState.player1.redResources = 1;
         tempState.player1.blueResources = 1;
         tempState.player1.greenResources = 2;
@@ -147,17 +147,17 @@ export class MonteCarlo {
       counter++;
     }
 
-    if(boardStatus === 0){
-      if(tempState.getHeuristicValue() > 0){
+    if (boardStatus === 0) {
+      if (tempState.getHeuristicValue() > 0) {
         boardStatus = 1;
       }
-      else{
+      else {
         boardStatus = 2;
       }
 
     }
 
-    
+
     return boardStatus;
   }
 
@@ -169,22 +169,22 @@ export class MonteCarlo {
 
 
 export class UCT {
-  static uctValue(totalVisit:number, nodeWinScore:number, nodeVisit:number, explorationParameter:number):number {
+  static uctValue(totalVisit: number, nodeWinScore: number, nodeVisit: number, explorationParameter: number): number {
     if (nodeVisit == 0) {
       return Number.MAX_VALUE;
     }
-    return (nodeWinScore / nodeVisit) + explorationParameter * Math.sqrt(2*(Math.log(totalVisit)) / nodeVisit);
+    return (nodeWinScore / nodeVisit) + explorationParameter * Math.sqrt(2 * (Math.log(totalVisit)) / nodeVisit);
   }
 
-  static findBestNodeWithUCT(node:MCTSNode,explorationParameter:number):MCTSNode {
+  static findBestNodeWithUCT(node: MCTSNode, explorationParameter: number): MCTSNode {
     const parentVisit = node.getState().getVisitCount();
-    
-    let maxUctValue = this.uctValue(parentVisit,node.getChildArray()[0].getState().getWinScore(),node.getChildArray()[0].getState().getVisitCount(),explorationParameter);
+
+    let maxUctValue = this.uctValue(parentVisit, node.getChildArray()[0].getState().getWinScore(), node.getChildArray()[0].getState().getVisitCount(), explorationParameter);
     let maxNode = node.getChildArray()[0];
-    for(let i = 1; i < node.getChildArray().length; i++){
-      
-      const uctValue = this.uctValue(parentVisit,node.getChildArray()[i].getState().getWinScore(),node.getChildArray()[i].getState().getVisitCount(),explorationParameter);
-      if(uctValue >= maxUctValue){
+    for (let i = 1; i < node.getChildArray().length; i++) {
+
+      const uctValue = this.uctValue(parentVisit, node.getChildArray()[i].getState().getWinScore(), node.getChildArray()[i].getState().getVisitCount(), explorationParameter);
+      if (uctValue >= maxUctValue) {
         maxUctValue = uctValue;
         maxNode = node.getChildArray()[i];
       }
