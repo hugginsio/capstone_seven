@@ -38,7 +38,7 @@ export class MCTSNode {
   }
 
   getRandomChildNode():MCTSNode{
-    return this.chooseWeightedChildren()
+    return this.chooseWeightedChildren();
     //return this.childArray[Math.floor(Math.random() * this.childArray.length)];
     
 

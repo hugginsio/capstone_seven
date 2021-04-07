@@ -308,7 +308,7 @@ export class State {
     //const currentOwner = this.playerNumber === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
     let value = 0;
     const innerBranches = [12,17,23,18];
-    const middleBranches = [7,8,13,24,28,27,22,11]
+    const middleBranches = [7,8,13,24,28,27,22,11];
 
 
     let player1BranchesInInnerBranches = 0;
