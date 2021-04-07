@@ -247,6 +247,10 @@
   .selected {
     @apply border-4 border-gray-300;
   }
+
+  .disabled {
+    @apply bg-gray-600 opacity-50;
+  }
 }
 
 .spacing-x-nodes > * + * {
