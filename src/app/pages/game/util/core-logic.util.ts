@@ -279,7 +279,7 @@ export class CoreLogic {
         
 
         redTemp++;
-        //if(blueTemp >= redTemp){
+        if(blueTemp >= redTemp){
           let possibleBranchIndices:number[] = [];
           let possibleNodeIndices:number[] = [];
 
@@ -362,7 +362,7 @@ export class CoreLogic {
               result.push(CoreLogic.moveToString({tradedIn:trade,received:'R',nodesPlaced:[],branchesPlaced:[]}));
             }
           }
-        //}
+        }
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
@@ -386,7 +386,7 @@ export class CoreLogic {
         }
 
         blueTemp++;
-        //if(redTemp >= blueTemp){
+        if(redTemp >= blueTemp){
           let possibleBranchIndices:number[] = [];
           let possibleNodeIndices:number[] = [];
 
@@ -469,7 +469,7 @@ export class CoreLogic {
               result.push(CoreLogic.moveToString({tradedIn:trade,received:'B',nodesPlaced:[],branchesPlaced:[]}));
             }
           }
-        //}
+        }
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
@@ -493,7 +493,7 @@ export class CoreLogic {
         }
 
         greenTemp++;
-        //if(yellowTemp >= greenTemp){
+        if(yellowTemp >= greenTemp){
           let possibleBranchIndices:number[] = [];
           let possibleNodeIndices:number[] = [];
 
@@ -576,7 +576,7 @@ export class CoreLogic {
               result.push(CoreLogic.moveToString({tradedIn:trade,received:'G',nodesPlaced:[],branchesPlaced:[]}));
             }
           }
-        //}
+        }
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
@@ -600,7 +600,7 @@ export class CoreLogic {
         }
 
         yellowTemp++;
-        //if(greenTemp >= yellowTemp){
+        if(greenTemp >= yellowTemp){
           let possibleBranchIndices:number[] = [];
           let possibleNodeIndices:number[] = [];
 
@@ -683,7 +683,7 @@ export class CoreLogic {
               result.push(CoreLogic.moveToString({tradedIn:trade,received:'Y',nodesPlaced:[],branchesPlaced:[]}));
             }
           }
-        //}
+        }
         redTemp = redAvailable;
         blueTemp = blueAvailable;
         greenTemp = greenAvailable;
@@ -761,7 +761,7 @@ export class CoreLogic {
     }
 
     
-   let finalResult = result;
+    let finalResult = result;
 
     if(finalResult.length === 0){
       finalResult.push(';;');

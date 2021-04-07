@@ -130,9 +130,6 @@
             "lintFilePatterns": [
               "src/**/*.ts",
               "electron/**/*.ts"
-            ],
-            "tsConfig": [
-              "tsconfig.worker.json"
             ]
           }
         }
