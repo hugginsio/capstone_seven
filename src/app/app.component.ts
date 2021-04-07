@@ -30,11 +30,13 @@ export class AppComponent {
     this.storageService.store('mode', 'pva');
     this.storageService.store('ai-difficulty', 'easy');
     this.storageService.store('guided-tutorial', 'false');
-    this.storageService.store('board-seed', '!random');
+    this.storageService.update('board-seed', '!random');
     this.storageService.update('firstplayer', '1');
     this.storageService.store('isHost', 'true');
     this.storageService.store('isHostFirst', 'true');
     this.storageService.store('oppAddress', '');
+    this.storageService.store('oppUsername', '');
+    this.storageService.store('username', 'ERR');
     this.storageService.update('location', 'bg1');
   }
 }

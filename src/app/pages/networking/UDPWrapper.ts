@@ -25,7 +25,8 @@ export class UDPWrapper {
     //this.broadcast = "This is a test broadcast, please remain calm.";
     this.username = 'Person McHuman';
 
-    this.server.on('error', (err: any) => {
+    this.server.on('error', (err: Error) => {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.log(`server error:\n${err.stack}`);
       this.server.close();
     });
@@ -38,6 +39,7 @@ export class UDPWrapper {
     this.server.on("listening", () => {
       this.server.setBroadcast(true);
       const address = this.server.address();
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.log(`server listening ${address.address}:${address.port}`);
 
     });
@@ -74,6 +76,9 @@ export class UDPWrapper {
       }
       else if (interfaces.includes('en0')) {
         return 'en0';
+      }
+      else if (interfaces.includes('en9')) {
+        return 'en9';
       }
     }
     else {

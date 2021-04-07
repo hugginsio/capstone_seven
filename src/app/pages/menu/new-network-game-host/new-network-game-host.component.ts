@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 import { GameNetworkingService } from '../../networking/game-networking.service';
@@ -10,18 +10,19 @@ import { interval, Subscription } from 'rxjs';
   templateUrl: './new-network-game-host.component.html',
   styleUrls: ['../menu-common.scss']
 })
-export class NewNetworkGameHostComponent implements OnInit {
-  public firstPlayer: string;
-  public boardSeed: string;
-
+export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   private isHostFirst: boolean;
-  private isWaitingForPlayer = false;
-  private isSettingUpGame = true;
-  private readonly username: string = "Client McGee";
+  private username: string;
   private subscription: Subscription;
+  public advancedOpts = false;
+  public boardSeed: string;
+  public firstPlayer: string;
+  public isSettingUpGame = true;
+  public isWaitingForPlayer = false;
+  public selectedLocation: number;
 
-  public readonly playerOneFirst = 'Player One Goes First';
-  public readonly playerTwoFirst = 'Player Two Goes First';
+  public readonly playerOneFirst = 'You Go First';
+  public readonly playerTwoFirst = 'Opponent Goes First';
   
   constructor(
     private readonly storageService: LocalStorageService,
@@ -33,25 +34,41 @@ export class NewNetworkGameHostComponent implements OnInit {
     this.isHostFirst = true;
 
     this.storageService.setContext('game');
-    this.storageService.store('firstPlayer', this.firstPlayer);
+    //this.storageService.store('firstPlayer', this.firstPlayer);
+    this.username = this.storageService.fetch('username');
+    
+    const storedLocation = this.storageService.fetch('location');
+    if (storedLocation === 'bg3') {
+      this.selectedLocation = 3;
+    } else if (storedLocation === 'bg2') {
+      this.selectedLocation = 2;
+    } else {
+      this.selectedLocation = 1;
+    }
   }
 
   ngOnInit(): void {
     this.matchmakingService.initialize(this.username);
     this.networkingService.createTCPServer();
 
-    this.networkingService.listen('opponent-connected').subscribe(() => {
+    this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
       console.log("A opponent has connected");
+      this.storageService.update('oppUsername', oppUsername);
       this.isWaitingForPlayer = false;
       this.subscription.unsubscribe();
-      //FOR TESTING: CALL IN GAME CORE ONCE BOARD IS MADE
-      //this.networkingService.setGame({board : this.boardSeed, background: "BG1", isHostFirst: this.isHostFirst});
       this.routerService.navigate(['/game']);
     });
   }
 
+  ngOnDestroy(): void {
+    if(this.isWaitingForPlayer)
+    {
+      this.subscription.unsubscribe();
+    }
+  }
+
   changeFirstPlayer(): void {
-    if (this.firstPlayer === 'Player One Goes First') {
+    if (this.firstPlayer === 'You Go First') {
       this.firstPlayer = this.playerTwoFirst;
       this.isHostFirst = false;
     } else {
@@ -59,7 +76,7 @@ export class NewNetworkGameHostComponent implements OnInit {
       this.isHostFirst = true;
     }
 
-    this.storageService.update('isHostFirst', this.firstPlayer);
+    //this.storageService.update('firstPlayer', this.firstPlayer);
   }
 
   startHosting(): void {
@@ -69,14 +86,41 @@ export class NewNetworkGameHostComponent implements OnInit {
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
 
+    if(this.isHostFirst)
+    {
+      this.storageService.update('isHostFirst', 'true');
+    }
+    else
+    {
+      this.storageService.update('isHostFirst', 'false');
+    }
+
     // host ye ol game
     // ✨ broadcastify ✨
     const source = interval(1000);
-    this.subscription = source.subscribe(val => this.broadcast());
+    this.subscription = source.subscribe(() => this.broadcast());
   }
 
   broadcast(): void {
     this.matchmakingService.broadcastGame();
   }
 
+  cancelHosting(): void {
+    this.isWaitingForPlayer = false;
+    this.isSettingUpGame = true;
+    this.subscription.unsubscribe();
+  }
+
+  selectLocation(clicked: number): void {
+    this.selectedLocation = clicked;
+    this.storageService.update('location', `bg${clicked}`);
+  }
+
+  isLocSelected(button: number): string {
+    if (this.selectedLocation === button) {
+      return 'border-gray-300';
+    } else {
+      return 'border-gray-900';
+    }
+  }
 }

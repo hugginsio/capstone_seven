@@ -9,6 +9,7 @@ import { NetworkGameSettings } from './NetworkGameSettings';
 export class GameNetworkingService {
 
   socket: any;
+  isGameSocket = false;
 
   constructor() {}
 
@@ -36,6 +37,7 @@ export class GameNetworkingService {
   public createTCPServer(): void {
     this.socket = io("http://localhost:8000");
     console.log("TCP Server Created!");
+    this.setListners();
   }
 
   public setGame(settings: NetworkGameSettings): void {
@@ -60,6 +62,24 @@ export class GameNetworkingService {
     this.socket.on('connect_timeout', function(err:any) {
       console.log("client connect_timeout: ", err);
     });
+    this.setListners();
+  }
+
+  private setListners()
+  {
+    this.socket.io.on('reconnect', () => {
+      this.socket.emit('reconnection');
+      if(this.isGameSocket)
+      {
+        this.socket.emit('join-room');
+      }
+    });
+  }
+
+  public setIsGameSocket(): void
+  {
+    this.isGameSocket = true;
+    this.socket.emit('join-room');
   }
 
   public sendMove(move: string): void {
@@ -70,14 +90,14 @@ export class GameNetworkingService {
     this.socket.emit('send-chat-message', message);
   }
 
-  public getNetGameSettings()
+  public getNetGameSettings(): void
   {
     this.socket.emit('ask-game-settings');
   }
 
-  public requestJoin()
+  public requestJoin(username:string): void
   {
-    this.socket.emit('request-join');
+    this.socket.emit('request-join', username);
   }
 
 }

@@ -1,40 +1,44 @@
 import { NetworkGameSettings } from "./NetworkGameSettings";
 
+console.log('Launching game server...');
+
 const server = require('socket.io')(8000, {
   cors: {
     origin: true,
     credentials: true
   },
+  pingTimeout: 1000,
+  pingInterval: 1500
 });
 
-const users:any = {};
+
+let users:any = [];
 let gameSettings:NetworkGameSettings;
+let isDisconnected = false;
 
 server.on('connection', (socket:any) => {
 
-  //socket.emit("lobby-joined", gameSettings);
-  socket.emit('get-gameSettings', gameSettings);
-
-  socket.on('new-user', (username:string) => {
-    users[socket.id] = username;
-    socket.broadcast.emit("player-join", "A new player has joined");
-  });
-
   socket.on('send-move', (move:string) => {
-    socket.broadcast.emit("recieve-move", move);
+    socket.to("game").emit("recieve-move", move);
   });
 
   socket.on('send-chat-message', (message:string) => {
     socket.broadcast.emit("recieve-chat-message", message);
   });
 
-  socket.on('disconnect', () => {
-    socket.broadcast.emit('user-disconnected', users[socket.id]);
-    delete users[socket.id];
+  socket.on('disconnecting', () => {
+    if(!isDisconnected)
+    {
+      isDisconnected = true;
+      socket.broadcast.emit('opponent-disconnected');
+    }
   });
 
   socket.on('create-lobby', (lobbyInfo: NetworkGameSettings) => {
     gameSettings = lobbyInfo;
+    users = [];
+    users.push(socket.id);
+    socket.join("game");
     socket.broadcast.emit('get-game-settings', gameSettings);
   });
 
@@ -43,9 +47,29 @@ server.on('connection', (socket:any) => {
   //  socket.emit('get-game-settings', gameSettings);
   //});
 
-  socket.on('request-join', () => {
-    //check if lobby full
-    //if not full
-    socket.broadcast.emit('opponent-connected');
+  socket.on('request-join', (username:string) => {
+    if(users.length >= 2)
+    {
+      socket.emit('lobby-full');
+    }
+    else
+    {
+      users.push(socket.id);
+      socket.join("game");
+      socket.broadcast.emit('opponent-connected', username);
+    }
+  });
+
+  socket.on('reconnection', () => {
+    if(isDisconnected)
+    {
+      isDisconnected = false;
+      socket.emit('user-reconnected');
+      socket.broadcast.emit('opponent-reconnected');
+    }
+  });
+
+  socket.on('join-room', () => {
+    socket.join("game");
   });
 });

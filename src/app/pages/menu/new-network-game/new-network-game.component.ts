@@ -1,37 +1,49 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GameNetworkingService } from '../../networking/game-networking.service';
 import { MatchmakingService } from '../../networking/matchmaking.service';
 import { NetworkGameInfo } from './interfaces/new-network-game.interface';
 import { NetworkGameSettings } from '../../networking/NetworkGameSettings';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
+import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
 
 @Component({
   selector: 'app-new-network-game',
   templateUrl: './new-network-game.component.html',
   styleUrls: ['../menu-common.scss']
 })
-export class NewNetworkGameComponent implements OnInit, AfterViewInit {
-  private username: string;
-  private list:any;
-  private gamesList: Array<NetworkGameInfo>;
+export class NewNetworkGameComponent implements OnInit {
+  public username: string;
+  public gamesList: Array<NetworkGameInfo>;
+  public isEnteringName = false;
   private gameSettings: NetworkGameSettings;
 
   constructor(
     private readonly storageService: LocalStorageService,
     private readonly matchmakingService: MatchmakingService,
     private readonly networkingService: GameNetworkingService,
-    private readonly routerService: Router
+    private readonly routerService: Router,
+    private readonly snackbarService: SnackbarService
   ) {}
-
-  ngAfterViewInit(): void {
-    this.list = document.getElementById("gameList");
-  }
 
   ngOnInit(): void {
     // instantiate class here
-    this.gamesList = new Array<NetworkGameInfo>();
     this.storageService.update('mode', 'net');
+    this.username = this.storageService.fetch('username');
+    this.gamesList = new Array<NetworkGameInfo>();
+    if(this.username === "ERR")
+    {
+      this.username = "";
+      this.isEnteringName = true;
+    }
+    else
+    {
+      this.BeginMatchmaking();
+    }
+  }
+
+  BeginMatchmaking(): void
+  {
     this.matchmakingService.initialize(this.username);
 
     this.matchmakingService.listen('you-connected').subscribe(() => {
@@ -51,7 +63,7 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
         }
       });
 
-      //append to arrary
+      //append to array
       if (!isDuplicate)
       {
         this.gamesList.push({
@@ -61,18 +73,16 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
       }
 
     });
-
   }
 
-  JoinGame(oppAddress:string): void {
+  JoinGame(oppAddress:string, oppUsername:string): void {
     //get gameInfo from object clicked
+    this.storageService.update('oppUsername', oppUsername);
     this.networkingService.connectTCPserver(oppAddress);
 
-    this.networkingService.listen('lobby-joined').subscribe((gameInfo:any) => {
-    });
-
     this.networkingService.listen('lobby-full').subscribe(() => {
-      console.log('Lobby is full. Sucks bro');
+      this.snackbarService.add({message:"Lobby is full, please try again."});
+      this.refresh();
     });
    
     this.networkingService.listen('get-game-settings').subscribe((settings: NetworkGameSettings) => {
@@ -80,6 +90,7 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
       this.storageService.update('isHost', 'false');
       this.storageService.update('oppAddress', oppAddress);
       this.storageService.update('board-seed', this.gameSettings.board);
+      this.storageService.update('location', this.gameSettings.background);
       if (this.gameSettings.isHostFirst === true)
       {
         this.storageService.update('isHostFirst', 'true');
@@ -93,7 +104,36 @@ export class NewNetworkGameComponent implements OnInit, AfterViewInit {
       this.routerService.navigate(['/game']);
     });
 
-    this.networkingService.requestJoin();
+    this.networkingService.requestJoin(this.username);
   }
 
+  refresh(): void {
+    this.gamesList = new Array<NetworkGameInfo>();
+  }
+
+  setUsername(): void {
+    console.log(this.username);
+    if(this.username === "")
+    {
+      this.snackbarService.add({message:"Please Enter a Username"});
+    }
+    else{
+      this.isEnteringName = false;
+      this.storageService.update('username', this.username);
+      this.BeginMatchmaking();
+    }
+  }
+
+  setButtons(): string {
+    let btnClass = "";
+    if(this.isEnteringName)
+    {
+      btnClass = "menu-btn-disabled";
+    }
+    else
+    {
+      btnClass = "menu-btn";
+    }
+    return btnClass;
+  }
 }

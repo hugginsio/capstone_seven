@@ -33,29 +33,32 @@
   </div>
 
   <!-- Chat Container -->
-    <div class="absolute top-3 right-3" *ngIf="this.isNetwork || this.isTutorial">
-      <div id="chat-container" style="width: 300px; height: 150px; border-width: 1px; overflow: auto; text-align: left; font-size: 18px; padding: 4px; background-color: rgb(17, 24, 39);">
-      </div>
+  <div class="absolute top-3 right-3 flex flex-col w-96" *ngIf="this.isNetwork || this.isTutorial">
+    <div id="chat-container"
+      class="border-4 bg-gray-900 border-gray-600 overflow-y-auto overflow-x-hidden text-left text-base w-full h-44 p-2">
+    </div>
+    
+    <div class="space-y-3 pt-3 text-center align-middle">
 
-      <div class="flex flex-col space-y-3 pt-3 text-center" >
-          <div id="network-controls" class="flex space-x-3 w-full" *ngIf="this.isNetwork">
-              <input id="chat-input" class="input" type="text" style="color: black;">
-              <div class="menu-btn absolute right-0" (click)="sendMessage()" style="float:right" type="submit">
-                <p>Send</p>
-              </div>
-          </div>
-
-        <div id="tut-controls" class="flex space-x-3 w-full" *ngIf="this.isTutorial">
+      <form id="network-controls" class="flex flex-row space-x-3 w-full text-xl" *ngIf="this.isNetwork"
+      (ngSubmit)="sendMessage()">
+        <div class="menu-input w-2/3 content-center">
+          <input id="chat-input" type="text" class="input-text text-2xl" placeholder="Send a message!">
+        </div>
+        <input type="submit" class="p-1 text-xl" [ngClass]="dynamicChatButton()" value="Send">
+      </form>
+    
+      <div id="tut-controls" class="flex justify-between w-full" *ngIf="this.isTutorial">
           <div id="GT-Back" (click)="GTBtn($event)" class="menu-btn absolute w-1/3 left-0 pointer-events-auto">
             Back
           </div>
           <div id="GT-Next" (click)="GTBtn($event)" class="menu-btn absolute w-1/3 right-0 pointer-events-auto">
             Next
           </div>
-        </div>
-
       </div>
+  
     </div>
+  </div>
 
   <!-- Pause Modal Container -->
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-50" *ngIf="this.gamePaused">
@@ -197,7 +200,7 @@
                 <p>Exit</p>
               </div>
             </div>
-            <div class="menu-btn w-full flex-grow pointer-events-auto" routerLink="/menu/new/local">
+            <div class="menu-btn w-full flex-grow pointer-events-auto" (click)="playAgain()">
               <div>
                 <p>Play Again</p>
               </div>
@@ -213,11 +216,13 @@
     <div class="mx-auto relative w-full h-full"> <!-- keeping this div if max-w becomes an issue here -->
       <div id="player1" class="absolute bottom-3 left-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerOne()" [actionSubject]="this.commLink"
-          [playerName]="'Player One'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERONE'"></app-player-shard>
+          [playerName]="'Player One'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERONE'"
+          [isConnected]="this.isConnected"></app-player-shard>
       </div>
       <div id="player2" class="absolute bottom-3 right-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerTwo()" [actionSubject]="this.commLink"
-          [playerName]="'Player Two'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERTWO'"></app-player-shard>
+          [playerName]="'Player Two'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERTWO'"
+          [isConnected]="this.isConnected"></app-player-shard>
       </div>
     </div>
   </div>

@@ -39,6 +39,7 @@ export class ManagerService {
   private isHost: string;
   private isHostFirst: string;
   private netSettings: NetworkGameSettings;
+  private networkingService: GameNetworkingService;
 
   // initializes AI service
   private readonly ai: AiService;
@@ -64,7 +65,7 @@ export class ManagerService {
   constructor(
     // UI integration
     private readonly storageService: LocalStorageService,
-    private readonly networkingService: GameNetworkingService
+    //private readonly networkingService: GameNetworkingService
   ) {
 
     // begin initializing ManagerService fields
@@ -82,12 +83,10 @@ export class ManagerService {
     const gameMode = this.storageService.fetch('mode');
     const boardSeed = this.storageService.fetch('board-seed');
     //this.isTutorial = this.storageService.fetch('guided-tutorial');
-    //this.firstPlayer = this.storageService.fetch('firstplayer');
+    this.firstPlayer = +this.storageService.fetch('firstplayer');
     this.isHost = this.storageService.fetch('isHost');
     this.isHostFirst = this.storageService.fetch('isHostFirst');
-    this.firstPlayer = +this.storageService.fetch('firstplayer');
-
-
+    const background = this.storageService.fetch('location');
     // determines currentGameMode field
     // determines player type fields for playerOne + playerTwo
     if (gameMode === 'pvp') {
@@ -107,13 +106,12 @@ export class ManagerService {
     } 
     else {
       this.currentGameMode = GameType.NETWORK;
-      console.log("Network Game");
+      this.networkingService = new GameNetworkingService();
       
       if(this.isHost === 'true')
       {
-        console.log("We are the host");
         this.networkingService.createTCPServer();
-        this.netSettings.background = "BG1";
+        this.netSettings.background = background;
 
         if (this.isHostFirst === 'true') {
           this.playerOne.type = PlayerType.HUMAN;
@@ -140,6 +138,7 @@ export class ManagerService {
           this.playerTwo.type = PlayerType.NETWORK;
         }
       }
+      this.networkingService.setIsGameSocket();
       this.networkingService.listen('recieve-move').subscribe((move: string) => {
         console.log(move);
         this.applyMove(move);
