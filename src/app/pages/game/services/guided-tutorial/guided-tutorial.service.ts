@@ -88,7 +88,7 @@ export class GuidedTutorialService {
     let pieceID = document.getElementById('GT-Next');
           if (pieceID !== null)
           {
-            pieceID.style.border = "2px solid white";
+            pieceID.style.border = "4px solid white";
           }
   }
 
@@ -233,6 +233,7 @@ export class GuidedTutorialService {
         case 22: piece = "endTurnBtn";
           break;
         case 23: piece = "Pause";
+          break;
         default:
           console.log("highlightManager error");
       }
@@ -539,7 +540,7 @@ export class GuidedTutorialService {
     let message='';
     // teaching undo 
     if(this.humanPlayer === '1') {
-      message = 'Don’t like where you clicked? Click the "Undo" button twice to reverse your past two moves.<br><br>Finish your turn by clicking the new indicated pieces and then "End Turn."<br><br>Click "Next" to continue.';
+      message = 'Go ahead and click the "Undo" button twice to reverse your past two moves.<br><br>Finish your turn by clicking the new indicated pieces and then "End Turn."<br><br>Click "Next" to continue.';
       if (this.moveNum === 6) {
         this.highlightManager();
         this.freezeNext = true;
@@ -626,6 +627,16 @@ export class GuidedTutorialService {
     // AI move - 2 branches and a trade
     if(this.humanPlayer === '1') {
       message = 'Now it’s the Machine’s turn to take a crack at it.<br>He brings his two separate rail networks into one big one and takes those two points from you!';
+      
+      let player1 = document.getElementById("player1");
+      let player2 = document.getElementById("player2");
+
+      if(player1 !== null && player2 !== null) 
+      {
+        player1.style.border = "transparent";
+        player2.style.border = "transparent";
+      }
+
       if (this.gameManager.getBoard().branches[12].getOwner() === 'NONE')
       {
         this.gameManager.applyMove("Y,Y,Y,B;;12,31");
@@ -646,8 +657,8 @@ export class GuidedTutorialService {
 
       if(player1 !== null && player2 !== null) 
       {
-        player1.style.border = "2px solid white";
-        player2.style.border = '2px solid white';
+        player1.style.border = "solid white";
+        player2.style.border = "solid white";
       }
     this.highlightNext();
 
@@ -665,8 +676,8 @@ export class GuidedTutorialService {
 
       if(player1 !== null && player2 !== null) 
       {
-        player1.style.border = "0px";
-        player2.style.border = '0px';
+        player1.style.border = "transparent";
+        player2.style.border = "transparent";
       }
       message = 'Now you got enough gems to put a pickaxe.<br><br>Remember, you cain’t just be mining in a place where you don\'t have the tracks to get you there! It’s just common sense!<br><br>Now, place one here and get another point in the competition.';
       if (this.moveNum === 13){

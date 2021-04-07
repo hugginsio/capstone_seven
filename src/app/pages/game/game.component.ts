@@ -417,7 +417,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     const button = event.target.id;
     const step = this.guidedTutorial.getstepNum();
     let message = "";
-    if (button === 'GT-Back' && step > 0)
+    if (button === 'GT-Back' && step > 1)
     {
       this.clearMessage();
       this,this.guidedTutorial.falseFreezeNext();
