@@ -87,7 +87,7 @@ export class Tile {
     this.capturedBy = newCap;
   }
 
-  // Node
+  // Node Relationships
   getTopLeftNode(): number {
     return this.topLeftNode;
   } 
@@ -118,7 +118,7 @@ export class Tile {
   }
 
 
-  // Branch
+  // Branch Relationships
   getTopBranch(): number {
     return this.topBranch;
   }
@@ -147,7 +147,7 @@ export class Tile {
     this.leftBranch = n;
   }
 
-  // Tile
+  // Tile Relationships
   getTopTile(): number {
     return this.topTile;
   }
