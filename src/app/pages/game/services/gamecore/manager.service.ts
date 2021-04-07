@@ -95,20 +95,20 @@ export class ManagerService {
 
     // instantiating AiService, calling its contructor w/ gameBoard and both players
      // Web worker magic
-     this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
+    this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
 
-     if (this.currentGameMode === GameType.AI) {
-       //this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
-       this.aiWorker.onmessage = ({ data }) => {
-         if (data) {
-           console.log('Initialized AI web worker.');
-         } else {
-           console.error('Could not initialize AI web worker.');
-         }
-       };
- 
-       this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 3.75]});
-     }
+    if (this.currentGameMode === GameType.AI) {
+      //this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
+      this.aiWorker.onmessage = ({ data }) => {
+        if (data) {
+          console.log('Initialized AI web worker.');
+        } else {
+          console.error('Could not initialize AI web worker.');
+        }
+      };
+
+      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 3.75]});
+    }
 
     // setting board as random or manually setting tiles
     if (boardSeed === '!random' || boardSeed === 'undefined') {
@@ -368,7 +368,7 @@ export class ManagerService {
 
   
       this.aiWorker.onmessage = ({ data }) => {
-        let AIStringMove:string = ';;';
+        let AIStringMove = ';;';
         if(typeof(data) === 'string' && data !== ''){
           
           AIStringMove = data;
