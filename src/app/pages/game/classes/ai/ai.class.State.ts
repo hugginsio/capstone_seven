@@ -79,6 +79,10 @@ export class State {
       
       newState.applyMove(move);
 
+      const score = Math.abs(newState.getHeuristicValue());
+      newState.visitCount = score;
+      
+
       states.push(newState);
     }
 
@@ -308,7 +312,7 @@ export class State {
     //const currentOwner = this.playerNumber === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
     let value = 0;
     const innerBranches = [12,17,23,18];
-    const middleBranches = [7,8,13,24,28,27,22,11]
+    const middleBranches = [7,8,13,24,28,27,22,11];
 
 
     let player1BranchesInInnerBranches = 0;
@@ -345,7 +349,7 @@ export class State {
     }
 
     
-    const branchesValue = (10*player1BranchesInInnerBranches - player2BranchesInInnerBranches) + (5*(player1MiddleBranches - player2MiddleBranches)) + (2.5*(player1OuterBranches-player2OuterBranches));
+    const branchesValue = (10*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (5*(player1MiddleBranches - player2MiddleBranches)) + (2.5*(player1OuterBranches-player2OuterBranches));
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
     const longestNetwork = this.player1.hasLongestNetwork ? 2 : -2;
     const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) + 
