@@ -7,7 +7,10 @@ export class Branch {
   // branch1-branch6 for associations
   private branches: BranchesInterface;
     
-  // NOTE: branches counted in clockwise fashion beginning at top
+  // NOTE: 
+  // branches are counted in a clockwise fashion
+  // vertical: count begins at top branch
+  // horizontal: count begins at top-right branch
 
   constructor(b1 = -1, b2 = -1, b3 = -1, b4 = -1, b5 = -1, b6 = -1) {
     this.ownedBy = Owner.NONE;
