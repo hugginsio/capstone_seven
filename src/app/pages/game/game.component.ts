@@ -253,7 +253,8 @@ export class GameComponent implements OnInit, OnDestroy {
   executeTrade(): void {
     if (!this.tradingModel.selectedResource) {
       this.snackbarService.add({ message: "Select a resource to receive." });
-    } else {
+    } 
+    else if(this.tradingModel.selectedResource !== 0){
       this.isTrading = false;
       this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
       this.tradingModel.reset();
