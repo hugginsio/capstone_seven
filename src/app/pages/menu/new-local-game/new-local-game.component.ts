@@ -101,7 +101,16 @@ export class NewLocalGameComponent {
   startGame(): void {
     // Set board seed before routing if not tutorial
     if (!this.guidedTutorial) {
-      this.storageService.update('board-seed', this.boardSeed);
+      if(this.boardSeed !== undefined){
+        const boardString = this.checkBoardSeed();
+        if(boardString !== '0') {
+          this.storageService.update('board-seed', boardString);
+        }
+        else {
+          // display error message and start the game with a random board
+          console.log("boardSeed is invalid");
+        }
+      }
     }
 
     this.routerService.navigate(['/game']);
@@ -123,5 +132,25 @@ export class NewLocalGameComponent {
   changePlayerOrder(): void {
     this.playerOrder = this.playerOrder === 1 ? 2 : 1;
     this.storageService.update('firstplayer', this.playerOrder.toString());
+  }
+
+  checkBoardSeed():string {
+    const invalidBoard = "0";
+    let validSortedBoard = ["00", "B1", "B2", "B3", "G1", "G2", "G3", "R1", "R2", "R3", "Y1", "Y2", "Y3"];
+    // https://stackoverflow.com/questions/49145250/how-to-remove-whitespace-from-a-string-in-typescript
+    const boardString = this.boardSeed.replace(/\s/g, "");
+
+    let boardArray = boardString.split(",");
+    boardArray = boardArray.sort();
+
+    if (boardArray.length !== 13) {
+      return invalidBoard;
+    }
+    for(let i = 0; i < 13; i++) {
+      if (boardArray[i] !== validSortedBoard[i]){
+        return invalidBoard;
+      }
+    }
+    return boardString;
   }
 }
