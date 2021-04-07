@@ -180,7 +180,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   ngAfterViewInit():void{
     if (this.isTutorial === true)
     {
-      let message = this.guidedTutorial.startTutorial();
+      const message = this.guidedTutorial.startTutorial();
       this.appendMessage(message);
       // why is this not showing up?
       //this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
@@ -257,7 +257,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     
     if (this.guidedTutorialCheck === true)
     {
-      let currentMove = event.target.id;
+      const currentMove = event.target.id;
       // if it it not the anticipated guided tutorial move, return from the function
       if(!this.guidedTutorial.moveManager(currentMove))
       {

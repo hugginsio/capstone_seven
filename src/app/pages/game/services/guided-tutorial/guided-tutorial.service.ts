@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Component, Inject, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
 import { SnackbarService } from '../../../../shared/components/snackbar/services/snackbar.service';
 import { ManagerService } from './../../services/gamecore/manager.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
@@ -80,7 +78,7 @@ export class GuidedTutorialService {
   }
 
   startTutorial():string {
-    let message = this.messageOne();
+    const message = this.messageOne();
     return message;
   }
 
@@ -93,11 +91,11 @@ export class GuidedTutorialService {
   }
 
   unhighlightNext():void{
-    let pieceID = document.getElementById('GT-Next');
-          if (pieceID !== null)
-          {
-            pieceID.style.border = "4px solid rgb(17, 24, 39)";
-          }
+    const pieceID = document.getElementById('GT-Next');
+    if (pieceID !== null)
+    {
+      pieceID.style.border = "4px solid rgb(17, 24, 39)";
+    }
   }
 
   tutorialManager():string{
@@ -238,27 +236,27 @@ export class GuidedTutorialService {
           console.log("highlightManager error");
       }
     }
-      // change border and change back after move has been made
-      if(piece !== "no selected piece") {
-        let pieceID = document.getElementById(piece);
-        if (pieceID !== null)
+    // change border and change back after move has been made
+    if(piece !== "no selected piece") {
+      const pieceID = document.getElementById(piece);
+      if (pieceID !== null)
+      {
+        if (piece === '4' || piece === '1' || piece === 'blue')
         {
-          if (piece === '4' || piece === '1' || piece === 'blue')
-          {
-            pieceID.style.border = "4px solid white";
-          }
-          else if (piece === 'endTurnBtn' || piece === 'undoBtn' || piece === 'tradeBtn' || piece === 'Pause')
-          {
-            this.btnToHighlight = piece;
-          }
-          else {
-            pieceID.style.border = "2px solid white"
-          }
+          pieceID.style.border = "4px solid white";
         }
-        
+        else if (piece === 'endTurnBtn' || piece === 'undoBtn' || piece === 'tradeBtn' || piece === 'Pause')
+        {
+          this.btnToHighlight = piece;
+        }
+        else {
+          pieceID.style.border = "2px solid white";
+        }
       }
+        
+    }
       
-}
+  }
 
 
   // whenever need to have a next button, unfreeze next
@@ -411,19 +409,19 @@ export class GuidedTutorialService {
 
     // unhighlight if needed
     if(validMove && ifButton){
-      let pieceID = document.getElementById(piece);
+      const pieceID = document.getElementById(piece);
       if(pieceID !== null) {
         this.btnToHighlight = '';
       }
     }
     else if(validMove && tradeScreenButton){
-      let pieceID = document.getElementById(piece);
+      const pieceID = document.getElementById(piece);
       if(pieceID !== null) {
         pieceID.style.border = "4px solid rgb(75, 85, 99)";
       }
     }
     else if(validMove){
-      let pieceID = document.getElementById(piece);
+      const pieceID = document.getElementById(piece);
       if(pieceID !== null) {
         pieceID.style.border = "0px";
       }
@@ -432,18 +430,18 @@ export class GuidedTutorialService {
   }
 
   messageOne():string{
-    let message = "Welcome in to the mines! <br><br> Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.<br><br>Click the \"Next\" button to start the tutorial.";
-      // message 1, start tutorial
+    const message = "Welcome in to the mines! <br><br> Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.<br><br>Click the \"Next\" button to start the tutorial.";
+    // message 1, start tutorial
 
     this.highlightNext();
-      return message;
+    return message;
 
-      // click next
+    // click next
   }
 
   messageTwo():string {
     // message 2
-    let message = "Learn some mining lingo before we get going:<br><br>These squares here which make up the mine are called mining sites.<br><br>These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
+    const message = "Learn some mining lingo before we get going:<br><br>These squares here which make up the mine are called mining sites.<br><br>These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
     
     this.highlightNext();
 
@@ -453,7 +451,7 @@ export class GuidedTutorialService {
   }
 
   messageThree():string {
-    let message = "On each corncer of a Mining Site is a place for a Pickaxe or Drill which are what we call \"Mining Markers.\"<br><br>If you have a Mining Marker down then you can collect a gem per turn from each of the touchin\' Mining Sites<br><br>These here Tracks on the side of each Mining Site get you from place to place down in the depths of the mine and keep your mining operation all nice and connected."; 
+    const message = "On each corncer of a Mining Site is a place for a Pickaxe or Drill which are what we call \"Mining Markers.\"<br><br>If you have a Mining Marker down then you can collect a gem per turn from each of the touchin' Mining Sites<br><br>These here Tracks on the side of each Mining Site get you from place to place down in the depths of the mine and keep your mining operation all nice and connected."; 
 
     this.highlightNext();
     
@@ -497,7 +495,7 @@ export class GuidedTutorialService {
       if (this.gameManager.getBoard().nodes[15].getOwner() === 'NONE')
       {
         this.gameManager.applyMove(";15;28");
-       this.highlightNext();
+        this.highlightNext();
 
       }
       //this.highlightNext();
@@ -652,15 +650,15 @@ export class GuidedTutorialService {
     // show where to see score
     if(this.humanPlayer === '1') {
       message = 'Here at the bottom of the your screen is where you can see the current standings for the duel.<br><br>Both y’all got one point for each mining marker you placed. Now the machine’s got 2 more for the longest set of tracks.';
-      let player1 = document.getElementById("player1");
-      let player2 = document.getElementById("player2");
+      const player1 = document.getElementById("player1");
+      const player2 = document.getElementById("player2");
 
       if(player1 !== null && player2 !== null) 
       {
         player1.style.border = "solid white";
         player2.style.border = "solid white";
       }
-    this.highlightNext();
+      this.highlightNext();
 
     }
     return message;
@@ -671,8 +669,8 @@ export class GuidedTutorialService {
     // player 1 last tutorial move start
     if(this.humanPlayer === '1') {
       // reversing border of player shard
-      let player1 = document.getElementById("player1");
-      let player2 = document.getElementById("player2");
+      const player1 = document.getElementById("player1");
+      const player2 = document.getElementById("player2");
 
       if(player1 !== null && player2 !== null) 
       {
@@ -746,7 +744,7 @@ export class GuidedTutorialService {
     // options menu
     if(this.humanPlayer === '1') {
       message = 'Need more help or want to change the settings? Click the pause button in the tip left corner for more options.';
-    this.highlightNext();
+      this.highlightNext();
 
     }
     return message;
@@ -757,7 +755,7 @@ export class GuidedTutorialService {
     // end of tutorial
     if(this.humanPlayer === '1') {
       message = 'Seems like you’ve got a good handle on how we do things down here in the mine. Time to see how you do on your own.<br><br>First player to 10 points wins gold. Good luck, Prospector!<br><br>Click "Next" to end the tutorial.';
-    this.highlightNext();
+      this.highlightNext();
 
     }
     return message;
