@@ -415,12 +415,6 @@ export class ManagerService {
 
     }
 
-
-    console.log("end player green per turn: " + currentPlayer.greenPerTurn);
-    console.log("end player blue per turn: " + currentPlayer.bluePerTurn);
-    console.log("end player red per turn: " + currentPlayer.redPerTurn);
-    console.log("end player yellow per turn: " + currentPlayer.yellowPerTurn);
-
     // serializing otherPlayer's previous move
     const pastMoveString = this.serializeStack();
     console.log(pastMoveString);
@@ -436,7 +430,6 @@ export class ManagerService {
       const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
       //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
-
 
       this.aiWorker.onmessage = ({ data }) => {
         let AIStringMove = ';;';

@@ -12,8 +12,6 @@ export class TradingModel {
   selectedResource: number;
   currentResources: ResourceMap;
 
-  isTutorial: boolean;
-
   constructor(
     private readonly storageService: LocalStorageService,
     public guidedTutorial: GuidedTutorialService
@@ -24,23 +22,16 @@ export class TradingModel {
     this.yellowResources = 0;
 
     this.selectedResource = 0;
-
-    if (this.storageService.fetch('guided-tutorial') === "false"){
-      this.isTutorial = false;
-    }
-    else {
-      this.isTutorial = true;
-    }
   }
 
   increment(num: number): void {
     if (this.redResources + this.greenResources + this.blueResources + this.yellowResources < 3) {
-      if(this.isTutorial && (num === 2 || num === 3)){
+      if(this.storageService.fetch('guided-tutorial') === "true" && (num === 2 || num === 3)){
         return;
       }
       switch (num) {
         case 1:
-          if(this.isTutorial) {
+          if(this.storageService.fetch('guided-tutorial') === "true") {
             if(!this.guidedTutorial.moveManager('1'))
             {
               return;
@@ -70,7 +61,7 @@ export class TradingModel {
           break;
 
         case 4:
-          if(this.isTutorial) {
+          if(this.storageService.fetch('guided-tutorial') === "true") {
             if(!this.guidedTutorial.moveManager('4'))
             {
               return;
@@ -89,8 +80,7 @@ export class TradingModel {
   }
 
   select(num: number): void {
-    if (this.selectedResource != num) {
-      if(this.isTutorial){
+      if(this.storageService.fetch('guided-tutorial') === "true"){
         let stringToSend = 'none';
         switch(num){
           case 1: stringToSend = 'red';
@@ -105,6 +95,8 @@ export class TradingModel {
         {
           return;
         }
+
+        console.log("selected: " + stringToSend);
       }
 
     let resourceVariable = 1;
@@ -120,43 +112,45 @@ export class TradingModel {
         break;
       case 4: // yellow
         resourceVariable = this.yellowResources;
+        break;
     }
 
     if (resourceVariable === 0)
     {
+      console.log("select " + num);
       this.selectedResource = num;
     }
     else {
       this.selectedResource = 0;
     }
   }
-  }
 
   dynamicClass(num: number): string {
-    if(this.isTutorial && num === 44) {
+    if(this.storageService.fetch('guided-tutorial') === "true" && num === 44) {
       return 'selected';
     }
-    let gemToSelect = 1;
-    switch(num) {
-      case 1: // red
-        gemToSelect = this.redResources;
-        break;
-      case 2: // green
-        gemToSelect = this.greenResources;
-        break;
-      case 3: // blue
-        gemToSelect = this.blueResources;
-        break;
-      case 4: // yellow
-        gemToSelect = this.yellowResources;
-        break;
-      case 44: // for guided tutorial first highlight
-        gemToSelect = 0;
-    }
-
-    if(gemToSelect > 0) {
-      console.log("in disabled if");
-      return 'disabled';
+    if (this.selectedResource !== num) {
+      let gemToSelect = 1;
+      switch(num) {
+        case 1: // red
+          gemToSelect = this.redResources;
+          break;
+        case 2: // green
+          gemToSelect = this.greenResources;
+          break;
+        case 3: // blue
+          gemToSelect = this.blueResources;
+          break;
+        case 4: // yellow
+          gemToSelect = this.yellowResources;
+          break;
+        case 44: // for guided tutorial first highlight
+          gemToSelect = 0;
+          break;
+      }
+      if(gemToSelect > 0) {
+        return 'disabled';
+      }
     }
 
     if (this.selectedResource === num) {
