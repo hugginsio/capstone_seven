@@ -8,9 +8,9 @@ import { Component, Input, OnInit } from '@angular/core';
 export class HelpSlideshowComponent {
 
   public currentSlide = 1;
-  public maxSlides = 14;
+  public maxSlides = 13;
 
-  @Input() slidesToShow = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+  @Input() slidesToShow = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
   constructor() { }
 
@@ -22,7 +22,7 @@ export class HelpSlideshowComponent {
   }
 
   incrementSlides(): void {
-    if (this.currentSlide < 14)
+    if (this.currentSlide < this.maxSlides)
     {
       this.currentSlide++;
     }

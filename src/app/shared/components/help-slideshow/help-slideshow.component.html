@@ -27,12 +27,10 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 2">
-        <h1>Settin' Up a Local Competition</h1>
+      <!--<div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 2">
+        <h1>Settin' Up a Competition</h1>
         <div class="flex w-full items-center space-x-4">
           <div class="flex-1 flex-col space-y-4">
-            <p>Pick your minin' background<br></p>
-            <p>Just click on the buttons to toggle between all the other options:</p>
             <div class="flex space-between">
               <div>
                 <p>Single Player vs. AI</p>
@@ -55,49 +53,10 @@
           </div>
         </div>
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
-      </div>
+      </div>-->
 
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 3">
-        <h1>Settin' Up the Mine</h1>
-        <div class="flex space-x-4 w-full items-center">
-          <div class="flex-1 flex-col space-y-4">
-            <p>
-              Choose random to shuffle the mine sites for a random game or pick your own arrangement.
-            </p>
-            <p>
-              Enter in your mine configuration just like it has below and make sure each o’ these letter/number pairings come up just once in the list.
-            </p>
-            <p>
-              R1, R2, R3, B1, B2, B3, G1, G2, G3, Y1, Y2, Y3, 00
-            </p>
-          </div>
-          <div class="flex-1">
-            <img class="boardImg" src="/assets/help/testBoard.png" />
-          </div>
-        </div>
-        <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
-      </div>
-
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 4">
-        <h1>Newfangled "On The Line" Technology</h1>
-        <div class="flex space-x-4 w-full items-center">
-          <div class="flex-1">
-            <p>Here y'all get to pick if you wanna host a duel or 
-              join one with a miner on the other side just waitin' to compete.</p>
-            <p>Want to start the duel yourself? Click "Host Game" and pick them there settings
-              like you'd do in any other matches. Now just sit and wait 'til somebody comes along
-              to accept your challange
-            </p>
-          </div>
-          <div class="flex-1">
-            <img src="/assets/help/testBoard.png" />
-          </div>
-        </div>
-        <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
-      </div>
-
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 5">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 2">
         <h1>Game Pieces</h1>
         <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 space-y-4">
@@ -107,7 +66,7 @@
               </div>
               <div>
                 <p>
-                  Minin' Sites make up the entire mine and represent which gems y’all can collect from the site and just how many gems it has to give according to the number in the site.
+                  Minin' Sites make up the entire mine and represent which gems y’all can collect from the site. It also shows, pictured in the site, just how many Minin' Markers it can have on its corners.
                 </p>
               </div>
             </div>
@@ -134,6 +93,9 @@
                 <p>
                   Mining Markers are placed on the corner of a mining site where y’all want to mine for gems. These have to be connectin’ to one of your rail tracks in the mine.
                 </p>
+                <p>
+                  For each Mining Marker you have touchin' a site with gems you'll get one of that type of gem before each turn after your first two openin' moves.
+                </p>
               </div>
             </div>
           </div>
@@ -141,7 +103,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 6">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 3">
         <h1>Startin' the Game</h1>
         <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 flex-col space-y-4">
@@ -162,7 +124,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 7">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 4">
         <h1>Helpful Hints</h1>
         <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 flex-col space-y-4">
@@ -170,7 +132,7 @@
               Only in these startin’ turns can your pair be placed not in connection with the other pair.
             </p>
             <p>
-              If y’all ever be regrettin’ your turn, just hit undo!
+              If y’all ever be regrettin’ your turn, just hit "Undo!"
             </p>
             <p>
               Once you’ve settled your mind a bit, just hit “End Turn” to carry on the game.
@@ -183,13 +145,13 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 8">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 5">
         <h1>Start of Each Turn</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
             <p>
               Let the games begin! Now y’all have freedom to place whatever you can afford in the mine.
-              Rotatin’ back n forth and hittin’ “End Turn” when you’re finished.
+              Rotatin’ back 'n forth and hittin’ “End Turn” when you’re finished.
             </p>
             <p>
               Now, before you start making moves on your turn, your hard work will start to pay off.
@@ -203,7 +165,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 9">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 6">
         <h1>Building Your Operation</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex flex-col space-y-4 flex-grow">
@@ -221,7 +183,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 10">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 7">
         <h1>All Tuckered Out</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -249,7 +211,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 11">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 8">
         <h1>Claimin' a Site</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -279,7 +241,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full w-full flex-grow" *ngIf="currentSlide === 12">
+      <div class="flex flex-col space-y-4 h-full w-full flex-grow" *ngIf="currentSlide === 9">
         <h1>Buyin' More Minin' Markers and Tracks</h1>
         <div class="flex-1 flex-col space-y-4 items-center p-20 bg-black">
           <!-- branches addition images -->
@@ -335,7 +297,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 13">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 10">
         <h1>How To Win</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -360,7 +322,48 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 14">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 11">
+        <h1>Settin' Up a Competition</h1>
+        <div class="flex space-x-4 w-full items-center">
+          <div class="flex-1 flex-col space-y-4">
+            <p>Pick your minin' background<br></p>
+            <p>Just click on the buttons to toggle between all our nifty options for your duel.</p>
+            <p>
+              Want to pick your own minin' site arrangement?
+            </p>
+            <p>
+              Enter in your mine configuration just like it has below separated by commas and make sure each o’ these letter/number pairings come up just once in the list.
+            </p>
+            <p>
+              R1, R2, R3, B1, B2, B3, G1, G2, G3, Y1, Y2, Y3, 00
+            </p>
+          </div>
+          <div class="flex-1">
+            <img class="boardImg" src="/assets/help/testBoard.png" />
+          </div>
+        </div>
+        <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
+      </div>
+
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 12">
+        <h1>Newfangled "On The Line" Technology</h1>
+        <div class="flex space-x-4 w-full items-center">
+          <div class="flex-1">
+            <p>Here y'all get to pick if you wanna host a duel or 
+              join one with a miner on the other side just waitin' to compete.</p>
+            <p>Want to start the duel yourself? Click "Host Game" and pick them there settings
+              like you'd do in any other matches. Now just sit and wait 'til somebody comes along
+              to accept your challange
+            </p>
+          </div>
+          <div class="flex-1">
+            <img src="/assets/help/testBoard.png" />
+          </div>
+        </div>
+        <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
+      </div>
+
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 13">
         <h1>Options Menu</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
