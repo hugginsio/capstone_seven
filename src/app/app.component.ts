@@ -19,7 +19,7 @@ export class AppComponent {
     private storageService: LocalStorageService
   ) {
     this.production = AppConfig.production;
-    
+
     console.log(`Production: ${this.production.toString()}`);
     console.log(`Environment: ${AppConfig.environment} / ${this.electronService.isElectron ? 'ELECTRON' : 'BROWSER'}`);
 
@@ -34,4 +34,8 @@ export class AppComponent {
     this.storageService.update('firstplayer', '1');
     this.storageService.update('location', 'bg1');
   }
+}
+
+if (typeof Worker === 'undefined') {
+  alert('Error initializing web workers.');
 }
