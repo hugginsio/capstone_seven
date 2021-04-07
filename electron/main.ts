@@ -20,18 +20,19 @@ function createWindow(): BrowserWindow {
   });
 
   window = new BrowserWindow({
-    width: 1280,
-    height: 884,
-    minWidth: 1280,
-    minHeight: 884,
-    resizable: true,
     center: true,
+    fullscreenable: true,
+    height: 884,
+    minHeight: 884,
+    minWidth: 1280,
+    resizable: true,
+    width: 1280,
     webPreferences: {
-      nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,
-      enableRemoteModule : true,
       devTools: isDev,
+      enableRemoteModule : true,
+      nodeIntegration: true,
       zoomFactor: 1
     },
   });
@@ -79,6 +80,9 @@ function createWindow(): BrowserWindow {
   window.on('closed', () => {
     app.quit();
   });
+
+  // window.setFullScreen(true);
+  window.maximize();
 
   return window;
 }

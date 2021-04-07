@@ -9,7 +9,7 @@ import { SoundService } from './services/sound.service';
   templateUrl: './sound-controller.component.html'
 })
 export class SoundControllerComponent {
-  private sounds: Array<SoundObject> = [];
+  public sounds: Array<SoundObject> = [];
   private trackVolume: number;
 
   constructor(
