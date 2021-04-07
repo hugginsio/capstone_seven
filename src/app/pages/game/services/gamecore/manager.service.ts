@@ -415,6 +415,12 @@ export class ManagerService {
 
     }
 
+
+    console.log("end player green per turn: " + currentPlayer.greenPerTurn);
+    console.log("end player blue per turn: " + currentPlayer.bluePerTurn);
+    console.log("end player red per turn: " + currentPlayer.redPerTurn);
+    console.log("end player yellow per turn: " + currentPlayer.yellowPerTurn);
+
     // serializing otherPlayer's previous move
     const pastMoveString = this.serializeStack();
     console.log(pastMoveString);
@@ -1380,9 +1386,6 @@ export class ManagerService {
       // decrement the nodeCount
       tlTile.nodeCount--;
 
-      //decrement players resources
-      this.decrementResource(currentPlayer, tlTile.getColor());
-
       // checking if need to un-exhaust tile
       if (tlTile.isExhausted) {
         if (tlTile.nodeCount <=
@@ -1405,9 +1408,6 @@ export class ManagerService {
       // decrement the tile's nodeCount 
       brTile.nodeCount--;
 
-      //decrement players resources
-      this.decrementResource(currentPlayer, brTile.getColor());
-
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
         if (brTile.nodeCount <=
@@ -1429,9 +1429,6 @@ export class ManagerService {
 
       // decrement the tile's nodeCount
       blTile.nodeCount--;
-
-      //decrement players resources
-      this.decrementResource(currentPlayer, blTile.getColor());
 
       // checking if need to un-exhaust tile
       if (blTile.isExhausted) {

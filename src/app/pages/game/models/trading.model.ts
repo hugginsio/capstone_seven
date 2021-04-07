@@ -89,7 +89,7 @@ export class TradingModel {
   }
 
   select(num: number): void {
-    //if (this.selectedResource != num) {
+    if (this.selectedResource != num) {
       if(this.isTutorial){
         let stringToSend = 'none';
         switch(num){
@@ -129,7 +129,7 @@ export class TradingModel {
     else {
       this.selectedResource = 0;
     }
-  //}
+  }
   }
 
   dynamicClass(num: number): string {

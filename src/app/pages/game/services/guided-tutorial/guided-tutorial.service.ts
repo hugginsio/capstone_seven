@@ -16,7 +16,7 @@ export class GuidedTutorialService {
   private freezeNext: boolean;
   private maxMove: number;
   private maxStep: number;
-  private btnToHighlight: string;
+  //private btnToHighlight: string;
 
   constructor(
     public readonly gameManager: ManagerService,
@@ -27,7 +27,7 @@ export class GuidedTutorialService {
     this.humanPlayer = this.storageService.fetch('firstplayer');
     this.stepNum = 1;
     this.moveNum = 1;
-    this.btnToHighlight = '';
+    //this.btnToHighlight = '';
     this.freezeNext = false;
     if (this.humanPlayer === '1') {
       this.maxMove = 21;
@@ -247,7 +247,7 @@ export class GuidedTutorialService {
         }
         else if (piece === 'endTurnBtn' || piece === 'undoBtn' || piece === 'tradeBtn' || piece === 'Pause')
         {
-          this.btnToHighlight = piece;
+          //this.btnToHighlight = piece;
         }
         else {
           pieceID.style.border = "2px solid white";
@@ -342,6 +342,7 @@ export class GuidedTutorialService {
 
       else if(m === 13 && s === 18 && piece === 'N4')
       {
+        console.log ("in N4 moveManager");
         this.moveNum++;
         this.freezeNext = false;
         this.highlightNext();
@@ -411,7 +412,7 @@ export class GuidedTutorialService {
     if(validMove && ifButton){
       const pieceID = document.getElementById(piece);
       if(pieceID !== null) {
-        this.btnToHighlight = '';
+        //this.btnToHighlight = '';
       }
     }
     else if(validMove && tradeScreenButton){
@@ -668,6 +669,13 @@ export class GuidedTutorialService {
     let message='';
     // player 1 last tutorial move start
     if(this.humanPlayer === '1') {
+      
+      message = 'Now you got enough gems to put a pickaxe.<br><br>Remember, you cain’t just be mining in a place where you don\'t have the tracks to get you there! It’s just common sense!<br><br>Now, place one here and get another point in the competition.';
+      if (this.moveNum === 13){
+        this.highlightManager();
+        this.freezeNext = true;
+      }
+
       // reversing border of player shard
       const player1 = document.getElementById("player1");
       const player2 = document.getElementById("player2");
@@ -676,11 +684,6 @@ export class GuidedTutorialService {
       {
         player1.style.border = "transparent";
         player2.style.border = "transparent";
-      }
-      message = 'Now you got enough gems to put a pickaxe.<br><br>Remember, you cain’t just be mining in a place where you don\'t have the tracks to get you there! It’s just common sense!<br><br>Now, place one here and get another point in the competition.';
-      if (this.moveNum === 13){
-        this.highlightManager();
-        this.freezeNext = true;
       }
       
     }
