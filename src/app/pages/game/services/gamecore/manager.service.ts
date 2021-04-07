@@ -94,7 +94,7 @@ export class ManagerService {
     }
 
     // instantiating AiService, calling its contructor w/ gameBoard and both players
-     // Web worker magic
+    // Web worker magic
     this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
 
     if (this.currentGameMode === GameType.AI) {
