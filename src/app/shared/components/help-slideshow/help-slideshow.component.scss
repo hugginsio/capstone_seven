@@ -4,14 +4,14 @@
     height: 80px;
     width: 100px;
   }
+
+  .disabled {
+    @apply bg-gray-800 cursor-auto hover:border-gray-900 opacity-60;
+  }  
 }
 
 h1 {
   font-size: 40px;
-}
-
-p{
-  //background-color: darkgrey;
 }
 
 

@@ -27,4 +27,16 @@ export class HelpSlideshowComponent {
       this.currentSlide++;
     }
   }
+
+  dynamicClass(btn: string): string {
+    if (btn === 'prev' && this.currentSlide === 1) {
+      return 'disabled';
+    }
+    else if (btn === 'next' && this.currentSlide === this.maxSlides) {
+      return 'disabled';
+    }
+    else {
+      return '';
+    }
+  }
 }

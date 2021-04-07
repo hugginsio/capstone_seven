@@ -1,6 +1,6 @@
 <div class="flex space-between w-full justify-center h-full flex-grow" id="help-slideshow-container">
   <div class="flex justify-center items-center w-full h-full px-4 space-x-4 flex-grow">
-    <div class="flex menu-btn" (click)="decrementSlides()">
+    <div class="flex menu-btn" [ngClass]="dynamicClass('prev')" (click)="decrementSlides()">
       prev
     </div>
 
@@ -393,7 +393,7 @@
 
     </div>
 
-    <div class="flex menu-btn" (click)="incrementSlides()">
+    <div class="flex menu-btn" [ngClass]="dynamicClass('next')" (click)="incrementSlides()">
       next
     </div>
   </div>
