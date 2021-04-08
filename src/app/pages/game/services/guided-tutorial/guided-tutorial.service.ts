@@ -174,6 +174,8 @@ export class GuidedTutorialService {
       case 24:
         message = this.messageTwentyFour();
         break;
+      case 25:
+        message = "end of tutorial";
       default:
         console.log('something went wrong, tutorialManager switch');
     }
@@ -442,7 +444,7 @@ export class GuidedTutorialService {
 
   messageTwo():string {
     // message 2
-    const message = "Learn some mining lingo before we get going:<br><br>These squares here which make up the mine are called mining sites.<br><br>These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
+    const message = "Learn some mining lingo before we get going:<br><br>These squares here which make up the mine are called Minin' Sites.<br><br>These Sites have gems in ‘em that hold the type and maximum number of Minin' Markers you can place on the corners of the Site.";
     
     this.highlightNext();
 
@@ -452,7 +454,7 @@ export class GuidedTutorialService {
   }
 
   messageThree():string {
-    const message = "On each corncer of a Mining Site is a place for a Pickaxe or Drill which are what we call \"Mining Markers.\"<br><br>If you have a Mining Marker down then you can collect a gem per turn from each of the touchin' Mining Sites<br><br>These here Tracks on the side of each Mining Site get you from place to place down in the depths of the mine and keep your mining operation all nice and connected."; 
+    const message = "On each corner of a Minin' Site is a place for a Pickaxe or Drill which are what we call \"Minin\' Markers.\"<br><br>If you have a Minin' Marker down then you can collect one gem per turn from each of the touchin' Minin' Sites.<br><br>These here Tracks on the side of each Minin' Site get you from place to place down in the depths of the mine and keep your mining operation all nice and connected."; 
 
     this.highlightNext();
     
@@ -463,7 +465,7 @@ export class GuidedTutorialService {
     let message = '';
     if(this.humanPlayer === '1') {
       // message 3
-      message = 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine.<br><br>Click the indicated marker and track to make your move.';
+      message = 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine.<br><br>Take a gander at the price card to see how much each Minin\' Marker and Track will cost you.<br><br>Click the indicated marker and track to make your move.';
       if(this.moveNum === 1){
         this.freezeNext = true; 
         this.highlightManager();
@@ -476,7 +478,7 @@ export class GuidedTutorialService {
     let message = '';
     if(this.humanPlayer === '1') {
       // message 5
-      message = 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'.<br><br>You gotta be collectin\' gems to get more pickaxes and tracks down the road<br><br>Settled on your move? Click "End Turn" and then "Next" to keep the game movin\'.';
+      message = 'You get gems based on the corners of the Minin\' Sites you have your pickaxe touchin\'.<br><br>You gotta be collectin\' gems to get more pickaxes and tracks down the road<br><br>Settled on your move? Click "End Turn" and then "Next" to keep the game movin\'.';
       
       if(this.moveNum === 3){
         this.highlightManager();
@@ -491,7 +493,7 @@ export class GuidedTutorialService {
     let message='';
     // AI's first move
     if(this.humanPlayer === '1') {
-      message = 'Now the Machine selects its moves...<br><br>You see these here gems on each site? Those show the maximum amount of gems this site can give according to the law here in the mines.<br><br>If yours and you opponent’s number of mining markers on a site are more than the allotted gems then y’all exhausted that site and neither y’all will be gettin’ gems from the site.';
+      message = 'Now the Machine selects its moves...<br><br>You see these here gems on each Site? Those show the maximum amount of gems this Site can give according to the law here in the mines.<br><br>If yours and your opponent’s number of Minin\' Markers on a Site are more than the allotted gems then y’all exhausted that Site and neither y’all will be gettin’ gems from the Site.';
      
       if (this.gameManager.getBoard().nodes[15].getOwner() === 'NONE')
       {
@@ -552,7 +554,7 @@ export class GuidedTutorialService {
     let message='';
     // resource cost
     if(this.humanPlayer === '1') {
-      message = 'These gems ain’t just for lookin’ at. You can keep building your operation by buying mining markers and tracks with the gems.<br><br>We in the mine charge a fair price of 2 yellow and 2 green gems for 1 mining marker and a track costs 1 red and 1 blue gem.';
+      message = 'These gems ain’t just for lookin’ at. You can keep building your operation by buying Minin\' Markers and tracks with the gems.<br><br>We in the mine charge a fair price of 2 yellow and 2 green gems for 1 Minin\' Marker and a track costs 1 red and 1 blue gem.';
       this.highlightNext();
      
       // would be cool to display a visual of piece costs
@@ -564,7 +566,7 @@ export class GuidedTutorialService {
     let message='';
     // talk about trading 
     if(this.humanPlayer === '1') {
-      message = 'Lookin’ to trade some gems?<br>When it’s on your turn, you can make a trade of gems 3-->1 OR you can end your turn and wait to get more.<br><br>Gems get saved in your stash shown for each miner at the bottom of the screen at the end of each round.';
+      message = 'Lookin’ to trade some gems?<br>When it’s on your turn, you can make a trade of gems 3-->1 OR you can end your turn and wait to get more.<br><br>You can only trade once per turn.<br><br>Gems get saved in your stash shown for each miner at the bottom of the screen at the end of each round.';
       this.highlightNext();
     }
     return message;
@@ -650,7 +652,7 @@ export class GuidedTutorialService {
     let message='';
     // show where to see score
     if(this.humanPlayer === '1') {
-      message = 'Here at the bottom of the your screen is where you can see the current standings for the duel.<br><br>Both y’all got one point for each mining marker you placed. Now the machine’s got 2 more for the longest set of tracks.';
+      message = 'Here at the bottom of the your screen is where you can see the current standings for the duel.<br><br>Both y’all got one point for each Minin\' Marker you placed. Now the machine’s got 2 more for the longest set of tracks.';
       const player1 = document.getElementById("player1");
       const player2 = document.getElementById("player2");
 
@@ -720,7 +722,7 @@ export class GuidedTutorialService {
     let message='';
     // explain capture
     if(this.humanPlayer === '1') {
-      message = 'See here these minin’ sites changed when all the rails surroundin’ them belonged to the Machine.<br><br>Well this is how either miner gets exclusive minin’ rights to these sites.<br><br>These captured sites give the Machine 1 point for each captured site AND can get as many gems of these colors as it has mining markers on the captured sites before each turn.<br><br>See also that only the Machine can now get gems from the site that was exhausted just before.';
+      message = 'See here these Minin’ Sites changed when all the rails surroundin’ them belonged to the Machine.<br><br>Well this is how either miner gets exclusive mining rights to these sites.<br><br>These captured sites give the Machine 1 point for each captured site AND can get as many gems of these colors as it has Minin\' Markers on the captured sites before each turn.<br><br>See also that only the Machine can now get gems from the site that was exhausted just before.';
       if (this.gameManager.getBoard().branches[27].getOwner() === 'NONE')
       {
         this.gameManager.applyMove(";;27");
@@ -735,7 +737,7 @@ export class GuidedTutorialService {
     let message='';
     // more capture explaination
     if(this.humanPlayer === '1') {
-      message = 'If you had any or put a pickaxe touchin\' a captured site later you won’t be gettin’ any more gems from that site at the beginning of your turn.<br><br>Now remember to capture a group of sites, you cain’t have your opponents rails inside the group, but once the claiming’s been done your opponent ain’t gonna be able to put any rails inside that captured set either!';
+      message = 'If you had any or put a pickaxe touchin\' a captured Site later you won’t be gettin’ any more gems from that Site at the beginning of your turn.<br><br>Now remember to capture a group of Sites, you cain’t have your opponents rails inside the group, but once the claiming’s been done your opponent ain’t gonna be able to put any rails inside that captured set either!';
       this.highlightNext();
 
     }
