@@ -21,6 +21,12 @@
         "!tsconfig.json",
         "!tslint.json"
     ],
+    "extraResources": [
+        "src/app/pages/networking/GameServer.js",
+        "src/app/pages/networking/MatchmakingServer.js",
+        "src/app/pages/networking/UDPWrapper.js",
+        "src/app/pages/networking/NetworkGameSettings.js"
+    ],
   "win": {
     "icon": "dist/assets/icons",
     "target": [
