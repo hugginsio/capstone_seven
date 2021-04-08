@@ -362,6 +362,7 @@ export class State {
     else{
       longestNetwork = 0;
     }
+    //dock points for not having a certain resource maybe?
     const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) + 
     (this.player1.bluePerTurn - this.player2.bluePerTurn) +
     (this.player1.greenPerTurn - this.player2.greenPerTurn) +
