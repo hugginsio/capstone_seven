@@ -368,7 +368,9 @@ export class ManagerService {
 
       this.aiWorker.onmessage = ({ data }) => {
         let AIStringMove = ';;';
+
         if (typeof (data) === 'string' && data !== '') {
+
 
           AIStringMove = data;
           console.warn(AIStringMove);

@@ -79,6 +79,10 @@ export class State {
 
       newState.applyMove(move);
 
+      const score = Math.abs(newState.getHeuristicValue());
+      newState.visitCount = score;
+      
+
       states.push(newState);
     }
 
@@ -307,8 +311,8 @@ export class State {
   getHeuristicValue(): number {
     //const currentOwner = this.playerNumber === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
     let value = 0;
-    const innerBranches = [12, 17, 23, 18];
-    const middleBranches = [7, 8, 13, 24, 28, 27, 22, 11];
+    const innerBranches = [12,17,23,18];
+    const middleBranches = [7,8,13,24,28,27,22,11];
 
 
     let player1BranchesInInnerBranches = 0;
@@ -344,14 +348,25 @@ export class State {
       }
     }
 
-
-    const branchesValue = (10 * player1BranchesInInnerBranches - player2BranchesInInnerBranches) + (5 * (player1MiddleBranches - player2MiddleBranches)) + (2.5 * (player1OuterBranches - player2OuterBranches));
+    //exhausted tiles 
+    
+    const branchesValue = (10*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (5*(player1MiddleBranches - player2MiddleBranches)) + (2.5*(player1OuterBranches-player2OuterBranches));
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
-    const longestNetwork = this.player1.hasLongestNetwork ? 2 : -2;
-    const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) +
-      (this.player1.bluePerTurn - this.player2.bluePerTurn) +
-      (this.player1.greenPerTurn - this.player2.greenPerTurn) +
-      (this.player1.yellowPerTurn - this.player2.yellowPerTurn);
+    let longestNetwork;
+    if(this.player1.hasLongestNetwork){
+      longestNetwork = 2;
+    }
+    else if(this.player2.hasLongestNetwork){
+      longestNetwork = -2;
+    }
+    else{
+      longestNetwork = 0;
+    }
+    //dock points for not having a certain resource maybe?
+    const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) + 
+    (this.player1.bluePerTurn - this.player2.bluePerTurn) +
+    (this.player1.greenPerTurn - this.player2.greenPerTurn) +
+    (this.player1.yellowPerTurn - this.player2.yellowPerTurn);
 
     const captures = this.player1.numTilesCaptured - this.player2.numTilesCaptured;
     const score = this.player1.currentScore - this.player2.currentScore;

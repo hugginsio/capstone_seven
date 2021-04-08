@@ -121,7 +121,7 @@ export class MonteCarlo {
     const tempState = tempNode.getState();
     let boardStatus = CoreLogic.getWinner(tempState);
     //let result = {playerNumber:boardStatus,multiplier:1};
-    if (boardStatus == this.opponent) {
+    if (boardStatus == (3-tempState.playerNumber)) {
       const tempParent = tempNode.getParent();
       if (tempParent !== null) {
         tempParent.getState().setWinScore(Number.MIN_VALUE);
@@ -181,12 +181,14 @@ export class UCT {
 
     let maxUctValue = this.uctValue(parentVisit, node.getChildArray()[0].getState().getWinScore(), node.getChildArray()[0].getState().getVisitCount(), explorationParameter);
     let maxNode = node.getChildArray()[0];
-    for (let i = 1; i < node.getChildArray().length; i++) {
-
-      const uctValue = this.uctValue(parentVisit, node.getChildArray()[i].getState().getWinScore(), node.getChildArray()[i].getState().getVisitCount(), explorationParameter);
-      if (uctValue >= maxUctValue) {
-        maxUctValue = uctValue;
-        maxNode = node.getChildArray()[i];
+    const len = node.getChildArray().length;
+    for(let i = 1; i < len; i++){
+      if(node.getChildArray()[i].getState().visitCount >= 5){
+        const uctValue = this.uctValue(parentVisit,node.getChildArray()[i].getState().getWinScore(),node.getChildArray()[i].getState().getVisitCount(),explorationParameter);
+        if(uctValue >= maxUctValue){
+          maxUctValue = uctValue;
+          maxNode = node.getChildArray()[i];
+        }
       }
     }
     return maxNode;
