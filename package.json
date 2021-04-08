@@ -1,6 +1,6 @@
 {
   "name": "capstone-seven",
-  "version": "1.62.0",
+  "version": "1.62.61",
   "description": "Capstone Team Seven's implementation of Node.",
   "homepage": "https://github.com/kjhx/capstone_seven/",
   "author": "Altoid Tree & Co.",
@@ -96,5 +96,10 @@
   },
   "browserslist": [
     "chrome 83"
-  ]
+  ],
+  "dependencies": {
+    "broadcast-address": "1.0.2",
+    "socket.io": "4.0.0",
+    "socket.io-client": "4.0.0"
+  }
 }

@@ -2,6 +2,11 @@ import { app, BrowserWindow, dialog, webFrame } from 'electron';
 import { protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import { fork } from 'child_process';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const ms = fork('src/app/pages/networking/MatchmakingServer.js');
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const gs = fork('src/app/pages/networking/GameServer.js');
 
 let window: BrowserWindow;
 const args = process.argv.slice(1);

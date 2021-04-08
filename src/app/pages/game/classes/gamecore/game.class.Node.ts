@@ -2,25 +2,25 @@ import { Owner } from '../../enums/game.enums';
 
 
 export class Node {
-  private ownedBy: Owner;
-  
+  ownedBy: Owner;
+
   // resources avalible from node
-  private redProvided: number;
-  private blueProvided: number;
-  private greenProvided: number;
-  private yellowProvided: number;
-  
+  redProvided: number;
+  blueProvided: number;
+  greenProvided: number;
+  yellowProvided: number;
+
   // branches adjacent to node
-  private topBranch: number;
-  private rightBranch: number;
-  private bottomBranch: number;
-  private leftBranch: number;
-  
+  topBranch: number;
+  rightBranch: number;
+  bottomBranch: number;
+  leftBranch: number;
+
   // tiles diagonally related to node
-  private topLeftTile: number;
-  private topRightTile: number;
-  private bottomLeftTile: number;
-  private bottomRightTile: number;
+  topLeftTile: number;
+  topRightTile: number;
+  bottomLeftTile: number;
+  bottomRightTile: number;
 
   constructor(tb = -1, rb = -1,
               bb = -1, lb = -1,
@@ -32,7 +32,7 @@ export class Node {
     this.blueProvided = 0;
     this.greenProvided = 0;
     this.yellowProvided = 0;
-        
+
     this.topBranch = tb;
     this.rightBranch = rb;
     this.bottomBranch = bb;
@@ -125,7 +125,7 @@ export class Node {
   setTopRightTile(num: number): void {
     this.topRightTile = num;
   }
-    
+
   getBottomLeftTile(): number {
     return this.bottomLeftTile;
   }
