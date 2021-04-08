@@ -348,10 +348,20 @@ export class State {
       }
     }
 
+    //exhausted tiles 
     
     const branchesValue = (10*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (5*(player1MiddleBranches - player2MiddleBranches)) + (2.5*(player1OuterBranches-player2OuterBranches));
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
-    const longestNetwork = this.player1.hasLongestNetwork ? 2 : -2;
+    let longestNetwork;
+    if(this.player1.hasLongestNetwork){
+      longestNetwork = 2;
+    }
+    else if(this.player2.hasLongestNetwork){
+      longestNetwork = -2;
+    }
+    else{
+      longestNetwork = 0;
+    }
     const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) + 
     (this.player1.bluePerTurn - this.player2.bluePerTurn) +
     (this.player1.greenPerTurn - this.player2.greenPerTurn) +
