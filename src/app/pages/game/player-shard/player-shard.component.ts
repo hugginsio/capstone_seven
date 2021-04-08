@@ -16,13 +16,45 @@ export class PlayerShardComponent implements OnInit {
   @Input() playerName: string;
   @Input() currentPlayer: boolean;
   @Input() actionSubject: Subject<CommPackage>;
+  @Input() isConnected: boolean;
 
   constructor() { }
 
   ngOnInit(): void { }
 
   getDynamicClass(): string {
-    return `${this.currentPlayer ? 'button-std' : 'button-disabled'} ${this.playerDetail?.type !== PlayerType.HUMAN ? 'button-hidden' : ''}`;
+    let btnClass = "";
+    if(this.playerDetail?.type !== PlayerType.HUMAN)
+    {
+      btnClass = "button-hidden";
+    }
+    else if(!this.currentPlayer)
+    {
+      btnClass = "button-disabled";
+    }
+    else if(this.currentPlayer)
+    {
+      btnClass = "button-std";
+    }
+    return btnClass;
+    //return `${this.currentPlayer ? 'button-std' : 'button-disabled'} ${this.playerDetail?.type !== PlayerType.HUMAN ? 'button-hidden' : ''}`;
+  }
+
+  getEndTurnClass(): string {
+    let btnClass = "";
+    if(this.playerDetail?.type !== PlayerType.HUMAN)
+    {
+      btnClass = "button-hidden";
+    }
+    else if(!this.currentPlayer || !this.isConnected)
+    {
+      btnClass = "button-disabled";
+    }
+    else if(this.currentPlayer)
+    {
+      btnClass = "button-std";
+    }
+    return btnClass;
   }
 
   generateMessage(action: CommCode): CommPackage {
