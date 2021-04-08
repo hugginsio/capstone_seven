@@ -22,11 +22,7 @@
     ]
   },
   "files": [
-    "electron/main.ts",
-    "src/app/pages/networking/GameServer.ts",
-    "src/app/pages/networking/MatchmakingServer.ts",
-    "src/app/pages/networking/UDPWrapper.ts",
-    "src/app/pages/networking/NetworkGameSettings.ts"
+    "electron/main.ts"
   ],
   "exclude": [
     "node_modules",

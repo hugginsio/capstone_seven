@@ -2,11 +2,11 @@ import { app, BrowserWindow, dialog, webFrame } from 'electron';
 import { protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { fork } from 'child_process';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ms = fork('src/app/pages/networking/MatchmakingServer.js');
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const gs = fork('src/app/pages/networking/GameServer.js');
+import * as ms from '../backend/MatchmakingServer';
+import * as gs from '../backend/GameServer';
+
+const matchmakingServer = new ms.MatchmakingServer();
+const gameServer = new gs.GameServer();
 
 let window: BrowserWindow;
 const args = process.argv.slice(1);
@@ -41,6 +41,7 @@ function createWindow(): BrowserWindow {
     },
   });
 
+  window.webContents.openDevTools();
   if (serve) {
     if (isDev) {
       window.webContents.openDevTools();
