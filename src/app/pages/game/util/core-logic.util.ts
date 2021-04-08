@@ -1311,17 +1311,17 @@ export class CoreLogic {
     const clonedGameBoard = new GameBoard();
 
     const clonedTiles: Tile[] = [];
-    for (let i = 0; i < gameBoard.tiles.length; i++) {
+    for (let i = 0; i < 13; i++) {
       clonedTiles.push(CoreLogic.workerCloneTile(gameBoard.tiles[i]));
     }
 
     const clonedNodes: Node[] = [];
-    for (let i = 0; i < gameBoard.nodes.length; i++) {
+    for (let i = 0; i < 24; i++) {
       clonedNodes.push(CoreLogic.workerCloneNode(gameBoard.nodes[i]));
     }
 
     const clonedBranches: Branch[] = [];
-    for (let i = 0; i < gameBoard.branches.length; i++) {
+    for (let i = 0; i < 36; i++) {
       clonedBranches.push(CoreLogic.workerCloneBranch(gameBoard.branches[i]));
     }
 

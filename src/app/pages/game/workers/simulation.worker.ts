@@ -15,12 +15,13 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
 
   if(data.method === AiMethods.INIT_SERVICE){
     mcts = workerCloneMonteCarlo(data.data[0]);
+    console.log('Initialized worker mcts');
   }
   else{
 
-    const board = data.data[1];
+    const board = data.data[0];
     const player1 = data.data[2];
-    const player2 = data.data[3];
+    const player2 = data.data[2];
 
     const newBoard = CoreLogic.workerCloneGameBoard(board);
     const newPlayer1 = CoreLogic.workerClonePlayer(player1);
