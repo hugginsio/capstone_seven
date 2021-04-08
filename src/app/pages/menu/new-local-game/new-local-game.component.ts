@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 import { ValidInputCheck } from '../valid-input-check';
+import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
+
 
 @Component({
   selector: 'app-new-local-game',
@@ -28,7 +30,8 @@ export class NewLocalGameComponent {
 
   constructor(
     private readonly storageService: LocalStorageService,
-    private readonly routerService: Router
+    private readonly routerService: Router,
+    private readonly snackbarService: SnackbarService
   ) {
     // Initialize datastore to game context
     storageService.setContext('game');
@@ -112,12 +115,16 @@ export class NewLocalGameComponent {
         }
         else {
           // display error message and start the game with a random board
-          console.log("boardSeed is invalid");
+          console.log("boardSeed input is invalid");
+
+          // how to output an error message on this page??
+          //this.snackbarService.add({ message: 'Invalid input for Board Seed. Starting game with random board.' });
         }
       }
     }
 
     this.routerService.navigate(['/game']);
+
   }
 
   selectLocation(clicked: number): void {
