@@ -32,3 +32,8 @@ export interface ResourceMap {
   blue: number;
   yellow: number;
 }
+
+export interface GuidedTutorialInterface{
+  message: string;
+  move?: string;
+}

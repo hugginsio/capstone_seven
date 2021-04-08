@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { NewNetworkGameHostComponent } from './new-network-game-host.component';
 
-describe('NewNetworkGameHostComponent', () => {
+xdescribe('NewNetworkGameHostComponent', () => {
   let component: NewNetworkGameHostComponent;
   let fixture: ComponentFixture<NewNetworkGameHostComponent>;
 

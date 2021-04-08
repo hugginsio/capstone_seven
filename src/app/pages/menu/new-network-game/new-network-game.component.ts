@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GameNetworkingService } from '../../networking/game-networking.service';
 import { MatchmakingService } from '../../networking/matchmaking.service';
 import { NetworkGameInfo } from './interfaces/new-network-game.interface';
-import { NetworkGameSettings } from '../../networking/NetworkGameSettings';
+import { NetworkGameSettings } from '../../../../../backend/NetworkGameSettings';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
