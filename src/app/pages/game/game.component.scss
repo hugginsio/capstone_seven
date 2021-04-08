@@ -245,11 +245,16 @@
   }
 
   .selected {
+    @apply border-8 border-gray-300;
+  }
+
+  .selected-GT {
     @apply border-4 border-gray-300;
   }
 
+  // for trading model
   .disabled {
-    @apply bg-gray-600 opacity-50;
+    @apply bg-gray-600 cursor-default pointer-events-none opacity-50;
   }
 }
 

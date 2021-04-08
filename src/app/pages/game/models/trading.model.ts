@@ -129,7 +129,7 @@ export class TradingModel {
 
   dynamicClass(num: number): string {
     if(this.storageService.fetch('guided-tutorial') === "true" && num === 44) {
-      return 'selected';
+      return 'selected-GT';
     }
     if (this.selectedResource !== num) {
       let gemToSelect = 1;

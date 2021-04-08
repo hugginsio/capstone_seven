@@ -378,7 +378,8 @@ export class GuidedTutorialService {
       {
         this.moveNum++;
         this.highlightManager();
-        tradeScreenButton = true;
+        // to keep the white highlight there after selecting it 
+        ifButton = true;
       }
       else if(m === 19 && s === 19 && piece === 'confirmTrade')
       {
@@ -414,8 +415,12 @@ export class GuidedTutorialService {
     if(validMove && ifButton){
       const pieceID = document.getElementById(piece);
       if(pieceID !== null) {
-        //this.btnToHighlight = '';
+        if(piece === 'blue')
+        {
+          pieceID.style.border = "8px solid white";
+        }
       }
+      
     }
     else if(validMove && tradeScreenButton){
       const pieceID = document.getElementById(piece);
