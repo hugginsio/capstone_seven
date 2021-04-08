@@ -350,7 +350,7 @@ export class State {
 
     //exhausted tiles 
     
-    const branchesValue = (10*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (5*(player1MiddleBranches - player2MiddleBranches)) + (2.5*(player1OuterBranches-player2OuterBranches));
+    const branchesValue = (5*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (2*(player1MiddleBranches - player2MiddleBranches)) + (player1OuterBranches-player2OuterBranches);
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
     let longestNetwork;
     if(this.player1.hasLongestNetwork){
