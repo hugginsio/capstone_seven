@@ -4,16 +4,14 @@ import { State } from './ai.class.State';
 import { CoreLogic } from '../../util/core-logic.util';
 import { Player } from '../gamecore/game.class.Player';
 
-interface PlayoutResult {
-  playerNumber: number;
-}
+
 export class MonteCarlo {
   WINSCORE = 10;
   explorationParameter: number;
   opponent: number;
   tree: Tree;
 
-  NUMWORKERS = 4;
+  NUMWORKERS = 8;
   workers: Array<Worker>;
 
 

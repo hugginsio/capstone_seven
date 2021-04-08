@@ -14,8 +14,8 @@ interface PayloadWrapper {
 
 let ai: AI;
 let workers:Array<Worker>;
-let results:Array<string>;
 let currentState:State;
+let start:number;
 
 addEventListener('message', ({ data }: PayloadWrapper) => {
   let response: boolean | string;
@@ -24,6 +24,7 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
     response = initAiService(data);
     postMessage(response);
   } else if (data.method === AiMethods.GET_AI_MOVE) {
+    start = Date.now();
     startAITurn(data);
   }
   else {
@@ -67,39 +68,49 @@ function startAITurn(payload:WorkerPayload){
   currentState.playerNumber = payload.data[3];
   currentState.move = payload.data[4];
 
-  results = [];
+  const promises = [];
   const numWorkers = ai.mcts.NUMWORKERS;
   for(let i = 0; i < numWorkers; i++){
-    workers[i].onmessage = ({data})=>{
-      let response;
-      const numWorkers = ai.mcts.NUMWORKERS;
-      results.push(data[0]);
-      if(results.length === numWorkers){
-        response = getBestMove(results);
-        postMessage(response);
-      }
-    };
-    workers[i].postMessage({method:AiMethods.GET_AI_MOVE, data:[board,player1,player2,payload.data[3],payload.data[4]]});
+    promises.push(new Promise((resolve)=>{
+      workers[i].postMessage({method:AiMethods.GET_AI_MOVE, data:[board,player1,player2,payload.data[3],payload.data[4]]});
+      workers[i].onmessage = ({data})=>{
+        resolve(data);
+      };
+    }));
+
+    //workers[i].postMessage({method:AiMethods.GET_AI_MOVE, data:[board,player1,player2,payload.data[3],payload.data[4]]});
   }
+
+  Promise.all(promises).then((data) =>{
+    console.log('inside promise');
+    
+    
+    const response = getBestMove(data as string[]);
+    console.warn(`AI Time = ${Date.now() - start}ms`);
+    postMessage(response);
+  });
 }
 
 function getBestMove(moves:string[]):string{
   console.log(moves);
+  const scores = [];
   const len = moves.length;
   const firstMoveState = currentState.cloneState();
   firstMoveState.applyMove(moves[0]);
   let maxScore = Math.abs(firstMoveState.getHeuristicValue());
   let maxMove = moves[0];
-
+  scores.push(maxScore);
   for(let i = 1; i < len; i++){
     const moveState = currentState.cloneState();
     moveState.applyMove(moves[i]);
     const score = Math.abs(moveState.getHeuristicValue());
+    scores.push(score);
     if(score >= maxScore){
       maxScore = score;
       maxMove = moves[i];
     }
   }
+  console.log(scores);
   return maxMove;
 }
 

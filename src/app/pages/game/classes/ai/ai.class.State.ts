@@ -370,7 +370,7 @@ export class State {
 
     const captures = this.player1.numTilesCaptured - this.player2.numTilesCaptured;
     const score = this.player1.currentScore - this.player2.currentScore;
-    value = numNodesDiff + longestNetwork + resourceProduction + (4 * captures) + score + branchesValue;
+    value = numNodesDiff + longestNetwork + resourceProduction + (10 * captures) + score + branchesValue;
 
 
     return value;

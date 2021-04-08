@@ -31,9 +31,9 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
     newState.playerNumber = data.data[4];
     newState.move = data.data[5];
 
-    const move = mcts.findNextMove(newState,5000);
+    const move = mcts.findNextMove(newState,5800);
       
-    postMessage({method:AiMethods.RETURN_AI_MOVE, data:[move]});
+    postMessage(move);
   }
 });
 
