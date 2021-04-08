@@ -108,23 +108,20 @@ export class NewLocalGameComponent {
   startGame(): void {
     // Set board seed before routing if not tutorial
     if (!this.guidedTutorial) {
-      if(this.boardSeed !== undefined){
+      if(this.boardSeed !== undefined && this.boardSeed !== ''){
         const boardString = this.validInputCheck.checkBoardSeed(this.boardSeed);
         if(boardString !== '0') {
           this.storageService.update('board-seed', boardString);
         }
         else {
-          // display error message and start the game with a random board
-          console.log("boardSeed input is invalid");
-
-          // how to output an error message on this page??
-          //this.snackbarService.add({ message: 'Invalid input for Board Seed. Starting game with random board.' });
+          // display error message
+          this.snackbarService.add({ message: 'Invalid input for Board Seed. Enter valid input or start the game with a random board.' });
+          this.boardSeed = '';
+          return;
         }
       }
     }
-
     this.routerService.navigate(['/game']);
-
   }
 
   selectLocation(clicked: number): void {
