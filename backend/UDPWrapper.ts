@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import * as dgram from 'dgram';
 import * as os from 'os';
 import * as broadcastAddress from 'broadcast-address';
