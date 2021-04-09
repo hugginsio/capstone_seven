@@ -1,3 +1,22 @@
+<style>
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #111827; 
+  padding: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: black;
+  border-radius: 5px;
+}
+</style>
+
 <!-- Teleporter, Background -->
 <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 z-neg pointer-events-none" [ngClass]="getBackground()"></div>
 <!-- <div class="overscroll-none absolute top-0 right-0 z-inf">
