@@ -106,6 +106,11 @@ export class GameNetworkingService {
   }
 
   public getSocketConnected(): boolean {
+    if(this.socket == null)
+    {
+      return false;
+    }
+
     return this.socket.connected;
   }
 }
