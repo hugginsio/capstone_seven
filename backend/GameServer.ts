@@ -70,13 +70,13 @@ export class GameServer {
         }
       });
     
-      socket.on('reconnect', () => {
+      socket.on('reconnection', () => {
         if(this.isDisconnected)
         {
           this.isDisconnected = false;
-          this.server.emit('user-reconnected');
+          socket.broadcast.emit('user-reconnected');
+          //socket.broadcast.emit('user-reconnected');
           //socket.emit('user-reconnected');
-          //socket.broadcast.emit('opponent-reconnected');
         }
       });
     

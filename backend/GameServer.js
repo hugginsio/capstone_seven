@@ -52,10 +52,10 @@ var GameServer = (function () {
                     socket.broadcast.emit('opponent-connected', username);
                 }
             });
-            socket.on('reconnect', function () {
+            socket.on('reconnection', function () {
                 if (_this.isDisconnected) {
                     _this.isDisconnected = false;
-                    socket.broadcast.emit('user-reconnected');
+                    _this.server.emit('user-reconnected');
                 }
             });
             socket.on('join-room', function () {

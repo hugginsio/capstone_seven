@@ -22,6 +22,14 @@ export class GameNetworkingService {
     });
   }
 
+  listenReconnect(): Observable<any> {
+    return new Observable((subscriber) => {
+      this.socket.io.on('reconnect', (data: any) => {
+        subscriber.next(data);
+      });
+    });
+  }
+
   /*
     Things to listen for:
     - UI 'lobby-joined': confirmation you connected to the game server. returns a the board as a string.
@@ -52,6 +60,7 @@ export class GameNetworkingService {
 
   private setListners()
   {
+    /*
     this.socket.io.on('reconnect', () => {
       this.socket.emit('reconnection');
       if(this.isGameSocket)
@@ -59,6 +68,7 @@ export class GameNetworkingService {
         this.socket.emit('join-room');
       }
     });
+    */
   }
 
   public resetRoom(): void {
@@ -115,5 +125,9 @@ export class GameNetworkingService {
     }
 
     return this.socket.connected;
+  }
+
+  public notifyReconnect(): void {
+    this.socket.emit('reconnection');
   }
 }

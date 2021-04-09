@@ -209,6 +209,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         //un-grey out EndTurn Button
         this.isConnected = true;
       });
+      this.networkingService.listenReconnect().subscribe( () => {
+        this.appendMessage(`Reconnected`);
+        //un-grey out EndTurn Button
+        this.isConnected = true;
+      });
       this.networkingService.listen('user-disconnected').subscribe( () => {
         this.appendMessage(`Disconnection... Please Wait`);
         //grey out EndTurn Button
