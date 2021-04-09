@@ -55,7 +55,7 @@ var GameServer = (function () {
             socket.on('reconnection', function () {
                 if (_this.isDisconnected) {
                     _this.isDisconnected = false;
-                    _this.server.emit('user-reconnected');
+                    socket.broadcast.emit('user-reconnected');
                 }
             });
             socket.on('join-room', function () {
