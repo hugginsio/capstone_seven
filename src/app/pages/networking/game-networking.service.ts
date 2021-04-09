@@ -8,8 +8,8 @@ import { NetworkGameSettings } from '../../../../backend/NetworkGameSettings';
 })
 export class GameNetworkingService {
 
-  socket: any;
-  isGameSocket = false;
+  private socket: any;
+  private isGameSocket = false;
 
   constructor() {}
 
@@ -52,6 +52,7 @@ export class GameNetworkingService {
 
   private setListners()
   {
+    /*
     this.socket.io.on('reconnect', () => {
       this.socket.emit('reconnection');
       if(this.isGameSocket)
@@ -59,6 +60,7 @@ export class GameNetworkingService {
         this.socket.emit('join-room');
       }
     });
+    */
   }
 
   public setIsGameSocket(): void
@@ -97,5 +99,13 @@ export class GameNetworkingService {
   public cancelGame(): void {
     this.socket.emit('cancel-game');
     this.socket.disconnect();
+  }
+
+  public clearListners(): void {
+    this.socket.offAny();
+  }
+
+  public getSocketConnected(): boolean {
+    return this.socket.connected;
   }
 }

@@ -43,7 +43,7 @@
       <form id="network-controls" class="flex flex-row space-x-3 w-full text-xl" *ngIf="this.isNetwork"
       (ngSubmit)="sendMessage()">
         <div class="menu-input w-2/3 content-center">
-          <input id="chat-input" type="text" class="input-text text-2xl" placeholder="Send a message!">
+          <input id="chat-input" type="text" class="input-text text-xl" placeholder="Send a message!">
         </div>
         <input type="submit" class="p-1 text-xl" [ngClass]="dynamicChatButton()" value="Send">
       </form>

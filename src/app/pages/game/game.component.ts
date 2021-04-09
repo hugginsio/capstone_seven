@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
 import { Player } from './classes/gamecore/game.class.Player';
@@ -11,6 +11,7 @@ import { SnackbarService } from '../../shared/components/snackbar/services/snack
 import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
 import { Router } from '@angular/router';
+import { Socket } from 'dgram';
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -19,7 +20,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./game.component.scss']
 })
 
-export class GameComponent implements OnInit, AfterViewInit {
+export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   public gameIntro: boolean;
   public gameOver: boolean;
   public guidedTutorialCheck: boolean;
@@ -62,6 +63,12 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.opponentQuit = false;
 
     this.storageService.setContext('game');
+  }
+  ngOnDestroy(): void {
+    if(this.isNetwork)
+    {
+      this.networkingService.clearListners();
+    }
   }
 
   ngOnInit(): void {
@@ -207,6 +214,11 @@ export class GameComponent implements OnInit, AfterViewInit {
         this.appendMessage(`Disconnection... Please Wait`);
         //grey out EndTurn Button
         this.isConnected = false;
+      });
+      this.networkingService.listen('reconnect').subscribe( () => {
+        this.appendMessage(`Reconnected`);
+        //un-grey out EndTurn Button
+        this.isConnected = true;
       });
       this.networkingService.listen('opponent-quit').subscribe( () => {
         this.opponentQuit = true;

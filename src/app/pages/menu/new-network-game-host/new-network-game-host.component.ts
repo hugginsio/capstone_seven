@@ -52,6 +52,12 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    
+    if(this.networkingService.getSocketConnected())
+    {
+      this.networkingService.clearListners();
+    }
+
     if(this.isWaitingForPlayer)
     {
       this.subscription.unsubscribe();

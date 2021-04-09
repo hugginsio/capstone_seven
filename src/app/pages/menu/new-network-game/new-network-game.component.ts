@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { GameNetworkingService } from '../../networking/game-networking.service';
 import { MatchmakingService } from '../../networking/matchmaking.service';
 import { NetworkGameInfo } from './interfaces/new-network-game.interface';
@@ -12,7 +12,7 @@ import { SnackbarService } from '../../../shared/components/snackbar/services/sn
   templateUrl: './new-network-game.component.html',
   styleUrls: ['../menu-common.scss']
 })
-export class NewNetworkGameComponent implements OnInit {
+export class NewNetworkGameComponent implements OnInit, OnDestroy {
   public username: string;
   public gamesList: Array<NetworkGameInfo>;
   public isEnteringName = false;
@@ -27,6 +27,12 @@ export class NewNetworkGameComponent implements OnInit {
     private readonly routerService: Router,
     private readonly snackbarService: SnackbarService
   ) {}
+  ngOnDestroy(): void {
+    if(this.networkingService.getSocketConnected())
+    {
+      this.networkingService.clearListners();
+    }
+  }
 
   ngOnInit(): void {
     // instantiate class here
