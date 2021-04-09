@@ -418,15 +418,17 @@ export class GuidedTutorialService {
       else if(m === 24 && s === 23 && piece === 'B9')
       {
         this.moveNum++;
-        this.highlightManager();
+        this.freezeNext = false;
+        this.highlightNext();
+        //this.highlightManager();
       }
-      else if(m === 25 && s === 23 && piece === 'endTurnBtn')
+      /*else if(m === 25 && s === 23 && piece === 'endTurnBtn')
       {
         this.moveNum++;
         this.freezeNext = false;
         this.highlightNext();
         ifButton = true;
-      }
+      }*/
 
       else {
         this.snackbarService.add({ message: 'Now don\'t be clickin\' just anywhere! Please follow these here instructions.' });
@@ -440,7 +442,7 @@ export class GuidedTutorialService {
       if(pieceID !== null) {
         if(piece === 'blue')
         {
-          pieceID.style.border = "rgb(37, 99, 235)";
+          pieceID.style.border = "4px solid rgb(37, 99, 235)";
         }
       }
       
@@ -776,7 +778,7 @@ export class GuidedTutorialService {
     let message='';
     // more capture explaination
     if(this.humanPlayer === '1') {
-      message = 'Your turn to try your hand at capturing a Minin\' Site! Click on the indicated branches and click "End Turn" to tie up the competiton.'
+      message = 'Your turn to try your hand at capturing a Minin\' Site! Click on the indicated branches to tie up the competiton.'
 
       if(this.moveNum === 23)
       {
@@ -803,7 +805,7 @@ export class GuidedTutorialService {
     let message='';
     // end of tutorial
     if(this.humanPlayer === '1') {
-      message = 'Seems like you’ve got a good handle on how we do things down here in the mine. Time to see how you do on your own.<br><br>First player to 10 points wins gold. Good luck, Prospector!<br><br>Click "Next" to end the tutorial.';
+      message = 'Seems like you’ve got a good handle on how we do things down here in the mine. Time to see how you do on your own.<br><br>First player to 10 points wins gold. Good luck, Prospector!<br><br>Click "Next" to end the tutorial then click "End Turn" when you\'re ready.';
       this.highlightNext();
 
     }
