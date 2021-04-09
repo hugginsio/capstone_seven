@@ -10,6 +10,7 @@ import { CommPackage, ResourceMap } from '../../interfaces/game.interface';
 import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
 import { AiMethods } from '../../interfaces/worker.interface';
+import { time } from 'console';
 
 
 @Injectable({
@@ -96,8 +97,26 @@ export class ManagerService {
     // Web worker magic
     this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
 
+
+
     if (this.currentGameMode === GameType.AI) {
-      //this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
+      
+      const aiDifficulty = this.storageService.fetch('ai-difficulty');
+      let timeAlottedToAI:number;
+      let explorationParameter:number;
+      if(aiDifficulty === 'hard'){
+        timeAlottedToAI = 5800;
+        explorationParameter = 4;
+      }
+      else if(aiDifficulty === 'medium'){
+        timeAlottedToAI = 4000;
+        explorationParameter = 4;
+      }
+      else{
+        timeAlottedToAI = 2000;
+        explorationParameter = 4;
+      }
+
       this.aiWorker.onmessage = ({ data }) => {
         if (data) {
           console.log('Initialized AI web worker.');
@@ -106,7 +125,7 @@ export class ManagerService {
         }
       };
 
-      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 3.75] });
+      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, explorationParameter,timeAlottedToAI] });
     }
 
     // setting board as random or manually setting tiles
@@ -364,6 +383,8 @@ export class ManagerService {
       const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
       //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
+      
+
 
 
       this.aiWorker.onmessage = ({ data }) => {

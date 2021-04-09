@@ -10,11 +10,13 @@ interface PayloadWrapper {
   data: WorkerPayload
 }
 let mcts:MonteCarlo;
+let timeToRun:number;
 
 addEventListener('message', ({ data }: PayloadWrapper) => {
 
   if(data.method === AiMethods.INIT_SERVICE){
     mcts = workerCloneMonteCarlo(data.data[0]);
+    timeToRun = data.data[1];
     console.log('Initialized worker mcts');
   }
   else{
@@ -31,7 +33,7 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
     newState.playerNumber = data.data[4];
     newState.move = data.data[5];
 
-    const move = mcts.findNextMove(newState,5800);
+    const move = mcts.findNextMove(newState,timeToRun);
       
     postMessage(move);
   }

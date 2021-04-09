@@ -3,7 +3,6 @@
 import { AiMethods, WorkerPayload } from '../interfaces/worker.interface';
 import { AI } from "../classes/ai/ai.class.ai";
 import { CoreLogic } from '../util/core-logic.util';
-import { MonteCarlo } from '../classes/ai/ai.class.MonteCarlo';
 import { State } from '../classes/ai/ai.class.State';
 
 interface PayloadWrapper {
@@ -45,7 +44,7 @@ function initAiService(data: WorkerPayload): boolean {
   workers = [];
   for(let i = 0; i < numWorkers; i++){
     workers.push(new Worker('./simulation.worker.ts', { type: 'module' }));
-    workers[i].postMessage({method:AiMethods.INIT_SERVICE,data:[ai.mcts]});
+    workers[i].postMessage({method:AiMethods.INIT_SERVICE,data:[ai.mcts,data.data[4]]});
   }
 
   return true;
