@@ -249,16 +249,16 @@
   }
 
   .selected-red {
-    @apply border-4 border-red-600 hover: border-red-600;
+    @apply border-4 border-red-600;
   }
   .selected-green {
-    @apply border-4 border-green-600 hover: border-green-600;
+    @apply border-4 border-green-600;
   }
   .selected-blue {
-    @apply border-4 border-blue-600 hover: border-blue-600; 
+    @apply border-4 border-blue-600;
   }
   .selected-yellow {
-    @apply border-4 border-yellow-300 hover: border-yellow-300;
+    @apply border-4 border-yellow-300;
   }
 
   .selected-GT {
