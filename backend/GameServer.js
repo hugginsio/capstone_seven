@@ -29,11 +29,13 @@ var GameServer = (function () {
                     _this.server.emit('user-disconnected');
                 }
             });
-            socket.on('create-lobby', function (lobbyInfo) {
+            socket.on('reset-lobby', function () {
                 _this.isCancelled = false;
-                _this.gameSettings = lobbyInfo;
                 _this.users = [];
                 _this.users.push(socket.id);
+            });
+            socket.on('create-lobby', function (lobbyInfo) {
+                _this.gameSettings = lobbyInfo;
                 socket.join("game");
                 socket.broadcast.emit('get-game-settings', _this.gameSettings);
             });
@@ -50,7 +52,7 @@ var GameServer = (function () {
                     socket.broadcast.emit('opponent-connected', username);
                 }
             });
-            socket.on('reconnection', function () {
+            socket.on('reconnect', function () {
                 if (_this.isDisconnected) {
                     _this.isDisconnected = false;
                     socket.broadcast.emit('user-reconnected');

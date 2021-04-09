@@ -85,6 +85,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.isSettingUpGame = false;
     
     this.networkingService.createTCPServer();
+    this.networkingService.resetRoom();
 
     this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
       console.log("A opponent has connected");

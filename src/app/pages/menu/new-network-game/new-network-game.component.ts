@@ -6,6 +6,7 @@ import { NetworkGameSettings } from '../../../../../backend/NetworkGameSettings'
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-new-network-game',
@@ -19,6 +20,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
   public isServerError = false;
   public isConnected = false;
   private gameSettings: NetworkGameSettings;
+  private listners: Array<Subscription>;
 
   constructor(
     private readonly storageService: LocalStorageService,
@@ -28,6 +30,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
     private readonly snackbarService: SnackbarService
   ) {}
   ngOnDestroy(): void {
+    this.listners.forEach(listener => listener.unsubscribe());
     if(this.networkingService.getSocketConnected())
     {
       this.networkingService.clearListners();
@@ -39,6 +42,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
     this.storageService.update('mode', 'net');
     this.username = this.storageService.fetch('username');
     this.gamesList = new Array<NetworkGameInfo>();
+    this.listners = new Array<Subscription>();
     if(this.username === "ERR")
     {
       this.username = "";
@@ -93,11 +97,11 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
     this.storageService.update('oppUsername', oppUsername);
     this.networkingService.connectTCPserver(oppAddress);
 
-    this.networkingService.listen('connect_error').subscribe((err) => {
+    this.listners.push(this.networkingService.listen('connect_error').subscribe((err) => {
       this.networkingService.disconnectSocket();
       this.snackbarService.add({message:"Failed to connect."});
       this.refresh();
-    });
+    }));
     
     this.networkingService.listen('lobby-full').subscribe(() => {
       this.networkingService.disconnectSocket();

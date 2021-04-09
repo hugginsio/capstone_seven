@@ -52,7 +52,6 @@ export class GameNetworkingService {
 
   private setListners()
   {
-    /*
     this.socket.io.on('reconnect', () => {
       this.socket.emit('reconnection');
       if(this.isGameSocket)
@@ -60,7 +59,10 @@ export class GameNetworkingService {
         this.socket.emit('join-room');
       }
     });
-    */
+  }
+
+  public resetRoom(): void {
+    this.socket.emit('reset-lobby');
   }
 
   public setIsGameSocket(): void
@@ -102,6 +104,7 @@ export class GameNetworkingService {
   }
 
   public clearListners(): void {
+    console.log("Clearing Listners");
     this.socket.offAny();
   }
 

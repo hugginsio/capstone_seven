@@ -11,7 +11,6 @@ import { SnackbarService } from '../../shared/components/snackbar/services/snack
 import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
 import { Router } from '@angular/router';
-import { Socket } from 'dgram';
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -214,11 +213,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         this.appendMessage(`Disconnection... Please Wait`);
         //grey out EndTurn Button
         this.isConnected = false;
-      });
-      this.networkingService.listen('reconnect').subscribe( () => {
-        this.appendMessage(`Reconnected`);
-        //un-grey out EndTurn Button
-        this.isConnected = true;
       });
       this.networkingService.listen('opponent-quit').subscribe( () => {
         this.opponentQuit = true;

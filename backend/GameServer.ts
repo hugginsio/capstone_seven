@@ -39,12 +39,16 @@ export class GameServer {
           this.server.emit('user-disconnected');
         }
       });
-    
-      socket.on('create-lobby', (lobbyInfo: NetworkGameSettings) => {
+
+      socket.on('reset-lobby', () => {
         this.isCancelled = false;
-        this.gameSettings = lobbyInfo;
         this.users = [];
         this.users.push(socket.id);
+      });
+    
+      socket.on('create-lobby', (lobbyInfo: NetworkGameSettings) => {
+        
+        this.gameSettings = lobbyInfo;
         socket.join("game");
         socket.broadcast.emit('get-game-settings', this.gameSettings);
       });
@@ -66,11 +70,11 @@ export class GameServer {
         }
       });
     
-      socket.on('reconnection', () => {
+      socket.on('reconnect', () => {
         if(this.isDisconnected)
         {
           this.isDisconnected = false;
-          socket.broadcast.emit('user-reconnected');
+          this.server.emit('user-reconnected');
           //socket.emit('user-reconnected');
           //socket.broadcast.emit('opponent-reconnected');
         }
