@@ -105,7 +105,7 @@ export class ManagerService {
       let timeAlottedToAI:number;
       let explorationParameter:number;
       if(aiDifficulty === 'hard'){
-        timeAlottedToAI = 5800;
+        timeAlottedToAI = 5500;
         explorationParameter = 4;
       }
       else if(aiDifficulty === 'medium'){

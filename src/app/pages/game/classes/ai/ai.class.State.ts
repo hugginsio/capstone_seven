@@ -308,13 +308,14 @@ export class State {
     return moves[chosenMoveIndex];
   }
 
-  getHeuristicValue(): number {
+  getHeuristicValue(debug = false): number {
     //const currentOwner = this.playerNumber === 1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
     let value = 0;
     const innerBranches = [12,17,23,18];
     const middleBranches = [7,8,13,24,28,27,22,11];
 
-
+    let totalPlayer1Branches = 0;
+    let totalPlayer2Branches = 0;
     let player1BranchesInInnerBranches = 0;
     let player2BranchesInInnerBranches = 0;
     let player1MiddleBranches = 0;
@@ -324,6 +325,7 @@ export class State {
     const branches = this.board.branches;
     for (const branch of branches) {
       if (branch.getOwner() === Owner.PLAYERONE) {
+        totalPlayer1Branches++;
         if (innerBranches.includes(branches.indexOf(branch))) {
           player1BranchesInInnerBranches++;
         }
@@ -335,6 +337,7 @@ export class State {
         }
       }
       else if (branch.getOwner() === Owner.PLAYERTWO) {
+        totalPlayer2Branches++;
         if (innerBranches.includes(branches.indexOf(branch))) {
           player2BranchesInInnerBranches++;
         }
@@ -350,7 +353,7 @@ export class State {
 
     //exhausted tiles 
     
-    const branchesValue = (5*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (2*(player1MiddleBranches - player2MiddleBranches)) + (player1OuterBranches-player2OuterBranches);
+    const branchesValue = (5*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (2.5*(player1MiddleBranches - player2MiddleBranches)) + (player1OuterBranches-player2OuterBranches);
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
     let longestNetwork;
     if(this.player1.hasLongestNetwork){
@@ -368,10 +371,16 @@ export class State {
     (this.player1.greenPerTurn - this.player2.greenPerTurn) +
     (this.player1.yellowPerTurn - this.player2.yellowPerTurn);
 
+    const totalBranches = totalPlayer1Branches - totalPlayer2Branches;
+
     const captures = this.player1.numTilesCaptured - this.player2.numTilesCaptured;
     const score = this.player1.currentScore - this.player2.currentScore;
-    value = numNodesDiff + longestNetwork + resourceProduction + (10 * captures) + score + branchesValue;
+    value = numNodesDiff + longestNetwork + (2*resourceProduction) + score  + (5*captures)+ branchesValue + totalBranches;
 
+    if(debug){
+      console.log(numNodesDiff,longestNetwork,2*resourceProduction,score,5*captures,branchesValue,totalBranches);
+      console.log(this);
+    }
 
     return value;
   }

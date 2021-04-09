@@ -11,7 +11,7 @@ export class MonteCarlo {
   opponent: number;
   tree: Tree;
 
-  NUMWORKERS = 8;
+  NUMWORKERS = 32;
   workers: Array<Worker>;
 
 

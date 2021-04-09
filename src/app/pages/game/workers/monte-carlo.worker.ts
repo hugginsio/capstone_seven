@@ -95,18 +95,29 @@ function getBestMove(moves:string[]):string{
   const scores = [];
   const len = moves.length;
   const firstMoveState = currentState.cloneState();
+  firstMoveState.togglePlayer();
   firstMoveState.applyMove(moves[0]);
-  let maxScore = Math.abs(firstMoveState.getHeuristicValue());
+  let maxScore = firstMoveState.getHeuristicValue();
   let maxMove = moves[0];
   scores.push(maxScore);
   for(let i = 1; i < len; i++){
     const moveState = currentState.cloneState();
+    moveState.togglePlayer();
     moveState.applyMove(moves[i]);
-    const score = Math.abs(moveState.getHeuristicValue());
+
+    const score = moveState.getHeuristicValue();
     scores.push(score);
-    if(score >= maxScore){
-      maxScore = score;
-      maxMove = moves[i];
+    if(moveState.playerNumber === 1){
+      if(score >= maxScore){
+        maxScore = score;
+        maxMove = moves[i];
+      }
+    }
+    else{
+      if(score <= maxScore){
+        maxScore = score;
+        maxMove = moves[i];
+      }
     }
   }
   console.log(scores);

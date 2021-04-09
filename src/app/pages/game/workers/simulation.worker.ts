@@ -17,7 +17,7 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
   if(data.method === AiMethods.INIT_SERVICE){
     mcts = workerCloneMonteCarlo(data.data[0]);
     timeToRun = data.data[1];
-    console.log('Initialized worker mcts');
+    //console.log('Initialized worker mcts');
   }
   else{
 
