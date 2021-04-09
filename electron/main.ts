@@ -2,11 +2,13 @@ import { app, BrowserWindow, dialog, webFrame } from 'electron';
 import { protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { fork } from 'child_process';
+import * as ms from '../backend/MatchmakingServer';
+import * as gs from '../backend/GameServer';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ms = fork('src/app/pages/networking/MatchmakingServer.js');
+const matchmakingServer = new ms.MatchmakingServer();
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const gs = fork('src/app/pages/networking/GameServer.js');
+const gameServer = new gs.GameServer();
 
 let window: BrowserWindow;
 const args = process.argv.slice(1);
@@ -36,7 +38,7 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,
       enableRemoteModule : true,
-      devTools: true,
+      devTools: isDev,
       zoomFactor: 1
     },
   });

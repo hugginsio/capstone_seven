@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io } from 'socket.io-client';
-import { NetworkGameSettings } from './NetworkGameSettings';
+import { NetworkGameSettings } from '../../../../backend/NetworkGameSettings';
 
 @Injectable({
   providedIn: 'root'
