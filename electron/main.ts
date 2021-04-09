@@ -2,6 +2,13 @@ import { app, BrowserWindow, dialog, webFrame } from 'electron';
 import { protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import * as ms from '../backend/MatchmakingServer';
+import * as gs from '../backend/GameServer';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const matchmakingServer = new ms.MatchmakingServer();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const gameServer = new gs.GameServer();
 
 let window: BrowserWindow;
 const args = process.argv.slice(1);

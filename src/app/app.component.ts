@@ -32,6 +32,11 @@ export class AppComponent {
     this.storageService.store('guided-tutorial', 'false');
     this.storageService.update('board-seed', '!random');
     this.storageService.update('firstplayer', '1');
+    this.storageService.store('isHost', 'true');
+    this.storageService.store('isHostFirst', 'true');
+    this.storageService.store('oppAddress', '');
+    this.storageService.store('oppUsername', '');
+    this.storageService.store('username', 'ERR');
     this.storageService.update('location', 'bg1');
 
     this.storageService.setContext('sound');

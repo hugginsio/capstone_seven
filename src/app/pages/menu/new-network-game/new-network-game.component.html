@@ -3,8 +3,8 @@
   <div class="submenu-header">
     <p>Play Multiplayer</p>
   </div>
-  <div class="submenu-body">
-    <div class="flex flex-col items-center space-y-5">
+  <div class="submenu-body" *ngIf="!this.isEnteringName">
+    <div class="flex flex-col items-center space-y-5" id="gameList">
       <p>Scanning for games on your local network</p>
       <div class="animate-bounce">
         <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -15,25 +15,44 @@
           </path>
         </svg>
       </div>
+      <div id="games_wrapper" class="flex flex-col space-y-5">
+        <div *ngFor="let game of gamesList" class="flex">
+          <p>{{ game.host }} of addr. {{ game.address }}</p>
+          <p (click)="JoinGame(game.address, game.host)">Join button</p>
+        </div>
+      </div>
     </div>
   </div>
   <div class="submenu-footer">
-    <div class="flex space-x-5 w-2/3">
-      <div class="menu-btn flex-grow" routerLink="/menu/landing">
-        <div>
-          <p>Back</p>
+    <div class="flex space-x-5 w-2/3 z-50">
+        <div class="menu-btn w-1/3" routerLink="/menu/landing">
+            <p>Back</p>
         </div>
-      </div>
-      <div class="menu-btn flex-grow">
-        <div>
-          <p>Refresh</p>
+        <div class="menu-btn w-1/3" [ngClass]="setButtons()" (click)="refresh()">
+            <p>Refresh</p>
         </div>
-      </div>
-      <div class="menu-btn w-full flex-grow">
-        <div>
-          <p>Host Game</p>
+        <div class="menu-btn w-1/3" [ngClass]="setButtons()" routerLink="/menu/new/online/host">
+            <p>Host Game</p>
         </div>
+    </div>
+  </div>
+</div>
+
+<div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-25"
+  *ngIf="this.isEnteringName">
+  <div class="flex flex-row items-center content-center h-full">
+    <div class="mx-auto flex flex-col space-y-4 w-2/3 max-w-md">
+      <div class="bg-black border-4 border-gray-600 p-4">
+        <p class="text-5xl font-bold tracking-wide p-4">Username</p>
+        <form class="flex flex-row space-x-3 w-full" (ngSubmit)="setUsername()">
+          <div class="menu-input w-2/3">
+            <input type="text" class="input-text text-3xl" [(ngModel)]="username" name="usernameInput" placeholder="Miner Joe">
+          </div>
+          <input type="submit" class="menu-btn w-1/3 text-3xl" value="Enter">
+        </form>
       </div>
     </div>
   </div>
 </div>
+
+<app-snackbar class="z-inf" [timeout]="5000" position="bottom"></app-snackbar>
