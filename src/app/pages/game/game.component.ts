@@ -459,10 +459,19 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log("Can't find container");
       return;
     }
-
+    
     const element = document.createElement('div');
     element.innerHTML = message;
     container.appendChild(element);
+    if(this.isTutorial)
+    {
+      container.scrollTop = 0;
+    }
+    else if(this.isNetwork) 
+    {
+      container.scrollTop = container.scrollHeight;
+    }
+    
   }
 
   clearMessage(): void {
