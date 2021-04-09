@@ -11,6 +11,7 @@ import { SnackbarService } from '../../shared/components/snackbar/services/snack
 import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
 import { Router } from '@angular/router';
+import { Owner, PlayerType } from './enums/game.enums';
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -47,7 +48,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     private readonly routerService: Router
   ) {
     // Set defaults for UI triggers
-    this.gameIntro = true;
+    this.gameIntro = false;
     this.gameOver = false;
     this.guidedTutorialCheck = false;
     this.gameOverText = "Victory!";
@@ -204,6 +205,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit():void{
+    console.log(this.gameManager.getBoard());
     if (this.isTutorial === true)
     {
       const message = this.guidedTutorial.startTutorial();
@@ -216,6 +218,9 @@ export class GameComponent implements OnInit, AfterViewInit {
 
   assemblePieceClass(piece: 'T' | 'N' | 'BX' | 'BY', id: number): string {
     let result = '';
+    const tileOwner = this.gameManager.getBoard().tiles[id]?.capturedBy;
+    const ownerType = tileOwner === Owner.PLAYERONE ? this.gameManager.getPlayerOne().type : this.gameManager.getPlayerTwo().type;
+
     switch (piece) {
       case 'T':
         if (this.gameManager.getBoard().tiles[id].color === "BLANK") {
@@ -225,12 +230,26 @@ export class GameComponent implements OnInit, AfterViewInit {
         }
 
         if (this.gameManager.getBoard().tiles[id].capturedBy !== 'NONE') {
-          result += `-capture-${this.gameManager.getBoard().tiles[id].capturedBy === 'PLAYERONE' ? 'orange' : 'purple'}`;
+          result += `-captured-${this.gameManager.getBoard().tiles[id].capturedBy === 'PLAYERONE' ? 'orange' : 'purple'}`;
+          if (ownerType === PlayerType.HUMAN || ownerType === PlayerType.NETWORK) {
+            result += `-miner`;
+          } else {
+            result += `-machine`;
+          }
+
+          if (this.gameManager.getBoard().tiles[id].maxNodes !== 0) {
+            result += `-${this.gameManager.getBoard().tiles[id].maxNodes.toString()}`;
+          }
+
           break;
         }
 
         if (this.gameManager.getBoard().tiles[id].isExhausted && this.gameManager.getBoard().tiles[id].color !== "BLANK") {
           result += '-exhausted';
+          if (this.gameManager.getBoard().tiles[id].maxNodes !== 0) {
+            result += `-${this.gameManager.getBoard().tiles[id].maxNodes.toString()}`;
+          }
+
           break;
         }
 
@@ -242,7 +261,16 @@ export class GameComponent implements OnInit, AfterViewInit {
 
       case 'N':
         if (this.gameManager.getBoard().nodes[id].getOwner() !== 'NONE') {
-          result += `node-${this.gameManager.getBoard().nodes[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}`;
+          const nodeOwner = this.gameManager.getBoard().nodes[id].getOwner();
+          const ownerType = nodeOwner === Owner.PLAYERONE ? this.gameManager.getPlayerOne().type : this.gameManager.getPlayerTwo().type;
+
+          result += 'node-';
+
+          if (ownerType === PlayerType.HUMAN || ownerType === PlayerType.NETWORK) {
+            result += `${this.gameManager.getBoard().nodes[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-miner`;
+          } else {
+            result += `${this.gameManager.getBoard().nodes[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-machine`;
+          }
         } else {
           result += 'available node-blank';
         }
@@ -251,7 +279,16 @@ export class GameComponent implements OnInit, AfterViewInit {
 
       case 'BX':
         if (this.gameManager.getBoard().branches[id].getOwner() !== 'NONE') {
-          result += `branch-${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-x`;
+          const nodeOwner = this.gameManager.getBoard().branches[id].getOwner();
+          const ownerType = nodeOwner === Owner.PLAYERONE ? this.gameManager.getPlayerOne().type : this.gameManager.getPlayerTwo().type;
+
+          result += 'branch-';
+
+          if (ownerType === PlayerType.HUMAN || ownerType === PlayerType.NETWORK) {
+            result += `${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-x-miner`;
+          } else {
+            result += `${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-x-machine`;
+          }
         } else {
           result += 'available branch-blank-x';
         }
@@ -260,7 +297,16 @@ export class GameComponent implements OnInit, AfterViewInit {
     
       case 'BY':
         if (this.gameManager.getBoard().branches[id].getOwner() !== 'NONE') {
-          result += `branch-${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-y`;
+          const nodeOwner = this.gameManager.getBoard().branches[id].getOwner();
+          const ownerType = nodeOwner === Owner.PLAYERONE ? this.gameManager.getPlayerOne().type : this.gameManager.getPlayerTwo().type;
+
+          result += 'branch-';
+
+          if (ownerType === PlayerType.HUMAN || ownerType === PlayerType.NETWORK) {
+            result += `${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-y-miner`;
+          } else {
+            result += `${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-y-machine`;
+          }
         } else {
           result += 'available branch-blank-y';
         }
