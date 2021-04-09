@@ -1,6 +1,6 @@
 <div class="border-2 border-transparent">
   <p>{{ playerName }}</p>
-  <p class="text-sm leading-none">{{ playerDetail?.type }}</p>
+  <p class="text-sm leading-none">{{ playerDetail?.type === 'HUMAN' ? 'HUMAN' : 'MACHINE' }}</p>
   <div class="p-3">
     <p>Score: {{ playerDetail?.currentScore }}</p>
     <p>Network: {{ playerDetail?.currentLength }}</p>
