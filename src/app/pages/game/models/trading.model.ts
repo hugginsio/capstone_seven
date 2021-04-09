@@ -156,7 +156,13 @@ export class TradingModel {
     }
 
     if (this.selectedResource === num) {
-      return 'selected';
+      switch(num){
+        case 1: return 'selected-red';
+        case 2: return 'selected-green';
+        case 3: return 'selected-blue';
+        case 4: return 'selected-yellow';
+        default: return 'selected';
+      }
     } else {
       return '';
     }

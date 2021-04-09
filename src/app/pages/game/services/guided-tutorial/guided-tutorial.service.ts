@@ -440,7 +440,7 @@ export class GuidedTutorialService {
       if(pieceID !== null) {
         if(piece === 'blue')
         {
-          pieceID.style.border = "8px solid white";
+          pieceID.style.border = "rgb(37, 99, 235)";
         }
       }
       
