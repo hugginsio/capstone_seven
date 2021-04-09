@@ -5,7 +5,9 @@ import * as url from 'url';
 import * as ms from '../backend/MatchmakingServer';
 import * as gs from '../backend/GameServer';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const matchmakingServer = new ms.MatchmakingServer();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const gameServer = new gs.GameServer();
 
 let window: BrowserWindow;
@@ -36,12 +38,11 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,
       enableRemoteModule : true,
-      devTools: true,
+      devTools: isDev,
       zoomFactor: 1
     },
   });
 
-  window.webContents.openDevTools();
   if (serve) {
     if (isDev) {
       window.webContents.openDevTools();
