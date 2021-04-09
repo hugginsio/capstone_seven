@@ -30,12 +30,8 @@ export class GuidedTutorialService {
     //this.btnToHighlight = '';
     this.freezeNext = false;
     if (this.humanPlayer === '1') {
-      this.maxMove = 21;
-      this.maxStep = 25;
-    }
-    else {
-      this.maxMove = 22;
-      this.maxStep = 22;
+      this.maxMove = 26;
+      this.maxStep = 26;
     }
   }
 
@@ -175,7 +171,12 @@ export class GuidedTutorialService {
         message = this.messageTwentyFour();
         break;
       case 25:
+        message = this.messageTwentyFive();
+        break;
+      case 26: 
         message = "end of tutorial";
+        break;
+
       default:
         console.log('something went wrong, tutorialManager switch');
     }
@@ -232,8 +233,13 @@ export class GuidedTutorialService {
           break;
         case 22: piece = "endTurnBtn";
           break;
-        case 23: piece = "Pause";
+        case 23: piece = "B5";
           break;
+        case 24: piece = "B9";
+          break;
+        case 25: piece = "endTurnBtn";
+          break;
+        case 26: piece = "Pause";
         default:
           console.log("highlightManager error");
       }
@@ -398,6 +404,23 @@ export class GuidedTutorialService {
         this.highlightManager();
       }
       else if(m === 22 && s === 19 && piece === 'endTurnBtn')
+      {
+        this.moveNum++;
+        this.freezeNext = false;
+        this.highlightNext();
+        ifButton = true;
+      }
+      else if(m === 23 && s === 23 && piece === 'B5')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 24 && s === 23 && piece === 'B9')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 25 && s === 23 && piece === 'endTurnBtn')
       {
         this.moveNum++;
         this.freezeNext = false;
@@ -751,16 +774,32 @@ export class GuidedTutorialService {
 
   messageTwentyThree():string {
     let message='';
-    // options menu
+    // more capture explaination
     if(this.humanPlayer === '1') {
-      message = 'Need more help or want to change the settings? Click the pause button in the tip left corner for more options.';
-      this.highlightNext();
+      message = 'Your turn to try your hand at capturing a Minin\' Site! Click on the indicated branches and click "End Turn" to tie up the competiton.'
+
+      if(this.moveNum === 23)
+      {
+        this.highlightManager();
+        this.freezeNext = true; 
+      }
 
     }
     return message;
   }
 
   messageTwentyFour():string {
+    let message='';
+    // options menu
+    if(this.humanPlayer === '1') {
+      message = 'Need more help or want to change the settings? Click the pause button in the top left corner for more options.';
+      this.highlightNext();
+
+    }
+    return message;
+  }
+
+  messageTwentyFive():string {
     let message='';
     // end of tutorial
     if(this.humanPlayer === '1') {
