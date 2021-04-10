@@ -81,6 +81,7 @@ export class State {
 
       const score = Math.abs(newState.getHeuristicValue());
       newState.visitCount = score;
+      newState.winScore = 10*score;
       
 
       states.push(newState);
@@ -313,6 +314,7 @@ export class State {
     let value = 0;
     const innerBranches = [12,17,23,18];
     const middleBranches = [7,8,13,24,28,27,22,11];
+    
 
     let totalPlayer1Branches = 0;
     let totalPlayer2Branches = 0;
@@ -322,8 +324,22 @@ export class State {
     let player2MiddleBranches = 0;
     let player1OuterBranches = 0;
     let player2OuterBranches = 0;
+    let b1:number;
+    let b2:number;
+    let b3:number;
+    let b4:number;
+    let b5:number;
+    let b6:number;
+    let player1BranchConnectedness = 0;
+    let player2BranchConnectedness = 0;
     const branches = this.board.branches;
     for (const branch of branches) {
+      b1 = branch.getBranch('branch1');
+      b2 = branch.getBranch('branch2');
+      b3 = branch.getBranch('branch3');
+      b4 = branch.getBranch('branch4');
+      b5 = branch.getBranch('branch5');
+      b6 = branch.getBranch('branch6');
       if (branch.getOwner() === Owner.PLAYERONE) {
         totalPlayer1Branches++;
         if (innerBranches.includes(branches.indexOf(branch))) {
@@ -334,6 +350,24 @@ export class State {
         }
         else {
           player1OuterBranches++;
+        }
+        if(b1 !== -1 && branches[b1].getOwner() === Owner.PLAYERONE){
+          player1BranchConnectedness++;
+        }
+        if(b2 !== -1 && branches[b2].getOwner() === Owner.PLAYERONE){
+          player1BranchConnectedness++;
+        }
+        if(b3 !== -1 && branches[b3].getOwner() === Owner.PLAYERONE){
+          player1BranchConnectedness++;
+        }
+        if(b4!== -1 && branches[b4].getOwner() === Owner.PLAYERONE){
+          player1BranchConnectedness++;
+        }
+        if(b5 !== -1 && branches[b5].getOwner() === Owner.PLAYERONE){
+          player1BranchConnectedness++;
+        }
+        if(b6 !== -1 && branches[b6].getOwner() === Owner.PLAYERONE){
+          player1BranchConnectedness++;
         }
       }
       else if (branch.getOwner() === Owner.PLAYERTWO) {
@@ -347,13 +381,30 @@ export class State {
         else {
           player2OuterBranches++;
         }
-
+        if(b1 !== -1 && branches[b1].getOwner() === Owner.PLAYERTWO){
+          player2BranchConnectedness++;
+        }
+        if(b2 !== -1 && branches[b2].getOwner() === Owner.PLAYERTWO){
+          player2BranchConnectedness++;
+        }
+        if(b3 !== -1 && branches[b3].getOwner() === Owner.PLAYERTWO){
+          player2BranchConnectedness++;
+        }
+        if(b4!== -1 && branches[b4].getOwner() === Owner.PLAYERTWO){
+          player2BranchConnectedness++;
+        }
+        if(b5 !== -1 && branches[b5].getOwner() === Owner.PLAYERTWO){
+          player2BranchConnectedness++;
+        }
+        if(b6 !== -1 && branches[b6].getOwner() === Owner.PLAYERTWO){
+          player2BranchConnectedness++;
+        }
       }
     }
 
     //exhausted tiles 
     
-    const branchesValue = (5*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (2.5*(player1MiddleBranches - player2MiddleBranches)) + (player1OuterBranches-player2OuterBranches);
+    const branchesValue = (3*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (2.50*(player1MiddleBranches - player2MiddleBranches)) + (2*(player1OuterBranches-player2OuterBranches));
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
     let longestNetwork;
     if(this.player1.hasLongestNetwork){
@@ -372,10 +423,11 @@ export class State {
     (this.player1.yellowPerTurn - this.player2.yellowPerTurn);
 
     const totalBranches = totalPlayer1Branches - totalPlayer2Branches;
+    const branchConnectedness = player1BranchConnectedness - player2BranchConnectedness;
 
     const captures = this.player1.numTilesCaptured - this.player2.numTilesCaptured;
     const score = this.player1.currentScore - this.player2.currentScore;
-    value = numNodesDiff + longestNetwork + (2*resourceProduction) + score  + (5*captures)+ branchesValue + totalBranches;
+    value = numNodesDiff + longestNetwork + (3*resourceProduction) + score  + (5*captures)+ .75*(branchesValue + totalBranches + branchConnectedness);
 
     if(debug){
       console.log(numNodesDiff,longestNetwork,2*resourceProduction,score,5*captures,branchesValue,totalBranches);

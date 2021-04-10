@@ -22,7 +22,7 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
   else{
 
     const board = data.data[0];
-    const player1 = data.data[2];
+    const player1 = data.data[1];
     const player2 = data.data[2];
 
     const newBoard = CoreLogic.workerCloneGameBoard(board);
@@ -30,8 +30,8 @@ addEventListener('message', ({ data }: PayloadWrapper) => {
     const newPlayer2 = CoreLogic.workerClonePlayer(player2);
 
     const newState = new State(newBoard, newPlayer1, newPlayer2);
-    newState.playerNumber = data.data[4];
-    newState.move = data.data[5];
+    newState.playerNumber = data.data[3];
+    newState.move = data.data[4];
 
     const move = mcts.findNextMove(newState,timeToRun);
       
