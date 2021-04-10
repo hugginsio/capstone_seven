@@ -1,4 +1,7 @@
 <div class="border-2 border-transparent">
+  <div class="flex w-full justify-center">
+    <img [src]="getPlayerImage()" class="h-8 w-8" />
+  </div>
   <p>{{ playerName }}</p>
   <p class="text-sm leading-none">{{ playerDetail?.type === 'HUMAN' ? 'HUMAN' : 'MACHINE' }}</p>
   <div class="p-3">

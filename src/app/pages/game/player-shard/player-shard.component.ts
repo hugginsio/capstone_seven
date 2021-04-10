@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { Player } from '../classes/gamecore/game.class.Player';
 import { CommPackage } from '../interfaces/game.interface';
 import { CommCode } from '../interfaces/game.enum';
-import { PlayerType } from '../enums/game.enums';
+import { Owner, PlayerType } from '../enums/game.enums';
 
 @Component({
   selector: 'app-player-shard',
@@ -17,6 +17,7 @@ export class PlayerShardComponent implements OnInit {
   @Input() currentPlayer: boolean;
   @Input() actionSubject: Subject<CommPackage>;
   @Input() isConnected: boolean;
+  @Input() playerEnum: string;
 
   constructor() { }
 
@@ -24,16 +25,13 @@ export class PlayerShardComponent implements OnInit {
 
   getDynamicClass(): string {
     let btnClass = "";
-    if(this.playerDetail?.type !== PlayerType.HUMAN)
-    {
+    if (this.playerDetail?.type !== PlayerType.HUMAN) {
       btnClass = "button-hidden";
     }
-    else if(!this.currentPlayer)
-    {
+    else if (!this.currentPlayer) {
       btnClass = "button-disabled";
     }
-    else if(this.currentPlayer)
-    {
+    else if (this.currentPlayer) {
       btnClass = "button-std";
     }
     return btnClass;
@@ -42,16 +40,13 @@ export class PlayerShardComponent implements OnInit {
 
   getEndTurnClass(): string {
     let btnClass = "";
-    if(this.playerDetail?.type !== PlayerType.HUMAN)
-    {
+    if (this.playerDetail?.type !== PlayerType.HUMAN) {
       btnClass = "button-hidden";
     }
-    else if(!this.currentPlayer || !this.isConnected)
-    {
+    else if (!this.currentPlayer || !this.isConnected) {
       btnClass = "button-disabled";
     }
-    else if(this.currentPlayer)
-    {
+    else if (this.currentPlayer) {
       btnClass = "button-std";
     }
     return btnClass;
@@ -60,7 +55,7 @@ export class PlayerShardComponent implements OnInit {
   generateMessage(action: CommCode): CommPackage {
     return {
       code: action,
-      player: this.playerDetail 
+      player: this.playerDetail
     };
   }
 
@@ -74,5 +69,12 @@ export class PlayerShardComponent implements OnInit {
 
   triggerUndo(): void {
     this.actionSubject.next(this.generateMessage(CommCode.UNDO));
+  }
+
+  getPlayerImage(): string {
+    return `/assets/game/nodes/${
+      this.playerEnum === 'PLAYERONE' ? 'Orange-Node-' : 'Purple-Node-'
+    }${this.playerDetail?.type === PlayerType.HUMAN || this.playerDetail?.type === PlayerType.NETWORK ? 'Pickaxe' : 'Drill'
+    }.png`;
   }
 }
