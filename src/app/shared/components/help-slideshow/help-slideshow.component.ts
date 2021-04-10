@@ -1,4 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ClickEvent } from '../../../pages/game/interfaces/game.interface';
+import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
+
 
 @Component({
   selector: 'app-help-slideshow',
@@ -12,7 +16,10 @@ export class HelpSlideshowComponent {
 
   @Input() slidesToShow = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-  constructor() { }
+  constructor(
+    private readonly storageService: LocalStorageService,
+    private readonly routerService: Router
+  ) { }
 
   decrementSlides(): void {
     if (this.currentSlide > 1)
@@ -38,5 +45,14 @@ export class HelpSlideshowComponent {
     else {
       return '';
     }
+  }
+
+  startGuidedTutorial(event: ClickEvent):void {
+    //const button = event.target.id;
+
+    this.storageService.update('guided-tutorial', 'true');
+
+    this.routerService.navigate(['/game']);
+
   }
 }
