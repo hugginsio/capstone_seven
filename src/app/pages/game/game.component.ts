@@ -104,7 +104,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
             }
           }
         } else if (status === CommCode.END_TURN) {
-
           const currentPlayer = this.gameManager.getCurrentPlayer();
           if ((currentPlayer.numNodesPlaced < 2 || currentPlayer.ownedBranches.length < 2) &&
             (currentPlayer.redResources !== 0 || currentPlayer.greenResources !== 0 ||
@@ -480,7 +479,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.storageService.update("guided-tutorial", "false");
     //this.tradingModel.isTutorial = false;
   }
-
+  
   copyBoardSeed(): void {
     const boardSeed = this.gameManager.boardString;
     const temporarySelectBox = document.createElement('textarea');
