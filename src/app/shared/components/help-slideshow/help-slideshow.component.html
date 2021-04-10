@@ -1,7 +1,7 @@
 <div class="flex space-between w-full justify-center h-full flex-grow" id="help-slideshow-container">
   <div class="flex justify-center items-center w-full h-full px-4 space-x-4 flex-grow">
     <div class="flex menu-btn" [ngClass]="dynamicClass('prev')" (click)="decrementSlides()">
-      prev
+      Prev
     </div>
 
     <div class="flex px-4 h-full w-full flex-grow" id="actual-slides">
@@ -69,7 +69,7 @@
       </div>
     -->
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 3">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 2">
         <h1>Game Pieces</h1>
         <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 space-y-4">
@@ -117,7 +117,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full w-full flex-grow" *ngIf="currentSlide === 10">
+      <div class="flex flex-col space-y-4 h-full w-full flex-grow" *ngIf="currentSlide === 3">
         <h1>Buyin' Tools and Paths</h1>
         <div class="flex-1 flex-col space-y-4 items-center p-20 bg-black">
           <!-- branches addition images -->
@@ -257,7 +257,7 @@
       </div>
     -->
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 8">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 6">
         <h1>All Tuckered Out</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -273,7 +273,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 9">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 7">
         <h1>Claimin' a Site</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -281,7 +281,7 @@
               Stake your claim for exclusive minin’ rights by surroundin' Sites with your Paths!
             </p>
             <p>
-              If you surround a Site, only you can mine it. Others can put their tools to work there, but they won't be gettin' any Gems.
+              If you surround a Site, only you can mine it. Others can put their Tools to work there, but they won't be gettin' any Gems.
             </p>
             <p>
               Best of all, a surrounded Site can't be Tuckered Out!
@@ -296,9 +296,9 @@
 
      
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 11">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 8">
         <h1>Tradin' Post</h1>
-        <div class="flex space-x-4 w-full items-center"
+        <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 flex-col space-y-4">
             <p>
               Missin' the right Gems? Head on down to the Trading Post!
@@ -317,7 +317,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 12">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 9">
         <h1>How To Win</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -341,7 +341,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 13">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 10">
         <h1>Settin' Up a Competition</h1>
         <div class="flex space-x-4 w-full items-center">
           <div class="flex-1 flex-col space-y-4">
@@ -365,7 +365,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 14">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 11">
         <h1>Newfangled "On The Line" Technology</h1>
         <div class="flex space-x-4 w-full items-center">
           <div class="flex-1">
@@ -384,7 +384,7 @@
         <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
       </div>
 
-      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 15">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 12">
         <h1>Options Menu</h1>
         <div class="flex space-x-4 items-center w-full">
           <div class="flex-1 flex-col space-y-4">
@@ -414,7 +414,7 @@
     </div>
 
     <div class="flex menu-btn" [ngClass]="dynamicClass('next')" (click)="incrementSlides()">
-      next
+      Next
     </div>
   </div>
 </div>
