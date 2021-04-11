@@ -13,6 +13,7 @@ import { SoundEndAction } from '../../shared/components/sound-controller/interfa
 import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
 import { Router } from '@angular/router';
+import { PlayerType } from './enums/game.enums';
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -288,6 +289,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       if (!this.guidedTutorial.moveManager(currentMove)) {
         return;
       }
+    }
+
+    if(player.type !== PlayerType.HUMAN)
+    {
+      return;
     }
 
     if (pieceClass.indexOf('unavailable') !== -1) {
