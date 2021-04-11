@@ -140,7 +140,46 @@ export class CoreLogic {
         }
       }
 
-      
+      let prelimPossibleBranches: number;
+      const prelimRedBlueDiff = redAvailable - blueAvailable;
+
+      if (prelimRedBlueDiff === 0) {
+        prelimPossibleBranches = redAvailable;
+      }
+      else if (Math.sign(prelimRedBlueDiff) === 1) {
+        prelimPossibleBranches = redAvailable - Math.abs(prelimRedBlueDiff);
+      }
+      else {
+        prelimPossibleBranches = blueAvailable - Math.abs(prelimRedBlueDiff);
+      }
+
+      let redLeft = redAvailable;
+      let blueLeft = blueAvailable;
+      for(let b = 0; b < prelimPossibleBranches;b++){
+        redLeft--;
+        blueLeft--;
+      }
+
+      let prelimPossibleNodes: number;
+      const preLimGreenNum = (greenAvailable - (greenAvailable % 2)) / 2;
+      const prelimYellowNum = (yellowAvailable - (yellowAvailable % 2)) / 2;
+      const prelimGreenYellowDiff = preLimGreenNum - prelimYellowNum;
+      if (prelimGreenYellowDiff === 0) {
+        prelimPossibleNodes = preLimGreenNum;
+      }
+      else if (Math.sign(prelimGreenYellowDiff) === 1) {
+        prelimPossibleNodes = preLimGreenNum - Math.abs(prelimGreenYellowDiff);
+      }
+      else {
+        prelimPossibleNodes = prelimYellowNum - Math.abs(prelimGreenYellowDiff);
+      }
+
+      let greenLeft = greenAvailable;
+      let yellowLeft = yellowAvailable;
+      for(let n = 0; n < prelimPossibleNodes; n++){
+        greenLeft-=2;
+        yellowLeft-=2;
+      }
 
       //general moves
       //Step 1: trade
@@ -149,19 +188,19 @@ export class CoreLogic {
       const greenStringArray = [];
       const yellowStringArray = [];
 
-      for (let red = 0; red < redAvailable; red++) {
+      for (let red = 0; red < redLeft; red++) {
         redStringArray.push('R');
       }
 
-      for (let blue = 0; blue < blueAvailable; blue++) {
+      for (let blue = 0; blue < blueLeft; blue++) {
         blueStringArray.push('B');
       }
 
-      for (let green = 0; green < greenAvailable; green++) {
+      for (let green = 0; green < greenLeft; green++) {
         greenStringArray.push('G');
       }
 
-      for (let yellow = 0; yellow < yellowAvailable; yellow++) {
+      for (let yellow = 0; yellow < yellowLeft; yellow++) {
         yellowStringArray.push('Y');
       }
 

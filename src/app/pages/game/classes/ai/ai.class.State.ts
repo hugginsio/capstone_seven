@@ -139,7 +139,7 @@ export class State {
     //const index = Math.floor(Math.random()*moves.length);
 
     this.applyMove(moves[maxWeightIndex]);
-    this.move = moves[maxWeightIndex];
+    //this.move = moves[maxWeightIndex];
     //console.log(`Inside simulation: Time to apply chosen move = ${Date.now()-start}ms`);
   }
 
