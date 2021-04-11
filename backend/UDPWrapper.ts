@@ -2,6 +2,7 @@
 import * as dgram from 'dgram';
 import * as os from 'os';
 import * as broadcastAddress from 'broadcast-address';
+import { throwError } from 'rxjs';
 
 export class UDPWrapper {
 
@@ -82,10 +83,9 @@ export class UDPWrapper {
       }
     }
     else {
-      console.error("No viable OS found.");
+      throw new Error("No viable OS found.");
     }
 
-    console.error("No viable interfaces found.");
-    return '';
+    throw new Error("No viable interfaces found.");
   }
 }

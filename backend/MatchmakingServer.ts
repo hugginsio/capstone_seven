@@ -9,6 +9,13 @@ export class MatchmakingServer {
   constructor() {
     console.log('Launching matchmaking server...');
 
+    try {
+      this.udp = new UDPWrapper();
+    } catch (error) {
+      console.error("No Viable Network Interface");
+      return;
+    }
+
     this.io = require('socket.io')(3000, {
       cors: {
         origin: true,
@@ -16,7 +23,7 @@ export class MatchmakingServer {
       },
     });
 
-    this.udp = new UDPWrapper();
+    
 
     this.io.on('connection', (socket: any) => {
 

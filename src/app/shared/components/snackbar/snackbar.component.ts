@@ -70,6 +70,6 @@ export class SnackbarComponent {
   }
 
   getPositioning(): string {
-    return this.position === 'top' ? 'top-0 pt-4' : 'bottom-0 pb-4';
+    return this.position === 'top' ? 'top-0 pt-4' : 'bottom-28 pb-4';
   }
 }

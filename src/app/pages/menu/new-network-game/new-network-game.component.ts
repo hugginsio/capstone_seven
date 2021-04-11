@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 })
 export class NewNetworkGameComponent implements OnInit, OnDestroy {
   public username: string;
+  public displayName: string;
   public gamesList: Array<NetworkGameInfo>;
   public isEnteringName = false;
   public isServerError = false;
@@ -46,10 +47,12 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
     if(this.username === "ERR")
     {
       this.username = "";
+      this.displayName = "";
       this.isEnteringName = true;
     }
     else
     {
+      this.displayName = this.username;
       this.BeginMatchmaking();
     }
   }
@@ -142,21 +145,26 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
   }
 
   setUsername(): void {
-    console.log(this.username);
-    if(this.username === "")
+    this.username = this.username.trim();
+    if(this.username === "" || this.username === "ERR")
     {
-      this.snackbarService.add({message:"Please Enter a Username"});
+      this.snackbarService.add({message:"Please Enter a Valid Username"});
+    }
+    else if(this.username.length > 20)
+    {
+      this.snackbarService.add({message:"Please Enter a Shorter Username"});
     }
     else{
       this.isEnteringName = false;
       this.storageService.update('username', this.username);
+      this.displayName = this.username;
       this.BeginMatchmaking();
     }
   }
 
   setButtons(): string {
     let btnClass = "";
-    if(!this.isConnected)
+    if(!this.isConnected || this.isEnteringName)
     {
       btnClass = "menu-btn-disabled";
     }

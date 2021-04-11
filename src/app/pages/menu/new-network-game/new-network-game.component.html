@@ -1,7 +1,8 @@
 <div class="h-screen w-screen absolute top-0 left-0 z-neg bg-mountains"></div>
 <div class="submenu-container">
-  <div class="submenu-header">
+  <div class="submenu-header flex flex-col">
     <p>Play Multiplayer</p>
+    <p class="text-3xl">Username: {{this.displayName}}</p>
   </div>
   <div class="submenu-body" *ngIf="!this.isEnteringName && !this.isServerError">
     <div class="flex flex-col items-center space-y-5">
@@ -17,27 +18,36 @@
         </svg>
       </div>
       <div id="games_wrapper" class="flex flex-col space-y-5">
-        <div *ngFor="let game of gamesList" class="flex">
-          <p>{{ game.host }} of addr. {{ game.address }}</p>
-          <p (click)="JoinGame(game.address, game.host)">Join button</p>
+        <div *ngFor="let game of gamesList">
+          <div class="w-screen flex flex-row justify-center">
+            <div class="flex flex-row border-gray-600 bg-gray-900 border-4 p-2 w-1/2 items-center justify-between">
+              <p class="text-xl text-left w-2/3">{{ game.host }} Wants to Play!</p>
+              <div class="menu-btn flex text-xl h-2 p-0" (click)="JoinGame(game.address, game.host)">
+                <p class="self-center">Join</p>
+              </div>             
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <div class="submenu-footer">
     <div class="flex space-x-5 w-2/3 z-50">
-        <div class="menu-btn w-1/3" routerLink="/menu/landing">
-            <p>Back</p>
-        </div>
-        <div class="menu-btn w-1/3" [ngClass]="setButtons()" (click)="refresh()">
-            <p>Refresh</p>
-        </div>
-        <div class="menu-btn w-1/3" [ngClass]="setButtons()" routerLink="/menu/new/online/host">
-            <p>Host Game</p>
-        </div>
+      <div class="menu-btn w-1/4" routerLink="/menu/landing">
+        <p>Back</p>
+      </div>
+      <div class="menu-btn w-1/4" [ngClass]="setButtons()" (click)="refresh()">
+        <p>Refresh List</p>
+      </div>
+      <div class="menu-btn w-1/4" [ngClass]="setButtons()" routerLink="/menu/new/online/host">
+        <p>Host Game</p>
+      </div>
+      <div class="menu-btn w-1/4" [ngClass]="setButtons()" (click)="this.isEnteringName = true">
+        <p>Change Name</p>
+      </div>
     </div>
   </div>
-</div>
+  </div>
 
 <!--Username Entry Modal-->
 <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-25"
