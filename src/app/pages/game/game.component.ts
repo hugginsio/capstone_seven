@@ -69,6 +69,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     // ✨ ANIMATIONS ✨
     // this.scrollToBottom();
 
+    this.gameManager.Initialize();
+
     if (this.storageService.fetch('guided-tutorial') === 'true'
       && this.storageService.fetch('mode') === 'pva'
       && this.storageService.fetch('ai-difficulty') === 'easy') {

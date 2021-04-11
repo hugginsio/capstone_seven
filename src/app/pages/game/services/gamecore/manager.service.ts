@@ -68,7 +68,9 @@ export class ManagerService {
     // UI integration
     private readonly storageService: LocalStorageService,
     //private readonly networkingService: GameNetworkingService
-  ) {
+  ) {}
+
+  Initialize():  void {
     // begin initializing ManagerService fields
     this.currentPlayer = Owner.PLAYERONE;
     this.gameBoard = new GameBoard();

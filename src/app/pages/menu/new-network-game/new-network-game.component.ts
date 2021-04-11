@@ -31,6 +31,7 @@ export class NewNetworkGameComponent implements OnInit {
     this.storageService.update('mode', 'net');
     this.username = this.storageService.fetch('username');
     this.gamesList = new Array<NetworkGameInfo>();
+    console.log(this.username);
     if(this.username === "ERR")
     {
       this.username = "";
