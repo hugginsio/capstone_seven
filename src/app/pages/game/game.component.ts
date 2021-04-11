@@ -442,6 +442,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     const element = document.createElement('div');
     element.innerHTML = message;
     container.appendChild(element);
+    container.scrollTop = 0;
   }
 
   clearMessage(): void {
