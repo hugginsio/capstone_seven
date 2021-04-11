@@ -22,7 +22,7 @@
 
   <!-- Top Right Menu Container -->
   <div class="absolute left-3 top-3 flex space-x-3">
-    <div class="menu-btn p-3" (click)="togglePaused()">
+    <div id="Pause" class="menu-btn p-3" (click)="togglePaused()">
       <p>Pause</p>
     </div>
   </div>
@@ -30,6 +30,34 @@
   <!-- Top Information Container -->
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 z-50 mt-4 pointer-events-none">
     <p class="p-3">{{ this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE' ? 'Player One' : 'Player Two' }}'s Turn</p>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="absolute top-3 right-3 flex flex-col w-96" *ngIf="this.isNetwork || this.isTutorial">
+    <div id="chat-container"
+      class="border-4 bg-gray-900 border-gray-600 overflow-y-auto overflow-x-hidden text-left text-base w-full h-44 p-2">
+    </div>
+    
+    <div class="space-y-3 pt-3 text-center align-middle">
+
+      <form id="network-controls" class="flex flex-row space-x-3 w-full text-xl" *ngIf="this.isNetwork"
+      (ngSubmit)="sendMessage()">
+        <div class="menu-input w-2/3 content-center">
+          <input id="chat-input" type="text" class="input-text text-2xl" placeholder="Send a message!">
+        </div>
+        <input type="submit" class="p-1 text-xl" [ngClass]="dynamicChatButton()" value="Send">
+      </form>
+    
+      <div id="tut-controls" class="flex justify-between w-full" *ngIf="this.isTutorial">
+          <div id="GT-Back" (click)="GTBtn($event)" class="menu-btn absolute w-1/3 left-0 pointer-events-auto">
+            Back
+          </div>
+          <div id="GT-Next" (click)="GTBtn($event)" class="menu-btn absolute w-1/3 right-0 pointer-events-auto">
+            Next
+          </div>
+      </div>
+  
+    </div>
   </div>
 
   <!-- Pause Modal Container -->
@@ -104,7 +132,7 @@
               <span class="flex w-full h-full absolute items-center justify-center text-3xl">{{ tradingModel.blueResources }}</span>
               <img src="/assets/game/Resource-Blue.png" class="w-full h-full" draggable="false" />
             </div>
-            <div id="4" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().yellowResources > 0" (click)="tradingModel.increment(4)">
+            <div id="4" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().yellowResources > 0" [ngClass]="tradingModel.dynamicClass(44)" (click)="tradingModel.increment(4)">
               <span class="flex w-full h-full absolute items-center justify-center text-3xl">{{ tradingModel.yellowResources }}</span>
               <img src="/assets/game/Resource-Yellow.png" class="w-full h-full" draggable="false" />
             </div>
@@ -122,7 +150,7 @@
             <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(2)" (click)="tradingModel.select(2)">
               <img src="/assets/game/Resource-Green.png" class="w-full h-full" draggable="false" />
             </div>
-            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(3)" (click)="tradingModel.select(3)">
+            <div id="blue" class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(3)" (click)="tradingModel.select(3)">
               <img src="/assets/game/Resource-Blue.png" class="w-full h-full" draggable="false" />
             </div>
             <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(4)" (click)="tradingModel.select(4)">
@@ -135,7 +163,7 @@
                 <p>Cancel</p>
               </div>
             </div>
-            <div class="menu-btn w-full flex-grow pointer-events-auto" (click)="executeTrade()">
+            <div id="confirmTrade" class="menu-btn w-full flex-grow pointer-events-auto" (click)="executeTrade()">
               <div>
                 <p>Trade</p>
               </div>
@@ -150,19 +178,25 @@
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-overlay z-50" *ngIf="this.gameOver">
     <div class="flex flex-row items-center content-center h-full">
       <div class="mx-auto flex flex-col space-y-4 w-1/3 max-w-lg">
-        <p class="text-5xl font-bold tracking-wide p-5">{{ this.gameOverText }}</p>
-        <div class="flex flex-col space-y-4 bg-black border-4 border-gray-600 p-3">
+        <p class="text-5xl font-bold tracking-wide p-4">{{ this.gameOverText }}</p>
+        <div class="flex flex-col space-y-4 bg-black border-4 border-gray-600 p-4">
           <!-- <p class="text-3xl">Player One</p> -->
           <p class="text-2xl font-normal">{{ this.winningPlayer.currentScore }}</p>
-          <div class="flex space-x-4">
-            <div class="resource-button-trade">
-              <!-- <img src="/assets/game/Resource-Red.png" class="w-full h-full opacity-0" /> -->
+          <div class="flex space-x-4 justify-center">
+            <div class="w-1/4 bg-black relative border-4 border-gray-600">
+              <span class="flex w-full h-full absolute items-start justify-center text-4xl pt-1">+{{ this.winningPlayer.numNodesPlaced }}</span>
+              <span class="flex w-full h-full absolute items-end justify-center uppercase font-normal pb-1">Nodes Placed</span>
+              <img src="/assets/game/Resource-Red.png" class="w-full h-full opacity-0" draggable="false"/>
             </div>
-            <div class="resource-button-trade">
-              <!-- <img src="/assets/game/Resource-Green.png" class="w-full h-full" /> -->
+            <div class="w-1/4 bg-black relative border-4 border-gray-600">
+              <span class="flex w-full h-full absolute items-start justify-center text-4xl pt-1">+{{ this.winningPlayer.numTilesCaptured }}</span>
+              <span class="flex w-full h-full absolute items-end justify-center uppercase font-normal pb-1">Tiles Captured</span>
+              <img src="/assets/game/Resource-Red.png" class="w-full h-full opacity-0" draggable="false"/>
             </div>
-            <div class="resource-button-trade">
-              <!-- <img src="/assets/game/Resource-Blue.png" class="w-full h-full" /> -->
+            <div class="w-1/4 bg-black relative border-4 border-gray-600" *ngIf="this.winningPlayer.hasLongestNetwork">
+              <span class="flex w-full h-full absolute items-start justify-center text-4xl pt-1">+2</span>
+              <span class="flex w-full h-full absolute items-end justify-center uppercase font-normal pb-1">Longest Network</span>
+              <img src="/assets/game/Resource-Red.png" class="w-full h-full opacity-0" draggable="false"/>
             </div>
           </div>
           <p class="text-2xl font-normal">Player One's largest network was {{ this.winningPlayer.currentLongest }} branches.</p>
@@ -172,7 +206,7 @@
                 <p>Exit</p>
               </div>
             </div>
-            <div class="menu-btn w-full flex-grow pointer-events-auto" routerLink="/menu/new/local">
+            <div class="menu-btn w-full flex-grow pointer-events-auto" (click)="playAgain()">
               <div>
                 <p>Play Again</p>
               </div>
@@ -186,13 +220,15 @@
   <!-- Player Shards Container -->
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 pointer-events-none right-0 z-40">
     <div class="mx-auto relative w-full h-full"> <!-- keeping this div if max-w becomes an issue here -->
-      <div class="absolute bottom-3 left-3">
+      <div id="player1" class="absolute bottom-3 left-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerOne()" [actionSubject]="this.commLink"
-          [playerName]="'Player One'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERONE'"></app-player-shard>
+          [playerName]="'Player One'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERONE'"
+          [isConnected]="this.isConnected"></app-player-shard>
       </div>
-      <div class="absolute bottom-3 right-3">
+      <div id="player2" class="absolute bottom-3 right-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerTwo()" [actionSubject]="this.commLink"
-          [playerName]="'Player Two'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERTWO'"></app-player-shard>
+          [playerName]="'Player Two'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERTWO'"
+          [isConnected]="this.isConnected"></app-player-shard>
       </div>
     </div>
   </div>

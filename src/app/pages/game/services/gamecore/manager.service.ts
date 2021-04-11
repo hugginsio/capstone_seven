@@ -9,6 +9,8 @@ import { Subject } from 'rxjs';
 import { CommPackage, ResourceMap } from '../../interfaces/game.interface';
 import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
+import { GameNetworkingService } from '../../../networking/game-networking.service';
+import { NetworkGameSettings } from '../../../../../../backend/NetworkGameSettings';
 import { AiMethods } from '../../interfaces/worker.interface';
 import { time } from 'console';
 
@@ -31,6 +33,15 @@ export class ManagerService {
 
   // used for UI integration
   private firstPlayer: number;
+
+  // guided tutorial
+  //private isTutorial: string;
+
+  // Networking stuff
+  private isHost: string;
+  private isHostFirst: string;
+  private netSettings: NetworkGameSettings;
+  private networkingService: GameNetworkingService;
 
   // initializes AI service
   //private readonly ai: AiService;
@@ -56,7 +67,8 @@ export class ManagerService {
 
   constructor(
     // UI integration
-    private readonly storageService: LocalStorageService
+    private readonly storageService: LocalStorageService,
+    //private readonly networkingService: GameNetworkingService
   ) {
     // begin initializing ManagerService fields
     this.currentPlayer = Owner.PLAYERONE;
@@ -66,12 +78,17 @@ export class ManagerService {
     this.tilesBeingChecked = [];
     this.tradedResources = [];
 
+    this.netSettings = {board: "", background: "", isHostFirst: true};
+
     // getting/setting data via UI
     this.storageService.setContext('game');
     const gameMode = this.storageService.fetch('mode');
     const boardSeed = this.storageService.fetch('board-seed');
+    //this.isTutorial = this.storageService.fetch('guided-tutorial');
     this.firstPlayer = +this.storageService.fetch('firstplayer');
-
+    this.isHost = this.storageService.fetch('isHost');
+    this.isHostFirst = this.storageService.fetch('isHostFirst');
+    const background = this.storageService.fetch('location');
     // determines currentGameMode field
     // determines player type fields for playerOne + playerTwo
     if (gameMode === 'pvp') {
@@ -88,9 +105,46 @@ export class ManagerService {
         this.playerOne.type = PlayerType.AI;
         this.playerTwo.type = PlayerType.HUMAN;
       }
-    } else {
+    } 
+    else {
       this.currentGameMode = GameType.NETWORK;
-      this.playerTwo.type = PlayerType.NETWORK;
+      this.networkingService = new GameNetworkingService();
+      
+      if(this.isHost === 'true')
+      {
+        this.networkingService.createTCPServer();
+        this.netSettings.background = background;
+
+        if (this.isHostFirst === 'true') {
+          this.playerOne.type = PlayerType.HUMAN;
+          this.playerTwo.type = PlayerType.NETWORK;
+          this.netSettings.isHostFirst = true;
+        }
+        else {
+          this.playerOne.type = PlayerType.NETWORK;
+          this.playerTwo.type = PlayerType.HUMAN;
+          this.netSettings.isHostFirst = false;
+        }
+      }
+      else
+      {
+        const IP = this.storageService.fetch('oppAddress');
+        this.networkingService.connectTCPserver(IP);
+
+        if (this.isHostFirst === 'true') {
+          this.playerOne.type = PlayerType.NETWORK;
+          this.playerTwo.type = PlayerType.HUMAN;
+        }
+        else {
+          this.playerOne.type = PlayerType.HUMAN;
+          this.playerTwo.type = PlayerType.NETWORK;
+        }
+      }
+      this.networkingService.setIsGameSocket();
+      this.networkingService.listen('recieve-move').subscribe((move: string) => {
+        console.log(move);
+        this.applyMove(move);
+      });
     }
 
     // instantiating AiService, calling its contructor w/ gameBoard and both players
@@ -232,6 +286,16 @@ export class ManagerService {
       }
     }
     this.serializeBoard();
+
+    if(this.currentGameMode === GameType.NETWORK)
+    {
+      this.netSettings.board = this.boardString;
+      if(this.isHost === 'true')
+      {
+        console.log("We are sending the board!");
+        this.networkingService.setGame(this.netSettings);
+      }
+    }
   }
 
   // clears board for next game
@@ -372,19 +436,20 @@ export class ManagerService {
 
     // serializing otherPlayer's previous move
     const pastMoveString = this.serializeStack();
+    console.log(pastMoveString);
 
     // clear tradedResources[]
     this.tradedResources.splice(0, this.tradedResources.length);
     // clear stack of node and branch placements
     this.stack.splice(0, this.stack.length);
-
     // calls AI to make move on its turn
-    if (currentPlayer.type === PlayerType.AI) {
+    //if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
+    //const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
+    if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
       const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
       //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
       
-
 
 
       this.aiWorker.onmessage = ({ data }) => {
@@ -401,6 +466,12 @@ export class ManagerService {
       };
 
       this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString] });
+
+
+    }
+    else if (currentPlayer.type === PlayerType.NETWORK && currentPlayer.numNodesPlaced !== 1) {
+      //console.log(pastMoveString);
+      //this.networkingService.sendMove(pastMoveString);
 
 
     }
@@ -506,6 +577,13 @@ export class ManagerService {
     const otherPlayer = endPlayer === this.playerOne ? this.playerTwo : this.playerOne;
     const otherOwner = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
     const currentOwner = endPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
+
+    //Sends move in network game
+    if (this.currentGameMode === GameType.NETWORK && endPlayer.type === PlayerType.HUMAN)
+    {
+      console.log(this.serializeStack());
+      this.networkingService.sendMove(this.serializeStack());
+    }
 
     // passes every tile to checkForCaptures for purposes of multi-tile captures
     for (let i = 0; i < this.gameBoard.tiles.length; i++) {
@@ -659,13 +737,13 @@ export class ManagerService {
       //   endPlayer.greenResources = 2;
       // }
 
-
       // if AI is PlayerOne, send the first move of playerTwo to AI, keeping track of all moves placed
       if (endPlayer.numNodesPlaced === 1 && newPlayer.numNodesPlaced === 1) {
         if (this.currentGameMode === GameType.AI && this.playerOne.type === PlayerType.AI) {
           //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
         // allow playerTwo's second initial turn 
+        
         this.nextTurn(endPlayer);
         return;
       }
@@ -1324,9 +1402,6 @@ export class ManagerService {
       // decrement the nodeCount
       tlTile.nodeCount--;
 
-      //decrement players resources
-      //this.decrementResource(currentPlayer, tlTile.getColor());
-
       // checking if need to un-exhaust tile
       if (tlTile.isExhausted) {
         if (tlTile.nodeCount <=
@@ -1349,9 +1424,6 @@ export class ManagerService {
       // decrement the tile's nodeCount 
       brTile.nodeCount--;
 
-      //decrement players resources
-      //this.decrementResource(currentPlayer, brTile.getColor());
-
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
         if (brTile.nodeCount <=
@@ -1373,9 +1445,6 @@ export class ManagerService {
 
       // decrement the tile's nodeCount
       blTile.nodeCount--;
-
-      //decrement players resources
-      //this.decrementResource(currentPlayer, blTile.getColor());
 
       // checking if need to un-exhaust tile
       if (blTile.isExhausted) {

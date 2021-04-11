@@ -236,6 +236,7 @@ $RECYCLE.BIN/
 electron/main.js
 src/**/*.js
 !src/karma.conf.js
+backend/**.js
 *.js.map
 /e2e/*.js
 !/e2e/protractor.conf.js

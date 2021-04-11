@@ -2,6 +2,13 @@ import { app, BrowserWindow, dialog, webFrame } from 'electron';
 import { protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import * as ms from '../backend/MatchmakingServer';
+import * as gs from '../backend/GameServer';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const matchmakingServer = new ms.MatchmakingServer();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const gameServer = new gs.GameServer();
 
 let window: BrowserWindow;
 const args = process.argv.slice(1);
@@ -20,18 +27,19 @@ function createWindow(): BrowserWindow {
   });
 
   window = new BrowserWindow({
-    width: 1280,
-    height: 884,
-    minWidth: 1280,
-    minHeight: 884,
-    resizable: true,
     center: true,
+    fullscreenable: true,
+    height: 884,
+    minHeight: 884,
+    minWidth: 1280,
+    resizable: true,
+    width: 1280,
     webPreferences: {
-      nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,
+      devTools: isDev,
       enableRemoteModule : true,
-      devTools: true,
+      nodeIntegration: true,
       zoomFactor: 1
     },
   });
@@ -80,8 +88,13 @@ function createWindow(): BrowserWindow {
     app.quit();
   });
 
+  // window.setFullScreen(true);
+  window.maximize();
+
   return window;
 }
+
+app.commandLine.appendSwitch('disable-autoplay-policy', 'no-user-gesture-required');
 
 app.on('ready', () => setTimeout(createWindow, 400));
 
