@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
 import { Player } from './classes/gamecore/game.class.Player';
@@ -8,6 +8,8 @@ import { ClickEvent, CommPackage } from './interfaces/game.interface';
 import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
+import { SoundService } from '../../shared/components/sound-controller/services/sound.service';
+import { SoundEndAction } from '../../shared/components/sound-controller/interfaces/sound-controller.interface';
 import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
 import { Router } from '@angular/router';
@@ -19,7 +21,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./game.component.scss']
 })
 
-export class GameComponent implements OnInit, AfterViewInit {
+export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   public gameIntro: boolean;
   public gameOver: boolean;
   public guidedTutorialCheck: boolean;
@@ -43,11 +45,12 @@ export class GameComponent implements OnInit, AfterViewInit {
     public guidedTutorial: GuidedTutorialService,
     private readonly storageService: LocalStorageService,
     private readonly snackbarService: SnackbarService,
+    private readonly soundService: SoundService,
     private readonly networkingService: GameNetworkingService,
     private readonly routerService: Router
   ) {
     // Set defaults for UI triggers
-    this.gameIntro = true;
+    this.gameIntro = false;
     this.gameOver = false;
     this.guidedTutorialCheck = false;
     this.gameOverText = "Victory!";
@@ -66,10 +69,9 @@ export class GameComponent implements OnInit, AfterViewInit {
     // ✨ ANIMATIONS ✨
     // this.scrollToBottom();
 
-    if(this.storageService.fetch('guided-tutorial')==='true' 
-    && this.storageService.fetch('mode')==='pva'
-    && this.storageService.fetch('ai-difficulty')==='easy') 
-    {
+    if (this.storageService.fetch('guided-tutorial') === 'true'
+      && this.storageService.fetch('mode') === 'pva'
+      && this.storageService.fetch('ai-difficulty') === 'easy') {
       // chatbox bool
       this.isTutorial = true;
       // my bool
@@ -90,9 +92,8 @@ export class GameComponent implements OnInit, AfterViewInit {
           } else if (currentPlayer.hasTraded) {
             this.snackbarService.add({ message: 'You have already traded this turn.' });
           } else {
-            if (this.guidedTutorialCheck)
-            {
-              if(this.guidedTutorial.moveManager("tradeBtn")) {
+            if (this.guidedTutorialCheck) {
+              if (this.guidedTutorial.moveManager("tradeBtn")) {
                 this.isTrading = true;
                 this.toggleTrade();
               }
@@ -103,7 +104,6 @@ export class GameComponent implements OnInit, AfterViewInit {
             }
           }
         } else if (status === CommCode.END_TURN) {
-          
           const currentPlayer = this.gameManager.getCurrentPlayer();
           if ((currentPlayer.numNodesPlaced < 2 || currentPlayer.ownedBranches.length < 2) &&
             (currentPlayer.redResources !== 0 || currentPlayer.greenResources !== 0 ||
@@ -111,15 +111,14 @@ export class GameComponent implements OnInit, AfterViewInit {
             this.snackbarService.add({ message: 'You must place a node and a branch.' });
           } else {
             // if guided tutorial, check if they are supposed to end their turn
-            if (this.guidedTutorialCheck)
-            {
-              if(this.guidedTutorial.moveManager("endTurnBtn")) {
+            if (this.guidedTutorialCheck) {
+              if (this.guidedTutorial.moveManager("endTurnBtn")) {
 
                 this.gameManager.endTurn(this.gameManager.getCurrentPlayer());
                 //this.clearMessage();
                 //this.appendMessage(this.guidedTutorial.tutorialManager());
               }
-            } 
+            }
             else {
               this.gameManager.endTurn(this.gameManager.getCurrentPlayer());
             }
@@ -131,9 +130,8 @@ export class GameComponent implements OnInit, AfterViewInit {
         } else if (status === CommCode.UNDO) {
           const gamePiece = this.gameManager.stack.pop();
           if (gamePiece) {
-            if(this.guidedTutorialCheck){
-              if(this.guidedTutorial.moveManager("undoBtn"))
-              {
+            if (this.guidedTutorialCheck) {
+              if (this.guidedTutorial.moveManager("undoBtn")) {
                 this.gameManager.undoPlacement(gamePiece[0] as string, gamePiece[1] as number, this.gameManager.getCurrentPlayer());
                 this.guidedTutorial.highlightManager();
               }
@@ -162,50 +160,51 @@ export class GameComponent implements OnInit, AfterViewInit {
       }
     });
 
-    if(this.storageService.fetch('mode') === "net")
-    {
+    this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP);
+
+    if (this.storageService.fetch('mode') === "net") {
       this.isNetwork = true;
       this.username = this.storageService.fetch('username');
       this.oppUsername = this.storageService.fetch('oppUsername');
-      if(this.storageService.fetch('isHost') === 'true')
-      {
+      if (this.storageService.fetch('isHost') === 'true') {
         this.networkingService.createTCPServer();
       }
-      else
-      {
+      else {
         this.networkingService.connectTCPserver(this.storageService.fetch('oppAddress'));
       }
       this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
         console.log(message);
         this.appendMessage(`${this.oppUsername}: ${message}`);
       });
-      this.networkingService.listen('opponent-disconnected').subscribe( () => {
+      this.networkingService.listen('opponent-disconnected').subscribe(() => {
         this.appendMessage(`${this.oppUsername} Disconnected`);
         //Grey out EndTurn Button
         this.isConnected = false;
       });
-      this.networkingService.listen('opponent-reconnected').subscribe( () => {
+      this.networkingService.listen('opponent-reconnected').subscribe(() => {
         this.appendMessage(`${this.oppUsername} Reconnected`);
         //un-grey EndTurn Button
         this.isConnected = true;
       });
-      this.networkingService.listen('disconnect').subscribe( () => {
+      this.networkingService.listen('disconnect').subscribe(() => {
         this.appendMessage(`${this.username} Disconnected`);
         //grey out EndTurn Button
         this.isConnected = false;
       });
-      this.networkingService.listen('user-reconnected').subscribe( () => {
+      this.networkingService.listen('user-reconnected').subscribe(() => {
         this.appendMessage(`${this.username} Reconnected`);
         //un-grey out EndTurn Button
         this.isConnected = true;
       });
     }
-    
   }
 
-  ngAfterViewInit():void{
-    if (this.isTutorial === true)
-    {
+  ngOnDestroy(): void {
+    this.soundService.clear();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isTutorial === true) {
       const message = this.guidedTutorial.startTutorial();
       this.appendMessage(message);
       // why is this not showing up?
@@ -257,7 +256,7 @@ export class GameComponent implements OnInit, AfterViewInit {
         }
 
         break;
-    
+
       case 'BY':
         if (this.gameManager.getBoard().branches[id].getOwner() !== 'NONE') {
           result += `branch-${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-y`;
@@ -266,7 +265,7 @@ export class GameComponent implements OnInit, AfterViewInit {
         }
 
         break;
-    
+
       default:
         break;
     }
@@ -280,13 +279,11 @@ export class GameComponent implements OnInit, AfterViewInit {
     const pieceClass = event.target.className.split(' ');
     const pieceId = +event.target.id.slice(1);
     const pieceType = event.target.id.slice(0, 1) === 'T' ? 'tile' : event.target.id.slice(0, 1) === 'B' ? 'branch' : 'node';
-    
-    if (this.guidedTutorialCheck === true)
-    {
+
+    if (this.guidedTutorialCheck === true) {
       const currentMove = event.target.id;
       // if it it not the anticipated guided tutorial move, return from the function
-      if(!this.guidedTutorial.moveManager(currentMove))
-      {
+      if (!this.guidedTutorial.moveManager(currentMove)) {
         return;
       }
     }
@@ -308,7 +305,7 @@ export class GameComponent implements OnInit, AfterViewInit {
         }
       } else if (pieceType === 'branch') {
         if (player.numNodesPlaced === 0) {
-          this.snackbarService.add({message: 'You must place a node first.'});
+          this.snackbarService.add({ message: 'You must place a node first.' });
         } else if (player.numNodesPlaced === 1 && player.ownedBranches?.length === 0) {
           let relatedNode = -1;
           this.gameManager.getBoard().nodes.forEach(el => {
@@ -369,8 +366,8 @@ export class GameComponent implements OnInit, AfterViewInit {
     if (this.tradingModel.selectedResource === 0) {
       this.snackbarService.add({ message: "Select a resource to receive." });
     }
-    else if(this.isTutorial){
-      if(!this.guidedTutorial.moveManager('confirmTrade')){
+    else if (this.isTutorial) {
+      if (!this.guidedTutorial.moveManager('confirmTrade')) {
         return;
       }
       else {
@@ -378,7 +375,7 @@ export class GameComponent implements OnInit, AfterViewInit {
         this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
         this.tradingModel.reset();
       }
-    } 
+    }
     else {
       this.isTrading = false;
       this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
@@ -400,7 +397,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   cancelTrading(): void {
-    if(this.guidedTutorialCheck) {
+    if (this.guidedTutorialCheck) {
       return;
     }
     this.isTrading = false;
@@ -408,19 +405,18 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   sendMessage(): void {
-    const textbox:any = document.getElementById('chat-input');
-    if(textbox === null)
-    {
+    const textbox: any = document.getElementById('chat-input');
+    if (textbox === null) {
       console.log("can't find input");
       return;
     }
-      
-    const message:string = textbox.value;
 
-    if(message === "")
+    const message: string = textbox.value;
+
+    if (message === "")
       return;
 
-    if(!this.isConnected)
+    if (!this.isConnected)
       return;
 
     textbox.value = "";
@@ -428,10 +424,9 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.appendMessage(`${this.username}: ${message}`);
   }
 
-  appendMessage(message:string): void {
+  appendMessage(message: string): void {
     const container = document.getElementById('chat-container');
-    if(container === null)
-    {
+    if (container === null) {
       console.log("Can't find container");
       return;
     }
@@ -443,8 +438,7 @@ export class GameComponent implements OnInit, AfterViewInit {
 
   clearMessage(): void {
     const container = document.getElementById('chat-container');
-    if(container === null)
-    {
+    if (container === null) {
       console.log("Can't find container");
       return;
     }
@@ -456,10 +450,9 @@ export class GameComponent implements OnInit, AfterViewInit {
     const button = event.target.id;
     const step = this.guidedTutorial.getstepNum();
     let message = "";
-    if (button === 'GT-Back' && step > 1)
-    {
+    if (button === 'GT-Back' && step > 1) {
       this.clearMessage();
-      this,this.guidedTutorial.falseFreezeNext();
+      this, this.guidedTutorial.falseFreezeNext();
       this.guidedTutorial.decrementStepNum();
       message = this.guidedTutorial.tutorialManager();
       this.appendMessage(message);
@@ -467,7 +460,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     }
     // how many steps we have
     // variable depending on who goes first???
-    else if (button === 'GT-Next' && step < this.guidedTutorial.getMaxStep() && this.guidedTutorial.getFreezeNext() === false){
+    else if (button === 'GT-Next' && step < this.guidedTutorial.getMaxStep() && this.guidedTutorial.getFreezeNext() === false) {
       this.guidedTutorial.unhighlightNext();
       this.clearMessage();
       this.guidedTutorial.incrementStepNum();
@@ -475,13 +468,12 @@ export class GameComponent implements OnInit, AfterViewInit {
       this.appendMessage(message);
 
     }
-    if (this.guidedTutorial.getstepNum() === this.guidedTutorial.getMaxStep())
-    {
+    if (this.guidedTutorial.getstepNum() === this.guidedTutorial.getMaxStep()) {
       this.endTutorial();
     }
   }
 
-  endTutorial():void {
+  endTutorial(): void {
     this.guidedTutorialCheck = false;
     this.isTutorial = false;
     this.storageService.update("guided-tutorial", "false");
@@ -518,7 +510,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     console.log('Intro video ended');
     this.gameIntro = false;
   }
-  
+
   toggleHelp(): void {
     this.togglePaused();
     this.showHelp = !this.showHelp;
@@ -526,12 +518,10 @@ export class GameComponent implements OnInit, AfterViewInit {
 
   dynamicChatButton(): string {
     let btnClass = "";
-    if(this.isConnected)
-    {
+    if (this.isConnected) {
       btnClass = "menu-btn";
     }
-    else
-    {
+    else {
       btnClass = "menu-btn-disabled";
     }
     btnClass += " w-1/3";
@@ -539,12 +529,10 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   playAgain(): void {
-    if(this.isNetwork)
-    {
+    if (this.isNetwork) {
       this.routerService.navigate(['/menu/new/online']);
     }
-    else
-    {
+    else {
       this.routerService.navigate(['/menu/new/local']);
     }
   }

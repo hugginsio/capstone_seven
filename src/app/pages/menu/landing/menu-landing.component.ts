@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 const { version: appVersion } = require('../../../../../package.json');
 import { AppConfig } from '../../../../environments/environment';
 import { ElectronService } from '../../../core/services';
+import { SoundEndAction } from '../../../shared/components/sound-controller/interfaces/sound-controller.interface';
+import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 
 @Component({
   selector: 'app-menu-landing',
@@ -13,10 +15,13 @@ export class MenuLandingComponent implements OnInit {
   public readonly appConfig = AppConfig;
 
   constructor(
-    private readonly electronService: ElectronService
-  ) { }
+    private readonly electronService: ElectronService,
+    private readonly soundService: SoundService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.soundService.add('/assets/sound/main.mp3', SoundEndAction.LOOP);
+  }
 
   quitElectronHost(): void {
     if (this.appConfig.production) {
