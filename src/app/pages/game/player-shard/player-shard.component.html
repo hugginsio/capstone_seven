@@ -31,14 +31,14 @@
   <div class="flex flex-col space-y-3 pt-3 text-center"
     *ngIf="true">
     <div class="flex space-x-3">
-      <div id="undoBtn" class="button" [ngClass]="getDynamicClass()" (click)="triggerUndo()">
+      <div id="undoBtn" class="button" [ngClass]="getDynamicClass('undoBtn')" (click)="triggerUndo()">
         Undo
       </div>
-      <div id="tradeBtn" class="button" [ngClass]="getDynamicClass()" (click)="triggerTrading()">
+      <div id="tradeBtn" class="button" [ngClass]="getDynamicClass('tradeBtn')" (click)="triggerTrading()">
         Trade
       </div>
     </div>
-    <div id="endTurnBtn" class="button" [ngClass]="getDynamicClass()" (click)="triggerEndTurn()">
+    <div id="endTurnBtn" class="button" [ngClass]="getDynamicClass('endTurnBtn')" (click)="triggerEndTurn()">
       End Turn
     </div>
   </div>

@@ -16,6 +16,7 @@ export class GuidedTutorialService {
   private freezeNext: boolean;
   private maxMove: number;
   private maxStep: number;
+  public playerShardBtn: string;
   //private btnToHighlight: string;
 
   constructor(
@@ -27,6 +28,7 @@ export class GuidedTutorialService {
     this.humanPlayer = this.storageService.fetch('firstplayer');
     this.stepNum = 1;
     this.moveNum = 1;
+    this.playerShardBtn = '';
     //this.btnToHighlight = '';
     this.freezeNext = false;
     if (this.humanPlayer === '1') {
@@ -255,7 +257,8 @@ export class GuidedTutorialService {
         }
         else if (piece === 'endTurnBtn' || piece === 'undoBtn' || piece === 'tradeBtn' || piece === 'Pause')
         {
-          //this.btnToHighlight = piece;
+          this.playerShardBtn = piece;
+          console.log("playerShardHighlight: " + piece);
         }
         else {
           pieceID.style.border = "2px solid white";
@@ -274,6 +277,8 @@ export class GuidedTutorialService {
     let validMove = true; 
     let ifButton = false;
     let tradeScreenButton = false;
+    this.playerShardBtn = '';
+
 
     if (this.humanPlayer === '1'){
       if(m === 1 && s === 4 && piece ==='N9') {
