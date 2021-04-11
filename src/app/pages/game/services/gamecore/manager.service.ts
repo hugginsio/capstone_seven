@@ -105,8 +105,8 @@ export class ManagerService {
       let timeAlottedToAI:number;
       let explorationParameter:number;
       if(aiDifficulty === 'hard'){
-        timeAlottedToAI = 5200;
-        explorationParameter = 3.85;
+        timeAlottedToAI = 5500;
+        explorationParameter = 4;
       }
       else if(aiDifficulty === 'medium'){
         timeAlottedToAI = 3500;
@@ -1325,7 +1325,7 @@ export class ManagerService {
       tlTile.nodeCount--;
 
       //decrement players resources
-      this.decrementResource(currentPlayer, tlTile.getColor());
+      //this.decrementResource(currentPlayer, tlTile.getColor());
 
       // checking if need to un-exhaust tile
       if (tlTile.isExhausted) {
@@ -1350,7 +1350,7 @@ export class ManagerService {
       brTile.nodeCount--;
 
       //decrement players resources
-      this.decrementResource(currentPlayer, brTile.getColor());
+      //this.decrementResource(currentPlayer, brTile.getColor());
 
       // checking if need to un-exhaust tile
       if (brTile.isExhausted) {
@@ -1375,7 +1375,7 @@ export class ManagerService {
       blTile.nodeCount--;
 
       //decrement players resources
-      this.decrementResource(currentPlayer, blTile.getColor());
+      //this.decrementResource(currentPlayer, blTile.getColor());
 
       // checking if need to un-exhaust tile
       if (blTile.isExhausted) {

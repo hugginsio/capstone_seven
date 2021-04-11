@@ -139,6 +139,7 @@ export class State {
     //const index = Math.floor(Math.random()*moves.length);
 
     this.applyMove(moves[maxWeightIndex]);
+    this.move = moves[maxWeightIndex];
     //console.log(`Inside simulation: Time to apply chosen move = ${Date.now()-start}ms`);
   }
 
@@ -314,6 +315,8 @@ export class State {
     let value = 0;
     const innerBranches = [12,17,23,18];
     const middleBranches = [7,8,13,24,28,27,22,11];
+
+    //const moveObj = CoreLogic.stringToMove(this.move);
     
 
     let totalPlayer1Branches = 0;
@@ -324,80 +327,82 @@ export class State {
     let player2MiddleBranches = 0;
     let player1OuterBranches = 0;
     let player2OuterBranches = 0;
-    let b1:number;
-    let b2:number;
-    let b3:number;
-    let b4:number;
-    let b5:number;
-    let b6:number;
     let player1BranchConnectedness = 0;
     let player2BranchConnectedness = 0;
-    const branches = this.board.branches;
-    for (const branch of branches) {
-      b1 = branch.getBranch('branch1');
-      b2 = branch.getBranch('branch2');
-      b3 = branch.getBranch('branch3');
-      b4 = branch.getBranch('branch4');
-      b5 = branch.getBranch('branch5');
-      b6 = branch.getBranch('branch6');
-      if (branch.getOwner() === Owner.PLAYERONE) {
-        totalPlayer1Branches++;
-        if (innerBranches.includes(branches.indexOf(branch))) {
-          player1BranchesInInnerBranches++;
+    if (this.player1.numNodesPlaced >= 2 && this.player2.numNodesPlaced >= 2){
+      let b1:number;
+      let b2:number;
+      let b3:number;
+      let b4:number;
+      let b5:number;
+      let b6:number;
+      const branches = this.board.branches;
+      for (const branch of branches) {
+        b1 = branch.getBranch('branch1');
+        b2 = branch.getBranch('branch2');
+        b3 = branch.getBranch('branch3');
+        b4 = branch.getBranch('branch4');
+        b5 = branch.getBranch('branch5');
+        b6 = branch.getBranch('branch6');
+        if (branch.getOwner() === Owner.PLAYERONE) {
+          totalPlayer1Branches++;
+          if (innerBranches.includes(branches.indexOf(branch))) {
+            player1BranchesInInnerBranches++;
+          }
+          else if (middleBranches.includes(branches.indexOf(branch))) {
+            player1MiddleBranches++;
+          }
+          else {
+            player1OuterBranches++;
+          }
+          if(b1 !== -1 && branches[b1].getOwner() === Owner.PLAYERONE){
+            player1BranchConnectedness++;
+          }
+          if(b2 !== -1 && branches[b2].getOwner() === Owner.PLAYERONE){
+            player1BranchConnectedness++;
+          }
+          if(b3 !== -1 && branches[b3].getOwner() === Owner.PLAYERONE){
+            player1BranchConnectedness++;
+          }
+          if(b4!== -1 && branches[b4].getOwner() === Owner.PLAYERONE){
+            player1BranchConnectedness++;
+          }
+          if(b5 !== -1 && branches[b5].getOwner() === Owner.PLAYERONE){
+            player1BranchConnectedness++;
+          }
+          if(b6 !== -1 && branches[b6].getOwner() === Owner.PLAYERONE){
+            player1BranchConnectedness++;
+          }
         }
-        else if (middleBranches.includes(branches.indexOf(branch))) {
-          player1MiddleBranches++;
-        }
-        else {
-          player1OuterBranches++;
-        }
-        if(b1 !== -1 && branches[b1].getOwner() === Owner.PLAYERONE){
-          player1BranchConnectedness++;
-        }
-        if(b2 !== -1 && branches[b2].getOwner() === Owner.PLAYERONE){
-          player1BranchConnectedness++;
-        }
-        if(b3 !== -1 && branches[b3].getOwner() === Owner.PLAYERONE){
-          player1BranchConnectedness++;
-        }
-        if(b4!== -1 && branches[b4].getOwner() === Owner.PLAYERONE){
-          player1BranchConnectedness++;
-        }
-        if(b5 !== -1 && branches[b5].getOwner() === Owner.PLAYERONE){
-          player1BranchConnectedness++;
-        }
-        if(b6 !== -1 && branches[b6].getOwner() === Owner.PLAYERONE){
-          player1BranchConnectedness++;
-        }
-      }
-      else if (branch.getOwner() === Owner.PLAYERTWO) {
-        totalPlayer2Branches++;
-        if (innerBranches.includes(branches.indexOf(branch))) {
-          player2BranchesInInnerBranches++;
-        }
-        else if (middleBranches.includes(branches.indexOf(branch))) {
-          player2MiddleBranches++;
-        }
-        else {
-          player2OuterBranches++;
-        }
-        if(b1 !== -1 && branches[b1].getOwner() === Owner.PLAYERTWO){
-          player2BranchConnectedness++;
-        }
-        if(b2 !== -1 && branches[b2].getOwner() === Owner.PLAYERTWO){
-          player2BranchConnectedness++;
-        }
-        if(b3 !== -1 && branches[b3].getOwner() === Owner.PLAYERTWO){
-          player2BranchConnectedness++;
-        }
-        if(b4!== -1 && branches[b4].getOwner() === Owner.PLAYERTWO){
-          player2BranchConnectedness++;
-        }
-        if(b5 !== -1 && branches[b5].getOwner() === Owner.PLAYERTWO){
-          player2BranchConnectedness++;
-        }
-        if(b6 !== -1 && branches[b6].getOwner() === Owner.PLAYERTWO){
-          player2BranchConnectedness++;
+        else if (branch.getOwner() === Owner.PLAYERTWO) {
+          totalPlayer2Branches++;
+          if (innerBranches.includes(branches.indexOf(branch))) {
+            player2BranchesInInnerBranches++;
+          }
+          else if (middleBranches.includes(branches.indexOf(branch))) {
+            player2MiddleBranches++;
+          }
+          else {
+            player2OuterBranches++;
+          }
+          if(b1 !== -1 && branches[b1].getOwner() === Owner.PLAYERTWO){
+            player2BranchConnectedness++;
+          }
+          if(b2 !== -1 && branches[b2].getOwner() === Owner.PLAYERTWO){
+            player2BranchConnectedness++;
+          }
+          if(b3 !== -1 && branches[b3].getOwner() === Owner.PLAYERTWO){
+            player2BranchConnectedness++;
+          }
+          if(b4!== -1 && branches[b4].getOwner() === Owner.PLAYERTWO){
+            player2BranchConnectedness++;
+          }
+          if(b5 !== -1 && branches[b5].getOwner() === Owner.PLAYERTWO){
+            player2BranchConnectedness++;
+          }
+          if(b6 !== -1 && branches[b6].getOwner() === Owner.PLAYERTWO){
+            player2BranchConnectedness++;
+          }
         }
       }
     }
@@ -416,7 +421,8 @@ export class State {
     else{
       longestNetwork = 0;
     }
-    //dock points for not having a certain resource maybe?
+    
+
     const resourceProduction = (this.player1.redPerTurn - this.player2.redPerTurn) + 
     (this.player1.bluePerTurn - this.player2.bluePerTurn) +
     (this.player1.greenPerTurn - this.player2.greenPerTurn) +
@@ -427,12 +433,16 @@ export class State {
 
     const captures = this.player1.numTilesCaptured - this.player2.numTilesCaptured;
     const score = this.player1.currentScore - this.player2.currentScore;
-    value = numNodesDiff + longestNetwork + (3*resourceProduction) + score  + (10*captures)+ .75*(branchesValue + totalBranches + 2*branchConnectedness);
 
-    if(debug){
-      console.log(numNodesDiff,longestNetwork,2*resourceProduction,score,5*captures,branchesValue,totalBranches);
-      console.log(this);
+    let endGameScore = 0;
+    if(this.player1.currentScore >= 10){
+      endGameScore = 20;
     }
+    else if(this.player2.currentScore >= 10){
+      endGameScore = -20;
+    }
+    value = score + numNodesDiff + longestNetwork + (4*resourceProduction) + (10*captures)+ 
+    (branchesValue + totalBranches + 2*branchConnectedness)+ endGameScore;
 
     return value;
   }

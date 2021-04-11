@@ -31,20 +31,21 @@ export class MonteCarlo {
 
 
     const newNode = new MCTSNode(gameState);
-    const currentRoot = this.tree.getRoot();
-    let childStateFound = false;
+    this.tree.setRoot(newNode);
+    // const currentRoot = this.tree.getRoot();
+    // let childStateFound = false;
 
-    for (let i = 0; i < currentRoot.childArray.length; i++) {
-      if (currentRoot.childArray[i].getState().move === newNode.getState().move) {
-        this.tree.setRoot(currentRoot.childArray[i]);
-        childStateFound = true;
-        i = currentRoot.childArray.length;
-      }
-    }
+    // for (let i = 0; i < currentRoot.childArray.length; i++) {
+    //   if (currentRoot.childArray[i].getState().move === newNode.getState().move) {
+    //     this.tree.setRoot(currentRoot.childArray[i]);
+    //     childStateFound = true;
+    //     i = currentRoot.childArray.length;
+    //   }
+    // }
 
-    if (!childStateFound) {
-      this.tree.setRoot(newNode);
-    }
+    // if (!childStateFound) {
+    //   this.tree.setRoot(newNode);
+    // }
 
     const rootNode = this.tree.getRoot();
     let simNum = 0;
