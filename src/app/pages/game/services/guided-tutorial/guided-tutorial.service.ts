@@ -25,16 +25,14 @@ export class GuidedTutorialService {
     private readonly snackbarService: SnackbarService,
     //private readonly gameComp: GameComponent
   ) { 
-    this.humanPlayer = this.storageService.fetch('firstplayer');
+    this.humanPlayer = '1';
     this.stepNum = 1;
     this.moveNum = 1;
     this.playerShardBtn = '';
     //this.btnToHighlight = '';
     this.freezeNext = false;
-    if (this.humanPlayer === '1') {
-      this.maxMove = 26;
-      this.maxStep = 26;
-    }
+    this.maxMove = 26;
+    this.maxStep = 26;
   }
 
   getstepNum():number {
@@ -45,6 +43,10 @@ export class GuidedTutorialService {
   }
   decrementStepNum():void {
     this.stepNum--;
+  }
+  resetStepAndMoveNum():void {
+    this.stepNum = 1;
+    this.moveNum = 1;
   }
 
   getMoveNum():number {

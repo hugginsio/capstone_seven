@@ -81,6 +81,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       // my bool
       this.guidedTutorialCheck = true;
       this.guidedTutorial.setTutorialBoard();
+      this.guidedTutorial.resetStepAndMoveNum();
     }
 
     // Subscribe to own communications link
@@ -485,6 +486,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     const button = event.target.id;
     const step = this.guidedTutorial.getstepNum();
     let message = "";
+
+    console.log("Click Button" + button);
+    console.log("Click Step" + step);
+    console.log("Click MaxStep" + this.guidedTutorial.getMaxStep());
+    console.log("freeze next: " + this.guidedTutorial.getFreezeNext());
+
     if (button === 'GT-Back' && step > 1) {
       this.clearMessage();
       this, this.guidedTutorial.falseFreezeNext();
