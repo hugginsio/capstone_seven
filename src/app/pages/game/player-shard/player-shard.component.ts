@@ -20,6 +20,8 @@ export class PlayerShardComponent implements OnInit {
   @Input() currentPlayer: boolean;
   @Input() actionSubject: Subject<CommPackage>;
   @Input() isConnected: boolean;
+  @Input() stackLength: number;
+  @Input() canTrade: boolean;
 
   constructor(
     public guidedTutorial: GuidedTutorialService,
@@ -37,7 +39,8 @@ export class PlayerShardComponent implements OnInit {
     {
       btnClass = "selected-GT";
     }
-    else if(!this.currentPlayer || (btn === 'endTurnBtn' && !this.isConnected))
+    else if(!this.currentPlayer || (btn === 'endTurnBtn' && !this.isConnected) || (btn === 'undoBtn' && this.stackLength === 0)
+    || (btn === 'tradeBtn' && !this.canTrade))
     {
       btnClass = "button-disabled";
     }

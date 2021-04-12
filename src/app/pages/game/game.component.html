@@ -266,12 +266,14 @@
       <div id="player1" class="absolute bottom-3 left-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerOne()" [actionSubject]="this.commLink"
           [playerName]="'Player One'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERONE'"
-          [isConnected]="this.isConnected"></app-player-shard>
+          [isConnected]="this.isConnected" [stackLength]="this.gameManager.stack.length"
+          [canTrade]="this.getCanTrade()"></app-player-shard>
       </div>
       <div id="player2" class="absolute bottom-3 right-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerTwo()" [actionSubject]="this.commLink"
           [playerName]="'Player Two'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERTWO'"
-          [isConnected]="this.isConnected"></app-player-shard>
+          [isConnected]="this.isConnected" [stackLength]="this.gameManager.stack.length"
+          [canTrade]="this.getCanTrade()"></app-player-shard>
       </div>
     </div>
   </div>

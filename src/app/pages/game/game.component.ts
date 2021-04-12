@@ -588,4 +588,26 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.routerService.navigate(['/menu/landing']);
   }
+
+  getCanTrade(): boolean {
+    if (this.gameManager.getCurrentPlayer().numNodesPlaced < 2 || 
+    this.gameManager.getCurrentPlayer().ownedBranches.length < 2) {
+      return false;
+    }
+    else if((this.gameManager.getCurrentPlayer().blueResources 
+    + this.gameManager.getCurrentPlayer().redResources 
+    + this.gameManager.getCurrentPlayer().yellowResources
+    + this.gameManager.getCurrentPlayer().greenResources) < 3)
+    {
+      return false;
+    }
+    else if (this.gameManager.getCurrentPlayer().hasTraded)
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
 }
