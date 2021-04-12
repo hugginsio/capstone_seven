@@ -21,6 +21,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   public isSettingUpGame = true;
   public isWaitingForPlayer = false;
   public selectedLocation: number;
+  public listeners: Array<Subscription>;
 
   public readonly playerOneFirst = 'You Go First';
   public readonly playerTwoFirst = 'Opponent Goes First';
@@ -32,6 +33,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     private readonly matchmakingService: MatchmakingService,
     private readonly soundService: SoundService
   ) {
+    this.listeners = new Array<Subscription>();
     this.firstPlayer = this.playerOneFirst;
     this.isHostFirst = true;
 
@@ -54,6 +56,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.listeners.forEach(listener => listener.unsubscribe());
     if(this.isWaitingForPlayer)
     {
       this.subscription.unsubscribe();
@@ -83,14 +86,14 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.networkingService.createTCPServer();
     this.networkingService.resetRoom();
 
-    this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
+    this.listeners.push(this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
       console.log("A opponent has connected");
       this.storageService.update('oppUsername', oppUsername);
       this.isWaitingForPlayer = false;
       this.subscription.unsubscribe();
       this.soundService.clear();
       this.routerService.navigate(['/game']);
-    });
+    }));
 
     if(this.isHostFirst)
     {

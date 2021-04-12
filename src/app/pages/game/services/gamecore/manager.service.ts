@@ -5,7 +5,7 @@ import { CoreLogic } from '../../util/core-logic.util';
 
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Player } from '../../classes/gamecore/game.class.Player';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { CommPackage, ResourceMap } from '../../interfaces/game.interface';
 import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
@@ -41,6 +41,7 @@ export class ManagerService {
   private isHostFirst: string;
   private netSettings: NetworkGameSettings;
   private networkingService: GameNetworkingService;
+  private listeners: Array<Subscription>;
 
   // initializes AI service
   //private readonly ai: AiService;
@@ -78,7 +79,7 @@ export class ManagerService {
     this.playerTwo = new Player();
     this.tilesBeingChecked = [];
     this.tradedResources = [];
-
+    this.listeners = new Array<Subscription>();
     this.netSettings = {board: "", background: "", isHostFirst: true};
 
     // getting/setting data via UI
@@ -142,10 +143,10 @@ export class ManagerService {
         }
       }
       this.networkingService.setIsGameSocket();
-      this.networkingService.listen('recieve-move').subscribe((move: string) => {
+      this.listeners.push(this.networkingService.listen('recieve-move').subscribe((move: string) => {
         console.log(move);
         this.applyMove(move);
-      });
+      }));
     }
 
     // instantiating AiService, calling its contructor w/ gameBoard and both players
@@ -1950,5 +1951,10 @@ export class ManagerService {
       }
     }
     return captured;
+  }
+
+  public unsubListeners(): void 
+  {
+    this.listeners.forEach(listener => listener.unsubscribe());
   }
 }

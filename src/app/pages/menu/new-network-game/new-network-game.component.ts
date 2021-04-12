@@ -22,7 +22,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
   public isServerError = false;
   public isConnected = false;
   private gameSettings: NetworkGameSettings;
-  private listners: Array<Subscription>;
+  private listeners: Array<Subscription>;
 
   constructor(
     private readonly storageService: LocalStorageService,
@@ -33,7 +33,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
     private readonly soundService: SoundService
   ) {}
   ngOnDestroy(): void {
-    this.listners.forEach(listener => listener.unsubscribe());
+    this.listeners.forEach(listener => listener.unsubscribe());
   }
 
   ngOnInit(): void {
@@ -43,7 +43,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
     this.username = this.storageService.fetch('username');
     this.gamesList = new Array<NetworkGameInfo>();
     console.log(this.username);
-    this.listners = new Array<Subscription>();
+    this.listeners = new Array<Subscription>();
     if(this.username === "ERR")
     {
       this.username = "";
@@ -61,16 +61,16 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
   {
     this.matchmakingService.initialize(this.username);
 
-    this.matchmakingService.listen('connect').subscribe(() => {
+    this.listeners.push(this.matchmakingService.listen('connect').subscribe(() => {
       this.isConnected = true;
-    });
+    }));
 
-    this.matchmakingService.listen('connect_error').subscribe((err) => {
+    this.listeners.push(this.matchmakingService.listen('connect_error').subscribe((err) => {
       this.matchmakingService.disconnectSocket();
       this.isServerError = true;
-    });
+    }));
 
-    this.matchmakingService.listen('game-found').subscribe((gameInfo: any) => {
+    this.listeners.push(this.matchmakingService.listen('game-found').subscribe((gameInfo: any) => {
       const oppUsername:string = gameInfo.username;
       const oppAddress:string = gameInfo.oppAddress;
       //console.log(`${oppUsername} wants to play at ${oppAddress}`);
@@ -92,7 +92,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
         });
       }
 
-    });
+    }));
   }
 
   JoinGame(oppAddress:string, oppUsername:string): void {
@@ -100,25 +100,25 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
     this.storageService.update('oppUsername', oppUsername);
     this.networkingService.connectTCPserver(oppAddress);
 
-    this.listners.push(this.networkingService.listen('connect_error').subscribe((err) => {
+    this.listeners.push(this.networkingService.listen('connect_error').subscribe((err) => {
       this.networkingService.disconnectSocket();
       this.snackbarService.add({message:"Failed to connect."});
       this.refresh();
     }));
     
-    this.networkingService.listen('lobby-full').subscribe(() => {
+    this.listeners.push(this.networkingService.listen('lobby-full').subscribe(() => {
       this.networkingService.disconnectSocket();
       this.snackbarService.add({message:"Lobby is full, please try again."});
       this.refresh();
-    });
+    }));
 
-    this.networkingService.listen('game-cancelled').subscribe(() => {
+    this.listeners.push(this.networkingService.listen('game-cancelled').subscribe(() => {
       this.networkingService.disconnectSocket();
       this.snackbarService.add({message:"The host cancelled this game."});
       this.refresh();
-    });
+    }));
    
-    this.networkingService.listen('get-game-settings').subscribe((settings: NetworkGameSettings) => {
+    this.listeners.push(this.networkingService.listen('get-game-settings').subscribe((settings: NetworkGameSettings) => {
       this.gameSettings = settings;
       this.storageService.update('isHost', 'false');
       this.storageService.update('oppAddress', oppAddress);
@@ -136,7 +136,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
       this.soundService.clear();
       console.log(this.gameSettings);
       this.routerService.navigate(['/game']);
-    });
+    }));
 
     this.networkingService.requestJoin(this.username);
   }
