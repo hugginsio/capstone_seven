@@ -2,7 +2,6 @@
 import * as dgram from 'dgram';
 import * as os from 'os';
 import * as broadcastAddress from 'broadcast-address';
-import { throwError } from 'rxjs';
 
 export class UDPWrapper {
 
@@ -33,6 +32,7 @@ export class UDPWrapper {
     });
 
     this.server.on('message', (msg: any, rinfo: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.gameFound!(msg.toString(), rinfo.address);
       //console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
     });

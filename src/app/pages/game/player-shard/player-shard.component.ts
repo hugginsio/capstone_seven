@@ -24,16 +24,13 @@ export class PlayerShardComponent implements OnInit {
 
   getDynamicClass(): string {
     let btnClass = "";
-    if(this.playerDetail?.type !== PlayerType.HUMAN)
-    {
+    if (this.playerDetail?.type !== PlayerType.HUMAN) {
       btnClass = "button-hidden";
     }
-    else if(!this.currentPlayer)
-    {
+    else if (!this.currentPlayer) {
       btnClass = "button-disabled";
     }
-    else if(this.currentPlayer)
-    {
+    else if (this.currentPlayer) {
       btnClass = "button-std";
     }
     return btnClass;
@@ -42,16 +39,13 @@ export class PlayerShardComponent implements OnInit {
 
   getEndTurnClass(): string {
     let btnClass = "";
-    if(this.playerDetail?.type !== PlayerType.HUMAN)
-    {
+    if (this.playerDetail?.type !== PlayerType.HUMAN) {
       btnClass = "button-hidden";
     }
-    else if(!this.currentPlayer || !this.isConnected)
-    {
+    else if (!this.currentPlayer || !this.isConnected) {
       btnClass = "button-disabled";
     }
-    else if(this.currentPlayer)
-    {
+    else if (this.currentPlayer) {
       btnClass = "button-std";
     }
     return btnClass;
@@ -60,7 +54,7 @@ export class PlayerShardComponent implements OnInit {
   generateMessage(action: CommCode): CommPackage {
     return {
       code: action,
-      player: this.playerDetail 
+      player: this.playerDetail
     };
   }
 

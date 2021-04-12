@@ -190,28 +190,28 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isConnected = true;
       });
       */
-      this.networkingService.listen('disconnect').subscribe( () => {
+      this.networkingService.listen('disconnect').subscribe(() => {
         this.appendMessage(`Disconnection... Please Wait`);
         //grey out EndTurn Button
         this.isConnected = false;
       });
-      this.networkingService.listen('user-reconnected').subscribe( () => {
+      this.networkingService.listen('user-reconnected').subscribe(() => {
         this.appendMessage(`Reconnected`);
         //un-grey out EndTurn Button
         this.isConnected = true;
       });
-      this.networkingService.listenReconnect().subscribe( () => {
+      this.networkingService.listenReconnect().subscribe(() => {
         this.appendMessage(`Reconnected`);
         this.networkingService.notifyReconnect();
         //un-grey out EndTurn Button
         this.isConnected = true;
       });
-      this.networkingService.listen('user-disconnected').subscribe( () => {
+      this.networkingService.listen('user-disconnected').subscribe(() => {
         this.appendMessage(`Disconnection... Please Wait`);
         //grey out EndTurn Button
         this.isConnected = false;
       });
-      this.networkingService.listen('opponent-quit').subscribe( () => {
+      this.networkingService.listen('opponent-quit').subscribe(() => {
         this.opponentQuit = true;
       });
     }
@@ -448,19 +448,17 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log("Can't find container");
       return;
     }
-    
+
     const element = document.createElement('div');
     element.innerHTML = message;
     container.appendChild(element);
-    if(this.isTutorial)
-    {
+    if (this.isTutorial) {
       container.scrollTop = 0;
     }
-    else if(this.isNetwork) 
-    {
+    else if (this.isNetwork) {
       container.scrollTop = container.scrollHeight;
     }
-    
+
   }
 
   clearMessage(): void {
@@ -506,7 +504,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.storageService.update("guided-tutorial", "false");
     //this.tradingModel.isTutorial = false;
   }
-  
+
   copyBoardSeed(): void {
     const boardSeed = this.gameManager.boardString;
     const temporarySelectBox = document.createElement('textarea');
@@ -565,8 +563,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   exitButton(): void {
-    if(this.isNetwork)
-    {
+    if (this.isNetwork) {
       this.networkingService.leaveGame();
     }
     this.routerService.navigate(['/menu/landing']);
