@@ -210,7 +210,7 @@
         <p class="text-5xl font-bold tracking-wide p-5">{{ this.gameOverText }}</p>
         <div class="flex flex-col space-y-4 bg-black border-4 border-gray-600 p-3">
           <!-- <p class="text-3xl">Player One</p> -->
-          <p class="text-2xl font-normal">{{ this.winningPlayer.currentScore }}</p>
+          <p class="text-2xl font-normal">Score: {{ this.winningPlayer.currentScore }}</p>
           <div class="flex space-x-4">
             <div class="resource-button-trade">
               <!-- <img src="/assets/game/Resource-Red.png" class="w-full h-full opacity-0" /> -->
@@ -222,7 +222,7 @@
               <!-- <img src="/assets/game/Resource-Blue.png" class="w-full h-full" /> -->
             </div>
           </div>
-          <p class="text-2xl font-normal">Player One's largest network was {{ this.winningPlayer.currentLongest }} branches.</p>
+          <p class="text-2xl font-normal">{{ this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE' ? 'Player One' : 'Player Two' }}'s largest network was {{ this.winningPlayer.currentLongest }} branches.</p>
           <div class="flex space-x-4 w-full flex-grow-0">
             <div class="menu-btn-light w-full flex-grow pointer-events-auto" routerLink="/menu/landing">
               <div>
