@@ -17,6 +17,14 @@
   .disabled {
     @apply bg-gray-800 cursor-auto hover:border-gray-900 opacity-60;
   }  
+
+  .slideList {
+    @apply p-2 bg-gray-600 border-2 border-gray-900 cursor-pointer hover:text-gray-300;
+  }
+
+  .currentSlide {
+    @apply border-gray-300;
+  }
 }
 
 h1 {

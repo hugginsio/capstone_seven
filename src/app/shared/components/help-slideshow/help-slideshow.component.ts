@@ -67,4 +67,11 @@ export class HelpSlideshowComponent {
   tableOfContents(num: number):void{
     this.currentSlide = num;
   }
+
+  tableClass(num: number):string {
+    if(this.currentSlide === num) {
+      return 'currentSlide';
+    }
+    return '';
+  }
 }
