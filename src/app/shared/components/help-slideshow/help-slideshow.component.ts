@@ -13,21 +13,15 @@ export class HelpSlideshowComponent {
 
   public currentSlide = 0;
   public maxSlides = 12;
-  public menuHelp=true;
 
   @Input() slidesToShow = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+  @Input() inGame: string;
 
   constructor(
     private readonly storageService: LocalStorageService,
     private readonly routerService: Router
-  ) { 
-    /*if (){
-      this.menuHelp = true;
-    }
-    else {
-      this.menuHelp = false;
-    }*/
-  }
+  ) { }
 
   decrementSlides(): void {
     if (this.currentSlide > 0)

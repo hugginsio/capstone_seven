@@ -63,10 +63,10 @@
               <p>
                 Miner and Machine are facin' off to get rich quick by makin' Paths and pickin' Sites full of Gems.
               </p>
-              <p *ngIf="menuHelp === true">
+              <p *ngIf="this.inGame === 'false'">
                 Click on this here "Guided Tutorial" button to join a duel and learn the ropes while ya play, or click "Next" to just keep on readin'.
               </p>
-              <div class="GT-btn inline-block align-middle flex-grow" (click)="startGuidedTutorial($event)" *ngIf="menuHelp === true">Start Guided Tutorial</div>
+              <div class="GT-btn inline-block align-middle flex-grow" (click)="startGuidedTutorial($event)" *ngIf="this.inGame === 'false'">Start Guided Tutorial</div>
             </div>
             <div class="flex-1">
               <img class="boardImg" src="/assets/help/testBoard.png" />
