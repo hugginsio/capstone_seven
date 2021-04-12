@@ -1,4 +1,6 @@
 <main [@fadeAnimation]="outlet.isActivated ? outlet.activatedRoute : ''"
   class="font-bold tracking-wider leading-none align-middle text-xl select-none font-display">
-  <router-outlet #outlet="outlet"></router-outlet>
+  <router-outlet #outlet="outlet">
+    <app-sound-controller></app-sound-controller>
+  </router-outlet>
 </main>
