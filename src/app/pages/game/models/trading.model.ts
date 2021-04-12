@@ -124,8 +124,8 @@ export class TradingModel {
         this.selectedResource = 0;
 
       }
+    }
   }
-}
 
   dynamicClass(num: number): string {
     if(this.storageService.fetch('guided-tutorial') === "true" && num === 44) {
