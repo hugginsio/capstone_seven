@@ -113,20 +113,6 @@ export class GameNetworkingService {
     this.socket.disconnect();
   }
 
-  public clearListners(): void {
-    console.log("Clearing Listners");
-    this.socket.offAny();
-  }
-
-  public getSocketConnected(): boolean {
-    if(this.socket == null)
-    {
-      return false;
-    }
-
-    return this.socket.connected;
-  }
-
   public notifyReconnect(): void {
     this.socket.emit('reconnection');
   }

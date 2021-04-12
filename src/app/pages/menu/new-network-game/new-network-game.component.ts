@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
 import { Subscription } from 'rxjs';
+import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 
 @Component({
   selector: 'app-new-network-game',
@@ -28,18 +29,16 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
     private readonly matchmakingService: MatchmakingService,
     private readonly networkingService: GameNetworkingService,
     private readonly routerService: Router,
-    private readonly snackbarService: SnackbarService
+    private readonly snackbarService: SnackbarService,
+    private readonly soundService: SoundService
   ) {}
   ngOnDestroy(): void {
     this.listners.forEach(listener => listener.unsubscribe());
-    if(this.networkingService.getSocketConnected())
-    {
-      this.networkingService.clearListners();
-    }
   }
 
   ngOnInit(): void {
     // instantiate class here
+    this.storageService.setContext('game');
     this.storageService.update('mode', 'net');
     this.username = this.storageService.fetch('username');
     this.gamesList = new Array<NetworkGameInfo>();
@@ -133,6 +132,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
         this.storageService.update('isHostFirst', 'false');
       }
       
+      this.soundService.clear();
       console.log(this.gameSettings);
       this.routerService.navigate(['/game']);
     });
