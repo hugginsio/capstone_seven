@@ -30,47 +30,42 @@ export class PlayerShardComponent implements OnInit {
 
   getDynamicClass(btn: string): string {
     let btnClass = "";
-    if(this.playerDetail?.type !== PlayerType.HUMAN)
-    {
+    if (this.playerDetail?.type !== PlayerType.HUMAN) {
       btnClass = "button-hidden";
     }
     else if (this.storageService.fetch('guided-tutorial') === "true" && btn === this.guidedTutorial.playerShardBtn) 
     {
       btnClass = "selected-GT";
     }
-    else if(!this.currentPlayer)
+    else if(!this.currentPlayer || (btn === 'endTurnBtn' && !this.isConnected))
     {
       btnClass = "button-disabled";
     }
-    else if(this.currentPlayer)
-    {
+    else if (this.currentPlayer) {
       btnClass = "button-std";
     }
     return btnClass;
     //return `${this.currentPlayer ? 'button-std' : 'button-disabled'} ${this.playerDetail?.type !== PlayerType.HUMAN ? 'button-hidden' : ''}`;
   }
 
-  getEndTurnClass(): string {
+  /*getEndTurnClass(): string {
     let btnClass = "";
-    if(this.playerDetail?.type !== PlayerType.HUMAN)
-    {
+    if (this.playerDetail?.type !== PlayerType.HUMAN) {
       btnClass = "button-hidden";
     }
-    else if(!this.currentPlayer || !this.isConnected)
-    {
+    else if (!this.currentPlayer || !this.isConnected) {
       btnClass = "button-disabled";
     }
-    else if(this.currentPlayer)
-    {
+    else if (this.currentPlayer) {
       btnClass = "button-std";
     }
     return btnClass;
-  }
+  }*/
 
   generateMessage(action: CommCode): CommPackage {
     return {
       code: action,
-      player: this.playerDetail 
+      player: this.playerDetail
     };
   }
 

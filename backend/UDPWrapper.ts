@@ -32,6 +32,7 @@ export class UDPWrapper {
     });
 
     this.server.on('message', (msg: any, rinfo: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.gameFound!(msg.toString(), rinfo.address);
       //console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
     });
@@ -82,10 +83,9 @@ export class UDPWrapper {
       }
     }
     else {
-      console.error("No viable OS found.");
+      throw new Error("No viable OS found.");
     }
 
-    console.error("No viable interfaces found.");
-    return '';
+    throw new Error("No viable interfaces found.");
   }
 }

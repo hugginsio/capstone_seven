@@ -40,6 +40,7 @@ export class NewLocalGameComponent {
     // Initialize datastore to game context
     storageService.setContext('game');
 
+    this.storageService.update('mode', 'pva');
     this.gameModeString = this.storageService.fetch('mode') === 'pvp' ? this.pvp : this.pva;
     this.aiDifficultyString = this.storageService.fetch('ai-difficulty') === 'easy' ? this.aiEasy : this.aiMedium;
     this.advancedOpts = false;
