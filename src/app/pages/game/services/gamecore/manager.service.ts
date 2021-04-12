@@ -10,7 +10,7 @@ import { CommPackage, ResourceMap } from '../../interfaces/game.interface';
 import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
 import { GameNetworkingService } from '../../../networking/game-networking.service';
-import { NetworkGameSettings } from '../../../networking/NetworkGameSettings';
+import { NetworkGameSettings } from '../../../../../../backend/NetworkGameSettings';
 import { AiMethods } from '../../interfaces/worker.interface';
 
 

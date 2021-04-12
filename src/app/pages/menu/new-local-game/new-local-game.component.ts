@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 import { ValidInputCheck } from '../valid-input-check';
-import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
+//import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
 //import { ClickEvent } from '../../game/interfaces/game.interface';
 
 
@@ -34,6 +35,7 @@ export class NewLocalGameComponent {
     private readonly storageService: LocalStorageService,
     private readonly routerService: Router,
     //private readonly snackbarService: SnackbarService
+    private readonly soundService: SoundService
   ) {
     // Initialize datastore to game context
     storageService.setContext('game');
@@ -124,6 +126,8 @@ export class NewLocalGameComponent {
         }
       }
     }
+
+    this.soundService.clear();
     this.routerService.navigate(['/game']);
   }
 

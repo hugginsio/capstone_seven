@@ -38,6 +38,9 @@ export class AppComponent {
     this.storageService.store('oppUsername', '');
     this.storageService.store('username', 'ERR');
     this.storageService.update('location', 'bg1');
+
+    this.storageService.setContext('sound');
+    this.storageService.update('volume', '50');
   }
 }
 
