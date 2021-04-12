@@ -12,7 +12,7 @@ import { GuidedTutorialService } from './services/guided-tutorial/guided-tutoria
 import { GameNetworkingService } from '../networking/game-networking.service';
 import { Router } from '@angular/router';
 import { Owner, PlayerType } from './enums/game.enums';
-//import { GameType } from './enums/game.enums';
+import { GameType } from './enums/game.enums';
 
 @Component({
   selector: 'app-game',
@@ -593,5 +593,59 @@ export class GameComponent implements OnInit, AfterViewInit {
     {
       this.routerService.navigate(['/menu/new/local']);
     }
+  }
+
+  getBranchSrc(): string {
+    let asset = "/assets/game/branches/Horizontal-Track-";
+    if(this.gameManager.getCurrentGameMode() === GameType.HUMAN)
+    {
+      if(this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE')
+      {
+        asset += "Orange-Miner.png";
+      }
+      else
+      {
+        asset += "Purple-Miner.png";
+      }
+    }
+    else
+    {
+      if(this.gameManager.getPlayerOne().type === PlayerType.HUMAN)
+      {
+        asset += "Orange-Miner.png";
+      }
+      else
+      {
+        asset += "Purple-Miner.png";
+      }
+    }
+    return asset;
+  }
+
+  getNodeSrc(): string {
+    let asset = "/assets/game/nodes/";
+    if(this.gameManager.getCurrentGameMode() === GameType.HUMAN)
+    {
+      if(this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE')
+      {
+        asset += "Orange-Node-Pickaxe.png";
+      }
+      else
+      {
+        asset += "Purple-Node-Pickaxe.png";
+      }
+    }
+    else
+    {
+      if(this.gameManager.getPlayerOne().type === PlayerType.HUMAN)
+      {
+        asset += "Orange-Node-Pickaxe.png";
+      }
+      else
+      {
+        asset += "Purple-Node-Pickaxe.png";
+      }
+    }
+    return asset;
   }
 }

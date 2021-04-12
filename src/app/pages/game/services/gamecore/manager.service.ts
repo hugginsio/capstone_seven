@@ -1949,4 +1949,9 @@ export class ManagerService {
     }
     return captured;
   }
+
+  getCurrentGameMode(): GameType
+  {
+    return this.currentGameMode;
+  }
 }

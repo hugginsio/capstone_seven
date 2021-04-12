@@ -30,6 +30,32 @@
     </div>
   </div>
 
+  <!-- Exchange Rates -->
+  <div class="absolute bottom-8 w-screen flex flex-row justify-center">
+    <div class="border-4 p-2 border-gray-600 bg-gray-900 flex flex-col text-xl">
+      <div class="flex flex-row justify-between items-center space-x-3">
+        <img src="/assets/game/resources/Red-Resource-Tile.png" draggable="false">
+        <p>+</p>
+        <img src="/assets/game/resources/Blue-Resource-Tile.png" draggable="false">
+        <p>=</p>
+        <img [src]="getBranchSrc()" draggable="false">
+      </div>
+      <div class="flex flex-row justify-between items-center space-x-3">
+        <div class="flex flex-row space-x-0">
+          <img src="/assets/game/resources/Yellow-Resource-Tile.png" draggable="false">
+          <img src="/assets/game/resources/Yellow-Resource-Tile.png" draggable="false">
+        </div>
+        <p>+</p>
+        <div class="flex flex-row space-x-0">
+          <img src="/assets/game/resources/Green-Resource-Tile.png" draggable="false">
+          <img src="/assets/game/resources/Green-Resource-Tile.png" draggable="false">
+        </div>
+        <p>=</p>
+        <img [src]="getNodeSrc()" draggable="false">
+      </div>
+    </div>
+  </div>
+
   <!-- Top Information Container -->
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 z-50 mt-4 pointer-events-none">
     <p class="p-3">{{ this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE' ? 'Player One' : 'Player Two' }}'s Turn</p>
@@ -219,7 +245,7 @@
     <div class="mx-auto relative w-full h-full"> <!-- keeping this div if max-w becomes an issue here -->
       <div id="player1" class="absolute bottom-3 left-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerOne()" [actionSubject]="this.commLink"
-          [playerName]="'Player One'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERONE'"
+          [playerName]="'Player One" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERONE'"
           [isConnected]="this.isConnected" playerEnum="PLAYERONE"></app-player-shard>
       </div>
       <div id="player2" class="absolute bottom-3 right-3">
