@@ -42,6 +42,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
     this.storageService.update('mode', 'net');
     this.username = this.storageService.fetch('username');
     this.gamesList = new Array<NetworkGameInfo>();
+    console.log(this.username);
     this.listners = new Array<Subscription>();
     if(this.username === "ERR")
     {
