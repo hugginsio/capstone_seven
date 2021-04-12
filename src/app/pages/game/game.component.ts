@@ -225,7 +225,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (this.isTutorial === true) {
+    if (this.storageService.fetch('guided-tutorial') === 'true') {
       const message = this.guidedTutorial.startTutorial();
       this.appendMessage(message);
       // why is this not showing up?

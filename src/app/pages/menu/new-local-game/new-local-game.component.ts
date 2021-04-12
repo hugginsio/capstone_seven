@@ -45,6 +45,7 @@ export class NewLocalGameComponent {
     this.aiDifficultyString = this.storageService.fetch('ai-difficulty') === 'easy' ? this.aiEasy : this.aiMedium;
     this.advancedOpts = false;
     this.guidedTutorial = false;
+    this.storageService.update('guided-tutorial', 'false');
     this.playerOrder = this.storageService.fetch('firstplayer') === '1' ? 1 : 2;
     this.validInputCheck = new ValidInputCheck(this.storageService);
     this.explainationPopUp = false;
