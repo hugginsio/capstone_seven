@@ -70,8 +70,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     // this.scrollToBottom();
 
     if (this.storageService.fetch('guided-tutorial') === 'true'
-      && this.storageService.fetch('mode') === 'pva'
-      && this.storageService.fetch('ai-difficulty') === 'easy') {
+      && this.storageService.fetch('mode') === 'pva') {
       // chatbox bool
       this.isTutorial = true;
       // my bool

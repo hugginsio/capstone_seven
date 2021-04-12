@@ -85,18 +85,9 @@ export class NewLocalGameComponent {
       this.aiDifficultyString = this.aiEasy;
     }
 
-    if(this.aiDifficultyString !== this.aiEasy) {
-      this.guidedTutorial = false;
-      this.storageService.update('guided-tutorial', 'false');
-    }
-
     // Update datastore
     this.storageService.update('ai-difficulty', this.aiDifficultyString.toLowerCase());
 
-    // Disable guided tutorial if not PVA && aiEasy
-    if (this.aiDifficultyString !== this.aiEasy) {
-      this.storageService.update('guided-tutorial', 'false');
-    }
   }
 
   changeTutorialSetting(): void {
