@@ -315,6 +315,7 @@ export class State {
     let value = 0;
     const innerBranches = [12,17,23,18];
     const middleBranches = [7,8,13,24,28,27,22,11];
+    const edgeBranches = [0,15,20,35];
 
     //const moveObj = CoreLogic.stringToMove(this.move);
     
@@ -355,6 +356,9 @@ export class State {
           else {
             player1OuterBranches++;
           }
+          if(edgeBranches.includes(branches.indexOf(branch))){
+            player1BranchConnectedness+=3;
+          }
           if(b1 !== -1 && branches[b1].getOwner() === Owner.PLAYERONE){
             player1BranchConnectedness++;
           }
@@ -384,6 +388,9 @@ export class State {
           }
           else {
             player2OuterBranches++;
+          }
+          if(edgeBranches.includes(branches.indexOf(branch))){
+            player2BranchConnectedness+=3;
           }
           if(b1 !== -1 && branches[b1].getOwner() === Owner.PLAYERTWO){
             player2BranchConnectedness++;
@@ -441,8 +448,17 @@ export class State {
     else if(this.player2.currentScore >= 10){
       endGameScore = -20;
     }
-    value = score + numNodesDiff + longestNetwork + (4*resourceProduction) + (10*captures)+ 
-    (branchesValue + totalBranches + 2*branchConnectedness)+ endGameScore;
+
+    let nodes = 0;
+    if(this.playerNumber === 1){
+      nodes = this.player1.numNodesPlaced;
+    }
+    else{
+      nodes = -this.player2.numNodesPlaced;
+    }
+
+    value = score + numNodesDiff + nodes + longestNetwork + (4*resourceProduction) + (10*captures)+ 
+    (branchesValue + totalBranches + 3*branchConnectedness)+ endGameScore;
 
     return value;
   }

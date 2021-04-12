@@ -31,7 +31,7 @@ export class MonteCarlo {
 
 
     const newNode = new MCTSNode(gameState);
-    this.tree.setRoot(newNode);
+    //this.tree.setRoot(newNode);
     // const currentRoot = this.tree.getRoot();
     // let childStateFound = false;
 
@@ -47,7 +47,9 @@ export class MonteCarlo {
     //   this.tree.setRoot(newNode);
     // }
 
-    const rootNode = this.tree.getRoot();
+    //const rootNode = this.tree.getRoot();
+    const rootNode = newNode;
+    this.expandNode(rootNode);
     let simNum = 0;
 
     while (Date.now() < end) {
@@ -56,6 +58,7 @@ export class MonteCarlo {
       if (CoreLogic.getWinner(promisingNode.getState()) === 0) {
         this.expandNode(promisingNode);
       }
+      
       let nodeToExplore = promisingNode;
       if (promisingNode.getChildArray().length > 0) {
         nodeToExplore = promisingNode.getRandomChildNode();
@@ -65,7 +68,7 @@ export class MonteCarlo {
       //this.simulateRandomPlayout(nodeToExplore);
       simNum++;
     }
-
+    
     console.log(`Number of Simulations = ${simNum}`);
     if (rootNode.getChildArray().length > 0) {
       const winnerNode = rootNode.getChildWithMaxScore();
