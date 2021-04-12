@@ -28,6 +28,7 @@ export class NewNetworkGameComponent implements OnInit {
 
   ngOnInit(): void {
     // instantiate class here
+    this.storageService.setContext('game');
     this.storageService.update('mode', 'net');
     this.username = this.storageService.fetch('username');
     this.gamesList = new Array<NetworkGameInfo>();

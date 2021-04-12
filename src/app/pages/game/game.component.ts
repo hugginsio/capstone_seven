@@ -13,6 +13,7 @@ import { SoundEndAction } from '../../shared/components/sound-controller/interfa
 import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
 import { Router } from '@angular/router';
+import { PlayerType } from './enums/game.enums';
 //import { GameType } from './enums/game.enums';
 
 @Component({
@@ -35,6 +36,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   public winningPlayer: Player;
   public username: string;
   public oppUsername: string;
+  public playerOneName: string;
+  public playerTwoName: string;
   public isConnected: boolean;
 
   public readonly commLink = new Subject<CommPackage>();
@@ -166,12 +169,14 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.isNetwork = true;
       this.username = this.storageService.fetch('username');
       this.oppUsername = this.storageService.fetch('oppUsername');
+
       if (this.storageService.fetch('isHost') === 'true') {
         this.networkingService.createTCPServer();
       }
       else {
         this.networkingService.connectTCPserver(this.storageService.fetch('oppAddress'));
       }
+
       this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
         console.log(message);
         this.appendMessage(`${this.oppUsername}: ${message}`);
@@ -196,6 +201,22 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         //un-grey out EndTurn Button
         this.isConnected = true;
       });
+
+      if(this.gameManager.getPlayerOne().type === PlayerType.HUMAN)
+      {
+        this.playerOneName = this.username;
+        this.playerTwoName = this.oppUsername;
+      }
+      else
+      {
+        this.playerOneName = this.oppUsername;
+        this.playerTwoName = this.username;
+      }
+    }
+    else
+    {
+      this.playerOneName = "Player One";
+      this.playerTwoName = "Player Two";
     }
   }
 
