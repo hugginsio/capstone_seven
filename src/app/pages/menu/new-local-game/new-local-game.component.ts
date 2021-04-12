@@ -95,6 +95,11 @@ export class NewLocalGameComponent {
     // Update UI
     this.guidedTutorial = !this.guidedTutorial;
 
+    if(this.guidedTutorial === true && this.storageService.fetch('firstplayer') !== '1')
+    {
+      this.storageService.update('firstplayer', '1');
+    }
+
     // Update datastore
     this.storageService.update('guided-tutorial', this.guidedTutorial.toString());
 
@@ -139,6 +144,12 @@ export class NewLocalGameComponent {
   changePlayerOrder(): void {
     this.playerOrder = this.playerOrder === 1 ? 2 : 1;
     this.storageService.update('firstplayer', this.playerOrder.toString());
+
+    if(this.playerOrder === 2)
+    {
+      this.guidedTutorial = false;
+      this.storageService.update('guided-tutorial', 'false');
+    }
   }
 
   explainBoardSeed():void {
