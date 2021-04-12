@@ -36,6 +36,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   public username: string;
   public oppUsername: string;
   public isConnected: boolean;
+  public opponentQuit: boolean;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -61,6 +62,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isNetwork = false;
     this.isTutorial = false;
     this.isConnected = true;
+    this.opponentQuit = false;
 
     this.storageService.setContext('game');
   }
@@ -176,7 +178,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log(message);
         this.appendMessage(`${this.oppUsername}: ${message}`);
       });
-      this.networkingService.listen('opponent-disconnected').subscribe(() => {
+      /*
+      this.networkingService.listen('opponent-disconnected').subscribe( () => {
         this.appendMessage(`${this.oppUsername} Disconnected`);
         //Grey out EndTurn Button
         this.isConnected = false;
@@ -186,15 +189,30 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         //un-grey EndTurn Button
         this.isConnected = true;
       });
+      */
       this.networkingService.listen('disconnect').subscribe(() => {
-        this.appendMessage(`${this.username} Disconnected`);
+        this.appendMessage(`Disconnection... Please Wait`);
         //grey out EndTurn Button
         this.isConnected = false;
       });
       this.networkingService.listen('user-reconnected').subscribe(() => {
-        this.appendMessage(`${this.username} Reconnected`);
+        this.appendMessage(`Reconnected`);
         //un-grey out EndTurn Button
         this.isConnected = true;
+      });
+      this.networkingService.listenReconnect().subscribe(() => {
+        this.appendMessage(`Reconnected`);
+        this.networkingService.notifyReconnect();
+        //un-grey out EndTurn Button
+        this.isConnected = true;
+      });
+      this.networkingService.listen('user-disconnected').subscribe(() => {
+        this.appendMessage(`Disconnection... Please Wait`);
+        //grey out EndTurn Button
+        this.isConnected = false;
+      });
+      this.networkingService.listen('opponent-quit').subscribe(() => {
+        this.opponentQuit = true;
       });
     }
   }
@@ -434,6 +452,13 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     const element = document.createElement('div');
     element.innerHTML = message;
     container.appendChild(element);
+    if (this.isTutorial) {
+      container.scrollTop = 0;
+    }
+    else if (this.isNetwork) {
+      container.scrollTop = container.scrollHeight;
+    }
+
   }
 
   clearMessage(): void {
@@ -479,7 +504,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.storageService.update("guided-tutorial", "false");
     //this.tradingModel.isTutorial = false;
   }
-  
+
   copyBoardSeed(): void {
     const boardSeed = this.gameManager.boardString;
     const temporarySelectBox = document.createElement('textarea');
@@ -535,5 +560,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     else {
       this.routerService.navigate(['/menu/new/local']);
     }
+  }
+
+  exitButton(): void {
+    if (this.isNetwork) {
+      this.networkingService.leaveGame();
+    }
+    this.routerService.navigate(['/menu/landing']);
   }
 }

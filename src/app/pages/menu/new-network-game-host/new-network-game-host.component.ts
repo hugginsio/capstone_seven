@@ -4,6 +4,7 @@ import { LocalStorageService } from '../../../shared/services/local-storage/loca
 import { GameNetworkingService } from '../../networking/game-networking.service';
 import { MatchmakingService } from '../../networking/matchmaking.service';
 import { interval, Subscription } from 'rxjs';
+import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 
 @Component({
   selector: 'app-new-network-game-host',
@@ -28,7 +29,8 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     private readonly storageService: LocalStorageService,
     private readonly routerService: Router,
     private readonly networkingService: GameNetworkingService,
-    private readonly matchmakingService: MatchmakingService
+    private readonly matchmakingService: MatchmakingService,
+    private readonly soundService: SoundService
   ) {
     this.firstPlayer = this.playerOneFirst;
     this.isHostFirst = true;
@@ -49,21 +51,13 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.matchmakingService.initialize(this.username);
-    this.networkingService.createTCPServer();
-
-    this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
-      console.log("A opponent has connected");
-      this.storageService.update('oppUsername', oppUsername);
-      this.isWaitingForPlayer = false;
-      this.subscription.unsubscribe();
-      this.routerService.navigate(['/game']);
-    });
   }
 
   ngOnDestroy(): void {
     if(this.isWaitingForPlayer)
     {
       this.subscription.unsubscribe();
+      this.networkingService.cancelGame();
     }
   }
 
@@ -85,6 +79,18 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.storageService.update('board-seed', this.boardSeed);
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
+    
+    this.networkingService.createTCPServer();
+    this.networkingService.resetRoom();
+
+    this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
+      console.log("A opponent has connected");
+      this.storageService.update('oppUsername', oppUsername);
+      this.isWaitingForPlayer = false;
+      this.subscription.unsubscribe();
+      this.soundService.clear();
+      this.routerService.navigate(['/game']);
+    });
 
     if(this.isHostFirst)
     {
@@ -109,6 +115,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.isWaitingForPlayer = false;
     this.isSettingUpGame = true;
     this.subscription.unsubscribe();
+    this.networkingService.cancelGame();
   }
 
   selectLocation(clicked: number): void {
