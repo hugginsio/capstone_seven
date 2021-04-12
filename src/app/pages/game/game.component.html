@@ -33,7 +33,7 @@
 
   <!-- Chat Container -->
   <div class="absolute top-3 right-3 flex flex-col w-96" *ngIf="this.isNetwork || this.isTutorial">
-    <div id="chat-container"
+    <div id="chat-container" [ngClass]=dynamicGTBox()
       class="border-4 bg-gray-900 border-gray-600 overflow-y-auto overflow-x-hidden text-left text-base w-full h-44 p-2">
     </div>
     

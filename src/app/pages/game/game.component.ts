@@ -532,6 +532,14 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     return btnClass;
   }
 
+  dynamicGTBox():string {
+    if (this.isTutorial && this.isTrading){
+      return 'z-inf';
+    }
+
+    return '';
+  }
+
   playAgain(): void {
     if (this.isNetwork) {
       this.routerService.navigate(['/menu/new/online']);
