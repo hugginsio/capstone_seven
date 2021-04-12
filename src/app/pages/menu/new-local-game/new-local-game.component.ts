@@ -161,8 +161,8 @@ export class NewLocalGameComponent {
     if (this.validInputCheck.validBoard === false && this.boardSeed===''){
       return 'boardSeed-error';
     }
-     this.validInputCheck.validBoard = true;
-     return '';
+    this.validInputCheck.validBoard = true;
+    return '';
   }
   
 }

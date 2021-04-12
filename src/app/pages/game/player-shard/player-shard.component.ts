@@ -24,7 +24,7 @@ export class PlayerShardComponent implements OnInit {
   constructor(
     public guidedTutorial: GuidedTutorialService,
     private readonly storageService: LocalStorageService
-    ) { }
+  ) { }
 
   ngOnInit(): void { }
 

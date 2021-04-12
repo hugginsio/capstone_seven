@@ -244,6 +244,7 @@ export class GuidedTutorialService {
         case 25: piece = "endTurnBtn";
           break;
         case 26: piece = "Pause";
+          break;
         default:
           console.log("highlightManager error");
       }
@@ -686,7 +687,7 @@ export class GuidedTutorialService {
     let message='';
     // show where to see score
     if(this.humanPlayer === '1') {
-      message = 'At the bottom of the screen is where you can see the current standings for the duel.<br><br>Both y’all got 1 point for each Tool ya placed, and the opponent\’s got 2 more for havin\' the longest Path.';
+      message = 'At the bottom of the screen is where you can see the current standings for the duel.<br><br>Both y’all got 1 point for each Tool ya placed, and the opponent’s got 2 more for havin\' the longest Path.';
       const player1 = document.getElementById("player1");
       const player2 = document.getElementById("player2");
 
@@ -782,7 +783,7 @@ export class GuidedTutorialService {
     let message='';
     // more capture explaination
     if(this.humanPlayer === '1') {
-      message = 'Your turn to try your hand at claimin\' a Site! Click on the highlighted Paths to tie up the scores.'
+      message = 'Your turn to try your hand at claimin\' a Site! Click on the highlighted Paths to tie up the scores.';
 
       if(this.moveNum === 23)
       {

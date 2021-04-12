@@ -82,48 +82,48 @@ export class TradingModel {
   select(num: number): void {
     if (this.redResources + this.blueResources + this.greenResources + this.yellowResources === 3) {
 
-    if(this.storageService.fetch('guided-tutorial') === "true"){
-      let stringToSend = 'none';
-      switch(num){
-        case 1: stringToSend = 'red';
-          break;
-        case 2: stringToSend = 'green';
-          break;
-        case 3: stringToSend = 'blue';
-          break;
-        case 4: stringToSend = 'yellow';
+      if(this.storageService.fetch('guided-tutorial') === "true"){
+        let stringToSend = 'none';
+        switch(num){
+          case 1: stringToSend = 'red';
+            break;
+          case 2: stringToSend = 'green';
+            break;
+          case 3: stringToSend = 'blue';
+            break;
+          case 4: stringToSend = 'yellow';
+        }
+        if(!this.guidedTutorial.moveManager(stringToSend))
+        {
+          return;
+        }
+
       }
-      if(!this.guidedTutorial.moveManager(stringToSend))
+
+      let resourceVariable = 1;
+      switch(num) {
+        case 1: // red
+          resourceVariable = this.redResources;
+          break;
+        case 2: // green
+          resourceVariable = this.greenResources;
+          break;
+        case 3: // blue
+          resourceVariable = this.blueResources;
+          break;
+        case 4: // yellow
+          resourceVariable = this.yellowResources;
+          break;
+      }
+
+      if (resourceVariable === 0)
       {
-        return;
+        this.selectedResource = num;
       }
+      else {
+        this.selectedResource = 0;
 
-    }
-
-    let resourceVariable = 1;
-    switch(num) {
-      case 1: // red
-        resourceVariable = this.redResources;
-        break;
-      case 2: // green
-        resourceVariable = this.greenResources;
-        break;
-      case 3: // blue
-        resourceVariable = this.blueResources;
-        break;
-      case 4: // yellow
-        resourceVariable = this.yellowResources;
-        break;
-    }
-
-    if (resourceVariable === 0)
-    {
-      this.selectedResource = num;
-    }
-    else {
-      this.selectedResource = 0;
-
-    }
+      }
   }
 }
 

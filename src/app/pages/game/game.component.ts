@@ -487,11 +487,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     const step = this.guidedTutorial.getstepNum();
     let message = "";
 
-    console.log("Click Button" + button);
-    console.log("Click Step" + step);
-    console.log("Click MaxStep" + this.guidedTutorial.getMaxStep());
-    console.log("freeze next: " + this.guidedTutorial.getFreezeNext());
-
     if (button === 'GT-Back' && step > 1) {
       this.clearMessage();
       this, this.guidedTutorial.falseFreezeNext();

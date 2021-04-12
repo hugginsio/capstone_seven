@@ -157,5 +157,5 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     }
     this.validInputCheck.validBoard = true;
     return '';
-}
+  }
 }
