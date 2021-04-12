@@ -11,18 +11,26 @@ import { LocalStorageService } from '../../../shared/services/local-storage/loca
 })
 export class HelpSlideshowComponent {
 
-  public currentSlide = 1;
+  public currentSlide = 0;
   public maxSlides = 12;
+  public menuHelp=true;
 
-  @Input() slidesToShow = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  @Input() slidesToShow = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   constructor(
     private readonly storageService: LocalStorageService,
     private readonly routerService: Router
-  ) { }
+  ) { 
+    /*if (){
+      this.menuHelp = true;
+    }
+    else {
+      this.menuHelp = false;
+    }*/
+  }
 
   decrementSlides(): void {
-    if (this.currentSlide > 1)
+    if (this.currentSlide > 0)
     {
       this.currentSlide--;
     }
@@ -36,7 +44,7 @@ export class HelpSlideshowComponent {
   }
 
   dynamicClass(btn: string): string {
-    if (btn === 'prev' && this.currentSlide === 1) {
+    if (btn === 'prev' && this.currentSlide === 0) {
       return 'disabled';
     }
     else if (btn === 'next' && this.currentSlide === this.maxSlides) {
@@ -54,5 +62,9 @@ export class HelpSlideshowComponent {
 
     this.routerService.navigate(['/game']);
 
+  }
+
+  tableOfContents(num: number):void{
+    this.currentSlide = num;
   }
 }

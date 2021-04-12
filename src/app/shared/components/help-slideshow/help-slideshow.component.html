@@ -5,6 +5,53 @@
     </div>
 
     <div class="flex px-4 h-full w-full flex-grow" id="actual-slides">
+      <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 0">
+        <h1>Help Manual Table of Contents</h1>
+        <div class="flex space-x-4 w-full items-center">
+          <div class="flex-1 flex-col space-y-4">
+            <div class="table-of-contents" (click)=tableOfContents(1)>
+              1. Introduction
+            </div>
+            <div class="table-of-contents" (click)=tableOfContents(2)>
+              2. Game Pieces
+            </div>
+            <div class="table-of-contents" (click)=tableOfContents(3)>
+              3. Buyin' Tools and Paths
+            </div>
+            <div class="table-of-contents" (click)=tableOfContents(4)>
+              4. Startin' the Game
+            </div>
+            <div class="table-of-contents" (click)=tableOfContents(5)>
+              5. Helpful Hints
+            </div>
+            <div class="table-of-contents" (click)=tableOfContents(6)>
+              6. Tuckered Out Sites
+            </div>
+          </div>
+
+          <div class="flex-1 flex-col space-y-4">
+            <div class="table-of-contents" (click)=tableOfContents(7)>
+              7. Claimin' a Site
+            </div>
+            <div class="table-of-contents" (click)=tableOfContents(8)>
+              8. Tradin' Post
+            </div>
+            <div class="table-of-contents" (click)=tableOfContents(9)>
+              9. How To Win
+            </div>
+            <div class="table-of-contents" (click)=tableOfContents(10)>
+              10. Settin' Up a Competition
+            </div>
+            <div class="table-of-contents" (click)=tableOfContents(11)>
+              11. "On The Line" Technology
+            </div>
+            <div class="table-of-contents" (click)=tableOfContents(12)>
+              12. Options Menu
+            </div>
+          </div>
+        </div>
+    </div>
+
       <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 1">
         <h1>MasterMine</h1>
         <div class="flex space-x-4 w-full items-center">
@@ -15,10 +62,10 @@
             <p>
               Miner and Machine are facin' off to get rich quick by makin' Paths and pickin' Sites full of Gems.
             </p>
-            <p>
+            <p *ngIf="menuHelp === true">
               Click on this here "Guided Tutorial" button to join a duel and learn the ropes while ya play, or click "Next" to just keep on readin'.
             </p>
-            <div class="GT-btn inline-block align-middle flex-grow" (click)="startGuidedTutorial($event)">Start Guided Tutorial</div>
+            <div class="GT-btn inline-block align-middle flex-grow" (click)="startGuidedTutorial($event)" *ngIf="menuHelp === true">Start Guided Tutorial</div>
           </div>
           <div class="flex-1">
             <img class="boardImg" src="/assets/help/testBoard.png" />

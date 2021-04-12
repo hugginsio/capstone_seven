@@ -258,7 +258,6 @@ export class GuidedTutorialService {
         else if (piece === 'endTurnBtn' || piece === 'undoBtn' || piece === 'tradeBtn' || piece === 'Pause')
         {
           this.playerShardBtn = piece;
-          console.log("playerShardHighlight: " + piece);
         }
         else {
           pieceID.style.border = "2px solid white";
@@ -355,7 +354,6 @@ export class GuidedTutorialService {
 
       else if(m === 13 && s === 18 && piece === 'N4')
       {
-        console.log ("in N4 moveManager");
         this.moveNum++;
         this.freezeNext = false;
         this.highlightNext();
@@ -368,7 +366,6 @@ export class GuidedTutorialService {
       }
       else if(m === 15 && s === 19 && piece === '4')
       {
-        console.log("in move manager for first yellow");
         this.moveNum++;
         this.highlightManager();
         tradeScreenButton = true;

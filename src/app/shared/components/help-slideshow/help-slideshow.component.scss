@@ -5,6 +5,10 @@
     width: 100px;
   }
 
+  .table-of-contents {
+    @apply p-2 bg-gray-600 border-4 border-gray-900 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
+  }
+
   .GT-btn {
     @apply p-5 bg-gray-600 border-4 border-gray-900 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
 

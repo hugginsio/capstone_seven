@@ -30,7 +30,6 @@ export class PlayerShardComponent implements OnInit {
 
   getDynamicClass(btn: string): string {
     let btnClass = "";
-    console.log("playerShard Dynamic class: " + btn);
     if(this.playerDetail?.type !== PlayerType.HUMAN)
     {
       btnClass = "button-hidden";
