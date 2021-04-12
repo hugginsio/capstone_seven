@@ -63,7 +63,7 @@
       <p class="leading-none text-base font-normal text-red-600" *ngIf="this.advancedOpts && !this.validInputCheck.validBoard">
         Invalid Board Seed Input!
       </p>
-      <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts && !this.guidedTutorial && this.explainationPopUp">
+      <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts && this.explainationPopUp">
         Assign the order of your Sites.<br>Use the format R1,R2,R3,B1,B2,B3,G1,G2,G3,Y1,Y2,Y3,00<br>Make sure to include each individual Site in your input.
       </p>
       <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts">Leave blank for random
