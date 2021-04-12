@@ -3,7 +3,13 @@
   <div class="submenu-header">
     <p>Options</p>
   </div>
-  <div class="submenu-body">
+  <div class="submenu-body flex-row">
+    <div class="menu-input w-1/3 flex justify-center items-center relative">
+      <input type="range" class="input-range" min="0" max="100" [(ngModel)]="masterVolume" [(value)]="masterVolume" />
+      <div class="absolute w-full h-full top-0 left-0 flex justify-center items-center z-inf pointer-events-none select-none">
+        Master Volume: {{ masterVolume }}%
+      </div>
+    </div>
   </div>
   <div class="submenu-footer">
     <div class="flex space-x-5 w-1/3">
