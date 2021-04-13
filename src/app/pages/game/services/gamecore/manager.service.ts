@@ -398,7 +398,7 @@ export class ManagerService {
           await this.sleep(1000);
         }
       }
-      this.endTurn(currentPlayer);
+      
     }
 
     this.endTurn(currentPlayer);
@@ -485,6 +485,7 @@ export class ManagerService {
 
       };
 
+      console.log(this.gameBoard);
       this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString] });
 
 

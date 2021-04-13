@@ -147,8 +147,12 @@ export class CoreLogic {
       let b5:number;
       let b6:number;
       const branches = state.board.branches;
+      //const nodes = state.board.nodes;
       let numberAvailableBranches = 0;
-      for (const branch of branches) {
+      //let numberAvailableNodes = 0;
+
+      for (let number = 0; number < 36; number++) {
+        const branch = branches[number];
         if (branch.getOwner() === playerOwner) {
           b1 = branch.getBranch('branch1');
           b2 = branch.getBranch('branch2');
@@ -176,6 +180,29 @@ export class CoreLogic {
             numberAvailableBranches++;
           }
         }
+
+        // if(number < 13){
+        //   const node = nodes[number];
+        //   if(node.getOwner() === Owner.NONE){
+        //     const tnb = node.getTopBranch();
+        //     const rnb = node.getRightBranch();
+        //     const bnb = node.getBottomBranch();
+        //     const lnb = node.getLeftBranch();
+
+        //     if(tnb !== -1 && branches[tnb].getOwner()){
+        //       numberAvailableNodes++;
+        //     }
+        //     if(rnb !== -1 && branches[rnb].getOwner()){
+        //       numberAvailableNodes++;
+        //     }
+        //     if(bnb !== -1 && branches[bnb].getOwner()){
+        //       numberAvailableNodes++;
+        //     }
+        //     if(lnb !== -1 && branches[lnb].getOwner()){
+        //       numberAvailableNodes++;
+        //     }
+        //   }
+        // }
       }
 
       //general moves
@@ -185,7 +212,7 @@ export class CoreLogic {
       //determine possible trades for red
       const tradeForRed = [];
       let tradeForRedCombinations:string[][] = [];
-      //if(redAvailable < blueAvailable || redAvailable === 0){
+      
       const blueRedAvailableDiff = blueAvailable - redAvailable;
       if (blueRedAvailableDiff > 0) {
         if (blueRedAvailableDiff > 1) {
@@ -198,6 +225,37 @@ export class CoreLogic {
           tradeForRed.push('B');
         }
       }
+      
+      // let gafter = greenAvailable;
+      // let yafter = yellowAvailable;
+      // let numNodes: number;
+      // const gNum = (gafter - (gafter % 2)) / 2;
+      // const yNum = (yafter - (yafter % 2)) / 2;
+      // const gyDiff = gNum - yNum;
+      // if (gyDiff === 0) {
+      //   numNodes = gNum;
+      // }
+      // else if (Math.sign(gyDiff) === 1) {
+      //   numNodes = gNum - Math.abs(gyDiff);
+      // }
+      // else {
+      //   numNodes = yNum - Math.abs(gyDiff);
+      // }
+
+      // if(numberAvailableNodes > 0){
+      //   for(let n = 0; n < numNodes; n++){
+      //     gafter-=2;
+      //     yafter-=2;
+      //   }
+      // }
+
+      // for(let g = 0; g < gafter; g++){
+      //   tradeForRed.push('G');
+      // }
+      // for(let y = 0; y < yafter; y++){
+      //   tradeForRed.push('Y');
+      // }
+
 
       if (greenAvailable - 3 >= yellowAvailable) {
         tradeForRed.push('G');
@@ -224,14 +282,15 @@ export class CoreLogic {
       else if (yellowAvailable - 1 === greenAvailable) {
         tradeForRed.push('Y');
       }
+      
 
       tradeForRedCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForRed, 3));
-      //}
+      
 
       //determine possible trades for blue
       const tradeForBlue = [];
       let tradeForBlueCombinations:string[][] = [];
-      //if(blueAvailable < redAvailable || blueAvailable === 0){
+      
       const redBlueAvailableDiff = redAvailable - blueAvailable;
       if (redBlueAvailableDiff > 0) {
         if (redBlueAvailableDiff > 1) {
@@ -244,6 +303,13 @@ export class CoreLogic {
           tradeForBlue.push('R');
         }
       }
+
+      // for(let g = 0; g < gafter; g++){
+      //   tradeForBlue.push('G');
+      // }
+      // for(let y = 0; y < yafter; y++){
+      //   tradeForBlue.push('Y');
+      // }
 
       if (greenAvailable - 3 >= yellowAvailable) {
         tradeForBlue.push('G');
@@ -270,14 +336,14 @@ export class CoreLogic {
       else if (yellowAvailable - 1 === greenAvailable) {
         tradeForBlue.push('Y');
       }
+      
 
       tradeForBlueCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForBlue, 3));
-      //}
+      
       //determine possible trades for green
       const tradeForGreen = [];
       let tradeForGreenCombinations:string[][] = [];
-      //if(greenAvailable < yellowAvailable || greenAvailable === 0){
-      //const redBlueAvailableDiff = redAvailable - blueAvailable;
+
       if (redBlueAvailableDiff > 0 || numberAvailableBranches === 0) {
         if (redBlueAvailableDiff > 1) {
           tradeForGreen.push('R');
@@ -289,7 +355,7 @@ export class CoreLogic {
           tradeForGreen.push('R');
         }
       }
-      //const blueRedAvailableDiff = blueAvailable - redAvailable;
+      
       if (blueRedAvailableDiff > 0 || numberAvailableBranches === 0) {
         if (blueRedAvailableDiff > 1) {
           tradeForGreen.push('B');
@@ -316,13 +382,12 @@ export class CoreLogic {
       }
 
       tradeForGreenCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForGreen, 3));
-      //}
+      
 
       //determine possible trades for yellow
       const tradeForYellow = [];
       let tradeForYellowCombinations:string[][] = [];
-      //if(yellowAvailable < greenAvailable || yellowAvailable === 0){
-      //const blueRedAvailableDiff = blueAvailable - redAvailable;
+
       if (blueRedAvailableDiff > 0 || numberAvailableBranches === 0) {
         if (blueRedAvailableDiff > 1) {
           tradeForYellow.push('B');
@@ -334,7 +399,7 @@ export class CoreLogic {
           tradeForYellow.push('B');
         }
       }
-      //const redBlueAvailableDiff = redAvailable - blueAvailable;
+
       if (redBlueAvailableDiff > 0 || numberAvailableBranches === 0) {
         if (redBlueAvailableDiff > 1) {
           tradeForYellow.push('R');
@@ -362,7 +427,7 @@ export class CoreLogic {
     
 
       tradeForYellowCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForYellow, 3));
-      //}
+      
       //apply trades and pick piece locations
       let redTemp = redAvailable;
       let blueTemp = blueAvailable;

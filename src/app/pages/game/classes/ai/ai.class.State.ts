@@ -416,7 +416,7 @@ export class State {
 
     //exhausted tiles 
     
-    const branchesValue = (3*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (2.50*(player1MiddleBranches - player2MiddleBranches)) + (2*(player1OuterBranches-player2OuterBranches));
+    const branchesValue = (3*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (2.50*(player1MiddleBranches - player2MiddleBranches)) + (2.25*(player1OuterBranches-player2OuterBranches));
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
     let longestNetwork;
     if(this.player1.hasLongestNetwork){
@@ -457,7 +457,7 @@ export class State {
       nodes = -this.player2.numNodesPlaced;
     }
 
-    value = score + numNodesDiff + nodes + longestNetwork + (4*resourceProduction) + (10*captures)+ 
+    value = score + numNodesDiff + 2*nodes + longestNetwork + (4*resourceProduction) + (10*captures)+ 
     (branchesValue + totalBranches + 3*branchConnectedness)+ endGameScore;
 
     return value;
