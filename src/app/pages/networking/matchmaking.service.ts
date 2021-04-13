@@ -17,10 +17,6 @@ export class MatchmakingService {
     this.socket = io("http://localhost:3000");
     this.username = name;
 
-    this.socket.on('you-connected', () => {
-      console.log("Yep, it's listen() that's broken, not the socket.");
-    });
-
     this.socket.emit('set-username', this.username);
   }
 
@@ -42,5 +38,9 @@ export class MatchmakingService {
 
   broadcastGame(): void {
     this.socket.emit('broadcast-game');
+  }
+
+  disconnectSocket(): void {
+    this.socket.disconnect();
   }
 }

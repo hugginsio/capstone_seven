@@ -5,14 +5,13 @@ import { CoreLogic } from '../../util/core-logic.util';
 
 import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
 import { Player } from '../../classes/gamecore/game.class.Player';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { CommPackage, ResourceMap } from '../../interfaces/game.interface';
 import { CommCode } from '../../interfaces/game.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage/local-storage.service';
 import { GameNetworkingService } from '../../../networking/game-networking.service';
 import { NetworkGameSettings } from '../../../../../../backend/NetworkGameSettings';
 import { AiMethods } from '../../interfaces/worker.interface';
-
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +40,7 @@ export class ManagerService {
   private isHostFirst: string;
   private netSettings: NetworkGameSettings;
   private networkingService: GameNetworkingService;
+  private listeners: Array<Subscription>;
 
   // initializes AI service
   //private readonly ai: AiService;
@@ -68,7 +68,9 @@ export class ManagerService {
     // UI integration
     private readonly storageService: LocalStorageService,
     //private readonly networkingService: GameNetworkingService
-  ) {
+  ) { }
+
+  Initialize(): void {
     // begin initializing ManagerService fields
     this.currentPlayer = Owner.PLAYERONE;
     this.gameBoard = new GameBoard();
@@ -76,8 +78,8 @@ export class ManagerService {
     this.playerTwo = new Player();
     this.tilesBeingChecked = [];
     this.tradedResources = [];
-
-    this.netSettings = {board: "", background: "", isHostFirst: true};
+    this.listeners = new Array<Subscription>();
+    this.netSettings = { board: "", background: "", isHostFirst: true };
 
     // getting/setting data via UI
     this.storageService.setContext('game');
@@ -104,13 +106,12 @@ export class ManagerService {
         this.playerOne.type = PlayerType.AI;
         this.playerTwo.type = PlayerType.HUMAN;
       }
-    } 
+    }
     else {
       this.currentGameMode = GameType.NETWORK;
       this.networkingService = new GameNetworkingService();
-      
-      if(this.isHost === 'true')
-      {
+
+      if (this.isHost === 'true') {
         this.networkingService.createTCPServer();
         this.netSettings.background = background;
 
@@ -125,8 +126,7 @@ export class ManagerService {
           this.netSettings.isHostFirst = false;
         }
       }
-      else
-      {
+      else {
         const IP = this.storageService.fetch('oppAddress');
         this.networkingService.connectTCPserver(IP);
 
@@ -140,18 +140,36 @@ export class ManagerService {
         }
       }
       this.networkingService.setIsGameSocket();
-      this.networkingService.listen('recieve-move').subscribe((move: string) => {
+      this.listeners.push(this.networkingService.listen('recieve-move').subscribe((move: string) => {
         console.log(move);
         this.applyMove(move);
-      });
+      }));
     }
 
     // instantiating AiService, calling its contructor w/ gameBoard and both players
     // Web worker magic
     this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
 
+
+
     if (this.currentGameMode === GameType.AI) {
-      //this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
+
+      const aiDifficulty = this.storageService.fetch('ai-difficulty');
+      let timeAlottedToAI: number;
+      let explorationParameter: number;
+      if (aiDifficulty === 'hard') {
+        timeAlottedToAI = 5500;
+        explorationParameter = 4;
+      }
+      else if (aiDifficulty === 'medium') {
+        timeAlottedToAI = 3500;
+        explorationParameter = 2.25;
+      }
+      else {
+        timeAlottedToAI = 2000;
+        explorationParameter = 0.75;
+      }
+
       this.aiWorker.onmessage = ({ data }) => {
         if (data) {
           console.log('Initialized AI web worker.');
@@ -160,7 +178,7 @@ export class ManagerService {
         }
       };
 
-      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 3.75] });
+      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, explorationParameter, timeAlottedToAI] });
     }
 
     // setting board as random or manually setting tiles
@@ -268,11 +286,9 @@ export class ManagerService {
     }
     this.serializeBoard();
 
-    if(this.currentGameMode === GameType.NETWORK)
-    {
+    if (this.currentGameMode === GameType.NETWORK) {
       this.netSettings.board = this.boardString;
-      if(this.isHost === 'true')
-      {
+      if (this.isHost === 'true') {
         console.log("We are sending the board!");
         this.networkingService.setGame(this.netSettings);
       }
@@ -323,8 +339,12 @@ export class ManagerService {
     console.log(this.boardString);
   }
 
+  sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   // takes string from Networking/AI and places move in local gameBoard
-  applyMove(moveString: string): void {
+  async applyMove(moveString: string): Promise<void> {
     let currentPlayer;
     if (this.playerOne.type === PlayerType.HUMAN) {
       currentPlayer = this.playerTwo;
@@ -349,17 +369,33 @@ export class ManagerService {
     // initial placements
     if (currentPlayer.ownedBranches.length < 2) {
       this.initialNodePlacements(moveToPlace.nodesPlaced[0], currentPlayer);
+      this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+
+      //pause between placing pieces
+      await this.sleep(1000);
+
       this.initialBranchPlacements(moveToPlace.nodesPlaced[0], moveToPlace.branchesPlaced[0], currentPlayer);
+      this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
     } else {
       // process general branch placements
       for (let i = 0; i < moveToPlace.branchesPlaced.length; i++) {
         this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
+        this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+
+        //pause between placing pieces
+        await this.sleep(1000);
       }
 
       // process general node placements
       for (let i = 0; i < moveToPlace.nodesPlaced.length; i++) {
         this.generalNodePlacement(moveToPlace.nodesPlaced[i], currentPlayer);
+        this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+        if (i < moveToPlace.nodesPlaced.length - 1) {
+          //pause between placing pieces
+          await this.sleep(1000);
+        }
       }
+
     }
 
     this.endTurn(currentPlayer);
@@ -414,7 +450,7 @@ export class ManagerService {
       currentPlayer.greenResources = 2;
 
     }
-
+    this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
     // serializing otherPlayer's previous move
     const pastMoveString = this.serializeStack();
     console.log(pastMoveString);
@@ -431,9 +467,13 @@ export class ManagerService {
       // string to store AI move
       //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
 
+
+
       this.aiWorker.onmessage = ({ data }) => {
         let AIStringMove = ';;';
+
         if (typeof (data) === 'string' && data !== '') {
+
 
           AIStringMove = data;
           console.warn(AIStringMove);
@@ -442,6 +482,7 @@ export class ManagerService {
 
       };
 
+      console.log(this.gameBoard);
       this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString] });
 
 
@@ -556,8 +597,7 @@ export class ManagerService {
     const currentOwner = endPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
     //Sends move in network game
-    if (this.currentGameMode === GameType.NETWORK && endPlayer.type === PlayerType.HUMAN)
-    {
+    if (this.currentGameMode === GameType.NETWORK && endPlayer.type === PlayerType.HUMAN) {
       console.log(this.serializeStack());
       this.networkingService.sendMove(this.serializeStack());
     }
@@ -693,8 +733,10 @@ export class ManagerService {
     // evaluates whether a winner ought to be determined
     if (this.playerOne.currentScore >= 10 || this.playerTwo.currentScore >= 10) {
       if (this.playerOne.currentScore > this.playerTwo.currentScore) {
+        this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
         this.commLink.next({ code: CommCode.END_GAME, player: this.playerOne, magic: 'Player One' });
       } else {
+        this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
         this.commLink.next({ code: CommCode.END_GAME, player: this.playerTwo, magic: 'Player Two' });
       }
     } else {
@@ -720,12 +762,14 @@ export class ManagerService {
           //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
         // allow playerTwo's second initial turn 
-        
+        //this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
         this.nextTurn(endPlayer);
         return;
       }
 
       this.currentPlayer = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
+
+      //this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
 
       // change active player
       this.nextTurn(newPlayer);
@@ -1950,8 +1994,11 @@ export class ManagerService {
     return captured;
   }
 
-  getCurrentGameMode(): GameType
-  {
+  getCurrentGameMode(): GameType {
     return this.currentGameMode;
+  }
+
+  public unsubListeners(): void {
+    this.listeners.forEach(listener => listener.unsubscribe());
   }
 }

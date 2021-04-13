@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
-import { AfterViewInit, Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { AfterViewInit, Component, Inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
 import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
 import { Player } from './classes/gamecore/game.class.Player';
 import { CommCode } from './interfaces/game.enum';
@@ -37,6 +37,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   public username: string;
   public oppUsername: string;
   public isConnected: boolean;
+  public opponentQuit: boolean;
+  public listeners: Array<Subscription>;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -48,7 +50,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly snackbarService: SnackbarService,
     private readonly soundService: SoundService,
     private readonly networkingService: GameNetworkingService,
-    private readonly routerService: Router
+    private readonly routerService: Router,
+    private changeDetector: ChangeDetectorRef
   ) {
     // Set defaults for UI triggers
     this.gameIntro = false;
@@ -62,6 +65,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isNetwork = false;
     this.isTutorial = false;
     this.isConnected = true;
+    this.opponentQuit = false;
+    this.listeners = new Array<Subscription>();
 
     this.storageService.setContext('game');
   }
@@ -70,19 +75,22 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     // ✨ ANIMATIONS ✨
     // this.scrollToBottom();
 
+    this.gameManager.Initialize();
+
     if (this.storageService.fetch('guided-tutorial') === 'true'
-      && this.storageService.fetch('mode') === 'pva'
-      && this.storageService.fetch('ai-difficulty') === 'easy') {
+      && this.storageService.fetch('mode') === 'pva') {
       // chatbox bool
       this.isTutorial = true;
       // my bool
       this.guidedTutorialCheck = true;
       this.guidedTutorial.setTutorialBoard();
+      this.guidedTutorial.resetStepAndMoveNum();
     }
 
     // Subscribe to own communications link
     this.commLink.subscribe(message => {
       const status = message.code;
+
 
       // Check which player sent the message before we run player-centric commands
       if (this.gameManager.getCurrentPlayer() === message.player) {
@@ -159,6 +167,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         this.winningPlayer = player;
         this.gameOver = true;
       }
+      else if (status === CommCode.AI_Move && player) {
+        this.changeDetector.detectChanges();
+      }
     });
 
     // this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP);
@@ -173,39 +184,51 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       else {
         this.networkingService.connectTCPserver(this.storageService.fetch('oppAddress'));
       }
-      this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
+
+      this.listeners.push(this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
         console.log(message);
         this.appendMessage(`${this.oppUsername}: ${message}`);
-      });
-      this.networkingService.listen('opponent-disconnected').subscribe(() => {
-        this.appendMessage(`${this.oppUsername} Disconnected`);
-        //Grey out EndTurn Button
-        this.isConnected = false;
-      });
-      this.networkingService.listen('opponent-reconnected').subscribe(() => {
-        this.appendMessage(`${this.oppUsername} Reconnected`);
-        //un-grey EndTurn Button
-        this.isConnected = true;
-      });
-      this.networkingService.listen('disconnect').subscribe(() => {
-        this.appendMessage(`${this.username} Disconnected`);
+      }));
+
+      this.listeners.push(this.networkingService.listen('disconnect').subscribe(() => {
+        this.appendMessage(`Disconnection... Please Wait`);
         //grey out EndTurn Button
         this.isConnected = false;
-      });
-      this.networkingService.listen('user-reconnected').subscribe(() => {
-        this.appendMessage(`${this.username} Reconnected`);
+      }));
+
+      this.listeners.push(this.networkingService.listen('user-reconnected').subscribe(() => {
+        this.appendMessage(`Reconnected`);
         //un-grey out EndTurn Button
         this.isConnected = true;
-      });
+      }));
+
+      this.listeners.push(this.networkingService.listenReconnect().subscribe(() => {
+        this.appendMessage(`Reconnected`);
+        this.networkingService.notifyReconnect();
+        //un-grey out EndTurn Button
+        this.isConnected = true;
+      }));
+
+      this.listeners.push(this.networkingService.listen('user-disconnected').subscribe(() => {
+        this.appendMessage(`Disconnection... Please Wait`);
+        //grey out EndTurn Button
+        this.isConnected = false;
+      }));
+
+      this.listeners.push(this.networkingService.listen('opponent-quit').subscribe(() => {
+        this.opponentQuit = true;
+      }));
     }
   }
 
   ngOnDestroy(): void {
     this.soundService.clear();
+    this.listeners.forEach(listener => listener.unsubscribe());
+    this.gameManager.unsubListeners();
   }
 
   ngAfterViewInit(): void {
-    if (this.isTutorial === true) {
+    if (this.storageService.fetch('guided-tutorial') === 'true') {
       const message = this.guidedTutorial.startTutorial();
       this.appendMessage(message);
       // why is this not showing up?
@@ -333,6 +356,10 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
 
+    if (player.type !== PlayerType.HUMAN) {
+      return;
+    }
+
     if (pieceClass.indexOf('unavailable') !== -1) {
       console.warn(`Clicked ${pieceType} ${pieceId}, but piece is unavailable.`);
     } else if (pieceClass.indexOf('available') !== -1) {
@@ -403,7 +430,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     } else if (playerTheme === PlayerType.HUMAN && type === 'branch') {
       fxId = 'minetrack';
     }
-    
+
     this.soundService.add(`/assets/sound/fx/${fxId}.wav`, SoundEndAction.DIE);
   }
 
@@ -427,7 +454,10 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   executeTrade(): void {
-    if (this.tradingModel.selectedResource === 0) {
+    if (this.tradingModel.redResources + this.tradingModel.blueResources + this.tradingModel.greenResources + this.tradingModel.yellowResources !== 3) {
+      this.snackbarService.add({ message: "Select three resources to trade away." });
+    }
+    else if (this.tradingModel.selectedResource === 0) {
       this.snackbarService.add({ message: "Select a resource to receive." });
     }
     else if (this.isTutorial) {
@@ -498,6 +528,13 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     const element = document.createElement('div');
     element.innerHTML = message;
     container.appendChild(element);
+    if (this.isTutorial) {
+      container.scrollTop = 0;
+    }
+    else if (this.isNetwork) {
+      container.scrollTop = container.scrollHeight;
+    }
+
   }
 
   clearMessage(): void {
@@ -514,6 +551,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     const button = event.target.id;
     const step = this.guidedTutorial.getstepNum();
     let message = "";
+
     if (button === 'GT-Back' && step > 1) {
       this.clearMessage();
       this, this.guidedTutorial.falseFreezeNext();
@@ -592,6 +630,14 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     return btnClass;
   }
 
+  dynamicGTBox(): string {
+    if (this.isTutorial && this.isTrading) {
+      return 'z-inf';
+    }
+
+    return '';
+  }
+
   playAgain(): void {
     if (this.isNetwork) {
       this.routerService.navigate(['/menu/new/online']);
@@ -641,5 +687,31 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     return asset;
+  }
+
+  exitButton(): void {
+    if (this.isNetwork) {
+      this.networkingService.leaveGame();
+    }
+    this.routerService.navigate(['/menu/landing']);
+  }
+
+  getCanTrade(): boolean {
+    if (this.gameManager.getCurrentPlayer().numNodesPlaced < 2 ||
+      this.gameManager.getCurrentPlayer().ownedBranches.length < 2) {
+      return false;
+    }
+    else if ((this.gameManager.getCurrentPlayer().blueResources
+      + this.gameManager.getCurrentPlayer().redResources
+      + this.gameManager.getCurrentPlayer().yellowResources
+      + this.gameManager.getCurrentPlayer().greenResources) < 3) {
+      return false;
+    }
+    else if (this.gameManager.getCurrentPlayer().hasTraded) {
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 }

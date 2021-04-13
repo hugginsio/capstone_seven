@@ -1,6 +1,7 @@
 export enum AiMethods {
   INIT_SERVICE,
-  GET_AI_MOVE
+  GET_AI_MOVE,
+  RETURN_AI_MOVE
 }
 
 export interface WorkerPayload {

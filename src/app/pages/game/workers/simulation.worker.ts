@@ -1,23 +1,69 @@
 /// <reference lib="webworker" />
 
+import { MCTSNode, Tree } from "../classes/ai/ai.class.MCTSNode";
+import { MonteCarlo } from "../classes/ai/ai.class.MonteCarlo";
 import { State } from "../classes/ai/ai.class.State";
+import { AiMethods, WorkerPayload } from "../interfaces/worker.interface";
 import { CoreLogic } from "../util/core-logic.util";
 
 interface PayloadWrapper {
-  data: State
+  data: WorkerPayload
 }
-
+let mcts:MonteCarlo;
+let timeToRun:number;
 
 addEventListener('message', ({ data }: PayloadWrapper) => {
 
-  const clonedState = workerCloneState(data);
-  const response = runSimulation(clonedState);
+  if(data.method === AiMethods.INIT_SERVICE){
+    mcts = workerCloneMonteCarlo(data.data[0]);
+    timeToRun = data.data[1];
+    //console.log('Initialized worker mcts');
+  }
+  else{
 
-  postMessage(response);
+    const board = data.data[0];
+    const player1 = data.data[1];
+    const player2 = data.data[2];
+
+    const newBoard = CoreLogic.workerCloneGameBoard(board);
+    const newPlayer1 = CoreLogic.workerClonePlayer(player1);
+    const newPlayer2 = CoreLogic.workerClonePlayer(player2);
+
+    const newState = new State(newBoard, newPlayer1, newPlayer2);
+    newState.playerNumber = data.data[3];
+    newState.move = data.data[4];
+
+    const move = mcts.findNextMove(newState,timeToRun);
+      
+    postMessage(move);
+  }
 });
 
+function workerCloneMonteCarlo(mcts:MonteCarlo):MonteCarlo{
+  const newTree = workerCloneTree(mcts.tree);
+  const newMCTS = new MonteCarlo(newTree.root.state.board, newTree.root.state.player1, newTree.root.state.player2,mcts.explorationParameter); 
+  return newMCTS;
+}
 
-function workerCloneState(state: State): State {
+function workerCloneTree(tree:Tree):Tree{
+  const newTree = new Tree();
+  newTree.setRoot(workerCloneMCTSNode(tree.root));
+  return newTree;
+}
+
+function workerCloneMCTSNode(node:MCTSNode):MCTSNode{
+  const newState = workerCloneState(node.state);
+  const newNode = new MCTSNode(newState);
+  newNode.parent = node.parent;
+  if(node.childArray.length > 0){
+    for(const child of node.childArray){
+      newNode.childArray.push(workerCloneMCTSNode(child));
+    }
+  }
+  return newNode;
+}
+
+function workerCloneState(state:State):State{
 
   const newBoard = CoreLogic.workerCloneGameBoard(state.board);
   const newPlayer1 = CoreLogic.workerClonePlayer(state.player1);
@@ -32,36 +78,4 @@ function workerCloneState(state: State): State {
   newState.tilesBeingChecked = state.tilesBeingChecked.slice();
 
   return newState;
-}
-
-
-function runSimulation(state: State): number {
-  let boardStatus = 0;
-  let counter = 0; //decrease counter and assign winner based on score if game not finished
-  while (boardStatus === 0 && counter < 15) {
-    if (state.player1.numNodesPlaced === 1 && state.playerNumber === 1) {
-      state.player1.redResources = 1;
-      state.player1.blueResources = 1;
-      state.player1.greenResources = 2;
-      state.player1.yellowResources = 2;
-    }
-    state.randomPlay();
-    //state.heuristicPlay();
-    boardStatus = CoreLogic.getWinner(state);
-    state.togglePlayer();
-    //console.log(`Inside simulation: count = ${counter}`);
-    counter++;
-  }
-
-  if (boardStatus === 0) {
-    if (state.getHeuristicValue() > 0) {
-      boardStatus = 1;
-    }
-    else {
-      boardStatus = 2;
-    }
-  }
-
-
-  return boardStatus;
 }

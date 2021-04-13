@@ -8,8 +8,8 @@ import { NetworkGameSettings } from '../../../../backend/NetworkGameSettings';
 })
 export class GameNetworkingService {
 
-  socket: any;
-  isGameSocket = false;
+  private socket: any;
+  private isGameSocket = false;
 
   constructor() {}
 
@@ -17,6 +17,14 @@ export class GameNetworkingService {
   listen(eventName: string): Observable<any> {
     return new Observable((subscriber) => {
       this.socket.on(eventName, (data: any) => {
+        subscriber.next(data);
+      });
+    });
+  }
+
+  listenReconnect(): Observable<any> {
+    return new Observable((subscriber) => {
+      this.socket.io.on('reconnect', (data: any) => {
         subscriber.next(data);
       });
     });
@@ -47,26 +55,12 @@ export class GameNetworkingService {
   public connectTCPserver(serverIP: string): void {
     this.socket = io("http://" + serverIP + ":8000");
     console.log("Server connection attempted");
-
-    this.socket.on('popup', function(msg:any){
-      console.log("hello: ", msg);
-    });
-    this.socket.on('connection', function() {
-      console.log("client connected");
-    });
-
-    this.socket.on('connect_error', function(err:any) {
-      console.log("client connect_error: ", err);
-    });
-
-    this.socket.on('connect_timeout', function(err:any) {
-      console.log("client connect_timeout: ", err);
-    });
     this.setListners();
   }
 
   private setListners()
   {
+    /*
     this.socket.io.on('reconnect', () => {
       this.socket.emit('reconnection');
       if(this.isGameSocket)
@@ -74,6 +68,11 @@ export class GameNetworkingService {
         this.socket.emit('join-room');
       }
     });
+    */
+  }
+
+  public resetRoom(): void {
+    this.socket.emit('reset-lobby');
   }
 
   public setIsGameSocket(): void
@@ -100,4 +99,21 @@ export class GameNetworkingService {
     this.socket.emit('request-join', username);
   }
 
+  public leaveGame(): void
+  {
+    this.socket.emit('leave-game');
+  }
+
+  public disconnectSocket(): void {
+    this.socket.disconnect();
+  }
+
+  public cancelGame(): void {
+    this.socket.emit('cancel-game');
+    this.socket.disconnect();
+  }
+
+  public notifyReconnect(): void {
+    this.socket.emit('reconnection');
+  }
 }

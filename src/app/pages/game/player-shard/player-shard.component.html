@@ -6,7 +6,7 @@
   <p class="text-sm leading-none">{{ playerDetail?.type === 'HUMAN' ? 'HUMAN' : 'MACHINE' }}</p>
   <div class="p-3">
     <p>Score: {{ playerDetail?.currentScore }}</p>
-    <p>Network: {{ playerDetail?.currentLength }}</p>
+    <p>Longest Path: {{ playerDetail?.currentLength }}</p>
   </div>
   <div class="flex flex-col space-y-4 w-full place-items-center">
     <div class="flex space-x-4 items-center">
@@ -34,14 +34,14 @@
   <div class="flex flex-col space-y-3 pt-3 text-center"
     *ngIf="true">
     <div class="flex space-x-3">
-      <div id="undoBtn" class="button" [ngClass]="getDynamicClass()" (click)="triggerUndo()" boombox="button">
+      <div id="undoBtn" class="button" [ngClass]="getDynamicClass('undoBtn')" (click)="triggerUndo()" boombox="button">
         Undo
       </div>
-      <div id="tradeBtn" class="button" [ngClass]="getDynamicClass()" (click)="triggerTrading()" boombox="button">
+      <div id="tradeBtn" class="button" [ngClass]="getDynamicClass('tradeBtn')" (click)="triggerTrading()" boombox="button">
         Trade
       </div>
     </div>
-    <div id="endTurnBtn" class="button" [ngClass]="getDynamicClass()" (click)="triggerEndTurn()" boombox="button">
+    <div id="endTurnBtn" class="button" [ngClass]="getDynamicClass('endTurnBtn')" (click)="triggerEndTurn()" boombox="button">
       End Turn
     </div>
   </div>

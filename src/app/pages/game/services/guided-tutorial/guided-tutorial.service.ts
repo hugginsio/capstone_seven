@@ -16,6 +16,7 @@ export class GuidedTutorialService {
   private freezeNext: boolean;
   private maxMove: number;
   private maxStep: number;
+  public playerShardBtn: string;
   //private btnToHighlight: string;
 
   constructor(
@@ -24,19 +25,14 @@ export class GuidedTutorialService {
     private readonly snackbarService: SnackbarService,
     //private readonly gameComp: GameComponent
   ) { 
-    this.humanPlayer = this.storageService.fetch('firstplayer');
+    this.humanPlayer = '1';
     this.stepNum = 1;
     this.moveNum = 1;
+    this.playerShardBtn = '';
     //this.btnToHighlight = '';
     this.freezeNext = false;
-    if (this.humanPlayer === '1') {
-      this.maxMove = 21;
-      this.maxStep = 25;
-    }
-    else {
-      this.maxMove = 22;
-      this.maxStep = 22;
-    }
+    this.maxMove = 26;
+    this.maxStep = 26;
   }
 
   getstepNum():number {
@@ -47,6 +43,10 @@ export class GuidedTutorialService {
   }
   decrementStepNum():void {
     this.stepNum--;
+  }
+  resetStepAndMoveNum():void {
+    this.stepNum = 1;
+    this.moveNum = 1;
   }
 
   getMoveNum():number {
@@ -174,6 +174,13 @@ export class GuidedTutorialService {
       case 24:
         message = this.messageTwentyFour();
         break;
+      case 25:
+        message = this.messageTwentyFive();
+        break;
+      case 26: 
+        message = "end of tutorial";
+        break;
+
       default:
         console.log('something went wrong, tutorialManager switch');
     }
@@ -230,7 +237,13 @@ export class GuidedTutorialService {
           break;
         case 22: piece = "endTurnBtn";
           break;
-        case 23: piece = "Pause";
+        case 23: piece = "B5";
+          break;
+        case 24: piece = "B9";
+          break;
+        case 25: piece = "endTurnBtn";
+          break;
+        case 26: piece = "Pause";
           break;
         default:
           console.log("highlightManager error");
@@ -247,7 +260,7 @@ export class GuidedTutorialService {
         }
         else if (piece === 'endTurnBtn' || piece === 'undoBtn' || piece === 'tradeBtn' || piece === 'Pause')
         {
-          //this.btnToHighlight = piece;
+          this.playerShardBtn = piece;
         }
         else {
           pieceID.style.border = "2px solid white";
@@ -266,6 +279,8 @@ export class GuidedTutorialService {
     let validMove = true; 
     let ifButton = false;
     let tradeScreenButton = false;
+    this.playerShardBtn = '';
+
 
     if (this.humanPlayer === '1'){
       if(m === 1 && s === 4 && piece ==='N9') {
@@ -342,7 +357,6 @@ export class GuidedTutorialService {
 
       else if(m === 13 && s === 18 && piece === 'N4')
       {
-        console.log ("in N4 moveManager");
         this.moveNum++;
         this.freezeNext = false;
         this.highlightNext();
@@ -355,7 +369,6 @@ export class GuidedTutorialService {
       }
       else if(m === 15 && s === 19 && piece === '4')
       {
-        console.log("in move manager for first yellow");
         this.moveNum++;
         this.highlightManager();
         tradeScreenButton = true;
@@ -376,7 +389,8 @@ export class GuidedTutorialService {
       {
         this.moveNum++;
         this.highlightManager();
-        tradeScreenButton = true;
+        // to keep the white highlight there after selecting it 
+        ifButton = true;
       }
       else if(m === 19 && s === 19 && piece === 'confirmTrade')
       {
@@ -401,6 +415,25 @@ export class GuidedTutorialService {
         this.highlightNext();
         ifButton = true;
       }
+      else if(m === 23 && s === 23 && piece === 'B5')
+      {
+        this.moveNum++;
+        this.highlightManager();
+      }
+      else if(m === 24 && s === 23 && piece === 'B9')
+      {
+        this.moveNum++;
+        this.freezeNext = false;
+        this.highlightNext();
+        //this.highlightManager();
+      }
+      /*else if(m === 25 && s === 23 && piece === 'endTurnBtn')
+      {
+        this.moveNum++;
+        this.freezeNext = false;
+        this.highlightNext();
+        ifButton = true;
+      }*/
 
       else {
         this.snackbarService.add({ message: 'Now don\'t be clickin\' just anywhere! Please follow these here instructions.' });
@@ -412,8 +445,12 @@ export class GuidedTutorialService {
     if(validMove && ifButton){
       const pieceID = document.getElementById(piece);
       if(pieceID !== null) {
-        //this.btnToHighlight = '';
+        if(piece === 'blue')
+        {
+          pieceID.style.border = "4px solid rgb(37, 99, 235)";
+        }
       }
+      
     }
     else if(validMove && tradeScreenButton){
       const pieceID = document.getElementById(piece);
@@ -431,7 +468,7 @@ export class GuidedTutorialService {
   }
 
   messageOne():string{
-    const message = "Welcome in to the mines! <br><br> Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.<br><br>Click the \"Next\" button to start the tutorial.";
+    const message = "Welcome to the mines! <br><br> Let’s walk you through a few steps to get y’all on the right foot with this here underground duel.<br><br>Click the \"Next\" button to start the tutorial.";
     // message 1, start tutorial
 
     this.highlightNext();
@@ -442,7 +479,7 @@ export class GuidedTutorialService {
 
   messageTwo():string {
     // message 2
-    const message = "Learn some mining lingo before we get going:<br><br>These squares here which make up the mine are called mining sites.<br><br>These sites have gems in ‘em that hold the type and number of gem you can mine from there.";
+    const message = "Learn some minin' lingo before we get going:<br><br>These squares here which make up the mine are called Sites.<br><br>These Sites tell ya which Gems they give and how many Tools they can have on their corners.";
     
     this.highlightNext();
 
@@ -452,7 +489,7 @@ export class GuidedTutorialService {
   }
 
   messageThree():string {
-    const message = "On each corncer of a Mining Site is a place for a Pickaxe or Drill which are what we call \"Mining Markers.\"<br><br>If you have a Mining Marker down then you can collect a gem per turn from each of the touchin' Mining Sites<br><br>These here Tracks on the side of each Mining Site get you from place to place down in the depths of the mine and keep your mining operation all nice and connected."; 
+    const message = "On each corner of a Site is a place for a Pickaxe or Drill which are what we call \"Tools.\"<br><br>Each Tool will give ya one Gem per turn from each of the touchin' Sites.<br><br>These here Paths on the sides of each Site are how ya get around to expandin' your operation."; 
 
     this.highlightNext();
     
@@ -463,7 +500,7 @@ export class GuidedTutorialService {
     let message = '';
     if(this.humanPlayer === '1') {
       // message 3
-      message = 'Start the competition by puttin\' down a pickaxe and a connectin\' track anywhere in the mine.<br><br>Click the indicated marker and track to make your move.';
+      message = 'Start the competition by puttin\' down a Tool and a connectin\' Path anywhere in the mine.<br><br>Click the indicated Tool and Path spaces to make your move.';
       if(this.moveNum === 1){
         this.freezeNext = true; 
         this.highlightManager();
@@ -476,7 +513,7 @@ export class GuidedTutorialService {
     let message = '';
     if(this.humanPlayer === '1') {
       // message 5
-      message = 'You get gems based on the corners of the minin\' sites you have your pickaxe touchin\'.<br><br>You gotta be collectin\' gems to get more pickaxes and tracks down the road<br><br>Settled on your move? Click "End Turn" and then "Next" to keep the game movin\'.';
+      message = 'Settled on your move? Click "End Turn" to keep the game movin\'.<br><br>Then click "Next" to continue.';
       
       if(this.moveNum === 3){
         this.highlightManager();
@@ -491,8 +528,8 @@ export class GuidedTutorialService {
     let message='';
     // AI's first move
     if(this.humanPlayer === '1') {
-      message = 'Now the Machine selects its moves...<br><br>You see these here gems on each site? Those show the maximum amount of gems this site can give according to the law here in the mines.<br><br>If yours and you opponent’s number of mining markers on a site are more than the allotted gems then y’all exhausted that site and neither y’all will be gettin’ gems from the site.';
-     
+      message = 'Now the other Player selects their moves...<br><br>You see these here Gems on each Site? The number of Gems is the maximum amount of Tools the Site can support.<br><br>If you and your opponent’s number of Tools on a Site are more than the maximum, then that Site is "Tuckered Out" and no one\'s gettin’ Gems from it.';
+  
       if (this.gameManager.getBoard().nodes[15].getOwner() === 'NONE')
       {
         this.gameManager.applyMove(";15;28");
@@ -508,7 +545,7 @@ export class GuidedTutorialService {
     let message='';
     // AI's second move
     if(this.humanPlayer === '1') {
-      message = 'To keep things fair and square with the turn order, the Machine goes again.';
+      message = 'To keep things fair and square with the turn order, the other Player goes again.';
      
       if (this.gameManager.getBoard().nodes[3].getOwner() === 'NONE')
       {
@@ -525,7 +562,7 @@ export class GuidedTutorialService {
     let message='';
     // set up player to learn undo
     if(this.humanPlayer === '1') {
-      message = 'One last time for your starting picks.<br><br>Click the indicated pieces then click "Next."';
+      message = 'Now you\'ll take your other Starting Turn.<br><br>Click the indicated pieces then click "Next."';
       if (this.moveNum === 4){
         this.highlightManager();
         this.freezeNext = true;
@@ -539,7 +576,7 @@ export class GuidedTutorialService {
     let message='';
     // teaching undo 
     if(this.humanPlayer === '1') {
-      message = 'Go ahead and click the "Undo" button twice to reverse your past two moves.<br><br>Finish your turn by clicking the new indicated pieces and then "End Turn."<br><br>Click "Next" to continue.';
+      message = 'Go ahead and click the "Undo" button twice to take back your last two moves.<br><br>Finish your turn by placin\' the highlighted pieces and clicking "End Turn."<br><br>Then click "Next" to continue.';
       if (this.moveNum === 6) {
         this.highlightManager();
         this.freezeNext = true;
@@ -552,7 +589,7 @@ export class GuidedTutorialService {
     let message='';
     // resource cost
     if(this.humanPlayer === '1') {
-      message = 'These gems ain’t just for lookin’ at. You can keep building your operation by buying mining markers and tracks with the gems.<br><br>We in the mine charge a fair price of 2 yellow and 2 green gems for 1 mining marker and a track costs 1 red and 1 blue gem.';
+      message = 'These Gems ain’t just for lookin’ at. You can expand your operation by buyin\' more Tools and Paths with your Gems.<br><br>Take a gander at the Price Card to remind yourself of their costs.';
       this.highlightNext();
      
       // would be cool to display a visual of piece costs
@@ -564,7 +601,7 @@ export class GuidedTutorialService {
     let message='';
     // talk about trading 
     if(this.humanPlayer === '1') {
-      message = 'Lookin’ to trade some gems?<br>When it’s on your turn, you can make a trade of gems 3-->1 OR you can end your turn and wait to get more.<br><br>Gems get saved in your stash shown for each miner at the bottom of the screen at the end of each round.';
+      message = 'Lookin’ to trade some Gems?<br>When it’s your turn, you can make a Trade of 3 Gems for 1 Gem of any other type.<br><br>You can only Trade once per turn.<br><br>Gems ya don\'t spend are saved in your stash at the bottom of the screen.';
       this.highlightNext();
     }
     return message;
@@ -574,7 +611,7 @@ export class GuidedTutorialService {
     let message='';
     // AI move - 2 branches and a trade
     if(this.humanPlayer === '1') {
-      message = 'The Machine is up again and gets resources to make any amount of moves it can afford.<br><br>Y\'all see the machine tradin’ 3 yellow gems for a blue to be able to buy and put two tracks on this turn.';
+      message = 'The other Player is up again. They\'re gonna get Gems at the start of each turn from all their Tools. They can make any amount of moves as long as they got the Gems to pay up.<br><br> Your opponent has traded 3 yellow Gems for a blue so they could afford two Paths on this turn.';
      
       if (this.gameManager.getBoard().branches[18].getOwner() === 'NONE')
       {
@@ -590,7 +627,7 @@ export class GuidedTutorialService {
     let message='';
     // start p1 turn
     if(this.humanPlayer === '1') {
-      message = 'Now it’s your turn again! -- Take a gander at your inventory to see what you could do next.<br><br>Any new tracks or pickaxes have gotta be connected to one of your other tracks. Cain’t have any off railing in these here parts.';
+      message = 'Now it’s your turn again!<br><br>Take a gander at your stash to see what you can do next.<br><br>Any new Paths or Tools have gotta be connected to one of your other Paths.';
       this.highlightNext();
     }
     return message;
@@ -600,7 +637,7 @@ export class GuidedTutorialService {
     let message='';
     // how to move
     if(this.humanPlayer === '1') {
-      message = 'Just click the axe or rail in the mine to buy it!<br><br>Click here to place a rail track.<br><br>Click “End Turn” when you’re done and "Next" to move on.';
+      message = 'Click on the highlighted Path.<br><br>Then click “End Turn” and "Next" to move on.';
       if (this.moveNum === 11){
         this.highlightManager();
         this.freezeNext=true;
@@ -614,7 +651,7 @@ export class GuidedTutorialService {
     let message='';
     // explain longest net
     if(this.humanPlayer === '1') {
-      message = 'Now you have the longest connected mining rail network in the duel. This means you get +2 points on your way to the goal of 10 to win. But beware, this can be snatched right out from under you by your opponent.';
+      message = 'Now you have the longest Path in the duel. This means you got 2 more points on the way to your goal of 10 to win. <br><br>But beware! This can be snatched right out from under you by your opponent.';
       this.highlightNext();
     
     }
@@ -625,7 +662,7 @@ export class GuidedTutorialService {
     let message='';
     // AI move - 2 branches and a trade
     if(this.humanPlayer === '1') {
-      message = 'Now it’s the Machine’s turn to take a crack at it.<br>He brings his two separate rail networks into one big one and takes those two points from you!';
+      message = 'Now it’s the opponent\'s turn to take a crack at it.<br>They connect their two separate Paths into one big one and take those 2 points from you!';
       
       const player1 = document.getElementById("player1");
       const player2 = document.getElementById("player2");
@@ -650,7 +687,7 @@ export class GuidedTutorialService {
     let message='';
     // show where to see score
     if(this.humanPlayer === '1') {
-      message = 'Here at the bottom of the your screen is where you can see the current standings for the duel.<br><br>Both y’all got one point for each mining marker you placed. Now the machine’s got 2 more for the longest set of tracks.';
+      message = 'At the bottom of the screen is where you can see the current standings for the duel.<br><br>Both y’all got 1 point for each Tool ya placed, and the opponent’s got 2 more for havin\' the longest Path.';
       const player1 = document.getElementById("player1");
       const player2 = document.getElementById("player2");
 
@@ -670,7 +707,7 @@ export class GuidedTutorialService {
     // player 1 last tutorial move start
     if(this.humanPlayer === '1') {
       
-      message = 'Now you got enough gems to put a pickaxe.<br><br>Remember, you cain’t just be mining in a place where you don\'t have the tracks to get you there! It’s just common sense!<br><br>Now, place one here and get another point in the competition.';
+      message = 'Now you got enough Gems to place a Tool!<br><br>Remember, you cain’t just be mining in a place where you don\'t have the Paths to get you there!<br><br>Place a Tool in the highlighted space and earn yourself another point.';
       if (this.moveNum === 13){
         this.highlightManager();
         this.freezeNext = true;
@@ -694,7 +731,7 @@ export class GuidedTutorialService {
     let message='';
     // human makes a trade
     if(this.humanPlayer === '1') {
-      message = 'Try your hand at makin’ a trade for the right gems to lay two more tracks.<br><br>Click the "Trade" button, select a yellow, a red, then another yellow gem to trade for one blue and confirm your trade!<br><br>Go on and pick those two indicated tracks before clickin\' "End Turn" and then the "Next" button.';
+      message = 'Try your hand at Tradin\' Gems so ya can place two more Paths.<br><br>Click the "Trade" button. Then select 1 yellow, 1 red, and 1 more yellow to trade away. Then select 1 blue to trade for and confirm your trade.<br><br>Go on and place those two highlighted Paths before clickin\' "End Turn" and then "Next".';
       if(this.moveNum === 14)
       {
         this.highlightManager();
@@ -708,7 +745,7 @@ export class GuidedTutorialService {
     let message='';
     // last AI turn 
     if(this.humanPlayer === '1') {
-      message = 'Alright, one last turn for the Machine before we turn y’all loose in the mine to finish up this here “friendly” competition.';
+      message = 'Alright, one last turn for your opponent before we turn y’all loose in the mine to finish up this here friendly competition.';
      
       this.highlightNext();
       
@@ -720,7 +757,7 @@ export class GuidedTutorialService {
     let message='';
     // explain capture
     if(this.humanPlayer === '1') {
-      message = 'See here these minin’ sites changed when all the rails surroundin’ them belonged to the Machine.<br><br>Well this is how either miner gets exclusive minin’ rights to these sites.<br><br>These captured sites give the Machine 1 point for each captured site AND can get as many gems of these colors as it has mining markers on the captured sites before each turn.<br><br>See also that only the Machine can now get gems from the site that was exhausted just before.';
+      message = 'See how these Sites changed when the opponent surrounded them with Paths on all sides?<br><br>This is how you can get exclusive mining rights to these Sites!<br><br>These captured Sites are gonna give your opponent 1 point a piece. Plus, only your opponent can get Gems from those Sites now.';
       if (this.gameManager.getBoard().branches[27].getOwner() === 'NONE')
       {
         this.gameManager.applyMove(";;27");
@@ -735,7 +772,7 @@ export class GuidedTutorialService {
     let message='';
     // more capture explaination
     if(this.humanPlayer === '1') {
-      message = 'If you had any or put a pickaxe touchin\' a captured site later you won’t be gettin’ any more gems from that site at the beginning of your turn.<br><br>Now remember to capture a group of sites, you cain’t have your opponents rails inside the group, but once the claiming’s been done your opponent ain’t gonna be able to put any rails inside that captured set either!';
+      message = 'If you had any Tools on a Site that gets claimed by your opponent, you won’t be gettin’ any more Gems from that Site.<br><br>To claim a group of Sites, you cain’t have your opponent\'s Paths inside the group. But once the claimin’s been done, your opponent ain’t gonna be able to put any Paths inside the group either!';
       this.highlightNext();
 
     }
@@ -744,10 +781,15 @@ export class GuidedTutorialService {
 
   messageTwentyThree():string {
     let message='';
-    // options menu
+    // more capture explaination
     if(this.humanPlayer === '1') {
-      message = 'Need more help or want to change the settings? Click the pause button in the tip left corner for more options.';
-      this.highlightNext();
+      message = 'Your turn to try your hand at claimin\' a Site! Click on the highlighted Paths to tie up the scores.';
+
+      if(this.moveNum === 23)
+      {
+        this.highlightManager();
+        this.freezeNext = true; 
+      }
 
     }
     return message;
@@ -755,9 +797,20 @@ export class GuidedTutorialService {
 
   messageTwentyFour():string {
     let message='';
+    // options menu
+    if(this.humanPlayer === '1') {
+      message = 'Need more help or want to change the settings? Click the "Pause" button in the upper-left corner for more options.';
+      this.highlightNext();
+
+    }
+    return message;
+  }
+
+  messageTwentyFive():string {
+    let message='';
     // end of tutorial
     if(this.humanPlayer === '1') {
-      message = 'Seems like you’ve got a good handle on how we do things down here in the mine. Time to see how you do on your own.<br><br>First player to 10 points wins gold. Good luck, Prospector!<br><br>Click "Next" to end the tutorial.';
+      message = 'Seems like you’ve got a good handle on how we do things down here in the mine! Time to see how you do on your own.<br><br>First player to 10 points wins gold. Good luck, Prospector!<br><br>Click "Next" to end the Tutorial then go on an\' click "End Turn" when you\'re ready.';
       this.highlightNext();
 
     }

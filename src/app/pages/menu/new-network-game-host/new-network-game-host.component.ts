@@ -4,6 +4,8 @@ import { LocalStorageService } from '../../../shared/services/local-storage/loca
 import { GameNetworkingService } from '../../networking/game-networking.service';
 import { MatchmakingService } from '../../networking/matchmaking.service';
 import { interval, Subscription } from 'rxjs';
+import { ValidInputCheck } from '../valid-input-check';
+import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 
 @Component({
   selector: 'app-new-network-game-host',
@@ -20,6 +22,10 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   public isSettingUpGame = true;
   public isWaitingForPlayer = false;
   public selectedLocation: number;
+  public listeners: Array<Subscription>;
+  public validInputCheck: ValidInputCheck;
+  public explainationPopUp: boolean;
+
 
   public readonly playerOneFirst = 'You Go First';
   public readonly playerTwoFirst = 'Opponent Goes First';
@@ -28,10 +34,14 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     private readonly storageService: LocalStorageService,
     private readonly routerService: Router,
     private readonly networkingService: GameNetworkingService,
-    private readonly matchmakingService: MatchmakingService
+    private readonly matchmakingService: MatchmakingService,
+    private readonly soundService: SoundService
   ) {
+    this.listeners = new Array<Subscription>();
     this.firstPlayer = this.playerOneFirst;
     this.isHostFirst = true;
+    this.validInputCheck = new ValidInputCheck(this.storageService);
+    this.explainationPopUp = false;
 
     this.storageService.setContext('game');
     //this.storageService.store('firstPlayer', this.firstPlayer);
@@ -51,19 +61,22 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.matchmakingService.initialize(this.username);
     this.networkingService.createTCPServer();
 
-    this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
+    this.listeners.push(this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
       console.log("A opponent has connected");
       this.storageService.update('oppUsername', oppUsername);
       this.isWaitingForPlayer = false;
       this.subscription.unsubscribe();
+      this.soundService.clear();
       this.routerService.navigate(['/game']);
-    });
+    }));
   }
 
   ngOnDestroy(): void {
+    this.listeners.forEach(listener => listener.unsubscribe());
     if(this.isWaitingForPlayer)
     {
       this.subscription.unsubscribe();
+      this.networkingService.cancelGame();
     }
   }
 
@@ -81,10 +94,22 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
 
   startHosting(): void {
     // Set board seed before hosting begins
+    if(this.boardSeed !== undefined && this.boardSeed !== ''){
+      const boardString = this.validInputCheck.checkBoardSeed(this.boardSeed);
+      if(boardString !== '0') {
+        this.storageService.update('board-seed', boardString);
+      }
+      else {
+        this.boardSeed = '';
+        return;
+      }
+    }
     this.storageService.update('isHost', 'true');
-    this.storageService.update('board-seed', this.boardSeed);
+    //this.storageService.update('board-seed', this.boardSeed);
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
+    
+    this.networkingService.resetRoom();
 
     if(this.isHostFirst)
     {
@@ -109,6 +134,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.isWaitingForPlayer = false;
     this.isSettingUpGame = true;
     this.subscription.unsubscribe();
+    this.networkingService.cancelGame();
   }
 
   selectLocation(clicked: number): void {
@@ -122,5 +148,17 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     } else {
       return 'border-gray-900';
     }
+  }
+
+  explainBoardSeed():void {
+    this.explainationPopUp = true;
+  }
+
+  dynamicClass():string {
+    if (this.validInputCheck.validBoard === false && this.boardSeed===''){
+      return 'boardSeed-error';
+    }
+    this.validInputCheck.validBoard = true;
+    return '';
   }
 }
