@@ -58,7 +58,7 @@ export class ManagerService {
   public tradedResources: string[];
 
   // keeps track of human player's moves (used for AI & Networking)
-  public stack: Array<Array<string | number>> = [];
+  public stack: Array<Array<string | number>>;
 
   public readonly commLink = new Subject<CommPackage>();
 
