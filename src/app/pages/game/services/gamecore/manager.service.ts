@@ -342,8 +342,12 @@ export class ManagerService {
     console.log(this.boardString);
   }
 
+  sleep(ms:number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   // takes string from Networking/AI and places move in local gameBoard
-  applyMove(moveString: string): void {
+  async applyMove(moveString: string): Promise<void> {
     let currentPlayer;
     if (this.playerOne.type === PlayerType.HUMAN) {
       currentPlayer = this.playerTwo;
@@ -368,18 +372,33 @@ export class ManagerService {
     // initial placements
     if (currentPlayer.ownedBranches.length < 2) {
       this.initialNodePlacements(moveToPlace.nodesPlaced[0], currentPlayer);
+      this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+
+      //pause between placing pieces
+      await this.sleep(1000);
+
       this.initialBranchPlacements(moveToPlace.nodesPlaced[0], moveToPlace.branchesPlaced[0], currentPlayer);
+      this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
     } else {
       // process general branch placements
       for (let i = 0; i < moveToPlace.branchesPlaced.length; i++) {
-        this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
-        setTimeout(()=>{},1000);
+        this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer); 
+        this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+
+        //pause between placing pieces
+        await this.sleep(1000);       
       }
 
       // process general node placements
       for (let i = 0; i < moveToPlace.nodesPlaced.length; i++) {
         this.generalNodePlacement(moveToPlace.nodesPlaced[i], currentPlayer);
+        this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+        if(i < moveToPlace.nodesPlaced.length-1){
+          //pause between placing pieces
+          await this.sleep(1000);
+        }
       }
+      this.endTurn(currentPlayer);
     }
 
     this.endTurn(currentPlayer);
@@ -717,8 +736,10 @@ export class ManagerService {
     // evaluates whether a winner ought to be determined
     if (this.playerOne.currentScore >= 10 || this.playerTwo.currentScore >= 10) {
       if (this.playerOne.currentScore > this.playerTwo.currentScore) {
+        this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
         this.commLink.next({ code: CommCode.END_GAME, player: this.playerOne, magic: 'Player One' });
       } else {
+        this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
         this.commLink.next({ code: CommCode.END_GAME, player: this.playerTwo, magic: 'Player Two' });
       }
     } else {
