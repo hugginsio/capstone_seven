@@ -49,12 +49,13 @@ export class HelpSlideshowComponent {
   }
 
   startGuidedTutorial(event: ClickEvent):void {
-    //const button = event.target.id;
-
+    this.storageService.setContext('game');
+    this.storageService.update('firstplayer', '1');
+    this.storageService.update('ai-difficulty', 'easy');
+    this.storageService.update('mode', 'pva');
     this.storageService.update('guided-tutorial', 'true');
 
     this.routerService.navigate(['/game']);
-
   }
 
   tableOfContents(num: number):void{
