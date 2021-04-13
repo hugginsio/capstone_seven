@@ -48,6 +48,11 @@
           <p>{{ this.firstPlayer }}</p>
         </div>
       </div>
+          <div class="menu-btn w-full" (click)="changePlayerTheme()" boombox="button">
+            <div>
+              <p>{{ this.playerOneTheme === 'miner' ? this.playerThemeOne : this.playerThemeTwo }}</p>
+            </div>
+          </div>
       <div class="menu-btn w-full" (click)="this.advancedOpts = !this.advancedOpts" boombox="button">
         <div>
           <p>Advanced Options...</p>

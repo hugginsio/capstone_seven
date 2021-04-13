@@ -16,29 +16,28 @@ export class NewLocalGameComponent {
   public advancedOpts: boolean;
   public aiDifficultyString: string;
   public boardSeed: string;
+  public explainationPopUp: boolean;
   public gameModeString: string;
   public guidedTutorial: boolean;
-  public playerOrder: number;
   public playerOneTheme: string;
+  public playerOrder: number;
   public selectedLocation: number;
   public validInputCheck: ValidInputCheck;
-  public explainationPopUp: boolean;
 
   public readonly aiEasy = "Easy";
-  public readonly aiMedium = "Medium";
   public readonly aiHard = "Hard";
+  public readonly aiMedium = "Medium";
   public readonly playerOrderOne = "Player Goes First";
   public readonly playerOrderTwo = "AI Goes First";
-  public readonly pva = "Player vs. AI";
-  public readonly pvp = "Player vs. Player";
   public readonly playerThemeOne = "Player One is Miner";
   public readonly playerThemeTwo = "Player One is Machine";
+  public readonly pva = "Player vs. AI";
+  public readonly pvp = "Player vs. Player";
 
   constructor(
-    private readonly storageService: LocalStorageService,
     private readonly routerService: Router,
-    //private readonly snackbarService: SnackbarService
-    private readonly soundService: SoundService
+    private readonly soundService: SoundService,
+    private readonly storageService: LocalStorageService
   ) {
     // Initialize datastore to game context
     storageService.setContext('game');
