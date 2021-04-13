@@ -53,6 +53,16 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.matchmakingService.initialize(this.username);
+    this.networkingService.createTCPServer();
+
+    this.listeners.push(this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
+      console.log("A opponent has connected");
+      this.storageService.update('oppUsername', oppUsername);
+      this.isWaitingForPlayer = false;
+      this.subscription.unsubscribe();
+      this.soundService.clear();
+      this.routerService.navigate(['/game']);
+    }));
   }
 
   ngOnDestroy(): void {
@@ -83,17 +93,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
     
-    this.networkingService.createTCPServer();
     this.networkingService.resetRoom();
-
-    this.listeners.push(this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
-      console.log("A opponent has connected");
-      this.storageService.update('oppUsername', oppUsername);
-      this.isWaitingForPlayer = false;
-      this.subscription.unsubscribe();
-      this.soundService.clear();
-      this.routerService.navigate(['/game']);
-    }));
 
     if(this.isHostFirst)
     {
