@@ -12,8 +12,6 @@ import { LocalStorageService } from '../../../../shared/services/local-storage/l
 import { GameNetworkingService } from '../../../networking/game-networking.service';
 import { NetworkGameSettings } from '../../../../../../backend/NetworkGameSettings';
 import { AiMethods } from '../../interfaces/worker.interface';
-import { time } from 'console';
-
 
 @Injectable({
   providedIn: 'root'

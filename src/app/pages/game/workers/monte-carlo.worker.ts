@@ -123,17 +123,3 @@ function getBestMove(moves:string[]):string{
   console.log(scores);
   return maxMove;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
