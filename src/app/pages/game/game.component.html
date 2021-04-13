@@ -234,17 +234,17 @@
             <div class="w-1/4 bg-black relative border-4 border-gray-600">
               <span class="flex w-full h-full absolute items-start justify-center text-4xl pt-1">+{{ this.winningPlayer.numNodesPlaced }}</span>
               <span class="flex w-full h-full absolute items-end justify-center uppercase font-normal pb-1">Tools Placed</span>
-              <img src="/assets/game/Resource-Red.png" class="w-full h-full opacity-0" draggable="false"/>
+              <img src="/assets/game/resources/Red-Resource-Tile.png" class="w-full h-full opacity-0" draggable="false"/>
             </div>
             <div class="w-1/4 bg-black relative border-4 border-gray-600">
               <span class="flex w-full h-full absolute items-start justify-center text-4xl pt-1">+{{ this.winningPlayer.numTilesCaptured }}</span>
               <span class="flex w-full h-full absolute items-end justify-center uppercase font-normal pb-1">Sites Captured</span>
-              <img src="/assets/game/Resource-Red.png" class="w-full h-full opacity-0" draggable="false"/>
+              <img src="/assets/game/resources/Red-Resource-Tile.png" class="w-full h-full opacity-0" draggable="false"/>
             </div>
             <div class="w-1/4 bg-black relative border-4 border-gray-600" *ngIf="this.winningPlayer.hasLongestNetwork">
               <span class="flex w-full h-full absolute items-start justify-center text-4xl pt-1">+2</span>
               <span class="flex w-full h-full absolute items-end justify-center uppercase font-normal pb-1">Longest Path</span>
-              <img src="/assets/game/Resource-Red.png" class="w-full h-full opacity-0" draggable="false"/>
+              <img src="/assets/game/resources/Red-Resource-Tile.png" class="w-full h-full opacity-0" draggable="false"/>
             </div>
           </div>
           <p class="text-2xl font-normal">{{ this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE' ? 'Player One' : 'Player Two' }}'s largest set of connectin' paths was {{ this.winningPlayer.currentLongest }}.</p>
