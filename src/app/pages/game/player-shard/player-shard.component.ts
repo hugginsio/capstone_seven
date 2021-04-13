@@ -4,6 +4,9 @@ import { Player } from '../classes/gamecore/game.class.Player';
 import { CommPackage } from '../interfaces/game.interface';
 import { CommCode } from '../interfaces/game.enum';
 import { PlayerType } from '../enums/game.enums';
+import { GuidedTutorialService } from '../services/guided-tutorial/guided-tutorial.service';
+import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
+
 
 @Component({
   selector: 'app-player-shard',
@@ -17,50 +20,55 @@ export class PlayerShardComponent implements OnInit {
   @Input() currentPlayer: boolean;
   @Input() actionSubject: Subject<CommPackage>;
   @Input() isConnected: boolean;
+  @Input() stackLength: number;
+  @Input() canTrade: boolean;
 
-  constructor() { }
+  constructor(
+    public guidedTutorial: GuidedTutorialService,
+    private readonly storageService: LocalStorageService
+  ) { }
 
   ngOnInit(): void { }
 
-  getDynamicClass(): string {
+  getDynamicClass(btn: string): string {
     let btnClass = "";
-    if(this.playerDetail?.type !== PlayerType.HUMAN)
-    {
+    if (this.playerDetail?.type !== PlayerType.HUMAN) {
       btnClass = "button-hidden";
     }
-    else if(!this.currentPlayer)
+    else if (this.storageService.fetch('guided-tutorial') === "true" && btn === this.guidedTutorial.playerShardBtn) 
+    {
+      btnClass = "selected-GT";
+    }
+    else if(!this.currentPlayer || (btn === 'endTurnBtn' && !this.isConnected) || (btn === 'undoBtn' && this.stackLength === 0)
+    || (btn === 'tradeBtn' && !this.canTrade))
     {
       btnClass = "button-disabled";
     }
-    else if(this.currentPlayer)
-    {
+    else if (this.currentPlayer) {
       btnClass = "button-std";
     }
     return btnClass;
     //return `${this.currentPlayer ? 'button-std' : 'button-disabled'} ${this.playerDetail?.type !== PlayerType.HUMAN ? 'button-hidden' : ''}`;
   }
 
-  getEndTurnClass(): string {
+  /*getEndTurnClass(): string {
     let btnClass = "";
-    if(this.playerDetail?.type !== PlayerType.HUMAN)
-    {
+    if (this.playerDetail?.type !== PlayerType.HUMAN) {
       btnClass = "button-hidden";
     }
-    else if(!this.currentPlayer || !this.isConnected)
-    {
+    else if (!this.currentPlayer || !this.isConnected) {
       btnClass = "button-disabled";
     }
-    else if(this.currentPlayer)
-    {
+    else if (this.currentPlayer) {
       btnClass = "button-std";
     }
     return btnClass;
-  }
+  }*/
 
   generateMessage(action: CommCode): CommPackage {
     return {
       code: action,
-      player: this.playerDetail 
+      player: this.playerDetail
     };
   }
 

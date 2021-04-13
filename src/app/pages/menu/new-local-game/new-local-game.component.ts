@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
+import { ValidInputCheck } from '../valid-input-check';
+//import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
+//import { ClickEvent } from '../../game/interfaces/game.interface';
+
 
 @Component({
   selector: 'app-new-local-game',
@@ -16,6 +20,8 @@ export class NewLocalGameComponent {
   public guidedTutorial: boolean;
   public playerOrder: number;
   public selectedLocation: number;
+  public validInputCheck: ValidInputCheck;
+  public explainationPopUp: boolean;
 
   public readonly aiEasy = "Easy";
   public readonly aiMedium = "Medium";
@@ -28,16 +34,22 @@ export class NewLocalGameComponent {
   constructor(
     private readonly storageService: LocalStorageService,
     private readonly routerService: Router,
+    //private readonly snackbarService: SnackbarService
     private readonly soundService: SoundService
   ) {
     // Initialize datastore to game context
     storageService.setContext('game');
 
+    this.storageService.update('mode', 'pva');
     this.gameModeString = this.storageService.fetch('mode') === 'pvp' ? this.pvp : this.pva;
     this.aiDifficultyString = this.storageService.fetch('ai-difficulty') === 'easy' ? this.aiEasy : this.aiMedium;
     this.advancedOpts = false;
     this.guidedTutorial = false;
+    this.storageService.update('guided-tutorial', 'false');
     this.playerOrder = this.storageService.fetch('firstplayer') === '1' ? 1 : 2;
+    this.validInputCheck = new ValidInputCheck(this.storageService);
+    this.explainationPopUp = false;
+
 
     const storedLocation =  this.storageService.fetch('location');
     if (storedLocation === 'bg3') {
@@ -75,23 +87,19 @@ export class NewLocalGameComponent {
       this.aiDifficultyString = this.aiEasy;
     }
 
-    if(this.aiDifficultyString !== this.aiEasy) {
-      this.guidedTutorial = false;
-      this.storageService.update('guided-tutorial', 'false');
-    }
-
     // Update datastore
     this.storageService.update('ai-difficulty', this.aiDifficultyString.toLowerCase());
 
-    // Disable guided tutorial if not PVA && aiEasy
-    if (this.aiDifficultyString !== this.aiEasy) {
-      this.storageService.update('guided-tutorial', 'false');
-    }
   }
 
   changeTutorialSetting(): void {
     // Update UI
     this.guidedTutorial = !this.guidedTutorial;
+
+    if(this.guidedTutorial === true && this.storageService.fetch('firstplayer') !== '1')
+    {
+      this.storageService.update('firstplayer', '1');
+    }
 
     // Update datastore
     this.storageService.update('guided-tutorial', this.guidedTutorial.toString());
@@ -103,7 +111,18 @@ export class NewLocalGameComponent {
   startGame(): void {
     // Set board seed before routing if not tutorial
     if (!this.guidedTutorial) {
-      this.storageService.update('board-seed', this.boardSeed);
+      if(this.boardSeed !== undefined && this.boardSeed !== ''){
+        const boardString = this.validInputCheck.checkBoardSeed(this.boardSeed);
+        if(boardString !== '0') {
+          this.storageService.update('board-seed', boardString);
+        }
+        else {
+          // display error message
+          //this.snackbarService.add({ message: 'Invalid input for Board Seed. Enter valid input or start the game with a random board.' });
+          this.boardSeed = '';
+          return;
+        }
+      }
     }
 
     this.soundService.clear();
@@ -126,5 +145,24 @@ export class NewLocalGameComponent {
   changePlayerOrder(): void {
     this.playerOrder = this.playerOrder === 1 ? 2 : 1;
     this.storageService.update('firstplayer', this.playerOrder.toString());
+
+    if(this.playerOrder === 2)
+    {
+      this.guidedTutorial = false;
+      this.storageService.update('guided-tutorial', 'false');
+    }
   }
+
+  explainBoardSeed():void {
+    this.explainationPopUp = true;
+  }
+
+  dynamicClass():string {
+    if (this.validInputCheck.validBoard === false && this.boardSeed===''){
+      return 'boardSeed-error';
+    }
+    this.validInputCheck.validBoard = true;
+    return '';
+  }
+  
 }

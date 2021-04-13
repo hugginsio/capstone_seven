@@ -30,6 +30,10 @@
   .submenu-footer {
     @apply flex flex-col items-center justify-center mx-auto w-full p-4 border-t border-gray-900 absolute bottom-0 bg-black bg-opacity-75;
   }
+
+  .boardSeed-error {
+    @apply border-4 border-red-600;
+  }
 }
 
 .background-btn {

@@ -15,6 +15,7 @@ describe('ManagerService', () => {
   });
 
   it('serializeStack should translate the stack into a string', () => {
+    service.Initialize();
     const expectedString = 'R,G,B,Y;1,2,3;4,5,6';
     service.tradedResources = ['R', 'G', 'B'];
     service.selectedTrade = 'Y';
