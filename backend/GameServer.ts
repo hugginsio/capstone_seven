@@ -17,7 +17,7 @@ export class GameServer {
         origin: true,
         credentials: true
       },
-      pingTimeout: 1000,
+      pingTimeout: 3000,
       pingInterval: 1500
     });
     
