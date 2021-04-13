@@ -77,13 +77,13 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.gameManager.Initialize();
 
     if (this.storageService.fetch('guided-tutorial') === 'true'
-      && this.storageService.fetch('mode') === 'pva'
-      && this.storageService.fetch('ai-difficulty') === 'easy') {
+      && this.storageService.fetch('mode') === 'pva') {
       // chatbox bool
       this.isTutorial = true;
       // my bool
       this.guidedTutorialCheck = true;
       this.guidedTutorial.setTutorialBoard();
+      this.guidedTutorial.resetStepAndMoveNum();
     }
 
     // Subscribe to own communications link
@@ -223,7 +223,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (this.isTutorial === true) {
+    if (this.storageService.fetch('guided-tutorial') === 'true') {
       const message = this.guidedTutorial.startTutorial();
       this.appendMessage(message);
       // why is this not showing up?
@@ -387,7 +387,10 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   executeTrade(): void {
-    if (this.tradingModel.selectedResource === 0) {
+    if (this.tradingModel.redResources + this.tradingModel.blueResources + this.tradingModel.greenResources + this.tradingModel.yellowResources !== 3) {
+      this.snackbarService.add({ message: "Select three resources to trade away." });
+    }
+    else if (this.tradingModel.selectedResource === 0) {
       this.snackbarService.add({ message: "Select a resource to receive." });
     }
     else if (this.isTutorial) {
@@ -481,6 +484,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     const button = event.target.id;
     const step = this.guidedTutorial.getstepNum();
     let message = "";
+
     if (button === 'GT-Back' && step > 1) {
       this.clearMessage();
       this, this.guidedTutorial.falseFreezeNext();
@@ -559,6 +563,14 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     return btnClass;
   }
 
+  dynamicGTBox():string {
+    if (this.isTutorial && this.isTrading){
+      return 'z-inf';
+    }
+
+    return '';
+  }
+
   playAgain(): void {
     if (this.isNetwork) {
       this.routerService.navigate(['/menu/new/online']);
@@ -573,5 +585,27 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.networkingService.leaveGame();
     }
     this.routerService.navigate(['/menu/landing']);
+  }
+
+  getCanTrade(): boolean {
+    if (this.gameManager.getCurrentPlayer().numNodesPlaced < 2 || 
+    this.gameManager.getCurrentPlayer().ownedBranches.length < 2) {
+      return false;
+    }
+    else if((this.gameManager.getCurrentPlayer().blueResources 
+    + this.gameManager.getCurrentPlayer().redResources 
+    + this.gameManager.getCurrentPlayer().yellowResources
+    + this.gameManager.getCurrentPlayer().greenResources) < 3)
+    {
+      return false;
+    }
+    else if (this.gameManager.getCurrentPlayer().hasTraded)
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
   }
 }

@@ -4,6 +4,7 @@ import { LocalStorageService } from '../../../shared/services/local-storage/loca
 import { GameNetworkingService } from '../../networking/game-networking.service';
 import { MatchmakingService } from '../../networking/matchmaking.service';
 import { interval, Subscription } from 'rxjs';
+import { ValidInputCheck } from '../valid-input-check';
 import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 
 @Component({
@@ -22,6 +23,9 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   public isWaitingForPlayer = false;
   public selectedLocation: number;
   public listeners: Array<Subscription>;
+  public validInputCheck: ValidInputCheck;
+  public explainationPopUp: boolean;
+
 
   public readonly playerOneFirst = 'You Go First';
   public readonly playerTwoFirst = 'Opponent Goes First';
@@ -36,6 +40,8 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.listeners = new Array<Subscription>();
     this.firstPlayer = this.playerOneFirst;
     this.isHostFirst = true;
+    this.validInputCheck = new ValidInputCheck(this.storageService);
+    this.explainationPopUp = false;
 
     this.storageService.setContext('game');
     //this.storageService.store('firstPlayer', this.firstPlayer);
@@ -88,8 +94,18 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
 
   startHosting(): void {
     // Set board seed before hosting begins
+    if(this.boardSeed !== undefined && this.boardSeed !== ''){
+      const boardString = this.validInputCheck.checkBoardSeed(this.boardSeed);
+      if(boardString !== '0') {
+        this.storageService.update('board-seed', boardString);
+      }
+      else {
+        this.boardSeed = '';
+        return;
+      }
+    }
     this.storageService.update('isHost', 'true');
-    this.storageService.update('board-seed', this.boardSeed);
+    //this.storageService.update('board-seed', this.boardSeed);
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
     
@@ -132,5 +148,17 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     } else {
       return 'border-gray-900';
     }
+  }
+
+  explainBoardSeed():void {
+    this.explainationPopUp = true;
+  }
+
+  dynamicClass():string {
+    if (this.validInputCheck.validBoard === false && this.boardSeed===''){
+      return 'boardSeed-error';
+    }
+    this.validInputCheck.validBoard = true;
+    return '';
   }
 }
