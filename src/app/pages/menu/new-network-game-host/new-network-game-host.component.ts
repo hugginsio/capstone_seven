@@ -22,6 +22,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   public isSettingUpGame = true;
   public isWaitingForPlayer = false;
   public selectedLocation: number;
+  public listeners: Array<Subscription>;
   public validInputCheck: ValidInputCheck;
   public explainationPopUp: boolean;
 
@@ -36,6 +37,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     private readonly matchmakingService: MatchmakingService,
     private readonly soundService: SoundService
   ) {
+    this.listeners = new Array<Subscription>();
     this.firstPlayer = this.playerOneFirst;
     this.isHostFirst = true;
     this.validInputCheck = new ValidInputCheck(this.storageService);
@@ -57,9 +59,20 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.matchmakingService.initialize(this.username);
+    this.networkingService.createTCPServer();
+
+    this.listeners.push(this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
+      console.log("A opponent has connected");
+      this.storageService.update('oppUsername', oppUsername);
+      this.isWaitingForPlayer = false;
+      this.subscription.unsubscribe();
+      this.soundService.clear();
+      this.routerService.navigate(['/game']);
+    }));
   }
 
   ngOnDestroy(): void {
+    this.listeners.forEach(listener => listener.unsubscribe());
     if(this.isWaitingForPlayer)
     {
       this.subscription.unsubscribe();
@@ -96,17 +109,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
     
-    this.networkingService.createTCPServer();
     this.networkingService.resetRoom();
-
-    this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
-      console.log("A opponent has connected");
-      this.storageService.update('oppUsername', oppUsername);
-      this.isWaitingForPlayer = false;
-      this.subscription.unsubscribe();
-      this.soundService.clear();
-      this.routerService.navigate(['/game']);
-    });
 
     if(this.isHostFirst)
     {

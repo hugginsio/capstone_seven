@@ -39,11 +39,11 @@
       <div class="menu-btn w-1/4" [ngClass]="setButtons()" (click)="refresh()">
         <p>Refresh List</p>
       </div>
-      <div class="menu-btn w-1/4" [ngClass]="setButtons()" routerLink="/menu/new/online/host">
-        <p>Host Game</p>
-      </div>
       <div class="menu-btn w-1/4" [ngClass]="setButtons()" (click)="this.isEnteringName = true">
         <p>Change Name</p>
+      </div>
+      <div class="menu-btn w-1/4" [ngClass]="setButtons()" routerLink="/menu/new/online/host">
+        <p>Host Game</p>
       </div>
     </div>
   </div>
@@ -72,9 +72,9 @@
   *ngIf="this.isServerError">
   <div class="flex flex-row items-center content-center h-full">
     <div class="mx-auto flex flex-col space-y-4 w-2/3 max-w-md">
-      <div class="bg-black border-4 border-gray-600 p-4">
+      <div class="bg-black border-4 border-gray-600 p-4 w-full">
         <p class="text-5xl font-bold tracking-wide p-4">Something Went Wrong</p>
-        <p class="text-5xl font-bold tracking-wide p-4">Please Restart the App and Try Again</p>
+        <p class="text-4xl font-bold tracking-wide p-4">Please Restart the App and Try Again</p>
         <div class="menu-btn text-xl" routerLink="/menu/landing">
           OK
         </div>
