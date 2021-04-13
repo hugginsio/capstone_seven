@@ -161,7 +161,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP);
+    // this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP);
 
     if (this.storageService.fetch('mode') === "net") {
       this.isNetwork = true;
@@ -340,13 +340,16 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       if (pieceType === 'node') {
         if (player.numNodesPlaced === 0) {
           this.gameManager.initialNodePlacements(pieceId, player);
+          this.playerClickSound('node');
         } else if (player.numNodesPlaced === 1 && player.ownedBranches?.length !== 1) {
           this.snackbarService.add({ message: 'You must place a branch.' });
         } else if (player.numNodesPlaced === 1 && player.ownedBranches.length === 1) {
           this.gameManager.initialNodePlacements(pieceId, player);
+          this.playerClickSound('node');
         } else if (player.numNodesPlaced >= 2 && player.ownedBranches.length >= 2) {
           // They have placed initial nodes, place normally
           this.gameManager.generalNodePlacement(pieceId, player);
+          this.playerClickSound('node');
         }
       } else if (pieceType === 'branch') {
         if (player.numNodesPlaced === 0) {
@@ -360,6 +363,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
           });
 
           this.gameManager.initialBranchPlacements(relatedNode, pieceId, player);
+          this.playerClickSound('branch');
           // they finished their first initial placement, next player's turn
         } else if (player.numNodesPlaced === 2 && player.ownedBranches.length === 1) {
           let relatedNode = -1;
@@ -375,9 +379,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
           });
 
           this.gameManager.initialBranchPlacements(relatedNode, pieceId, player);
+          this.playerClickSound('branch');
         } else if (player.numNodesPlaced >= 2 && player.ownedBranches.length >= 2) {
           // They have placed their initial branches, place normally
           this.gameManager.generalBranchPlacement(pieceId, player);
+          this.playerClickSound('branch');
         }
       }
     } else {
@@ -386,6 +392,19 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     // console.warn(this.gameManager.getBoard());
+  }
+
+  playerClickSound(type: 'node' | 'branch'): void {
+    const playerTheme = this.gameManager.getCurrentPlayer().type;
+    let fxId = 'pickaxe';
+
+    if (playerTheme === PlayerType.HUMAN && type === 'node') {
+      fxId = 'pickaxe';
+    } else if (playerTheme === PlayerType.HUMAN && type === 'branch') {
+      fxId = 'minetrack';
+    }
+    
+    this.soundService.add(`/assets/sound/fx/${fxId}.wav`, SoundEndAction.DIE);
   }
 
   togglePaused(): void {
@@ -524,7 +543,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.storageService.update("guided-tutorial", "false");
     //this.tradingModel.isTutorial = false;
   }
-  
+
   copyBoardSeed(): void {
     const boardSeed = this.gameManager.boardString;
     const temporarySelectBox = document.createElement('textarea');
@@ -584,25 +603,19 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getBranchSrc(): string {
     let asset = "/assets/game/branches/Horizontal-Track-";
-    if(this.gameManager.getCurrentGameMode() === GameType.HUMAN)
-    {
-      if(this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE')
-      {
+    if (this.gameManager.getCurrentGameMode() === GameType.HUMAN) {
+      if (this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE') {
         asset += "Orange-Miner.png";
       }
-      else
-      {
+      else {
         asset += "Purple-Miner.png";
       }
     }
-    else
-    {
-      if(this.gameManager.getPlayerOne().type === PlayerType.HUMAN)
-      {
+    else {
+      if (this.gameManager.getPlayerOne().type === PlayerType.HUMAN) {
         asset += "Orange-Miner.png";
       }
-      else
-      {
+      else {
         asset += "Purple-Miner.png";
       }
     }
@@ -611,25 +624,19 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getNodeSrc(): string {
     let asset = "/assets/game/nodes/";
-    if(this.gameManager.getCurrentGameMode() === GameType.HUMAN)
-    {
-      if(this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE')
-      {
+    if (this.gameManager.getCurrentGameMode() === GameType.HUMAN) {
+      if (this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE') {
         asset += "Orange-Node-Pickaxe.png";
       }
-      else
-      {
+      else {
         asset += "Purple-Node-Pickaxe.png";
       }
     }
-    else
-    {
-      if(this.gameManager.getPlayerOne().type === PlayerType.HUMAN)
-      {
+    else {
+      if (this.gameManager.getPlayerOne().type === PlayerType.HUMAN) {
         asset += "Orange-Node-Pickaxe.png";
       }
-      else
-      {
+      else {
         asset += "Purple-Node-Pickaxe.png";
       }
     }

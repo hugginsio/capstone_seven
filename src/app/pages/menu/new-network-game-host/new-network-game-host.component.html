@@ -20,7 +20,7 @@
       <div class="flex w-full space-x-4">
         <div
           class="border-4 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100 relative bg-gray-900 border-transparent"
-          [ngClass]="isLocSelected(1)" (click)="selectLocation(1)">
+          [ngClass]="isLocSelected(1)" (click)="selectLocation(1)" boombox="button">
           <img src="/assets/menu/thumbs/bg1.png" class="opacity-90" />
           <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
             <p>Cavernous Caves</p>
@@ -28,7 +28,7 @@
         </div>
         <div
           class="border-4 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100 relative bg-gray-900 border-transparent"
-          [ngClass]="isLocSelected(2)" (click)="selectLocation(2)">
+          [ngClass]="isLocSelected(2)" (click)="selectLocation(2)" boombox="button">
           <img src="/assets/menu/thumbs/bg2.png" class="opacity-90" />
           <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
             <p>Lava Lakes</p>
@@ -36,19 +36,19 @@
         </div>
         <div
           class="border-4 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100 relative bg-gray-900 border-transparent"
-          [ngClass]="isLocSelected(3)" (click)="selectLocation(3)">
+          [ngClass]="isLocSelected(3)" (click)="selectLocation(3)" boombox="button">
           <img src="/assets/menu/thumbs/bg3.png" class="opacity-90" />
           <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
             <p>Oceanic Opportunity</p>
           </div>
         </div>
       </div>
-      <div class="menu-btn w-full" (click)="changeFirstPlayer()">
+      <div class="menu-btn w-full" (click)="changeFirstPlayer()" boombox="button">
         <div>
           <p>{{ this.firstPlayer }}</p>
         </div>
       </div>
-      <div class="menu-btn w-full" (click)="this.advancedOpts = !this.advancedOpts">
+      <div class="menu-btn w-full" (click)="this.advancedOpts = !this.advancedOpts" boombox="button">
         <div>
           <p>Advanced Options...</p>
         </div>
@@ -64,17 +64,17 @@
   </div>
   <div class="submenu-footer">
     <div class="flex space-x-4 w-2/3">
-      <div class="menu-btn w-1/2" routerLink="/menu/new/online">
+      <div class="menu-btn w-1/2" routerLink="/menu/new/online" boombox="button">
         <div>
           <p>Back</p>
         </div>
       </div>
-      <div class="menu-btn w-1/2" (click)="startHosting()" *ngIf="isSettingUpGame">
+      <div class="menu-btn w-1/2" (click)="startHosting()" *ngIf="isSettingUpGame" boombox="button">
         <div>
           <p>Start Hosting</p>
         </div>
       </div>
-      <div class="menu-btn w-1/2" (click)="cancelHosting()" *ngIf="isWaitingForPlayer">
+      <div class="menu-btn w-1/2" (click)="cancelHosting()" *ngIf="isWaitingForPlayer" boombox="button">
         <div>
           <p>Cancel</p>
         </div>

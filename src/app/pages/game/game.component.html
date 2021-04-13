@@ -22,25 +22,25 @@
 
   <!-- Top Right Menu Container -->
   <div class="absolute left-3 top-3 flex space-x-3">
-    <div id="Pause" class="menu-btn p-3" (click)="togglePaused()">
+    <div id="Pause" class="menu-btn p-3" (click)="togglePaused()" boombox="button">
       <p>Menu</p>
     </div>
-    <div id="Help" class="menu-btn p-3" (click)="toggleHelp()">
+    <div id="Help" class="menu-btn p-3" (click)="toggleHelp()" boombox="button">
       <p>Help</p>
     </div>
   </div>
 
   <!-- Exchange Rates -->
-  <div class="absolute bottom-8 w-screen flex flex-row justify-center">
+  <div class="absolute bottom-4 w-screen flex flex-row justify-center">
     <div class="border-4 p-2 border-gray-600 bg-gray-900 flex flex-col text-xl">
-      <div class="flex flex-row justify-between items-center space-x-3">
+      <div class="flex flex-row justify-between items-center space-x-2">
         <img src="/assets/game/resources/Red-Resource-Tile.png" draggable="false">
         <p>+</p>
         <img src="/assets/game/resources/Blue-Resource-Tile.png" draggable="false">
         <p>=</p>
         <img [src]="getBranchSrc()" draggable="false">
       </div>
-      <div class="flex flex-row justify-between items-center space-x-3">
+      <div class="flex flex-row justify-between items-center space-x-4">
         <div class="flex flex-row space-x-0">
           <img src="/assets/game/resources/Yellow-Resource-Tile.png" draggable="false">
           <img src="/assets/game/resources/Yellow-Resource-Tile.png" draggable="false">
@@ -78,10 +78,10 @@
       </form>
     
       <div id="tut-controls" class="flex justify-between w-full" *ngIf="this.isTutorial">
-          <div id="GT-Back" (click)="GTBtn($event)" class="menu-btn absolute w-1/3 left-0 pointer-events-auto">
+          <div id="GT-Back" (click)="GTBtn($event)" class="menu-btn absolute w-1/3 left-0 pointer-events-auto" boombox="button">
             Back
           </div>
-          <div id="GT-Next" (click)="GTBtn($event)" class="menu-btn absolute w-1/3 right-0 pointer-events-auto">
+          <div id="GT-Next" (click)="GTBtn($event)" class="menu-btn absolute w-1/3 right-0 pointer-events-auto" boombox="button">
             Next
           </div>
       </div>
@@ -94,23 +94,23 @@
     <div class="flex flex-row items-center content-center h-full">
       <div class="mx-auto flex flex-col space-y-4 w-1/3 max-w-md">
         <p class="text-5xl font-bold tracking-wide p-4">Paused</p>
-        <div class="menu-btn w-full pointer-events-auto" (click)="toggleHelp()">
+        <div class="menu-btn w-full pointer-events-auto" (click)="toggleHelp()" boombox="button">
           <div>
             <p>Help</p>
           </div>
         </div>
-        <div class="menu-btn w-full pointer-events-auto" (click)="copyBoardSeed()">
+        <div class="menu-btn w-full pointer-events-auto" (click)="copyBoardSeed()" boombox="button">
           <div>
             <p>Copy Board Seed</p>
           </div>
         </div>
         <div class="flex space-x-4 w-full">
-          <div class="menu-btn-light w-1/3 pointer-events-auto" routerLink="/menu/landing">
+          <div class="menu-btn-light w-1/3 pointer-events-auto" routerLink="/menu/landing" boombox="button">
             <div>
               <p>Exit</p>
             </div>
           </div>
-          <div class="menu-btn w-1/3 pointer-events-auto" (click)="togglePaused()">
+          <div class="menu-btn w-1/3 pointer-events-auto" (click)="togglePaused()" boombox="button">
             <div>
               <p>Resume</p>
             </div>
@@ -125,7 +125,7 @@
     <div class="flex flex-row items-center content-center h-full">
       <div class="flex flex-col items-center space-y-4 mx-auto w-full">
         <app-help-slideshow></app-help-slideshow>
-        <div class="menu-btn w-1/3 pointer-events-auto" (click)="toggleHelp()">
+        <div class="menu-btn w-1/3 pointer-events-auto" (click)="toggleHelp()" boombox="button">
           <div>
             <p>Back</p>
           </div>
@@ -149,19 +149,19 @@
               this.gameManager.getCurrentPlayer().blueResources === 0 && this.gameManager.getCurrentPlayer().yellowResources === 0">
               <p>You have no resources to trade.</p>
             </div>
-            <div id="1" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().redResources > 0" (click)="tradingModel.increment(1)">
+            <div id="1" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().redResources > 0" (click)="tradingModel.increment(1)" boombox="button">
               <span class="flex w-full h-full absolute items-center justify-center text-3xl">{{ tradingModel.redResources }}</span>
               <img src="/assets/game/resources/Red-Resource-Tile.png" class="w-full h-full" draggable="false" />
             </div>
-            <div id="2" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().greenResources > 0" (click)="tradingModel.increment(2)">
+            <div id="2" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().greenResources > 0" (click)="tradingModel.increment(2)" boombox="button">
               <span class="flex w-full h-full absolute items-center justify-center text-3xl">{{ tradingModel.greenResources }}</span>
               <img src="/assets/game/resources/Green-Resource-Tile.png" class="w-full h-full" draggable="false" />
             </div>
-            <div id="3" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().blueResources > 0" (click)="tradingModel.increment(3)">
+            <div id="3" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().blueResources > 0" (click)="tradingModel.increment(3)" boombox="button">
               <span class="flex w-full h-full absolute items-center justify-center text-3xl">{{ tradingModel.blueResources }}</span>
               <img src="/assets/game/resources/Blue-Resource-Tile.png" class="w-full h-full" draggable="false" />
             </div>
-            <div id="4" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().yellowResources > 0" [ngClass]="tradingModel.dynamicClass(44)" (click)="tradingModel.increment(4)">
+            <div id="4" class="resource-button-trade relative" *ngIf="this.gameManager.getCurrentPlayer().yellowResources > 0" [ngClass]="tradingModel.dynamicClass(44)" (click)="tradingModel.increment(4)" boombox="button">
               <span class="flex w-full h-full absolute items-center justify-center text-3xl">{{ tradingModel.yellowResources }}</span>
               <img src="/assets/game/resources/Yellow-Resource-Tile.png" class="w-full h-full" draggable="false" />
             </div>
@@ -173,26 +173,26 @@
             </svg>
           </div>
           <div class="flex space-x-4">
-            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(1)" (click)="tradingModel.select(1)">
+            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(1)" (click)="tradingModel.select(1)" boombox="button">
               <img src="/assets/game/resources/Red-Resource-Tile.png" class="w-full h-full" draggable="false" />
             </div>
-            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(2)" (click)="tradingModel.select(2)">
+            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(2)" (click)="tradingModel.select(2)" boombox="button">
               <img src="/assets/game/resources/Green-Resource-Tile.png" class="w-full h-full" draggable="false" />
             </div>
-            <div id="blue" class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(3)" (click)="tradingModel.select(3)">
+            <div id="blue" class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(3)" (click)="tradingModel.select(3)" boombox="button">
               <img src="/assets/game/resources/Blue-Resource-Tile.png" class="w-full h-full" draggable="false" />
             </div>
-            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(4)" (click)="tradingModel.select(4)">
+            <div class="resource-button-trade" [ngClass]="tradingModel.dynamicClass(4)" (click)="tradingModel.select(4)" boombox="button">
               <img src="/assets/game/resources/Yellow-Resource-Tile.png" class="w-full h-full" draggable="false" />
             </div>
           </div>
           <div class="flex space-x-4 w-full flex-grow-0">
-            <div class="menu-btn-light w-full flex-grow pointer-events-auto" (click)="cancelTrading()">
+            <div class="menu-btn-light w-full flex-grow pointer-events-auto" (click)="cancelTrading()" boombox="button">
               <div>
                 <p>Cancel</p>
               </div>
             </div>
-            <div id="confirmTrade" class="menu-btn w-full flex-grow pointer-events-auto" (click)="executeTrade()">
+            <div id="confirmTrade" class="menu-btn w-full flex-grow pointer-events-auto" (click)="executeTrade()" boombox="trade1">
               <div>
                 <p>Trade</p>
               </div>
