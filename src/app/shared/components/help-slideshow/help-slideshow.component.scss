@@ -25,6 +25,10 @@
   .currentSlide {
     @apply border-gray-300;
   }
+
+  .priceImg {
+    @apply transform scale-150;
+  }
 }
 
 h1 {
