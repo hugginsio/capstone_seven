@@ -53,12 +53,13 @@
           <p>Advanced Options...</p>
         </div>
       </div>
-      <div class="flex menu-input" [ngClass]=dynamicClass() *ngIf="this.advancedOpts">
-        <!-- oninput all uppercase credit to https://stackoverflow.com/users/5476516/yehuda-schwartz -->
-        <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed"
-          oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
-        <div class="menu-btn w-1/4" (click)="explainBoardSeed()">?</div>
-
+      <div class="flex space-x-2" *ngIf="this.advancedOpts">
+        <div class="flex menu-input w-full" [ngClass]="dynamicClass()">
+          <!-- oninput all uppercase credit to https://stackoverflow.com/users/5476516/yehuda-schwartz -->
+          <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed"
+            oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
+        </div>
+        <div class="menu-btn w-1/6" (click)="explainBoardSeed()">?</div>
       </div>
       <p class="leading-none text-base font-normal text-red-600" *ngIf="this.advancedOpts && !this.validInputCheck.validBoard">
         Invalid Board Seed Input!
