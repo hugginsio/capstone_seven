@@ -40,7 +40,7 @@ export class AppComponent {
     this.storageService.update('location', 'bg1');
 
     this.storageService.setContext('sound');
-    this.storageService.update('volume', '50');
+    this.storageService.update('volume', '20');
   }
 }
 
