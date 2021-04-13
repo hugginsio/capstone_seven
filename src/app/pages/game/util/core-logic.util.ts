@@ -140,69 +140,47 @@ export class CoreLogic {
         }
       }
 
-      // let prelimPossibleBranches: number;
-      // const prelimRedBlueDiff = redAvailable - blueAvailable;
+      let b1:number;
+      let b2:number;
+      let b3:number;
+      let b4:number;
+      let b5:number;
+      let b6:number;
+      const branches = state.board.branches;
+      let numberAvailableBranches = 0;
+      for (const branch of branches) {
+        if (branch.getOwner() === playerOwner) {
+          b1 = branch.getBranch('branch1');
+          b2 = branch.getBranch('branch2');
+          b3 = branch.getBranch('branch3');
+          b4 = branch.getBranch('branch4');
+          b5 = branch.getBranch('branch5');
+          b6 = branch.getBranch('branch6');
 
-      // if (prelimRedBlueDiff === 0) {
-      //   prelimPossibleBranches = redAvailable;
-      // }
-      // else if (Math.sign(prelimRedBlueDiff) === 1) {
-      //   prelimPossibleBranches = redAvailable - Math.abs(prelimRedBlueDiff);
-      // }
-      // else {
-      //   prelimPossibleBranches = blueAvailable - Math.abs(prelimRedBlueDiff);
-      // }
-
-      // let redLeft = redAvailable;
-      // let blueLeft = blueAvailable;
-      // for(let b = 0; b < prelimPossibleBranches;b++){
-      //   redLeft--;
-      //   blueLeft--;
-      // }
-
-      // let prelimPossibleNodes: number;
-      // const preLimGreenNum = (greenAvailable - (greenAvailable % 2)) / 2;
-      // const prelimYellowNum = (yellowAvailable - (yellowAvailable % 2)) / 2;
-      // const prelimGreenYellowDiff = preLimGreenNum - prelimYellowNum;
-      // if (prelimGreenYellowDiff === 0) {
-      //   prelimPossibleNodes = preLimGreenNum;
-      // }
-      // else if (Math.sign(prelimGreenYellowDiff) === 1) {
-      //   prelimPossibleNodes = preLimGreenNum - Math.abs(prelimGreenYellowDiff);
-      // }
-      // else {
-      //   prelimPossibleNodes = prelimYellowNum - Math.abs(prelimGreenYellowDiff);
-      // }
-
-      // let greenLeft = greenAvailable;
-      // let yellowLeft = yellowAvailable;
-      // for(let n = 0; n < prelimPossibleNodes; n++){
-      //   greenLeft-=2;
-      //   yellowLeft-=2;
-      // }
+          if(b1 !== -1 && branches[b1].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+          if(b2 !== -1 && branches[b2].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+          if(b3 !== -1 && branches[b3].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+          if(b4!== -1 && branches[b4].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+          if(b5 !== -1 && branches[b5].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+          if(b6 !== -1 && branches[b6].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+        }
+      }
 
       //general moves
       //Step 1: trade
-      const redStringArray = [];
-      const blueStringArray = [];
-      const greenStringArray = [];
-      const yellowStringArray = [];
-
-      for (let red = 0; red < redAvailable; red++) {
-        redStringArray.push('R');
-      }
-
-      for (let blue = 0; blue < blueAvailable; blue++) {
-        blueStringArray.push('B');
-      }
-
-      for (let green = 0; green < greenAvailable; green++) {
-        greenStringArray.push('G');
-      }
-
-      for (let yellow = 0; yellow < yellowAvailable; yellow++) {
-        yellowStringArray.push('Y');
-      }
+      
 
       //determine possible trades for red
       const tradeForRed = [];
@@ -300,7 +278,7 @@ export class CoreLogic {
       let tradeForGreenCombinations:string[][] = [];
       //if(greenAvailable < yellowAvailable || greenAvailable === 0){
       //const redBlueAvailableDiff = redAvailable - blueAvailable;
-      if (redBlueAvailableDiff > 0) {
+      if (redBlueAvailableDiff > 0 || numberAvailableBranches === 0) {
         if (redBlueAvailableDiff > 1) {
           tradeForGreen.push('R');
         }
@@ -312,7 +290,7 @@ export class CoreLogic {
         }
       }
       //const blueRedAvailableDiff = blueAvailable - redAvailable;
-      if (blueRedAvailableDiff > 0) {
+      if (blueRedAvailableDiff > 0 || numberAvailableBranches === 0) {
         if (blueRedAvailableDiff > 1) {
           tradeForGreen.push('B');
         }
@@ -345,7 +323,7 @@ export class CoreLogic {
       let tradeForYellowCombinations:string[][] = [];
       //if(yellowAvailable < greenAvailable || yellowAvailable === 0){
       //const blueRedAvailableDiff = blueAvailable - redAvailable;
-      if (blueRedAvailableDiff > 0) {
+      if (blueRedAvailableDiff > 0 || numberAvailableBranches === 0) {
         if (blueRedAvailableDiff > 1) {
           tradeForYellow.push('B');
         }
@@ -357,7 +335,7 @@ export class CoreLogic {
         }
       }
       //const redBlueAvailableDiff = redAvailable - blueAvailable;
-      if (redBlueAvailableDiff > 0) {
+      if (redBlueAvailableDiff > 0 || numberAvailableBranches === 0) {
         if (redBlueAvailableDiff > 1) {
           tradeForYellow.push('R');
         }
