@@ -13,7 +13,6 @@ import { GameNetworkingService } from '../../../networking/game-networking.servi
 import { NetworkGameSettings } from '../../../../../../backend/NetworkGameSettings';
 import { AiMethods } from '../../interfaces/worker.interface';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -153,8 +152,26 @@ export class ManagerService {
     // Web worker magic
     this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
 
+
+
     if (this.currentGameMode === GameType.AI) {
-      //this.ai = new AiService(this.gameBoard, this.playerOne, this.playerTwo);
+      
+      const aiDifficulty = this.storageService.fetch('ai-difficulty');
+      let timeAlottedToAI:number;
+      let explorationParameter:number;
+      if(aiDifficulty === 'hard'){
+        timeAlottedToAI = 5500;
+        explorationParameter = 4;
+      }
+      else if(aiDifficulty === 'medium'){
+        timeAlottedToAI = 3500;
+        explorationParameter = 2.25;
+      }
+      else{
+        timeAlottedToAI = 2000;
+        explorationParameter = 0.75;
+      }
+
       this.aiWorker.onmessage = ({ data }) => {
         if (data) {
           console.log('Initialized AI web worker.');
@@ -163,7 +180,7 @@ export class ManagerService {
         }
       };
 
-      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, 3.75] });
+      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, explorationParameter,timeAlottedToAI] });
     }
 
     // setting board as random or manually setting tiles
@@ -326,8 +343,12 @@ export class ManagerService {
     console.log(this.boardString);
   }
 
+  sleep(ms:number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   // takes string from Networking/AI and places move in local gameBoard
-  applyMove(moveString: string): void {
+  async applyMove(moveString: string): Promise<void> {
     let currentPlayer;
     if (this.playerOne.type === PlayerType.HUMAN) {
       currentPlayer = this.playerTwo;
@@ -352,17 +373,33 @@ export class ManagerService {
     // initial placements
     if (currentPlayer.ownedBranches.length < 2) {
       this.initialNodePlacements(moveToPlace.nodesPlaced[0], currentPlayer);
+      this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+
+      //pause between placing pieces
+      await this.sleep(1000);
+
       this.initialBranchPlacements(moveToPlace.nodesPlaced[0], moveToPlace.branchesPlaced[0], currentPlayer);
+      this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
     } else {
       // process general branch placements
       for (let i = 0; i < moveToPlace.branchesPlaced.length; i++) {
-        this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
+        this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer); 
+        this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+
+        //pause between placing pieces
+        await this.sleep(1000);       
       }
 
       // process general node placements
       for (let i = 0; i < moveToPlace.nodesPlaced.length; i++) {
         this.generalNodePlacement(moveToPlace.nodesPlaced[i], currentPlayer);
+        this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+        if(i < moveToPlace.nodesPlaced.length-1){
+          //pause between placing pieces
+          await this.sleep(1000);
+        }
       }
+      
     }
 
     this.endTurn(currentPlayer);
@@ -417,7 +454,7 @@ export class ManagerService {
       currentPlayer.greenResources = 2;
 
     }
-
+    this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
     // serializing otherPlayer's previous move
     const pastMoveString = this.serializeStack();
     console.log(pastMoveString);
@@ -433,10 +470,14 @@ export class ManagerService {
       const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       // string to store AI move
       //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
+      
+
 
       this.aiWorker.onmessage = ({ data }) => {
         let AIStringMove = ';;';
+
         if (typeof (data) === 'string' && data !== '') {
+
 
           AIStringMove = data;
           console.warn(AIStringMove);
@@ -445,6 +486,7 @@ export class ManagerService {
 
       };
 
+      console.log(this.gameBoard);
       this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString] });
 
 
@@ -696,8 +738,10 @@ export class ManagerService {
     // evaluates whether a winner ought to be determined
     if (this.playerOne.currentScore >= 10 || this.playerTwo.currentScore >= 10) {
       if (this.playerOne.currentScore > this.playerTwo.currentScore) {
+        this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
         this.commLink.next({ code: CommCode.END_GAME, player: this.playerOne, magic: 'Player One' });
       } else {
+        this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
         this.commLink.next({ code: CommCode.END_GAME, player: this.playerTwo, magic: 'Player Two' });
       }
     } else {
@@ -723,12 +767,14 @@ export class ManagerService {
           //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
         // allow playerTwo's second initial turn 
-        
+        //this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
         this.nextTurn(endPlayer);
         return;
       }
 
       this.currentPlayer = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
+
+      //this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
 
       // change active player
       this.nextTurn(newPlayer);
