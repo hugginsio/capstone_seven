@@ -4,16 +4,14 @@ import { State } from './ai.class.State';
 import { CoreLogic } from '../../util/core-logic.util';
 import { Player } from '../gamecore/game.class.Player';
 
-interface PlayoutResult {
-  playerNumber: number;
-}
+
 export class MonteCarlo {
   WINSCORE = 10;
   explorationParameter: number;
   opponent: number;
   tree: Tree;
 
-  NUMWORKERS = 4;
+  NUMWORKERS = 16;
   workers: Array<Worker>;
 
 
@@ -33,22 +31,25 @@ export class MonteCarlo {
 
 
     const newNode = new MCTSNode(gameState);
-    const currentRoot = this.tree.getRoot();
-    let childStateFound = false;
+    //this.tree.setRoot(newNode);
+    // const currentRoot = this.tree.getRoot();
+    // let childStateFound = false;
 
-    for (let i = 0; i < currentRoot.childArray.length; i++) {
-      if (currentRoot.childArray[i].getState().move === newNode.getState().move) {
-        this.tree.setRoot(currentRoot.childArray[i]);
-        childStateFound = true;
-        i = currentRoot.childArray.length;
-      }
-    }
+    // for (let i = 0; i < currentRoot.childArray.length; i++) {
+    //   if (currentRoot.childArray[i].getState().move === newNode.getState().move) {
+    //     this.tree.setRoot(currentRoot.childArray[i]);
+    //     childStateFound = true;
+    //     i = currentRoot.childArray.length;
+    //   }
+    // }
 
-    if (!childStateFound) {
-      this.tree.setRoot(newNode);
-    }
+    // if (!childStateFound) {
+    //   this.tree.setRoot(newNode);
+    // }
 
-    const rootNode = this.tree.getRoot();
+    //const rootNode = this.tree.getRoot();
+    const rootNode = newNode;
+    this.expandNode(rootNode);
     let simNum = 0;
 
     while (Date.now() < end) {
@@ -57,6 +58,7 @@ export class MonteCarlo {
       if (CoreLogic.getWinner(promisingNode.getState()) === 0) {
         this.expandNode(promisingNode);
       }
+      
       let nodeToExplore = promisingNode;
       if (promisingNode.getChildArray().length > 0) {
         nodeToExplore = promisingNode.getRandomChildNode();
@@ -66,7 +68,7 @@ export class MonteCarlo {
       //this.simulateRandomPlayout(nodeToExplore);
       simNum++;
     }
-
+    
     console.log(`Number of Simulations = ${simNum}`);
     if (rootNode.getChildArray().length > 0) {
       const winnerNode = rootNode.getChildWithMaxScore();
@@ -121,7 +123,7 @@ export class MonteCarlo {
     const tempState = tempNode.getState();
     let boardStatus = CoreLogic.getWinner(tempState);
     //let result = {playerNumber:boardStatus,multiplier:1};
-    if (boardStatus == this.opponent) {
+    if (boardStatus == (3-tempState.playerNumber)) {
       const tempParent = tempNode.getParent();
       if (tempParent !== null) {
         tempParent.getState().setWinScore(Number.MIN_VALUE);
@@ -132,7 +134,7 @@ export class MonteCarlo {
 
 
     let counter = 0; //decrease counter and assign winner based on score if game not finished
-    while (boardStatus === 0 && counter < 5) {
+    while (boardStatus === 0 && counter < 3) {
       if (tempState.player1.numNodesPlaced === 1 && tempState.playerNumber === 1) {
         tempState.player1.redResources = 1;
         tempState.player1.blueResources = 1;
@@ -181,12 +183,14 @@ export class UCT {
 
     let maxUctValue = this.uctValue(parentVisit, node.getChildArray()[0].getState().getWinScore(), node.getChildArray()[0].getState().getVisitCount(), explorationParameter);
     let maxNode = node.getChildArray()[0];
-    for (let i = 1; i < node.getChildArray().length; i++) {
-
-      const uctValue = this.uctValue(parentVisit, node.getChildArray()[i].getState().getWinScore(), node.getChildArray()[i].getState().getVisitCount(), explorationParameter);
-      if (uctValue >= maxUctValue) {
-        maxUctValue = uctValue;
-        maxNode = node.getChildArray()[i];
+    const len = node.getChildArray().length;
+    for(let i = 1; i < len; i++){
+      if(node.getChildArray()[i].getState().visitCount >= 5){
+        const uctValue = this.uctValue(parentVisit,node.getChildArray()[i].getState().getWinScore(),node.getChildArray()[i].getState().getVisitCount(),explorationParameter);
+        if(uctValue >= maxUctValue){
+          maxUctValue = uctValue;
+          maxNode = node.getChildArray()[i];
+        }
       }
     }
     return maxNode;

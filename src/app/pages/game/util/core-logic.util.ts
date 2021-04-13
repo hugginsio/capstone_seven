@@ -140,32 +140,79 @@ export class CoreLogic {
         }
       }
 
+      let b1:number;
+      let b2:number;
+      let b3:number;
+      let b4:number;
+      let b5:number;
+      let b6:number;
+      const branches = state.board.branches;
+      //const nodes = state.board.nodes;
+      let numberAvailableBranches = 0;
+      //let numberAvailableNodes = 0;
+
+      for (let number = 0; number < 36; number++) {
+        const branch = branches[number];
+        if (branch.getOwner() === playerOwner) {
+          b1 = branch.getBranch('branch1');
+          b2 = branch.getBranch('branch2');
+          b3 = branch.getBranch('branch3');
+          b4 = branch.getBranch('branch4');
+          b5 = branch.getBranch('branch5');
+          b6 = branch.getBranch('branch6');
+
+          if(b1 !== -1 && branches[b1].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+          if(b2 !== -1 && branches[b2].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+          if(b3 !== -1 && branches[b3].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+          if(b4!== -1 && branches[b4].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+          if(b5 !== -1 && branches[b5].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+          if(b6 !== -1 && branches[b6].getOwner() === playerOwner){
+            numberAvailableBranches++;
+          }
+        }
+
+        // if(number < 13){
+        //   const node = nodes[number];
+        //   if(node.getOwner() === Owner.NONE){
+        //     const tnb = node.getTopBranch();
+        //     const rnb = node.getRightBranch();
+        //     const bnb = node.getBottomBranch();
+        //     const lnb = node.getLeftBranch();
+
+        //     if(tnb !== -1 && branches[tnb].getOwner()){
+        //       numberAvailableNodes++;
+        //     }
+        //     if(rnb !== -1 && branches[rnb].getOwner()){
+        //       numberAvailableNodes++;
+        //     }
+        //     if(bnb !== -1 && branches[bnb].getOwner()){
+        //       numberAvailableNodes++;
+        //     }
+        //     if(lnb !== -1 && branches[lnb].getOwner()){
+        //       numberAvailableNodes++;
+        //     }
+        //   }
+        // }
+      }
 
       //general moves
       //Step 1: trade
-      const redStringArray = [];
-      const blueStringArray = [];
-      const greenStringArray = [];
-      const yellowStringArray = [];
-
-      for (let red = 0; red < redAvailable; red++) {
-        redStringArray.push('R');
-      }
-
-      for (let blue = 0; blue < blueAvailable; blue++) {
-        blueStringArray.push('B');
-      }
-
-      for (let green = 0; green < greenAvailable; green++) {
-        greenStringArray.push('G');
-      }
-
-      for (let yellow = 0; yellow < yellowAvailable; yellow++) {
-        yellowStringArray.push('Y');
-      }
+      
 
       //determine possible trades for red
       const tradeForRed = [];
+      let tradeForRedCombinations:string[][] = [];
+      
       const blueRedAvailableDiff = blueAvailable - redAvailable;
       if (blueRedAvailableDiff > 0) {
         if (blueRedAvailableDiff > 1) {
@@ -178,19 +225,72 @@ export class CoreLogic {
           tradeForRed.push('B');
         }
       }
+      
+      // let gafter = greenAvailable;
+      // let yafter = yellowAvailable;
+      // let numNodes: number;
+      // const gNum = (gafter - (gafter % 2)) / 2;
+      // const yNum = (yafter - (yafter % 2)) / 2;
+      // const gyDiff = gNum - yNum;
+      // if (gyDiff === 0) {
+      //   numNodes = gNum;
+      // }
+      // else if (Math.sign(gyDiff) === 1) {
+      //   numNodes = gNum - Math.abs(gyDiff);
+      // }
+      // else {
+      //   numNodes = yNum - Math.abs(gyDiff);
+      // }
 
-      for (const green of greenStringArray) {
-        tradeForRed.push(green);
+      // if(numberAvailableNodes > 0){
+      //   for(let n = 0; n < numNodes; n++){
+      //     gafter-=2;
+      //     yafter-=2;
+      //   }
+      // }
+
+      // for(let g = 0; g < gafter; g++){
+      //   tradeForRed.push('G');
+      // }
+      // for(let y = 0; y < yafter; y++){
+      //   tradeForRed.push('Y');
+      // }
+
+
+      if (greenAvailable - 3 >= yellowAvailable) {
+        tradeForRed.push('G');
+        tradeForRed.push('G');
+        tradeForRed.push('G');
       }
-      for (const yellow of yellowStringArray) {
-        tradeForRed.push(yellow);
+      else if (greenAvailable - 2 >= yellowAvailable) {
+        tradeForRed.push('G');
+        tradeForRed.push('G');
+      }
+      else if (greenAvailable - 1 === yellowAvailable) {
+        tradeForRed.push('G');
       }
 
-      const tradeForRedCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForRed, 3));
+      if (yellowAvailable - 3 >= greenAvailable) {
+        tradeForRed.push('Y');
+        tradeForRed.push('Y');
+        tradeForRed.push('Y');
+      }
+      else if (yellowAvailable - 2 >= greenAvailable) {
+        tradeForRed.push('Y');
+        tradeForRed.push('Y');
+      }
+      else if (yellowAvailable - 1 === greenAvailable) {
+        tradeForRed.push('Y');
+      }
+      
 
+      tradeForRedCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForRed, 3));
+      
 
       //determine possible trades for blue
       const tradeForBlue = [];
+      let tradeForBlueCombinations:string[][] = [];
+      
       const redBlueAvailableDiff = redAvailable - blueAvailable;
       if (redBlueAvailableDiff > 0) {
         if (redBlueAvailableDiff > 1) {
@@ -203,55 +303,131 @@ export class CoreLogic {
           tradeForBlue.push('R');
         }
       }
-      for (const green of greenStringArray) {
-        tradeForBlue.push(green);
-      }
-      for (const yellow of yellowStringArray) {
-        tradeForBlue.push(yellow);
-      }
 
-      const tradeForBlueCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForBlue, 3));
+      // for(let g = 0; g < gafter; g++){
+      //   tradeForBlue.push('G');
+      // }
+      // for(let y = 0; y < yafter; y++){
+      //   tradeForBlue.push('Y');
+      // }
 
+      if (greenAvailable - 3 >= yellowAvailable) {
+        tradeForBlue.push('G');
+        tradeForBlue.push('G');
+        tradeForBlue.push('G');
+      }
+      else if (greenAvailable - 2 >= yellowAvailable) {
+        tradeForBlue.push('G');
+        tradeForBlue.push('G');
+      }
+      else if (greenAvailable - 1 === yellowAvailable) {
+        tradeForBlue.push('G');
+      } 
+
+      if (yellowAvailable - 3 >= greenAvailable) {
+        tradeForBlue.push('Y');
+        tradeForBlue.push('Y');
+        tradeForBlue.push('Y');
+      }
+      else if (yellowAvailable - 2 >= greenAvailable) {
+        tradeForBlue.push('Y');
+        tradeForBlue.push('Y');
+      }
+      else if (yellowAvailable - 1 === greenAvailable) {
+        tradeForBlue.push('Y');
+      }
+      
+
+      tradeForBlueCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForBlue, 3));
+      
       //determine possible trades for green
       const tradeForGreen = [];
-      for (const blue of blueStringArray) {
-        tradeForRed.push(blue);
+      let tradeForGreenCombinations:string[][] = [];
+
+      if (redBlueAvailableDiff > 0 || numberAvailableBranches === 0) {
+        if (redBlueAvailableDiff > 1) {
+          tradeForGreen.push('R');
+        }
+        if (redBlueAvailableDiff > 2) {
+          tradeForGreen.push('R');
+        }
+        if (redBlueAvailableDiff > 3) {
+          tradeForGreen.push('R');
+        }
       }
-      for (const red of redStringArray) {
-        tradeForGreen.push(red);
+      
+      if (blueRedAvailableDiff > 0 || numberAvailableBranches === 0) {
+        if (blueRedAvailableDiff > 1) {
+          tradeForGreen.push('B');
+        }
+        if (blueRedAvailableDiff > 2) {
+          tradeForGreen.push('B');
+        }
+        if (blueRedAvailableDiff > 3) {
+          tradeForGreen.push('B');
+        }
       }
-      if (yellowAvailable - 1 === greenAvailable + 1) {
+
+      if (yellowAvailable - 3 >= greenAvailable + 1) {
+        tradeForGreen.push('Y');
+        tradeForGreen.push('Y');
         tradeForGreen.push('Y');
       }
       else if (yellowAvailable - 2 >= greenAvailable + 1) {
         tradeForGreen.push('Y');
+        tradeForGreen.push('Y');
       }
-      else if (yellowAvailable - 3 >= greenAvailable + 1) {
+      else if (yellowAvailable - 1 === greenAvailable + 1) {
         tradeForGreen.push('Y');
       }
 
-      const tradeForGreenCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForGreen, 3));
+      tradeForGreenCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForGreen, 3));
+      
 
       //determine possible trades for yellow
       const tradeForYellow = [];
-      for (const blue of blueStringArray) {
-        tradeForRed.push(blue);
+      let tradeForYellowCombinations:string[][] = [];
+
+      if (blueRedAvailableDiff > 0 || numberAvailableBranches === 0) {
+        if (blueRedAvailableDiff > 1) {
+          tradeForYellow.push('B');
+        }
+        if (blueRedAvailableDiff > 2) {
+          tradeForYellow.push('B');
+        }
+        if (blueRedAvailableDiff > 3) {
+          tradeForYellow.push('B');
+        }
       }
-      for (const red of redStringArray) {
-        tradeForYellow.push(red);
+
+      if (redBlueAvailableDiff > 0 || numberAvailableBranches === 0) {
+        if (redBlueAvailableDiff > 1) {
+          tradeForYellow.push('R');
+        }
+        if (redBlueAvailableDiff > 2) {
+          tradeForYellow.push('R');
+        }
+        if (redBlueAvailableDiff > 3) {
+          tradeForYellow.push('R');
+        }
       }
-      if (greenAvailable - 1 === yellowAvailable + 1) {
+
+      if (greenAvailable - 3 >= yellowAvailable + 1) {
+        tradeForYellow.push('G');
+        tradeForYellow.push('G');
         tradeForYellow.push('G');
       }
       else if (greenAvailable - 2 >= yellowAvailable + 1) {
-        tradeForGreen.push('G');
+        tradeForYellow.push('G');
+        tradeForYellow.push('G');
       }
-      else if (greenAvailable - 3 >= yellowAvailable + 1) {
-        tradeForGreen.push('G');
+      else if (greenAvailable - 1 === yellowAvailable + 1) {
+        tradeForYellow.push('G');
       }
+    
 
-      const tradeForYellowCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForYellow, 3));
-
+      tradeForYellowCombinations = CoreLogic.removeDuplicates(CoreLogic.kStringCombinations(tradeForYellow, 3));
+      
       //apply trades and pick piece locations
       let redTemp = redAvailable;
       let blueTemp = blueAvailable;
@@ -734,10 +910,31 @@ export class CoreLogic {
 
       const nodeBoard = CoreLogic.cloneGameBoard(state.board);
 
-      for (const branchCombo of possibleBranchCombinations) {
-        for (const branchIndex of branchCombo) {
-          nodeBoard.branches[branchIndex].setOwner(playerOwner);
+      if(possibleBranchCombinations.length > 0){
+        for (const branchCombo of possibleBranchCombinations) {
+          for (const branchIndex of branchCombo) {
+            nodeBoard.branches[branchIndex].setOwner(playerOwner);
+          }
+          for (let numNodes = 0; numNodes < numPossibleNodes; numNodes++) {
+            possibleNodeIndices = CoreLogic.getValidNodeIndices(playerOwner, nodeBoard);
+          }
+
+          const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
+          if (possibleNodeCombinations.length > 0) {
+            for (const nodeCombo of possibleNodeCombinations) {
+              result.push(CoreLogic.moveToString({ tradedIn: noTrade, received: '', nodesPlaced: nodeCombo, branchesPlaced: branchCombo }));
+            }
+          }
+          else {
+            result.push(CoreLogic.moveToString({ tradedIn: noTrade, received: '', nodesPlaced: [], branchesPlaced: branchCombo }));
+          }
+
+          for (const branchIndex of branchCombo) {
+            nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+          }
         }
+      }
+      else {
         for (let numNodes = 0; numNodes < numPossibleNodes; numNodes++) {
           possibleNodeIndices = CoreLogic.getValidNodeIndices(playerOwner, nodeBoard);
         }
@@ -745,17 +942,14 @@ export class CoreLogic {
         const possibleNodeCombinations = CoreLogic.kNumberCombinations(possibleNodeIndices, numPossibleNodes);
         if (possibleNodeCombinations.length > 0) {
           for (const nodeCombo of possibleNodeCombinations) {
-            result.push(CoreLogic.moveToString({ tradedIn: noTrade, received: '', nodesPlaced: nodeCombo, branchesPlaced: branchCombo }));
+            result.push(CoreLogic.moveToString({ tradedIn: noTrade, received: '', nodesPlaced: nodeCombo, branchesPlaced: [] }));
           }
         }
         else {
-          result.push(CoreLogic.moveToString({ tradedIn: noTrade, received: '', nodesPlaced: [], branchesPlaced: branchCombo }));
-        }
-
-        for (const branchIndex of branchCombo) {
-          nodeBoard.branches[branchIndex].setOwner(Owner.NONE);
+          result.push(CoreLogic.moveToString({ tradedIn: noTrade, received: '', nodesPlaced: [], branchesPlaced: [] }));
         }
       }
+
     }
 
 

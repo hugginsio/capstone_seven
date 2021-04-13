@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { AfterViewInit, Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
 import { Player } from './classes/gamecore/game.class.Player';
@@ -50,7 +50,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly snackbarService: SnackbarService,
     private readonly soundService: SoundService,
     private readonly networkingService: GameNetworkingService,
-    private readonly routerService: Router
+    private readonly routerService: Router,
+    private changeDetector:ChangeDetectorRef
   ) {
     // Set defaults for UI triggers
     this.gameIntro = false;
@@ -89,6 +90,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     // Subscribe to own communications link
     this.commLink.subscribe(message => {
       const status = message.code;
+      
 
       // Check which player sent the message before we run player-centric commands
       if (this.gameManager.getCurrentPlayer() === message.player) {
@@ -164,6 +166,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         this.gameOverText = `${magic} Won!`;
         this.winningPlayer = player;
         this.gameOver = true;
+      }
+      else if(status === CommCode.AI_Move && player){
+        this.changeDetector.detectChanges();
       }
     });
 
