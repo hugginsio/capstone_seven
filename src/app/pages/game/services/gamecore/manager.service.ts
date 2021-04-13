@@ -78,6 +78,7 @@ export class ManagerService {
     this.playerTwo = new Player();
     this.tilesBeingChecked = [];
     this.tradedResources = [];
+    this.stack = new Array<Array<string | number>>();
     this.listeners = new Array<Subscription>();
     this.netSettings = {board: "", background: "", isHostFirst: true};
 
