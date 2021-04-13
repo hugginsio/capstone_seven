@@ -53,11 +53,20 @@
           <p>Advanced Options...</p>
         </div>
       </div>
-      <div class="menu-input" *ngIf="this.advancedOpts">
-        <!-- oninput all uppercase credit to https://stackoverflow.com/users/5476516/yehuda-schwartz -->
-        <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed"
-          oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
+      <div class="flex space-x-2" *ngIf="this.advancedOpts">
+        <div class="flex menu-input w-full" [ngClass]="dynamicClass()">
+          <!-- oninput all uppercase credit to https://stackoverflow.com/users/5476516/yehuda-schwartz -->
+          <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed"
+            oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
+        </div>
+        <div class="menu-btn w-1/6" (click)="explainBoardSeed()">?</div>
       </div>
+      <p class="leading-none text-base font-normal text-red-600" *ngIf="this.advancedOpts && !this.validInputCheck.validBoard">
+        Invalid Board Seed Input!
+      </p>
+      <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts && this.explainationPopUp">
+        Assign the order of your Sites.<br>Use the format R1,R2,R3,B1,B2,B3,G1,G2,G3,Y1,Y2,Y3,00<br>Make sure to include each individual Site in your input.
+      </p>
       <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts">Leave blank for random
         seed</p>
     </div>
