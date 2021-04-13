@@ -7,6 +7,7 @@ export class GameServer {
   private gameSettings:NetworkGameSettings;
   private isDisconnected = false;
   private isCancelled = false;
+  private isBooted = false;
 
   constructor() {
     console.log('Launching game server...');
@@ -33,7 +34,11 @@ export class GameServer {
       });
     
       socket.on('disconnecting', () => {
-        if(!this.isDisconnected)
+        if(this.isBooted)
+        {
+          this.isBooted = false;
+        }
+        else if(!this.isDisconnected)
         {
           this.isDisconnected = true;
           this.server.emit('user-disconnected');
@@ -47,7 +52,6 @@ export class GameServer {
       });
     
       socket.on('create-lobby', (lobbyInfo: NetworkGameSettings) => {
-        
         this.gameSettings = lobbyInfo;
         socket.join("game");
         socket.broadcast.emit('get-game-settings', this.gameSettings);
@@ -56,6 +60,7 @@ export class GameServer {
       socket.on('request-join', (username:string) => {
         if(this.users.length >= 2)
         {
+          this.isBooted = true;
           socket.emit('lobby-full');
         }
         else if(this.isCancelled)
@@ -75,8 +80,6 @@ export class GameServer {
         {
           this.isDisconnected = false;
           socket.broadcast.emit('user-reconnected');
-          //socket.broadcast.emit('user-reconnected');
-          //socket.emit('user-reconnected');
         }
       });
     
