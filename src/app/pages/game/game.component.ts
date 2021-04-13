@@ -360,8 +360,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
           this.playerClickSound('node');
         } else if (player.numNodesPlaced >= 2 && player.ownedBranches.length >= 2) {
           // They have placed initial nodes, place normally
+          if (this.gameManager.getCurrentPlayer().greenResources >= 2 && this.gameManager.getCurrentPlayer().yellowResources >= 2) {
+            this.playerClickSound('node');
+          }
+
           this.gameManager.generalNodePlacement(pieceId, player);
-          this.playerClickSound('node');
         }
       } else if (pieceType === 'branch') {
         if (player.numNodesPlaced === 0) {
@@ -394,8 +397,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
           this.playerClickSound('branch');
         } else if (player.numNodesPlaced >= 2 && player.ownedBranches.length >= 2) {
           // They have placed their initial branches, place normally
+          if (this.gameManager.getCurrentPlayer().redResources >= 1 && this.gameManager.getCurrentPlayer().blueResources >= 1) {
+            this.playerClickSound('branch');
+          }
+
           this.gameManager.generalBranchPlacement(pieceId, player);
-          this.playerClickSound('branch');
         }
       }
     } else {
@@ -407,13 +413,17 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   playerClickSound(type: 'node' | 'branch'): void {
-    const playerTheme = this.gameManager.getCurrentPlayer().type;
+    const playerTheme = this.gameManager.getCurrentPlayer().theme;
     let fxId = 'pickaxe';
 
-    if (playerTheme === PlayerType.HUMAN && type === 'node') {
+    if (playerTheme === PlayerTheme.MINER && type === 'node') {
       fxId = 'pickaxe';
-    } else if (playerTheme === PlayerType.HUMAN && type === 'branch') {
+    } else if (playerTheme === PlayerTheme.MINER && type === 'branch') {
       fxId = 'minetrack';
+    } else if (playerTheme === PlayerTheme.MACHINE && type === 'node') {
+      fxId = 'drill';
+    } else if (playerTheme === PlayerTheme.MACHINE && type === 'branch') {
+      fxId = 'tank';
     }
 
     this.soundService.add(`/assets/sound/fx/${fxId}.wav`, SoundEndAction.DIE);
