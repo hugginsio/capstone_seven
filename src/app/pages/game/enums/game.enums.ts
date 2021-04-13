@@ -4,6 +4,11 @@ export enum PlayerType {
   AI = 'AI'
 }
 
+export enum PlayerTheme {
+  MINER,
+  MACHINE
+}
+
 export enum TileColor {
   GREEN = "GREEN",
   BLUE = "BLUE",

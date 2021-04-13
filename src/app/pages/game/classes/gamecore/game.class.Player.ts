@@ -1,9 +1,8 @@
-import { PlayerType } from '../../enums/game.enums';
-
-
+import { PlayerTheme, PlayerType } from '../../enums/game.enums';
 
 export class Player {
   type: PlayerType;
+  theme: PlayerTheme;
   
   // resources availble to spend
   redResources: number;

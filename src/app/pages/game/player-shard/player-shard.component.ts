@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { Player } from '../classes/gamecore/game.class.Player';
 import { CommPackage } from '../interfaces/game.interface';
 import { CommCode } from '../interfaces/game.enum';
-import { Owner, PlayerType } from '../enums/game.enums';
+import { Owner, PlayerTheme, PlayerType } from '../enums/game.enums';
 import { GuidedTutorialService } from '../services/guided-tutorial/guided-tutorial.service';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 
@@ -88,7 +88,6 @@ export class PlayerShardComponent implements OnInit {
   getPlayerImage(): string {
     return `/assets/game/nodes/${
       this.playerEnum === 'PLAYERONE' ? 'Orange-Node-' : 'Purple-Node-'
-    }${this.playerDetail?.type === PlayerType.HUMAN || this.playerDetail?.type === PlayerType.NETWORK ? 'Pickaxe' : 'Drill'
-    }.png`;
+    }${this.playerDetail?.theme === PlayerTheme.MINER ? 'Pickaxe' : 'Drill'}.png`;
   }
 }

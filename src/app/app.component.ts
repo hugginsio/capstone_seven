@@ -38,6 +38,7 @@ export class AppComponent {
     this.storageService.store('oppUsername', '');
     this.storageService.store('username', 'ERR');
     this.storageService.update('location', 'bg1');
+    this.storageService.update('playeronetheme', 'miner');
 
     this.storageService.setContext('sound');
     this.storageService.update('volume', '20');

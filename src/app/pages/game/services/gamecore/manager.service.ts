@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GameType, Owner, PlayerType, TileColor } from '../../enums/game.enums';
+import { GameType, Owner, PlayerTheme, PlayerType, TileColor } from '../../enums/game.enums';
 import { CoreLogic } from '../../util/core-logic.util';
 //import { AiService } from '../../services/ai/ai.service';
 
@@ -146,11 +146,24 @@ export class ManagerService {
       }));
     }
 
+    // Player theme setup
+    // Defaults
+    if (gameMode === 'pva') {
+      if (this.firstPlayer === 1) {
+        this.playerOne.theme = PlayerTheme.MINER;
+        this.playerTwo.theme = PlayerTheme.MACHINE;
+      } else {
+        this.playerOne.theme = PlayerTheme.MINER;
+        this.playerTwo.theme = PlayerTheme.MACHINE;
+      }
+    } else if (gameMode === 'pvp') {
+      this.playerOne.theme = this.storageService.fetch('playeronetheme') === 'miner' ? PlayerTheme.MINER : PlayerTheme.MACHINE;
+      this.playerTwo.theme = this.playerOne.theme === PlayerTheme.MINER ? PlayerTheme.MACHINE : PlayerTheme.MINER;
+    }
+
     // instantiating AiService, calling its contructor w/ gameBoard and both players
     // Web worker magic
     this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
-
-
 
     if (this.currentGameMode === GameType.AI) {
 

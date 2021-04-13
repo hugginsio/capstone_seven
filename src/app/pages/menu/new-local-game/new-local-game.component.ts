@@ -19,6 +19,7 @@ export class NewLocalGameComponent {
   public gameModeString: string;
   public guidedTutorial: boolean;
   public playerOrder: number;
+  public playerOneTheme: string;
   public selectedLocation: number;
   public validInputCheck: ValidInputCheck;
   public explainationPopUp: boolean;
@@ -30,6 +31,8 @@ export class NewLocalGameComponent {
   public readonly playerOrderTwo = "AI Goes First";
   public readonly pva = "Player vs. AI";
   public readonly pvp = "Player vs. Player";
+  public readonly playerThemeOne = "Player One is Miner";
+  public readonly playerThemeTwo = "Player One is Machine";
 
   constructor(
     private readonly storageService: LocalStorageService,
@@ -49,7 +52,7 @@ export class NewLocalGameComponent {
     this.playerOrder = this.storageService.fetch('firstplayer') === '1' ? 1 : 2;
     this.validInputCheck = new ValidInputCheck(this.storageService);
     this.explainationPopUp = false;
-
+    this.playerOneTheme = this.storageService.fetch('playeronetheme');
 
     const storedLocation =  this.storageService.fetch('location');
     if (storedLocation === 'bg3') {
@@ -75,6 +78,14 @@ export class NewLocalGameComponent {
       this.playerOrder = 1;
       this.storageService.update('firstplayer', this.playerOrder.toString());
     }
+  }
+
+  changePlayerTheme(): void {
+    // Update UI
+    this.playerOneTheme = this.playerOneTheme === 'miner' ? 'machine' : 'miner';
+
+    // Update datastore
+    this.playerOneTheme === 'miner' ? this.storageService.update('playeronetheme', 'miner') : this.storageService.update('playeronetheme', 'machine');
   }
 
   changeAiDifficulty(): void {
