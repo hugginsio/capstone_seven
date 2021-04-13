@@ -373,7 +373,7 @@ export class ManagerService {
       // process general branch placements
       for (let i = 0; i < moveToPlace.branchesPlaced.length; i++) {
         this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
-        
+        setTimeout(()=>{},1000);
       }
 
       // process general node placements
@@ -434,7 +434,7 @@ export class ManagerService {
       currentPlayer.greenResources = 2;
 
     }
-
+    this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
     // serializing otherPlayer's previous move
     const pastMoveString = this.serializeStack();
     console.log(pastMoveString);
@@ -744,14 +744,14 @@ export class ManagerService {
           //this.ai.player2InitialMoveSpecialCase(this.serializeStack(),1);
         }
         // allow playerTwo's second initial turn 
-        this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
+        //this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
         this.nextTurn(endPlayer);
         return;
       }
 
       this.currentPlayer = endPlayer === this.playerOne ? Owner.PLAYERTWO : Owner.PLAYERONE;
 
-      this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
+      //this.commLink.next({ code: CommCode.AI_Move, player: endPlayer, magic: '' });
 
       // change active player
       this.nextTurn(newPlayer);
