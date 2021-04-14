@@ -69,7 +69,7 @@ export class ManagerService {
   constructor(
     // UI integration
     private readonly storageService: LocalStorageService,
-    private readonly soundService:SoundService,
+    private readonly soundService: SoundService,
     private readonly snackbarService: SnackbarService,
     //private readonly networkingService: GameNetworkingService
   ) { }
@@ -165,8 +165,7 @@ export class ManagerService {
       this.playerOne.theme = this.storageService.fetch('playeronetheme') === 'miner' ? PlayerTheme.MINER : PlayerTheme.MACHINE;
       this.playerTwo.theme = this.playerOne.theme === PlayerTheme.MINER ? PlayerTheme.MACHINE : PlayerTheme.MINER;
     }
-    else
-    {
+    else {
       this.playerOne.theme = this.storageService.fetch('playeronetheme') === 'miner' ? PlayerTheme.MINER : PlayerTheme.MACHINE;
       this.playerTwo.theme = this.playerOne.theme === PlayerTheme.MINER ? PlayerTheme.MACHINE : PlayerTheme.MINER;
       this.netSettings.playerOneTheme = this.storageService.fetch('playeronetheme');
@@ -189,7 +188,7 @@ export class ManagerService {
         timeAlottedToAI = 3500;
         explorationParameter = 1.5;
       }
-      else{
+      else {
         timeAlottedToAI = 1500;
         explorationParameter = 1;
       }
@@ -376,7 +375,7 @@ export class ManagerService {
       currentPlayer = this.playerOne;
     }
 
-    
+
 
     // using CoreLogic stringToMove function
     // creates a "Move" to be used for placing opponent's move
@@ -391,16 +390,16 @@ export class ManagerService {
       for (let i = 0; i < moveToPlace.tradedIn.length; i++) {
         this.decrementResourceByOne(currentPlayer, moveToPlace.tradedIn[i]);
 
-        if(moveToPlace.tradedIn[i] === 'R'){
+        if (moveToPlace.tradedIn[i] === 'R') {
           tradeHTMLString += '<p><img src="/assets/game/Resource-Red.png"></p>';
         }
-        else if(moveToPlace.tradedIn[i] === 'B'){
+        else if (moveToPlace.tradedIn[i] === 'B') {
           tradeHTMLString += '<p><img src="/assets/game/Resource-Blue.png"></p>';
         }
-        else if(moveToPlace.tradedIn[i] === 'G'){
+        else if (moveToPlace.tradedIn[i] === 'G') {
           tradeHTMLString += '<p><img src="/assets/game/Resource-Green.png"></p>';
         }
-        else if(moveToPlace.tradedIn[i] === 'Y'){
+        else if (moveToPlace.tradedIn[i] === 'Y') {
           tradeHTMLString += '<p><img src="/assets/game/Resource-Yellow.png"></p>';
         }
 
@@ -409,41 +408,41 @@ export class ManagerService {
       // increment resource traded for 
       this.incrementResourceByOne(currentPlayer, moveToPlace.received);
 
-      if(moveToPlace.received === 'R'){
+      if (moveToPlace.received === 'R') {
         tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Red.png"></p></p>';
       }
-      else if(moveToPlace.received === 'B'){
+      else if (moveToPlace.received === 'B') {
         tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Blue.png"></p></p>';
       }
-      else if(moveToPlace.received === 'G'){
+      else if (moveToPlace.received === 'G') {
         tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Green.png"></p></p>';
       }
-      else if(moveToPlace.received === 'Y'){
+      else if (moveToPlace.received === 'Y') {
         tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Yellow.png"></p></p>';
       }
 
-      this.snackbarService.add({message:`<div class="flex space-x-4 items-center"><p>Machine<p>Traded:</p></p>${tradeHTMLString}</div>`});
+      this.snackbarService.add({ message: `<div class="flex space-x-4 items-center"><p>Machine<p>Traded:</p></p>${tradeHTMLString}</div>` });
     }
 
-    
+
 
     // initial placements
     if (currentPlayer.ownedBranches.length < 2) {
       this.initialNodePlacements(moveToPlace.nodesPlaced[0], currentPlayer);
-      this.soundService.add('/assets/sound/fx/drill.wav',SoundEndAction.DIE);
+      this.soundService.add('/assets/sound/fx/drill.wav', SoundEndAction.DIE);
       this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
 
       //pause between placing pieces
       await this.sleep(1000);
 
       this.initialBranchPlacements(moveToPlace.nodesPlaced[0], moveToPlace.branchesPlaced[0], currentPlayer);
-      this.soundService.add('/assets/sound/fx/tank.wav',SoundEndAction.DIE);
+      this.soundService.add('/assets/sound/fx/tank.wav', SoundEndAction.DIE);
       this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
     } else {
       // process general branch placements
       for (let i = 0; i < moveToPlace.branchesPlaced.length; i++) {
         this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
-        this.soundService.add('/assets/sound/fx/tank.wav',SoundEndAction.DIE);
+        this.soundService.add('/assets/sound/fx/tank.wav', SoundEndAction.DIE);
         this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
 
         //pause between placing pieces
@@ -453,7 +452,7 @@ export class ManagerService {
       // process general node placements
       for (let i = 0; i < moveToPlace.nodesPlaced.length; i++) {
         this.generalNodePlacement(moveToPlace.nodesPlaced[i], currentPlayer);
-        this.soundService.add('/assets/sound/fx/drill.wav',SoundEndAction.DIE);
+        this.soundService.add('/assets/sound/fx/drill.wav', SoundEndAction.DIE);
         this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
         if (i < moveToPlace.nodesPlaced.length - 1) {
           //pause between placing pieces
@@ -466,7 +465,7 @@ export class ManagerService {
     this.endTurn(currentPlayer);
   }
 
-  GTApplyMove(moveString: string):void {
+  GTApplyMove(moveString: string): void {
     let currentPlayer;
     if (this.playerOne.type === PlayerType.HUMAN) {
       currentPlayer = this.playerTwo;
@@ -573,14 +572,14 @@ export class ManagerService {
     if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
       //const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       let prevPlayerInt;
-      if(this.playerOne.numNodesPlaced === 1 && this.playerTwo.numNodesPlaced === 1){
+      if (this.playerOne.numNodesPlaced === 1 && this.playerTwo.numNodesPlaced === 1) {
         prevPlayerInt = 2;
       }
-      else{
+      else {
         prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       }
-      
-      
+
+
 
 
       this.aiWorker.onmessage = ({ data }) => {
@@ -596,7 +595,7 @@ export class ManagerService {
 
       };
 
-      
+
       this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString] });
 
 
