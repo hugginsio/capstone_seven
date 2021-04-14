@@ -104,6 +104,10 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
         return;
       }
     }
+    else
+    {
+      this.storageService.update('board-seed', this.boardSeed);
+    }
     this.storageService.update('isHost', 'true');
     //this.storageService.update('board-seed', this.boardSeed);
     this.isWaitingForPlayer = true;
