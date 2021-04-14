@@ -1,5 +1,5 @@
 import { Directive, HostListener, Input } from '@angular/core';
-import { SoundEndAction } from '../../components/sound-controller/interfaces/sound-controller.interface';
+import { SoundEndAction, SoundType } from '../../components/sound-controller/interfaces/sound-controller.interface';
 import { SoundService } from '../../components/sound-controller/services/sound.service';
 
 @Directive({
@@ -15,6 +15,6 @@ export class BoomboxDirective {
 
   @HostListener('click')
   onClick(): void {
-    this.soundService.add(`/assets/sound/fx/${this.boombox}.wav`, SoundEndAction.DIE);
+    this.soundService.add(`/assets/sound/fx/${this.boombox}.wav`, SoundEndAction.DIE, SoundType.FX);
   }
 }

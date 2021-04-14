@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { SoundAction, SoundEndAction, SoundSubject } from '../interfaces/sound-controller.interface';
+import { SoundAction, SoundEndAction, SoundSubject, SoundType } from '../interfaces/sound-controller.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +12,14 @@ export class SoundService {
     return this.soundService.asObservable();
   }
 
-  add(track: string, onEnd: SoundEndAction): void {
+  add(track: string, onEnd: SoundEndAction, type = SoundType.FX): void {
     console.log(`Adding track ${track}`);
     this.soundService.next({
       action: SoundAction.ADD,
       track: track,
       onEnd: onEnd,
-      id: ''
+      id: '',
+      type: type
     });
   }
 
@@ -27,7 +28,8 @@ export class SoundService {
       action: SoundAction.REMOVE,
       track: '',
       onEnd: SoundEndAction.DIE,
-      id: id
+      id: id,
+      type: SoundType.FX
     });
   }
 
@@ -36,7 +38,8 @@ export class SoundService {
       action: SoundAction.CLEAR,
       track: '',
       onEnd: SoundEndAction.DIE,
-      id: ''
+      id: '',
+      type: SoundType.FX
     });
   }
 
@@ -45,7 +48,8 @@ export class SoundService {
       action: SoundAction.UPDATE,
       track: '',
       onEnd: SoundEndAction.DIE,
-      id: ''
+      id: '',
+      type: SoundType.FX
     });
   }
 }

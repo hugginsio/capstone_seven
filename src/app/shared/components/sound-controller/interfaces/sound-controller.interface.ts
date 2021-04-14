@@ -10,15 +10,22 @@ export enum SoundEndAction {
   DIE
 }
 
+export enum SoundType {
+  MUSIC,
+  FX
+}
+
 export interface SoundSubject {
   action: SoundAction,
   track: string,
   onEnd: SoundEndAction,
-  id: string
+  id: string,
+  type: SoundType
 }
 
 export interface SoundObject {
   track: string,
   id: string,
-  onEnd: SoundEndAction
+  onEnd: SoundEndAction,
+  type: SoundType
 }
