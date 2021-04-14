@@ -128,9 +128,11 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
 
     if (this.isHostFirst) {
       this.storageService.update('isHostFirst', 'true');
+      this.playerOneTheme === 'miner' ? this.storageService.update('playeronetheme', 'miner') : this.storageService.update('playeronetheme', 'machine');
     }
     else {
       this.storageService.update('isHostFirst', 'false');
+      this.playerOneTheme === 'miner' ? this.storageService.update('playeronetheme', 'machine') : this.storageService.update('playeronetheme', 'miner');
     }
 
     // host ye ol game

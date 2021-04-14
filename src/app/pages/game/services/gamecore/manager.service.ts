@@ -80,7 +80,7 @@ export class ManagerService {
     this.tradedResources = [];
     this.stack = [];
     this.listeners = new Array<Subscription>();
-    this.netSettings = { board: "", background: "", isHostFirst: true };
+    this.netSettings = { board: "", background: "", playerOneTheme: "", isHostFirst: true };
 
     // getting/setting data via UI
     this.storageService.setContext('game');
@@ -160,6 +160,12 @@ export class ManagerService {
     } else if (gameMode === 'pvp') {
       this.playerOne.theme = this.storageService.fetch('playeronetheme') === 'miner' ? PlayerTheme.MINER : PlayerTheme.MACHINE;
       this.playerTwo.theme = this.playerOne.theme === PlayerTheme.MINER ? PlayerTheme.MACHINE : PlayerTheme.MINER;
+    }
+    else
+    {
+      this.playerOne.theme = this.storageService.fetch('playeronetheme') === 'miner' ? PlayerTheme.MINER : PlayerTheme.MACHINE;
+      this.playerTwo.theme = this.playerOne.theme === PlayerTheme.MINER ? PlayerTheme.MACHINE : PlayerTheme.MINER;
+      this.netSettings.playerOneTheme = this.storageService.fetch('playeronetheme');
     }
 
     // instantiating AiService, calling its contructor w/ gameBoard and both players
