@@ -137,7 +137,7 @@ export class State {
     // }
 
     //const index = Math.floor(Math.random()*moves.length);
-
+    this.move = moves[maxWeightIndex];
     this.applyMove(moves[maxWeightIndex]);
     //this.move = moves[maxWeightIndex];
     //console.log(`Inside simulation: Time to apply chosen move = ${Date.now()-start}ms`);
@@ -330,6 +330,8 @@ export class State {
     let player2OuterBranches = 0;
     let player1BranchConnectedness = 0;
     let player2BranchConnectedness = 0;
+    let exhaustion = 0;
+
     if (this.player1.numNodesPlaced >= 2 && this.player2.numNodesPlaced >= 2){
       let b1:number;
       let b2:number;
@@ -413,8 +415,36 @@ export class State {
         }
       }
     }
+    else{
+      const moveObj = CoreLogic.stringToMove(this.move);
 
-    //exhausted tiles 
+      const node = this.board.nodes[moveObj.nodesPlaced[0]];
+
+      const trt = node.getTopRightTile();
+      const brt = node.getBottomRightTile();
+      const blt = node.getBottomLeftTile();
+      const tlt = node.getTopLeftTile();
+
+      if(trt !== -1){
+        exhaustion += this.board.tiles[trt].getMaxNodes() - this.board.tiles[trt].getNodeCount();
+      }
+      if(brt !== -1){
+        exhaustion += this.board.tiles[brt].getMaxNodes() - this.board.tiles[brt].getNodeCount();
+      }
+      if(blt !== -1){
+        exhaustion += this.board.tiles[blt].getMaxNodes() - this.board.tiles[blt].getNodeCount();
+      }
+      if(tlt !== -1){
+        exhaustion += this.board.tiles[tlt].getMaxNodes() - this.board.tiles[tlt].getNodeCount();
+      }
+
+      if(this.playerNumber === 2 && exhaustion !== 0){
+        exhaustion = -exhaustion;
+      }
+      //console.log(exhaustion);
+    }
+
+ 
     
     const branchesValue = (3*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (2.50*(player1MiddleBranches - player2MiddleBranches)) + (2.25*(player1OuterBranches-player2OuterBranches));
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;
@@ -457,7 +487,7 @@ export class State {
       nodes = -this.player2.numNodesPlaced;
     }
 
-    value = score + numNodesDiff + 2*nodes + longestNetwork + (4*resourceProduction) + (10*captures)+ 
+    value = score + numNodesDiff + 2*nodes + + exhaustion + longestNetwork + (4*resourceProduction) + (10*captures)+ 
     (branchesValue + totalBranches + 3*branchConnectedness)+ endGameScore;
 
     return value;
@@ -722,7 +752,6 @@ export class State {
 
   initialNodePlacements(possibleNode: number, currentPlayer: Player): boolean {
     const otherOwner = currentPlayer === this.player1 ? Owner.PLAYERTWO : Owner.PLAYERONE;
-    const currentOwner = currentPlayer === this.player1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
     if (this.board.nodes[possibleNode]?.getOwner() === Owner.NONE) {
 

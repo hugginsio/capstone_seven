@@ -51,6 +51,7 @@ export class MonteCarlo {
     const rootNode = newNode;
     this.expandNode(rootNode);
     let simNum = 0;
+    //console.log(rootNode.childArray);
 
     while (Date.now() < end) {
       //for(let iteration = 0; iteration < 10; iteration++){
