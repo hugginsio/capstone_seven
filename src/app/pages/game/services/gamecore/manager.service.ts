@@ -12,6 +12,7 @@ import { LocalStorageService } from '../../../../shared/services/local-storage/l
 import { GameNetworkingService } from '../../../networking/game-networking.service';
 import { NetworkGameSettings } from '../../../../../../backend/NetworkGameSettings';
 import { AiMethods } from '../../interfaces/worker.interface';
+import { SnackbarService } from '../../../../shared/components/snackbar/services/snackbar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,7 @@ export class ManagerService {
   constructor(
     // UI integration
     private readonly storageService: LocalStorageService,
+    private readonly snackbarService: SnackbarService,
     //private readonly networkingService: GameNetworkingService
   ) {}
 
@@ -162,15 +164,15 @@ export class ManagerService {
       let explorationParameter:number;
       if(aiDifficulty === 'hard'){
         timeAlottedToAI = 5500;
-        explorationParameter = 4;
+        explorationParameter = 4.5;
       }
       else if(aiDifficulty === 'medium'){
         timeAlottedToAI = 3500;
-        explorationParameter = 2.25;
+        explorationParameter = 1.5;
       }
       else{
-        timeAlottedToAI = 2000;
-        explorationParameter = 0.75;
+        timeAlottedToAI = 1500;
+        explorationParameter = 1;
       }
 
       this.aiWorker.onmessage = ({ data }) => {
@@ -357,19 +359,56 @@ export class ManagerService {
       currentPlayer = this.playerOne;
     }
 
+    
+
     // using CoreLogic stringToMove function
     // creates a "Move" to be used for placing opponent's move
     const moveToPlace = CoreLogic.stringToMove(moveString);
 
     // process trade
     if (moveToPlace.tradedIn.length > 0) {
+
+      let tradeHTMLString = '';
+
       // decrement the 3 resources the player traded in 
       for (let i = 0; i < moveToPlace.tradedIn.length; i++) {
         this.decrementResourceByOne(currentPlayer, moveToPlace.tradedIn[i]);
+
+        if(moveToPlace.tradedIn[i] === 'R'){
+          tradeHTMLString += '<p><img src="/assets/game/Resource-Red.png"></p>';
+        }
+        else if(moveToPlace.tradedIn[i] === 'B'){
+          tradeHTMLString += '<p><img src="/assets/game/Resource-Blue.png"></p>';
+        }
+        else if(moveToPlace.tradedIn[i] === 'G'){
+          tradeHTMLString += '<p><img src="/assets/game/Resource-Green.png"></p>';
+        }
+        else if(moveToPlace.tradedIn[i] === 'Y'){
+          tradeHTMLString += '<p><img src="/assets/game/Resource-Yellow.png"></p>';
+        }
+
+
       }
       // increment resource traded for 
       this.incrementResourceByOne(currentPlayer, moveToPlace.received);
+
+      if(moveToPlace.received === 'R'){
+        tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Red.png"></p></p>';
+      }
+      else if(moveToPlace.received === 'B'){
+        tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Blue.png"></p></p>';
+      }
+      else if(moveToPlace.received === 'G'){
+        tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Green.png"></p></p>';
+      }
+      else if(moveToPlace.received === 'Y'){
+        tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Yellow.png"></p></p>';
+      }
+
+      this.snackbarService.add({message:`<div class="flex space-x-4 items-center"><p>Machine<p>Traded:</p></p>${tradeHTMLString}</div>`});
     }
+
+    
 
     // initial placements
     if (currentPlayer.ownedBranches.length < 2) {
@@ -434,10 +473,6 @@ export class ManagerService {
   }
 
   nextTurn(currentPlayer: Player): void {
-
-    // sets otherPlayer as instance of opponent player
-    const otherPlayer = currentPlayer === this.playerOne ? this.playerTwo : this.playerOne;
-
     // hasTraded always defaults to false to allow singular trade per turn
     currentPlayer.hasTraded = false;
 
@@ -468,9 +503,16 @@ export class ManagerService {
     //if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
     //const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
     if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
-      const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
-      // string to store AI move
-      //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
+      
+      //const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
+      let prevPlayerInt;
+      if(this.playerOne.numNodesPlaced === 1 && this.playerTwo.numNodesPlaced === 1){
+        prevPlayerInt = 2;
+      }
+      else{
+        prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
+      }
+      
       
 
 
@@ -487,7 +529,7 @@ export class ManagerService {
 
       };
 
-      console.log(this.gameBoard);
+      
       this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString] });
 
 

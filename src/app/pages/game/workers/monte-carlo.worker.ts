@@ -97,6 +97,7 @@ function getBestMove(moves:string[]):string{
   const firstMoveState = currentState.cloneState();
   firstMoveState.togglePlayer();
   firstMoveState.applyMove(moves[0]);
+  firstMoveState.move = moves[0];
   let maxScore = firstMoveState.getHeuristicValue();
   let maxMove = moves[0];
   scores.push(maxScore);
@@ -104,6 +105,7 @@ function getBestMove(moves:string[]):string{
     const moveState = currentState.cloneState();
     moveState.togglePlayer();
     moveState.applyMove(moves[i]);
+    moveState.move = moves[i];
 
     const score = moveState.getHeuristicValue();
     scores.push(score);
