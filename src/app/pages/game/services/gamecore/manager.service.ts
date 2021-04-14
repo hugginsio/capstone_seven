@@ -414,6 +414,53 @@ export class ManagerService {
     this.endTurn(currentPlayer);
   }
 
+  GTApplyMove(moveString: string):void {
+    let currentPlayer;
+    if (this.playerOne.type === PlayerType.HUMAN) {
+      currentPlayer = this.playerTwo;
+    } else {
+      currentPlayer = this.playerOne;
+    }
+
+    // using CoreLogic stringToMove function
+    // creates a "Move" to be used for placing opponent's move
+    const moveToPlace = CoreLogic.stringToMove(moveString);
+
+    // process trade
+    if (moveToPlace.tradedIn.length > 0) {
+      // decrement the 3 resources the player traded in 
+      for (let i = 0; i < moveToPlace.tradedIn.length; i++) {
+        this.decrementResourceByOne(currentPlayer, moveToPlace.tradedIn[i]);
+      }
+      // increment resource traded for 
+      this.incrementResourceByOne(currentPlayer, moveToPlace.received);
+    }
+
+    // initial placements
+    if (currentPlayer.ownedBranches.length < 2) {
+      this.initialNodePlacements(moveToPlace.nodesPlaced[0], currentPlayer);
+      this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+
+      this.initialBranchPlacements(moveToPlace.nodesPlaced[0], moveToPlace.branchesPlaced[0], currentPlayer);
+      this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+    } else {
+      // process general branch placements
+      for (let i = 0; i < moveToPlace.branchesPlaced.length; i++) {
+        this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
+        this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+      }
+
+      // process general node placements
+      for (let i = 0; i < moveToPlace.nodesPlaced.length; i++) {
+        this.generalNodePlacement(moveToPlace.nodesPlaced[i], currentPlayer);
+        this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+      }
+
+    }
+
+    this.endTurn(currentPlayer);
+  }
+
 
   startGame(gameType: GameType): void {
     // if (this.currentGameMode === GameType.AI) {
