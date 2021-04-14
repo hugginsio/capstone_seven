@@ -813,7 +813,7 @@ export class GuidedTutorialService {
     let message='';
     // options menu
     if(this.humanPlayer === '1') {
-      message = 'Need more help or want to change the settings? Click the "Pause" button in the upper-left corner for more options.';
+      message = 'Need more help or want to change the settings? Click the "Menu" button in the upper-left corner for more options.';
       this.highlightNext();
 
     }
