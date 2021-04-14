@@ -473,10 +473,6 @@ export class ManagerService {
   }
 
   nextTurn(currentPlayer: Player): void {
-
-    // sets otherPlayer as instance of opponent player
-    const otherPlayer = currentPlayer === this.playerOne ? this.playerTwo : this.playerOne;
-
     // hasTraded always defaults to false to allow singular trade per turn
     currentPlayer.hasTraded = false;
 

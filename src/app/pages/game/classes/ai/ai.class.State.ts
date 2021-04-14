@@ -752,7 +752,6 @@ export class State {
 
   initialNodePlacements(possibleNode: number, currentPlayer: Player): boolean {
     const otherOwner = currentPlayer === this.player1 ? Owner.PLAYERTWO : Owner.PLAYERONE;
-    const currentOwner = currentPlayer === this.player1 ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
     if (this.board.nodes[possibleNode]?.getOwner() === Owner.NONE) {
 
