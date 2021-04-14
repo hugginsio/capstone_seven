@@ -61,7 +61,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.gameIntro = false;
     this.gameOver = false;
     this.gameOverText = "Victory!";
-    this.gamePaused = true;
+    this.gamePaused = false;
     this.guidedTutorialCheck = false;
     this.isConnected = true;
     this.isMuted = false;
