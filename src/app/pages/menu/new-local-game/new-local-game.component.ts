@@ -133,6 +133,10 @@ export class NewLocalGameComponent {
           return;
         }
       }
+      else
+      {
+        this.storageService.update('board-seed', this.boardSeed);
+      }
     }
 
     this.soundService.clear();
