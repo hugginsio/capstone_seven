@@ -184,10 +184,10 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
       this.currentTrack = 'bg1';
     } else if (backgroundString === 'bg2') {
-      this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+      this.soundService.add('/assets/sound/haunted.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
       this.currentTrack = 'bg2';
     } else if (backgroundString === 'bg3') {
-      this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+      this.soundService.add('/assets/sound/main.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
       this.currentTrack = 'bg3';
     }
 
@@ -474,20 +474,20 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   musicNext(): void {
     switch (this.currentTrack) {
       case 'bg1':
-        console.log('bg2');
+        this.soundService.add('/assets/sound/haunted.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
         this.currentTrack = 'bg2';
         break;
       case 'bg2':
-        console.log('bg3');
+        this.soundService.add('/assets/sound/main.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
         this.currentTrack = 'bg3';
         break;
       case 'bg3':
-        console.log('bg1');
+        this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
         this.currentTrack = 'bg1';
         break;
     
       default:
-        console.log('bg1');
+        this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
         this.currentTrack = 'bg1';
         break;
     }
@@ -496,20 +496,20 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   musicPrev(): void {
     switch (this.currentTrack) {
       case 'bg1':
-        console.log('bg3');
+        this.soundService.add('/assets/sound/main.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
         this.currentTrack = 'bg3';
         break;
       case 'bg2':
-        console.log('bg1');
+        this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
         this.currentTrack = 'bg1';
         break;
       case 'bg3':
-        console.log('bg2');
+        this.soundService.add('/assets/sound/haunted.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
         this.currentTrack = 'bg2';
         break;
 
       default:
-        console.log('bg1');
+        this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
         this.currentTrack = 'bg1';
         break;
     }
