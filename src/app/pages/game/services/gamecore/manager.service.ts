@@ -410,16 +410,16 @@ export class ManagerService {
       this.incrementResourceByOne(currentPlayer, moveToPlace.received);
 
       if (moveToPlace.received === 'R') {
-        tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Red.png"></p></p>';
+        tradeHTMLString += '<p>for<p><img src="/assets/game/resources/Red-Resource-Tile.png"></p></p>';
       }
       else if (moveToPlace.received === 'B') {
-        tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Blue.png"></p></p>';
+        tradeHTMLString += '<p>for<p><img src="/assets/game/resources/Blue-Resource-Tile.png"></p></p>';
       }
       else if (moveToPlace.received === 'G') {
-        tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Green.png"></p></p>';
+        tradeHTMLString += '<p>for<p><img src="/assets/game/resources/Blue-Resource-Green.png"></p></p>';
       }
       else if (moveToPlace.received === 'Y') {
-        tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Yellow.png"></p></p>';
+        tradeHTMLString += '<p>for<p><img src="/assets/game/resources/Yellow-Resource-Tile.png"></p></p>';
       }
 
       this.snackbarService.add({ message: `<div class="flex space-x-4 items-center"><p>Machine<p>Traded:</p></p>${tradeHTMLString}</div>` });
