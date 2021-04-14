@@ -8,7 +8,8 @@ import { LocalStorageService } from '../../../shared/services/local-storage/loca
   styleUrls: ['../menu-common.scss']
 })
 export class MenuOptionsComponent {
-  public masterVolume: number;
+  public musicVolume: number;
+  public fxVolume: number;
   public prevContext: string;
 
   constructor(
@@ -21,14 +22,16 @@ export class MenuOptionsComponent {
 
   refreshFromStorage(): void {
     this.storageService.setContext('sound');
-    this.masterVolume = +this.storageService.fetch('volume');
+    this.musicVolume = +this.storageService.fetch('musicvolume');
+    this.fxVolume = +this.storageService.fetch('fxvolume');
     this.storageService.setContext(this.prevContext);
   }
 
   volumeChanged(): void {
-    console.log('Volume changed');
+    console.log('volumechanged');
     this.storageService.setContext('sound');
-    this.storageService.update('volume', this.masterVolume.toString());
+    this.storageService.update('musicvolume', this.musicVolume.toString());
+    this.storageService.update('fxvolume', this.fxVolume.toString());
     this.storageService.setContext(this.prevContext);
 
     this.soundService.update();
