@@ -1,11 +1,12 @@
 <div class="flex space-between w-screen justify-center h-full flex-grow" id="help-slideshow-container">
-  <div class="flex items-center w-full px-4 space-x-4">
+  <div class="flex items-center w-full h-full px-4 space-x-4">
   <!--<div class="flex justify-center items-center w-full h-full px-4 space-x-4 flex-grow">-->
     <div class="flex menu-btn text-4xl" [ngClass]="dynamicClass('prev')" (click)="decrementSlides()" boombox="button">
       &larr;
     </div>
 
-    <div class="flex px-4 w-full justify-center items-center" id="actual-slides">
+   <div class="flex w-full" id="actual-slides">
+    <!-- <div class="flex px-4 h-full w-full flex-grow" id="actual-slides">-->
       <div class="flex flex-col space-y-4 h-full w-full flex-grow">
         <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 0">
           <h1>Help Manual Table of Contents</h1>

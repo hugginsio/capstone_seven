@@ -590,6 +590,13 @@ export class GuidedTutorialService {
     // resource cost
     if(this.humanPlayer === '1') {
       message = 'These Gems ain’t just for lookin’ at. You can expand your operation by buyin\' more Tools and Paths with your Gems.<br><br>Take a gander at the Price Card to remind yourself of their costs.';
+      
+      const card = document.getElementById('exchangeRate');
+
+      if(card !== null){
+        card.style.border = "4px solid white";
+      }
+      
       this.highlightNext();
      
       // would be cool to display a visual of piece costs
@@ -602,6 +609,13 @@ export class GuidedTutorialService {
     // talk about trading 
     if(this.humanPlayer === '1') {
       message = 'Lookin’ to trade some Gems?<br>When it’s your turn, you can make a Trade of 3 Gems for 1 Gem of any other type.<br><br>You can only Trade once per turn.<br><br>Gems ya don\'t spend are saved in your stash at the bottom of the screen.';
+      
+      const card = document.getElementById('exchangeRate');
+
+      if(card !== null){
+        card.style.border = "0px";
+      }
+      
       this.highlightNext();
     }
     return message;
