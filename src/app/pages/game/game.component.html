@@ -18,26 +18,21 @@
 }
 </style>
 
-<!-- Teleporter, Background -->
+<!-- Background -->
 <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 z-neg pointer-events-none" [ngClass]="getBackground()"></div>
-<!-- <div class="overscroll-none absolute top-0 right-0 z-inf">
-  <img src="/assets/game/locations/teleporter-bg1.png" draggable="false" id="teleporter"/>
-</div> -->
 
 <!-- Teleporter -->
 <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 bg-black z-inf"
   *ngIf="this.gameIntro">
-  <div class="flex flex-row items-center content-center h-full">
-    <video autoplay preload="auto" (ended)="introEnded()" #video>
-      <source src="assets/game/locations/bg1-teleporter.mp4" type="video/mp4" />
+  <div class="flex flex-row items-center content-center h-full object-cover">
+    <video autoplay preload="auto" class="h-screen max-w-none" (ended)="introEnded()" #video>
+      <source [src]="teleporterSource()" type="video/mp4" />
     </video>
   </div>
 </div>
 
 <!-- Everything Else -->
 <div class="h-screen w-screen overscroll-none text-center">
-
-  
 
   <!-- Top Right Menu Container -->
   <div class="absolute left-3 top-3 flex space-x-3">

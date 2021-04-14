@@ -58,7 +58,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     // Set defaults for UI triggers
     //this.guidedTutorial = new GuidedTutorialComponent(document, gameManager, storageService, snackbarService);
     this.currentTrack = "";
-    this.gameIntro = false;
+    this.gameIntro = true;
     this.gameOver = false;
     this.gameOverText = "Victory!";
     this.gamePaused = false;
@@ -78,9 +78,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // ✨ ANIMATIONS ✨
-    // this.scrollToBottom();
-
     this.gameManager.Initialize();
 
     if (this.storageService.fetch('guided-tutorial') === 'true'
@@ -776,5 +773,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     else {
       return true;
     }
+  }
+
+  teleporterSource(): string {
+    return `assets/game/locations/${this.getBackground()}-intro.mp4`;
   }
 }

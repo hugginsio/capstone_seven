@@ -16,7 +16,7 @@ export class IntroGameComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.introInterval = setTimeout(() => {
       this.routerService.navigate(['/menu/landing']);
-    }, 15000);
+    }, 10000);
   }
 
   ngOnDestroy(): void {
