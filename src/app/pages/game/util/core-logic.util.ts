@@ -205,27 +205,6 @@ export class CoreLogic {
         }
       }
 
-      //general moves
-      //Step 1: trade
-      
-
-      //determine possible trades for red
-      const tradeForRed = [];
-      let tradeForRedCombinations:string[][] = [];
-      
-      const blueRedAvailableDiff = blueAvailable - redAvailable;
-      if (blueRedAvailableDiff > 0) {
-        if (blueRedAvailableDiff > 1) {
-          tradeForRed.push('B');
-        }
-        if (blueRedAvailableDiff > 2) {
-          tradeForRed.push('B');
-        }
-        if (blueRedAvailableDiff > 3) {
-          tradeForRed.push('B');
-        }
-      }
-      
       let gafter = greenAvailable;
       let yafter = yellowAvailable;
       let numNodes: number;
@@ -249,11 +228,35 @@ export class CoreLogic {
         }
       }
 
-      for(let g = 0; g < gafter; g++){
-        tradeForRed.push('G');
-      }
-      for(let y = 0; y < yafter; y++){
-        tradeForRed.push('Y');
+      //general moves
+      //Step 1: trade
+      
+
+      //determine possible trades for red
+      const tradeForRed = [];
+      let tradeForRedCombinations:string[][] = [];
+      const blueRedAvailableDiff = blueAvailable - redAvailable;
+      if(numberAvailableBranches > 0){
+        if (blueRedAvailableDiff > 0) {
+          if (blueRedAvailableDiff > 1) {
+            tradeForRed.push('B');
+          }
+          if (blueRedAvailableDiff > 2) {
+            tradeForRed.push('B');
+          }
+          if (blueRedAvailableDiff > 3) {
+            tradeForRed.push('B');
+          }
+        }
+        
+       
+
+        for(let g = 0; g < gafter; g++){
+          tradeForRed.push('G');
+        }
+        for(let y = 0; y < yafter; y++){
+          tradeForRed.push('Y');
+        }
       }
 
 
@@ -292,23 +295,25 @@ export class CoreLogic {
       let tradeForBlueCombinations:string[][] = [];
       
       const redBlueAvailableDiff = redAvailable - blueAvailable;
-      if (redBlueAvailableDiff > 0) {
-        if (redBlueAvailableDiff > 1) {
-          tradeForBlue.push('R');
+      if(numberAvailableBranches > 0){
+        if (redBlueAvailableDiff > 0) {
+          if (redBlueAvailableDiff > 1) {
+            tradeForBlue.push('R');
+          }
+          if (redBlueAvailableDiff > 2) {
+            tradeForBlue.push('R');
+          }
+          if (redBlueAvailableDiff > 3) {
+            tradeForBlue.push('R');
+          }
         }
-        if (redBlueAvailableDiff > 2) {
-          tradeForBlue.push('R');
-        }
-        if (redBlueAvailableDiff > 3) {
-          tradeForBlue.push('R');
-        }
-      }
 
-      for(let g = 0; g < gafter; g++){
-        tradeForBlue.push('G');
-      }
-      for(let y = 0; y < yafter; y++){
-        tradeForBlue.push('Y');
+        for(let g = 0; g < gafter; g++){
+          tradeForBlue.push('G');
+        }
+        for(let y = 0; y < yafter; y++){
+          tradeForBlue.push('Y');
+        }
       }
 
       // if (greenAvailable - 3 >= yellowAvailable) {
