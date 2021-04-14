@@ -154,8 +154,8 @@ export class ManagerService {
         this.playerOne.theme = PlayerTheme.MINER;
         this.playerTwo.theme = PlayerTheme.MACHINE;
       } else {
-        this.playerOne.theme = PlayerTheme.MINER;
-        this.playerTwo.theme = PlayerTheme.MACHINE;
+        this.playerOne.theme = PlayerTheme.MACHINE;
+        this.playerTwo.theme = PlayerTheme.MINER;
       }
     } else if (gameMode === 'pvp') {
       this.playerOne.theme = this.storageService.fetch('playeronetheme') === 'miner' ? PlayerTheme.MINER : PlayerTheme.MACHINE;
