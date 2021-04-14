@@ -362,7 +362,7 @@ export class ManagerService {
     console.log(this.boardString);
   }
 
-  sleep(ms: number) {
+  sleep(ms: number): Promise<any> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
