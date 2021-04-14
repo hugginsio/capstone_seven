@@ -467,9 +467,16 @@ export class ManagerService {
     //if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
     //const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
     if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
-      const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
-      // string to store AI move
-      //const AIStringMove = this.ai.getAIMove(this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString);
+      
+      //const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
+      let prevPlayerInt;
+      if(this.playerOne.numNodesPlaced === 1 && this.playerTwo.numNodesPlaced === 1){
+        prevPlayerInt = 2;
+      }
+      else{
+        prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
+      }
+      
       
 
 
@@ -486,7 +493,7 @@ export class ManagerService {
 
       };
 
-      console.log(this.gameBoard);
+      
       this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString] });
 
 
