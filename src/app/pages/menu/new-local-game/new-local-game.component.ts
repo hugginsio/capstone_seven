@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 import { ValidInputCheck } from '../valid-input-check';
-//import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
-//import { ClickEvent } from '../../game/interfaces/game.interface';
 
 
 @Component({
@@ -127,8 +125,6 @@ export class NewLocalGameComponent {
           this.storageService.update('board-seed', boardString);
         }
         else {
-          // display error message
-          //this.snackbarService.add({ message: 'Invalid input for Board Seed. Enter valid input or start the game with a random board.' });
           this.boardSeed = '';
           return;
         }

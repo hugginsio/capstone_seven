@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ClickEvent } from '../../../pages/game/interfaces/game.interface';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
-
+import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 
 @Component({
   selector: 'app-help-slideshow',
@@ -19,7 +19,8 @@ export class HelpSlideshowComponent {
 
   constructor(
     private readonly storageService: LocalStorageService,
-    private readonly routerService: Router
+    private readonly routerService: Router,
+    private readonly soundService: SoundService
   ) { }
 
   decrementSlides(): void {
@@ -55,6 +56,7 @@ export class HelpSlideshowComponent {
     this.storageService.update('mode', 'pva');
     this.storageService.update('guided-tutorial', 'true');
 
+    this.soundService.clear();
     this.routerService.navigate(['/game']);
   }
 
