@@ -469,6 +469,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   musicNext(): void {
+    this.soundService.clear();
     switch (this.currentTrack) {
       case 'bg1':
         this.soundService.add('/assets/sound/haunted.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
@@ -491,6 +492,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   musicPrev(): void {
+    this.soundService.clear();
     switch (this.currentTrack) {
       case 'bg1':
         this.soundService.add('/assets/sound/main.mp3', SoundEndAction.LOOP, SoundType.MUSIC);

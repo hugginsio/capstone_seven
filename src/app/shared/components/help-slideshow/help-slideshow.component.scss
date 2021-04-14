@@ -27,8 +27,9 @@
   }
 
   .priceImg {
-    @apply transform scale-150;
+    @apply max-w-max;
   }
+
 }
 
 h1 {

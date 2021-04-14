@@ -41,8 +41,8 @@ export class AppComponent {
     this.storageService.update('playeronetheme', 'miner');
 
     this.storageService.setContext('sound');
-    this.storageService.update('musicvolume', '20');
-    this.storageService.update('fxvolume', '60');
+    this.storageService.update('musicvolume', '50');
+    this.storageService.update('fxvolume', '90');
   }
 }
 
