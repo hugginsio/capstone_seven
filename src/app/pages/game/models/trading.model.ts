@@ -39,10 +39,10 @@ export class TradingModel {
             }
           }
 
-          if (this.currentResources.red >= 0 && this.redResources === this.resourceMap.red) {
+          if (this.currentResources.red === 0 && this.redResources === this.resourceMap.red) {
             this.redResources = 0;
             this.currentResources.red = this.resourceMap.red;
-          } else if (this.currentResources.red > 0) {
+          } else {
             this.redResources++;
             this.currentResources.red--;
           }
@@ -50,10 +50,10 @@ export class TradingModel {
           break;
 
         case 2:
-          if (this.currentResources.green >= 0 && this.greenResources === this.resourceMap.green) {
+          if (this.currentResources.green === 0 && this.greenResources === this.resourceMap.green) {
             this.greenResources = 0;
             this.currentResources.green = this.resourceMap.green;
-          } else if (this.currentResources.green > 0) {
+          } else {
             this.greenResources++;
             this.currentResources.green--;
           }
@@ -61,10 +61,10 @@ export class TradingModel {
           break;
 
         case 3:
-          if (this.currentResources.blue >= 0 && this.blueResources === this.resourceMap.blue) {
+          if (this.currentResources.blue === 0 && this.blueResources === this.resourceMap.blue) {
             this.blueResources = 0;
             this.currentResources.blue = this.resourceMap.blue;
-          } else if (this.currentResources.blue > 0) {
+          } else {
             this.blueResources++;
             this.currentResources.blue--;
           }
@@ -79,10 +79,10 @@ export class TradingModel {
             }
           }
 
-          if (this.currentResources.yellow >= 0 && this.yellowResources === this.resourceMap.yellow) {
+          if (this.currentResources.yellow === 0 && this.yellowResources === this.resourceMap.yellow) {
             this.yellowResources = 0;
             this.currentResources.yellow = this.resourceMap.yellow;
-          } else if (this.currentResources.yellow > 0) {
+          } else {
             this.yellowResources++;
             this.currentResources.yellow--;
           }
