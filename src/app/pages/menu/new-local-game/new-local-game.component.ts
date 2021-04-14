@@ -125,7 +125,7 @@ export class NewLocalGameComponent {
       }
       else
       {
-      this.storageService.update('board-seed', this.boardSeed);
+        this.storageService.update('board-seed', this.boardSeed);
       }
     }
 
