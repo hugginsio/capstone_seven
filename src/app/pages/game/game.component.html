@@ -72,7 +72,7 @@
 
   <!-- Top Information Container -->
   <div class="h-screen w-screen overscroll-none text-center absolute top-0 right-0 z-50 mt-4 pointer-events-none">
-    <p class="p-3">{{ this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE' ? 'Player One' : 'Player Two' }}'s Turn</p>
+    <p class="p-3">{{ this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE' ? this.playerOneName : this.playerTwoName }}'s Turn</p>
   </div>
 
   <!-- Chat Container -->
@@ -278,7 +278,7 @@
               <img src="/assets/game/resources/Red-Resource-Tile.png" class="w-full h-full opacity-0" draggable="false"/>
             </div>
           </div>
-          <p class="text-2xl font-normal">{{ this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE' ? 'Player One' : 'Player Two' }}'s largest set of connectin' paths was {{ this.winningPlayer.currentLongest }}.</p>
+          <p class="text-2xl font-normal">{{ this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE' ? this.playerOneName : this.playerTwoName }}'s largest set of connectin' paths was {{ this.winningPlayer.currentLongest }}.</p>
           <div class="flex space-x-4 w-full flex-grow-0">
             <div class="menu-btn-light w-full flex-grow pointer-events-auto" routerLink="/menu/landing">
               <div>
@@ -325,13 +325,13 @@
     <div class="mx-auto relative w-full h-full"> <!-- keeping this div if max-w becomes an issue here -->
       <div id="player1" class="absolute bottom-3 left-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerOne()" [actionSubject]="this.commLink"
-          [playerName]="'Player One'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERONE'"
+          [playerName]="this.playerOneName" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERONE'"
           [isConnected]="this.isConnected" [stackLength]="this.gameManager.stack.length"
           [canTrade]="this.getCanTrade()" playerEnum="PLAYERONE"></app-player-shard>
       </div>
       <div id="player2" class="absolute bottom-3 right-3">
         <app-player-shard [playerDetail]="this.gameManager.getPlayerTwo()" [actionSubject]="this.commLink"
-          [playerName]="'Player Two'" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERTWO'"
+          [playerName]="this.playerTwoName" [currentPlayer]="gameManager.getCurrentPlayerEnum() === 'PLAYERTWO'"
           [isConnected]="this.isConnected" [stackLength]="this.gameManager.stack.length"
           [canTrade]="this.getCanTrade()" playerEnum="PLAYERTWO"></app-player-shard>
       </div>
