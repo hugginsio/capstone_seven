@@ -118,9 +118,6 @@ export class SoundControllerComponent {
     const element = this.document.getElementById(id) as HTMLAudioElement;
     const track = this.sounds.find(object => object.id === id);
     if (element) {
-      console.log(track);
-      console.log(element.volume);
-      console.log(element.loop);
       if (track?.type === SoundType.MUSIC) {
         element.volume = this.musicVolume;
       } else {

@@ -1,5 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import { AfterViewInit, Component, Inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
 import { Player } from './classes/gamecore/game.class.Player';
@@ -9,11 +8,11 @@ import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
 import { SoundService } from '../../shared/components/sound-controller/services/sound.service';
-import { SoundEndAction } from '../../shared/components/sound-controller/interfaces/sound-controller.interface';
+import { SoundEndAction, SoundType } from '../../shared/components/sound-controller/interfaces/sound-controller.interface';
 import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
 import { Router } from '@angular/router';
-import { Owner, PlayerTheme, PlayerType } from './enums/game.enums';
+import { PlayerTheme, PlayerType } from './enums/game.enums';
 import { GameType } from './enums/game.enums';
 
 @Component({
@@ -23,27 +22,30 @@ import { GameType } from './enums/game.enums';
 })
 
 export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
+  public currentTrack: string;
   public gameIntro: boolean;
   public gameOver: boolean;
-  public guidedTutorialCheck: boolean;
   public gameOverText: string;
   public gamePaused: boolean;
-  public isTrading: boolean;
-  public showHelp: boolean;
-  public tradingModel: TradingModel;
-  public isTutorial: boolean;
-  public isNetwork: boolean;
-  public winningPlayer: Player;
-  public username: string;
-  public oppUsername: string;
+  public guidedTutorialCheck: boolean;
   public isConnected: boolean;
-  public opponentQuit: boolean;
+  public isMuted: boolean;
+  public isNetwork: boolean;
+  public isTrading: boolean;
+  public isTutorial: boolean;
   public listeners: Array<Subscription>;
+  public musicVolume: string;
+  public oppUsername: string;
+  public opponentQuit: boolean;
+  public showHelp: boolean;
+  public showMusicControls: boolean;
+  public tradingModel: TradingModel;
+  public username: string;
+  public winningPlayer: Player;
 
   public readonly commLink = new Subject<CommPackage>();
 
   constructor(
-    @Inject(DOCUMENT) private document: Document,
     public readonly gameManager: ManagerService,
     public guidedTutorial: GuidedTutorialService,
     private readonly storageService: LocalStorageService,
@@ -54,19 +56,23 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     private changeDetector: ChangeDetectorRef
   ) {
     // Set defaults for UI triggers
+    //this.guidedTutorial = new GuidedTutorialComponent(document, gameManager, storageService, snackbarService);
+    this.currentTrack = "";
     this.gameIntro = false;
     this.gameOver = false;
-    this.guidedTutorialCheck = false;
     this.gameOverText = "Victory!";
-    this.gamePaused = false;
-    this.isTrading = false;
-    this.tradingModel = new TradingModel(this.storageService, this.guidedTutorial);
-    //this.guidedTutorial = new GuidedTutorialComponent(document, gameManager, storageService, snackbarService);
-    this.isNetwork = false;
-    this.isTutorial = false;
+    this.gamePaused = true;
+    this.guidedTutorialCheck = false;
     this.isConnected = true;
-    this.opponentQuit = false;
+    this.isMuted = false;
+    this.isNetwork = false;
+    this.isTrading = false;
+    this.isTutorial = false;
     this.listeners = new Array<Subscription>();
+    this.musicVolume = '0';
+    this.opponentQuit = false;
+    this.showMusicControls = false;
+    this.tradingModel = new TradingModel(this.storageService, this.guidedTutorial);
 
     this.storageService.setContext('game');
   }
@@ -172,7 +178,18 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    // this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP);
+    // Music initialization
+    const backgroundString = this.getBackground();
+    if (backgroundString === 'bg1') {
+      this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+      this.currentTrack = 'bg1';
+    } else if (backgroundString === 'bg2') {
+      this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+      this.currentTrack = 'bg2';
+    } else if (backgroundString === 'bg3') {
+      this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+      this.currentTrack = 'bg3';
+    }
 
     if (this.storageService.fetch('mode') === "net") {
       this.isNetwork = true;
@@ -233,7 +250,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.appendMessage(message);
       // why is this not showing up?
       //this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
-
     }
   }
 
@@ -434,6 +450,71 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.gamePaused = !this.gamePaused;
   }
 
+  toggleMusicControls(): void {
+    this.togglePaused();
+    this.showMusicControls = !this.showMusicControls;
+  }
+
+  toggleMusic(): void {
+    this.storageService.setContext('sound');
+    if (!this.isMuted) {
+      this.musicVolume = this.storageService.fetch('musicvolume');
+      this.storageService.update('musicvolume', '0');
+      this.soundService.update();
+      this.isMuted = !this.isMuted;
+    } else {
+      this.storageService.update('musicvolume', this.musicVolume.toString());
+      this.soundService.update();
+      this.isMuted = !this.isMuted;
+    }
+
+    this.storageService.setContext('game');
+  }
+
+  musicNext(): void {
+    switch (this.currentTrack) {
+      case 'bg1':
+        console.log('bg2');
+        this.currentTrack = 'bg2';
+        break;
+      case 'bg2':
+        console.log('bg3');
+        this.currentTrack = 'bg3';
+        break;
+      case 'bg3':
+        console.log('bg1');
+        this.currentTrack = 'bg1';
+        break;
+    
+      default:
+        console.log('bg1');
+        this.currentTrack = 'bg1';
+        break;
+    }
+  }
+
+  musicPrev(): void {
+    switch (this.currentTrack) {
+      case 'bg1':
+        console.log('bg3');
+        this.currentTrack = 'bg3';
+        break;
+      case 'bg2':
+        console.log('bg1');
+        this.currentTrack = 'bg1';
+        break;
+      case 'bg3':
+        console.log('bg2');
+        this.currentTrack = 'bg2';
+        break;
+
+      default:
+        console.log('bg1');
+        this.currentTrack = 'bg1';
+        break;
+    }
+  }
+
   toggleTrade(): void {
     if (!this.gameManager.getCurrentPlayer().hasTraded) {
       // TODO: make a canTrade bool for the player shard
@@ -470,19 +551,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
       this.tradingModel.reset();
     }
-  }
-
-  scrollToBottom(): void {
-    (function smoothscroll() {
-      const currentScroll = document.documentElement.scrollTop || document.body.scrollTop; // TODO: find bottom variables
-      if (currentScroll > 0) {
-        window.requestAnimationFrame(smoothscroll);
-        window.scrollTo(0, currentScroll - (currentScroll / 8));
-      } else if (currentScroll === 0) {
-        // fade to black
-        console.log('fade');
-      }
-    })();
   }
 
   cancelTrading(): void {
