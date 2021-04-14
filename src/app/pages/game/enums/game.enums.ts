@@ -5,8 +5,8 @@ export enum PlayerType {
 }
 
 export enum PlayerTheme {
-  MINER,
-  MACHINE
+  MINER = 'MINER',
+  MACHINE = 'MACHINE'
 }
 
 export enum TileColor {

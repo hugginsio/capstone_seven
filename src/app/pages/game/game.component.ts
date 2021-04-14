@@ -42,6 +42,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   public tradingModel: TradingModel;
   public username: string;
   public winningPlayer: Player;
+  public playerOneName: string;
+  public playerTwoName: string;
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -73,6 +75,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.opponentQuit = false;
     this.showMusicControls = false;
     this.tradingModel = new TradingModel(this.storageService, this.guidedTutorial);
+    this.playerOneName = 'Player One';
+    this.playerTwoName = 'Player Two';
 
     this.storageService.setContext('game');
   }
@@ -162,9 +166,18 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.gameManager.commLink.subscribe(message => {
       const status = message.code;
       const player = message.player;
-      const magic = message.magic;
+      let magic = message.magic;
 
       if (status === CommCode.END_GAME && player && magic) {
+        if(magic === 'Player One')
+        {
+          magic = this.playerOneName;
+        }
+        else
+        {
+          magic = this.playerTwoName;
+        }
+
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         this.gameOverText = `${magic} Won!`;
         this.winningPlayer = player;
@@ -194,9 +207,29 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.oppUsername = this.storageService.fetch('oppUsername');
       if (this.storageService.fetch('isHost') === 'true') {
         this.networkingService.createTCPServer();
+        if(this.storageService.fetch('isHostFirst') === 'true')
+        {
+          this.playerOneName = this.username;
+          this.playerTwoName = this.oppUsername;
+        }
+        else
+        {
+          this.playerOneName = this.oppUsername;
+          this.playerTwoName = this.username;
+        }
       }
       else {
         this.networkingService.connectTCPserver(this.storageService.fetch('oppAddress'));
+        if(this.storageService.fetch('isHostFirst') === 'true')
+        {
+          this.playerOneName = this.oppUsername;
+          this.playerTwoName = this.username;
+        }
+        else
+        {
+          this.playerOneName = this.username;
+          this.playerTwoName = this.oppUsername;
+        }
       }
 
       this.listeners.push(this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {

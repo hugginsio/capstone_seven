@@ -29,7 +29,7 @@ function createWindow(): BrowserWindow {
   window = new BrowserWindow({
     center: true,
     fullscreenable: true,
-    fullscreen: true,
+    fullscreen: !isDev,
     height: 940,
     minHeight: 940,
     minWidth: 1280,

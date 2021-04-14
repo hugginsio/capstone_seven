@@ -124,6 +124,7 @@ export class NewNetworkGameComponent implements OnInit, OnDestroy {
       this.storageService.update('oppAddress', oppAddress);
       this.storageService.update('board-seed', this.gameSettings.board);
       this.storageService.update('location', this.gameSettings.background);
+      this.storageService.update('playeronetheme', this.gameSettings.playerOneTheme);
       if (this.gameSettings.isHostFirst === true)
       {
         this.storageService.update('isHostFirst', 'true');
