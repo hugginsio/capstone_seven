@@ -1,10 +1,11 @@
-<div class="flex space-between w-full justify-center h-full flex-grow" id="help-slideshow-container">
-  <div class="flex justify-center items-center w-full h-full px-4 space-x-4 flex-grow">
-    <div class="flex menu-btn" [ngClass]="dynamicClass('prev')" (click)="decrementSlides()" boombox="button">
-      Prev
+<div class="flex space-between w-screen justify-center h-full flex-grow" id="help-slideshow-container">
+  <div class="flex items-center w-full px-4 space-x-4">
+  <!--<div class="flex justify-center items-center w-full h-full px-4 space-x-4 flex-grow">-->
+    <div class="flex menu-btn text-4xl" [ngClass]="dynamicClass('prev')" (click)="decrementSlides()" boombox="button">
+      &larr;
     </div>
 
-    <div class="flex px-4 h-full w-full flex-grow" id="actual-slides">
+    <div class="flex px-4 w-full justify-center items-center" id="actual-slides">
       <div class="flex flex-col space-y-4 h-full w-full flex-grow">
         <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 0">
           <h1>Help Manual Table of Contents</h1>
@@ -126,7 +127,7 @@
             <div class="flex-1 space-y-4">
               <div class="flex flex-col space-y-4 items-center">
                 <div>
-                  <img src="/assets/game/tiles/Three-Tile-Red.png" />
+                  <img src="/assets/help/blueTile3.PNG" />
                 </div>
                 <div>
                   <p>
@@ -169,7 +170,9 @@
 
         <div class="flex flex-col space-y-4 h-full w-full flex-grow" *ngIf="currentSlide === 3">
           <h1>Buyin' Tools and Paths</h1>
-          <img src="/assets/help/priceCard.PNG" />
+          <div class="flex-grow w-full h-full">
+            <img src="/assets/help/priceCard.PNG" />
+          </div>
           <!--
           <div class="flex flex-row w-full h- full justify-center">
             <div class="border-4 p-4 border-gray-600 bg-gray-900 flex flex-col text-3xl space-y-3">
@@ -232,8 +235,11 @@
                 Once you’ve settled your mind, hit “End Turn” to let your opponent have a go.
               </p>
             </div>
-            <div class="flex-1">
-              <img src="/assets/help/openingMovePlayerShard.png" />
+            <div>
+              <img src="/assets/help/p1PlayerShard.PNG" />
+            </div>
+            <div>
+              <img src="/assets/help/p2playerShard.PNG" />
             </div>
           </div>
         </div>
@@ -289,7 +295,7 @@
                 If ya do, that Site is gonna get "Tuckered Out" and ain't nobody gettin' Gems from it, no matter how many Tools they got on its corners.
               </p>
             </div>
-            <div class="flex flex-grow justify-center items-center">
+            <div class="flex-1 flex-grow">
               <img class="boardImg" src="/assets/help/exhaustedLarger.PNG" />
             </div>
           </div>
@@ -309,7 +315,7 @@
                 Best of all, a surrounded Site can't be Tuckered Out!
               </p>
             </div>
-            <div class="flex flex-grow justify-center items-center">
+            <div class="flex-1 flex-grow">
               <img class="boardImg" src="/assets/help/captured.PNG" />
             </div>
           </div>
@@ -355,7 +361,7 @@
               </p>
             </div>
             <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
+              <img class="boardImg" src="/assets/help/victoryScreen.PNG" />
             </div>
           </div>
         </div>
@@ -378,7 +384,7 @@
               </p>
             </div>
             <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
+              <img class="border-4 border-gray-900" src="/assets/help/boardSeed.PNG" />
             </div>
           </div>
         </div>
@@ -396,7 +402,7 @@
               </p>
             </div>
             <div class="flex-1">
-              <img src="/assets/help/testBoard.png" />
+              <img class="border-4 border-gray-900" src="/assets/help/networking.PNG" />
             </div>
           </div>
         </div>
@@ -445,8 +451,8 @@
       </div>
     </div>
 
-    <div class="flex menu-btn" [ngClass]="dynamicClass('next')" (click)="incrementSlides()" boombox="button">
-      Next
+    <div class="flex menu-btn text-4xl" [ngClass]="dynamicClass('next')" (click)="incrementSlides()" boombox="button">
+      &rarr;
     </div>
   </div>
 </div>
