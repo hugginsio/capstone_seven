@@ -71,10 +71,10 @@
               <div class="GT-btn inline-block align-middle flex-grow" (click)="startGuidedTutorial($event)" *ngIf="this.inGame === 'false'">Start Guided Tutorial</div>
             </div>
             <div class="flex-1">
-              <img style = "image-rendering: pixelated;" class="p-4 w-full h-full" src="/assets/help/machine.png" />
+              <img style = "image-rendering: pixelated;" class="p-4 w-11/12 h-full" src="/assets/help/machine.png" />
             </div>
             <div class="flex-1">
-              <img style = "image-rendering: pixelated;" class="p-4 w-full h-full" src="/assets/help/miner 2.png" />
+              <img style = "image-rendering: pixelated;" class="p-4 w-11/12 h-full" src="/assets/help/miner 2.png" />
             </div>
           </div>
         </div>
@@ -171,35 +171,19 @@
 
         <div class="flex flex-col space-y-4 h-full w-full flex-grow" *ngIf="currentSlide === 3">
           <h1>Buyin' Tools and Paths</h1>
-          <div class="flex-grow w-full h-full">
-            <img src="/assets/help/priceCard.PNG" />
+          <div class="flex space-x-4 w-full items-center">
+            <div class="flex-1 flex-col space-y-4">
+              <p>
+                This here "Price Card" shows our fair prices for Tools and Paths in the mine.
+              </p>
+              <p>
+                This'll be sittin' on your screen through the whole game, so ya can make informed decisions for your moves.
+              </p>
+            </div>
+            <div class="flex-1 w-full content-center flex-grow">
+              <img src="/assets/help/priceCard.PNG" />
+            </div>
           </div>
-          <!--
-          <div class="flex flex-row w-full h- full justify-center">
-            <div class="border-4 p-4 border-gray-600 bg-gray-900 flex flex-col text-3xl space-y-3">
-              <div class="flex flex-row justify-between items-center space-x-3">
-                <img class="priceImg" src="/assets/game/resources/Red-Resource-Tile.png" draggable="false">
-                <p>+</p>
-                <img class="priceImg" src="/assets/game/resources/Blue-Resource-Tile.png" draggable="false">
-                <p>=</p>
-                <img class="priceImg" src="/assets/game/branches/Horizontal-Track-Orange-Miner.png" draggable="false">
-              </div>
-              <div class="flex flex-row justify-between items-center space-x-4">
-                <div class="flex flex-row space-x-0">
-                  <img class="priceImg" src="/assets/game/resources/Yellow-Resource-Tile.png" draggable="false">
-                  <img class="priceImg" src="/assets/game/resources/Yellow-Resource-Tile.png" draggable="false">
-                </div>
-                <p>+</p>
-                <div class="flex flex-row space-x-0">
-                  <img class="priceImg" src="/assets/game/resources/Green-Resource-Tile.png" draggable="false">
-                  <img class="priceImg" src="/assets/game/resources/Green-Resource-Tile.png" draggable="false">
-                </div>
-                <p>=</p>
-                <img class="priceImg" src="/assets/game/nodes/Orange-Node-Pickaxe.png" draggable="false">
-              </div>
-            </div> 
-          </div>
-        -->
         </div>
 
         <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 4">
@@ -217,7 +201,7 @@
               </p>
             </div>
             <div class="flex-1">
-              <img src="/assets/help/firstMoves.PNG" />
+              <img class="boardImg" src="/assets/help/firstMoves.PNG" />
             </div>
           </div>
         </div>
@@ -244,48 +228,6 @@
             </div>
           </div>
         </div>
-
-        <!--
-        <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 6">
-          <h1>Start of Each Turn</h1>
-          <div class="flex space-x-4 items-center w-full">
-            <div class="flex-1 flex-col space-y-4">
-              <p>
-                Let the games begin!
-              </p>
-              <p>
-                Now, before you start making moves on your turn, your hard work will start to pay off.
-                At the start of each turn you get your earnings of one gem from each site you have a mining marker touchin’.
-              </p>
-            </div>
-            <div class="flex-1">
-              <img src="/assets/help/testBoard.png" />
-            </div>
-          </div>
-          <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
-        </div>
-      -->
-
-      <!--
-        <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 7">
-          <h1>Buildin' Your Operation</h1>
-          <div class="flex space-x-4 items-center w-full">
-            <div class="flex flex-col space-y-4 flex-grow">
-              <p>
-                Now that y’all got two startin’ points to your mining operation
-                you can build rails and place mining markers off either of your startin’ points.
-              </p>
-              <p>
-                Other miners can place their mining markers in your path but your rails’ve gotta connect.
-              </p>
-            </div>
-            <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
-            </div>
-          </div>
-          <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
-        </div>
-      -->
 
         <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 6">
           <h1>All Tuckered Out</h1>
@@ -430,7 +372,7 @@
               </p>
             </div>
             <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
+              <img src="/assets/help/Pause.png" />
             </div>
           </div>
         </div>

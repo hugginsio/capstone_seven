@@ -38,6 +38,18 @@
   .boardSeed-error {
     @apply border-4 border-red-600;
   }
+
+  .submenu-help-container {
+    @apply w-screen h-screen text-center bg-black bg-opacity-75;
+  }
+
+  .submenu-help-header {
+    @apply w-full text-6xl font-bold tracking-wider p-4 mb-4;
+  }
+
+  .submenu-help-footer {
+    @apply flex flex-col items-center justify-center mx-auto w-full p-4 absolute bottom-0;
+  }
 }
 
 .background-btn {
