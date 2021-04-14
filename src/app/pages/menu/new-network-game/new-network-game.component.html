@@ -33,16 +33,16 @@
   </div>
   <div class="submenu-footer">
     <div class="flex space-x-5 w-2/3 z-50">
-      <div class="menu-btn w-1/4" routerLink="/menu/landing">
+      <div class="menu-btn w-1/4" routerLink="/menu/landing" boombox="button">
         <p>Back</p>
       </div>
-      <div class="menu-btn w-1/4" [ngClass]="setButtons()" (click)="refresh()">
+      <div class="menu-btn w-1/4" [ngClass]="setButtons()" (click)="refresh()" boombox="button">
         <p>Refresh List</p>
       </div>
-      <div class="menu-btn w-1/4" [ngClass]="setButtons()" (click)="this.isEnteringName = true">
+      <div class="menu-btn w-1/4" [ngClass]="setButtons()" (click)="this.isEnteringName = true" boombox="button">
         <p>Change Name</p>
       </div>
-      <div class="menu-btn w-1/4" [ngClass]="setButtons()" routerLink="/menu/new/online/host">
+      <div class="menu-btn w-1/4" [ngClass]="setButtons()" routerLink="/menu/new/online/host" boombox="button">
         <p>Host Game</p>
       </div>
     </div>
@@ -58,9 +58,9 @@
         <p class="text-5xl font-bold tracking-wide p-4">Username</p>
         <form class="flex flex-row space-x-3 w-full" (ngSubmit)="setUsername()">
           <div class="menu-input w-2/3">
-            <input type="text" class="input-text text-3xl" [(ngModel)]="username" name="usernameInput" placeholder="Miner Joe">
+            <input type="text" class="input-text text-3xl" [(ngModel)]="username" name="usernameInput" placeholder="Miner Joe" autofocus required>
           </div>
-          <input type="submit" class="menu-btn w-1/3 text-3xl" value="Enter">
+          <input type="submit" class="menu-btn w-1/3 text-3xl" value="Enter" boombox="button">
         </form>
       </div>
     </div>

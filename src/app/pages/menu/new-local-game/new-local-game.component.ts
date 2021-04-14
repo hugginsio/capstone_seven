@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { SoundService } from '../../../shared/components/sound-controller/services/sound.service';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 import { ValidInputCheck } from '../valid-input-check';
-//import { SnackbarService } from '../../../shared/components/snackbar/services/snackbar.service';
-//import { ClickEvent } from '../../game/interfaces/game.interface';
 
 
 @Component({
@@ -16,26 +14,28 @@ export class NewLocalGameComponent {
   public advancedOpts: boolean;
   public aiDifficultyString: string;
   public boardSeed: string;
+  public explainationPopUp: boolean;
   public gameModeString: string;
   public guidedTutorial: boolean;
+  public playerOneTheme: string;
   public playerOrder: number;
   public selectedLocation: number;
   public validInputCheck: ValidInputCheck;
-  public explainationPopUp: boolean;
 
   public readonly aiEasy = "Easy";
-  public readonly aiMedium = "Medium";
   public readonly aiHard = "Hard";
+  public readonly aiMedium = "Medium";
   public readonly playerOrderOne = "Player Goes First";
   public readonly playerOrderTwo = "AI Goes First";
+  public readonly playerThemeOne = "Player One is Miner";
+  public readonly playerThemeTwo = "Player One is Machine";
   public readonly pva = "Player vs. AI";
   public readonly pvp = "Player vs. Player";
 
   constructor(
-    private readonly storageService: LocalStorageService,
     private readonly routerService: Router,
-    //private readonly snackbarService: SnackbarService
-    private readonly soundService: SoundService
+    private readonly soundService: SoundService,
+    private readonly storageService: LocalStorageService
   ) {
     // Initialize datastore to game context
     storageService.setContext('game');
@@ -49,7 +49,7 @@ export class NewLocalGameComponent {
     this.playerOrder = this.storageService.fetch('firstplayer') === '1' ? 1 : 2;
     this.validInputCheck = new ValidInputCheck(this.storageService);
     this.explainationPopUp = false;
-
+    this.playerOneTheme = this.storageService.fetch('playeronetheme');
 
     const storedLocation =  this.storageService.fetch('location');
     if (storedLocation === 'bg3') {
@@ -75,6 +75,14 @@ export class NewLocalGameComponent {
       this.playerOrder = 1;
       this.storageService.update('firstplayer', this.playerOrder.toString());
     }
+  }
+
+  changePlayerTheme(): void {
+    // Update UI
+    this.playerOneTheme = this.playerOneTheme === 'miner' ? 'machine' : 'miner';
+
+    // Update datastore
+    this.playerOneTheme === 'miner' ? this.storageService.update('playeronetheme', 'miner') : this.storageService.update('playeronetheme', 'machine');
   }
 
   changeAiDifficulty(): void {
@@ -117,8 +125,6 @@ export class NewLocalGameComponent {
           this.storageService.update('board-seed', boardString);
         }
         else {
-          // display error message
-          //this.snackbarService.add({ message: 'Invalid input for Board Seed. Enter valid input or start the game with a random board.' });
           this.boardSeed = '';
           return;
         }

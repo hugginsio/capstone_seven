@@ -1,5 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import { AfterViewInit, Component, Inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { LocalStorageService } from '../../shared/services/local-storage/local-storage.service';
 import { Player } from './classes/gamecore/game.class.Player';
@@ -9,12 +8,12 @@ import { ManagerService } from './services/gamecore/manager.service';
 import { TradingModel } from './models/trading.model';
 import { SnackbarService } from '../../shared/components/snackbar/services/snackbar.service';
 import { SoundService } from '../../shared/components/sound-controller/services/sound.service';
-import { SoundEndAction } from '../../shared/components/sound-controller/interfaces/sound-controller.interface';
+import { SoundEndAction, SoundType } from '../../shared/components/sound-controller/interfaces/sound-controller.interface';
 import { GuidedTutorialService } from './services/guided-tutorial/guided-tutorial.service';
 import { GameNetworkingService } from '../networking/game-networking.service';
 import { Router } from '@angular/router';
-import { PlayerType } from './enums/game.enums';
-//import { GameType } from './enums/game.enums';
+import { PlayerTheme, PlayerType } from './enums/game.enums';
+import { GameType } from './enums/game.enums';
 
 @Component({
   selector: 'app-game',
@@ -23,27 +22,32 @@ import { PlayerType } from './enums/game.enums';
 })
 
 export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
+  public currentTrack: string;
   public gameIntro: boolean;
   public gameOver: boolean;
-  public guidedTutorialCheck: boolean;
   public gameOverText: string;
   public gamePaused: boolean;
-  public isTrading: boolean;
-  public showHelp: boolean;
-  public tradingModel: TradingModel;
-  public isTutorial: boolean;
-  public isNetwork: boolean;
-  public winningPlayer: Player;
-  public username: string;
-  public oppUsername: string;
+  public guidedTutorialCheck: boolean;
   public isConnected: boolean;
-  public opponentQuit: boolean;
+  public isMuted: boolean;
+  public isNetwork: boolean;
+  public isTrading: boolean;
+  public isTutorial: boolean;
   public listeners: Array<Subscription>;
+  public musicVolume: string;
+  public oppUsername: string;
+  public opponentQuit: boolean;
+  public showHelp: boolean;
+  public showMusicControls: boolean;
+  public tradingModel: TradingModel;
+  public username: string;
+  public winningPlayer: Player;
+  public playerOneName: string;
+  public playerTwoName: string;
 
   public readonly commLink = new Subject<CommPackage>();
 
   constructor(
-    @Inject(DOCUMENT) private document: Document,
     public readonly gameManager: ManagerService,
     public guidedTutorial: GuidedTutorialService,
     private readonly storageService: LocalStorageService,
@@ -51,30 +55,33 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly soundService: SoundService,
     private readonly networkingService: GameNetworkingService,
     private readonly routerService: Router,
-    private changeDetector:ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef
   ) {
     // Set defaults for UI triggers
-    this.gameIntro = false;
+    //this.guidedTutorial = new GuidedTutorialComponent(document, gameManager, storageService, snackbarService);
+    this.currentTrack = "";
+    this.gameIntro = true;
     this.gameOver = false;
-    this.guidedTutorialCheck = false;
     this.gameOverText = "Victory!";
     this.gamePaused = false;
-    this.isTrading = false;
-    this.tradingModel = new TradingModel(this.storageService, this.guidedTutorial);
-    //this.guidedTutorial = new GuidedTutorialComponent(document, gameManager, storageService, snackbarService);
-    this.isNetwork = false;
-    this.isTutorial = false;
+    this.guidedTutorialCheck = false;
     this.isConnected = true;
-    this.opponentQuit = false;
+    this.isMuted = false;
+    this.isNetwork = false;
+    this.isTrading = false;
+    this.isTutorial = false;
     this.listeners = new Array<Subscription>();
+    this.musicVolume = '0';
+    this.opponentQuit = false;
+    this.showMusicControls = false;
+    this.tradingModel = new TradingModel(this.storageService, this.guidedTutorial);
+    this.playerOneName = 'Player One';
+    this.playerTwoName = 'Player Two';
 
     this.storageService.setContext('game');
   }
 
   ngOnInit(): void {
-    // ✨ ANIMATIONS ✨
-    // this.scrollToBottom();
-
     this.gameManager.Initialize();
 
     if (this.storageService.fetch('guided-tutorial') === 'true'
@@ -90,7 +97,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     // Subscribe to own communications link
     this.commLink.subscribe(message => {
       const status = message.code;
-      
+
 
       // Check which player sent the message before we run player-centric commands
       if (this.gameManager.getCurrentPlayer() === message.player) {
@@ -159,20 +166,40 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.gameManager.commLink.subscribe(message => {
       const status = message.code;
       const player = message.player;
-      const magic = message.magic;
+      let magic = message.magic;
 
       if (status === CommCode.END_GAME && player && magic) {
+        if(magic === 'Player One')
+        {
+          magic = this.playerOneName;
+        }
+        else
+        {
+          magic = this.playerTwoName;
+        }
+
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         this.gameOverText = `${magic} Won!`;
         this.winningPlayer = player;
         this.gameOver = true;
       }
-      else if(status === CommCode.AI_Move && player){
+      else if (status === CommCode.AI_Move && player) {
         this.changeDetector.detectChanges();
       }
     });
 
-    this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP);
+    // Music initialization
+    const backgroundString = this.getBackground();
+    if (backgroundString === 'bg1') {
+      this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+      this.currentTrack = 'bg1';
+    } else if (backgroundString === 'bg2') {
+      this.soundService.add('/assets/sound/haunted.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+      this.currentTrack = 'bg2';
+    } else if (backgroundString === 'bg3') {
+      this.soundService.add('/assets/sound/main.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+      this.currentTrack = 'bg3';
+    }
 
     if (this.storageService.fetch('mode') === "net") {
       this.isNetwork = true;
@@ -180,9 +207,29 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.oppUsername = this.storageService.fetch('oppUsername');
       if (this.storageService.fetch('isHost') === 'true') {
         this.networkingService.createTCPServer();
+        if(this.storageService.fetch('isHostFirst') === 'true')
+        {
+          this.playerOneName = this.username;
+          this.playerTwoName = this.oppUsername;
+        }
+        else
+        {
+          this.playerOneName = this.oppUsername;
+          this.playerTwoName = this.username;
+        }
       }
       else {
         this.networkingService.connectTCPserver(this.storageService.fetch('oppAddress'));
+        if(this.storageService.fetch('isHostFirst') === 'true')
+        {
+          this.playerOneName = this.oppUsername;
+          this.playerTwoName = this.username;
+        }
+        else
+        {
+          this.playerOneName = this.username;
+          this.playerTwoName = this.oppUsername;
+        }
       }
 
       this.listeners.push(this.networkingService.listen('recieve-chat-message').subscribe((message: string) => {
@@ -233,12 +280,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.appendMessage(message);
       // why is this not showing up?
       //this.snackbarService.add({ message: 'Click the "Next" button to start the tutorial.'});
-
     }
   }
 
   assemblePieceClass(piece: 'T' | 'N' | 'BX' | 'BY', id: number): string {
     let result = '';
+
     switch (piece) {
       case 'T':
         if (this.gameManager.getBoard().tiles[id].color === "BLANK") {
@@ -248,12 +295,25 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if (this.gameManager.getBoard().tiles[id].capturedBy !== 'NONE') {
-          result += `-capture-${this.gameManager.getBoard().tiles[id].capturedBy === 'PLAYERONE' ? 'orange' : 'purple'}`;
+          const tileOwner = this.gameManager.getBoard().tiles[id].capturedBy;
+          const tilePlayer = tileOwner === 'PLAYERONE' ? this.gameManager.getPlayerOne() : this.gameManager.getPlayerTwo();
+          
+          result += `-captured-${tileOwner === 'PLAYERONE' ? 'orange-' : 'purple-'}`;
+          result += tilePlayer.theme === PlayerTheme.MINER ? 'miner' : 'machine';
+
+          if (this.gameManager.getBoard().tiles[id].maxNodes !== 0) {
+            result += `-${this.gameManager.getBoard().tiles[id].maxNodes.toString()}`;
+          }
+
           break;
         }
 
         if (this.gameManager.getBoard().tiles[id].isExhausted && this.gameManager.getBoard().tiles[id].color !== "BLANK") {
           result += '-exhausted';
+          if (this.gameManager.getBoard().tiles[id].maxNodes !== 0) {
+            result += `-${this.gameManager.getBoard().tiles[id].maxNodes.toString()}`;
+          }
+
           break;
         }
 
@@ -265,7 +325,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
       case 'N':
         if (this.gameManager.getBoard().nodes[id].getOwner() !== 'NONE') {
-          result += `node-${this.gameManager.getBoard().nodes[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}`;
+          const nodeOwner = this.gameManager.getBoard().nodes[id].getOwner();
+          const nodePlayer = nodeOwner === 'PLAYERONE' ? this.gameManager.getPlayerOne() : this.gameManager.getPlayerTwo();
+
+          result += 'node-';
+          result += nodeOwner === 'PLAYERONE' ? 'orange-' : 'purple-';
+          result += nodePlayer.theme === PlayerTheme.MINER ? 'miner' : 'machine';
         } else {
           result += 'available node-blank';
         }
@@ -274,7 +339,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
       case 'BX':
         if (this.gameManager.getBoard().branches[id].getOwner() !== 'NONE') {
-          result += `branch-${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-x`;
+          const branchOwner = this.gameManager.getBoard().branches[id].getOwner();
+          const branchPlayer = branchOwner === 'PLAYERONE' ? this.gameManager.getPlayerOne() : this.gameManager.getPlayerTwo();
+
+          result += 'branch-';
+          result += `${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-x-`;
+          result += `${branchPlayer.theme === PlayerTheme.MINER ? 'miner' : 'machine'}`;
         } else {
           result += 'available branch-blank-x';
         }
@@ -283,7 +353,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
       case 'BY':
         if (this.gameManager.getBoard().branches[id].getOwner() !== 'NONE') {
-          result += `branch-${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-y`;
+          const branchOwner = this.gameManager.getBoard().branches[id].getOwner();
+          const branchPlayer = branchOwner === 'PLAYERONE' ? this.gameManager.getPlayerOne() : this.gameManager.getPlayerTwo();
+
+          result += 'branch-';
+          result += `${this.gameManager.getBoard().branches[id].getOwner() === 'PLAYERONE' ? 'orange' : 'purple'}-y-`;
+          result += `${branchPlayer.theme === PlayerTheme.MINER ? 'miner' : 'machine'}`;
         } else {
           result += 'available branch-blank-y';
         }
@@ -312,8 +387,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
 
-    if(player.type !== PlayerType.HUMAN)
-    {
+    if (player.type !== PlayerType.HUMAN) {
       return;
     }
 
@@ -324,12 +398,18 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       if (pieceType === 'node') {
         if (player.numNodesPlaced === 0) {
           this.gameManager.initialNodePlacements(pieceId, player);
+          this.playerClickSound('node');
         } else if (player.numNodesPlaced === 1 && player.ownedBranches?.length !== 1) {
           this.snackbarService.add({ message: 'You must place a branch.' });
         } else if (player.numNodesPlaced === 1 && player.ownedBranches.length === 1) {
           this.gameManager.initialNodePlacements(pieceId, player);
+          this.playerClickSound('node');
         } else if (player.numNodesPlaced >= 2 && player.ownedBranches.length >= 2) {
           // They have placed initial nodes, place normally
+          if (this.gameManager.getCurrentPlayer().greenResources >= 2 && this.gameManager.getCurrentPlayer().yellowResources >= 2) {
+            this.playerClickSound('node');
+          }
+
           this.gameManager.generalNodePlacement(pieceId, player);
         }
       } else if (pieceType === 'branch') {
@@ -344,6 +424,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
           });
 
           this.gameManager.initialBranchPlacements(relatedNode, pieceId, player);
+          this.playerClickSound('branch');
           // they finished their first initial placement, next player's turn
         } else if (player.numNodesPlaced === 2 && player.ownedBranches.length === 1) {
           let relatedNode = -1;
@@ -359,8 +440,13 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
           });
 
           this.gameManager.initialBranchPlacements(relatedNode, pieceId, player);
+          this.playerClickSound('branch');
         } else if (player.numNodesPlaced >= 2 && player.ownedBranches.length >= 2) {
           // They have placed their initial branches, place normally
+          if (this.gameManager.getCurrentPlayer().redResources >= 1 && this.gameManager.getCurrentPlayer().blueResources >= 1) {
+            this.playerClickSound('branch');
+          }
+
           this.gameManager.generalBranchPlacement(pieceId, player);
         }
       }
@@ -372,9 +458,93 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     // console.warn(this.gameManager.getBoard());
   }
 
+  playerClickSound(type: 'node' | 'branch'): void {
+    const playerTheme = this.gameManager.getCurrentPlayer().theme;
+    let fxId = 'pickaxe';
+
+    if (playerTheme === PlayerTheme.MINER && type === 'node') {
+      fxId = 'pickaxe';
+    } else if (playerTheme === PlayerTheme.MINER && type === 'branch') {
+      fxId = 'minetrack';
+    } else if (playerTheme === PlayerTheme.MACHINE && type === 'node') {
+      fxId = 'drill';
+    } else if (playerTheme === PlayerTheme.MACHINE && type === 'branch') {
+      fxId = 'tank';
+    }
+
+    this.soundService.add(`/assets/sound/fx/${fxId}.wav`, SoundEndAction.DIE);
+  }
+
   togglePaused(): void {
     // Normally would do this in-template but we might need to put more functionality in later.
     this.gamePaused = !this.gamePaused;
+  }
+
+  toggleMusicControls(): void {
+    this.togglePaused();
+    this.showMusicControls = !this.showMusicControls;
+  }
+
+  toggleMusic(): void {
+    this.storageService.setContext('sound');
+    if (!this.isMuted) {
+      this.musicVolume = this.storageService.fetch('musicvolume');
+      this.storageService.update('musicvolume', '0');
+      this.soundService.update();
+      this.isMuted = !this.isMuted;
+    } else {
+      this.storageService.update('musicvolume', this.musicVolume.toString());
+      this.soundService.update();
+      this.isMuted = !this.isMuted;
+    }
+
+    this.storageService.setContext('game');
+  }
+
+  musicNext(): void {
+    this.soundService.clear();
+    switch (this.currentTrack) {
+      case 'bg1':
+        this.soundService.add('/assets/sound/haunted.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+        this.currentTrack = 'bg2';
+        break;
+      case 'bg2':
+        this.soundService.add('/assets/sound/main.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+        this.currentTrack = 'bg3';
+        break;
+      case 'bg3':
+        this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+        this.currentTrack = 'bg1';
+        break;
+    
+      default:
+        this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+        this.currentTrack = 'bg1';
+        break;
+    }
+  }
+
+  musicPrev(): void {
+    this.soundService.clear();
+    switch (this.currentTrack) {
+      case 'bg1':
+        this.soundService.add('/assets/sound/main.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+        this.currentTrack = 'bg3';
+        break;
+      case 'bg2':
+        this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+        this.currentTrack = 'bg1';
+        break;
+      case 'bg3':
+        this.soundService.add('/assets/sound/haunted.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+        this.currentTrack = 'bg2';
+        break;
+
+      default:
+        this.soundService.add('/assets/sound/focus.mp3', SoundEndAction.LOOP, SoundType.MUSIC);
+        this.currentTrack = 'bg1';
+        break;
+    }
   }
 
   toggleTrade(): void {
@@ -413,19 +583,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.gameManager.makeTrade(this.gameManager.getCurrentPlayer(), this.tradingModel.selectedResource, this.tradingModel.getTradeMap());
       this.tradingModel.reset();
     }
-  }
-
-  scrollToBottom(): void {
-    (function smoothscroll() {
-      const currentScroll = document.documentElement.scrollTop || document.body.scrollTop; // TODO: find bottom variables
-      if (currentScroll > 0) {
-        window.requestAnimationFrame(smoothscroll);
-        window.scrollTo(0, currentScroll - (currentScroll / 8));
-      } else if (currentScroll === 0) {
-        // fade to black
-        console.log('fade');
-      }
-    })();
   }
 
   cancelTrading(): void {
@@ -568,8 +725,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     return btnClass;
   }
 
-  dynamicGTBox():string {
-    if (this.isTutorial && this.isTrading){
+  dynamicGTBox(): string {
+    if (this.isTutorial && this.isTrading) {
       return 'z-inf';
     }
 
@@ -585,6 +742,48 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  getBranchSrc(): string {
+    let asset = "/assets/game/branches/Horizontal-Track-";
+    if (this.gameManager.getCurrentGameMode() === GameType.HUMAN) {
+      if (this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE') {
+        asset += "Orange-Miner.png";
+      }
+      else {
+        asset += "Purple-Miner.png";
+      }
+    }
+    else {
+      if (this.gameManager.getPlayerOne().type === PlayerType.HUMAN) {
+        asset += "Orange-Miner.png";
+      }
+      else {
+        asset += "Purple-Miner.png";
+      }
+    }
+    return asset;
+  }
+
+  getNodeSrc(): string {
+    let asset = "/assets/game/nodes/";
+    if (this.gameManager.getCurrentGameMode() === GameType.HUMAN) {
+      if (this.gameManager.getCurrentPlayerEnum() === 'PLAYERONE') {
+        asset += "Orange-Node-Pickaxe.png";
+      }
+      else {
+        asset += "Purple-Node-Pickaxe.png";
+      }
+    }
+    else {
+      if (this.gameManager.getPlayerOne().type === PlayerType.HUMAN) {
+        asset += "Orange-Node-Pickaxe.png";
+      }
+      else {
+        asset += "Purple-Node-Pickaxe.png";
+      }
+    }
+    return asset;
+  }
+
   exitButton(): void {
     if (this.isNetwork) {
       this.networkingService.leaveGame();
@@ -593,24 +792,25 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getCanTrade(): boolean {
-    if (this.gameManager.getCurrentPlayer().numNodesPlaced < 2 || 
-    this.gameManager.getCurrentPlayer().ownedBranches.length < 2) {
+    if (this.gameManager.getCurrentPlayer().numNodesPlaced < 2 ||
+      this.gameManager.getCurrentPlayer().ownedBranches.length < 2) {
       return false;
     }
-    else if((this.gameManager.getCurrentPlayer().blueResources 
-    + this.gameManager.getCurrentPlayer().redResources 
-    + this.gameManager.getCurrentPlayer().yellowResources
-    + this.gameManager.getCurrentPlayer().greenResources) < 3)
-    {
+    else if ((this.gameManager.getCurrentPlayer().blueResources
+      + this.gameManager.getCurrentPlayer().redResources
+      + this.gameManager.getCurrentPlayer().yellowResources
+      + this.gameManager.getCurrentPlayer().greenResources) < 3) {
       return false;
     }
-    else if (this.gameManager.getCurrentPlayer().hasTraded)
-    {
+    else if (this.gameManager.getCurrentPlayer().hasTraded) {
       return false;
     }
-    else
-    {
+    else {
       return true;
     }
+  }
+
+  teleporterSource(): string {
+    return `assets/game/locations/${this.getBackground()}-intro.mp4`;
   }
 }

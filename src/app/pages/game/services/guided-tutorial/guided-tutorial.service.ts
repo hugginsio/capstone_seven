@@ -530,9 +530,9 @@ export class GuidedTutorialService {
     if(this.humanPlayer === '1') {
       message = 'Now the other Player selects their moves...<br><br>You see these here Gems on each Site? The number of Gems is the maximum amount of Tools the Site can support.<br><br>If you and your opponent’s number of Tools on a Site are more than the maximum, then that Site is "Tuckered Out" and no one\'s gettin’ Gems from it.';
   
-      if (this.gameManager.getBoard().nodes[15].getOwner() === 'NONE')
+      if (this.gameManager.getBoard().nodes[15].getOwner() === 'NONE' && this.gameManager.getBoard().branches[28].getOwner() === 'NONE')
       {
-        this.gameManager.applyMove(";15;28");
+        this.AImove(";15;28");
         this.highlightNext();
 
       }
@@ -547,9 +547,9 @@ export class GuidedTutorialService {
     if(this.humanPlayer === '1') {
       message = 'To keep things fair and square with the turn order, the other Player goes again.';
      
-      if (this.gameManager.getBoard().nodes[3].getOwner() === 'NONE')
+      if (this.gameManager.getBoard().nodes[3].getOwner() === 'NONE' && this.gameManager.getBoard().branches[7].getOwner() === 'NONE')
       {
-        this.gameManager.applyMove(";3;7");
+        this.AImove(";3;7");
         this.highlightNext();
 
       }
@@ -590,6 +590,13 @@ export class GuidedTutorialService {
     // resource cost
     if(this.humanPlayer === '1') {
       message = 'These Gems ain’t just for lookin’ at. You can expand your operation by buyin\' more Tools and Paths with your Gems.<br><br>Take a gander at the Price Card to remind yourself of their costs.';
+      
+      const card = document.getElementById('exchangeRate');
+
+      if(card !== null){
+        card.style.border = "4px solid white";
+      }
+      
       this.highlightNext();
      
       // would be cool to display a visual of piece costs
@@ -602,6 +609,13 @@ export class GuidedTutorialService {
     // talk about trading 
     if(this.humanPlayer === '1') {
       message = 'Lookin’ to trade some Gems?<br>When it’s your turn, you can make a Trade of 3 Gems for 1 Gem of any other type.<br><br>You can only Trade once per turn.<br><br>Gems ya don\'t spend are saved in your stash at the bottom of the screen.';
+      
+      const card = document.getElementById('exchangeRate');
+
+      if(card !== null){
+        card.style.border = "4px solid rgb(75, 85, 99)";
+      }
+      
       this.highlightNext();
     }
     return message;
@@ -613,9 +627,9 @@ export class GuidedTutorialService {
     if(this.humanPlayer === '1') {
       message = 'The other Player is up again. They\'re gonna get Gems at the start of each turn from all their Tools. They can make any amount of moves as long as they got the Gems to pay up.<br><br> Your opponent has traded 3 yellow Gems for a blue so they could afford two Paths on this turn.';
      
-      if (this.gameManager.getBoard().branches[18].getOwner() === 'NONE')
+      if (this.gameManager.getBoard().branches[18].getOwner() === 'NONE' && this.gameManager.getBoard().branches[17].getOwner() === 'NONE')
       {
-        this.gameManager.applyMove("Y,Y,Y,B;;17,18");
+        this.AImove("Y,Y,Y,B;;17,18");
         this.highlightNext();
 
       }
@@ -673,9 +687,9 @@ export class GuidedTutorialService {
         player2.style.border = "transparent";
       }
 
-      if (this.gameManager.getBoard().branches[12].getOwner() === 'NONE')
+      if (this.gameManager.getBoard().branches[12].getOwner() === 'NONE'&& this.gameManager.getBoard().branches[31].getOwner() === 'NONE')
       {
-        this.gameManager.applyMove("Y,Y,Y,B;;12,31");
+        this.AImove("Y,Y,Y,B;;12,31");
         this.highlightNext();
 
       }
@@ -760,7 +774,7 @@ export class GuidedTutorialService {
       message = 'See how these Sites changed when the opponent surrounded them with Paths on all sides?<br><br>This is how you can get exclusive mining rights to these Sites!<br><br>These captured Sites are gonna give your opponent 1 point a piece. Plus, only your opponent can get Gems from those Sites now.';
       if (this.gameManager.getBoard().branches[27].getOwner() === 'NONE')
       {
-        this.gameManager.applyMove(";;27");
+        this.AImove(";;27");
         this.highlightNext();
 
       }
@@ -815,6 +829,10 @@ export class GuidedTutorialService {
 
     }
     return message;
+  }
+
+  AImove(move: string):void {
+    this.gameManager.GTApplyMove(move);
   }
 
 }

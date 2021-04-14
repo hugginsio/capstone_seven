@@ -25,6 +25,15 @@
   .currentSlide {
     @apply border-gray-300;
   }
+
+  .priceImg {
+    @apply max-w-max;
+  }
+
+  .boardImg {
+    @apply w-3/4;
+  }
+
 }
 
 h1 {

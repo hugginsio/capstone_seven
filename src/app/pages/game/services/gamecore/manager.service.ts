@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GameType, Owner, PlayerType, TileColor } from '../../enums/game.enums';
+import { GameType, Owner, PlayerTheme, PlayerType, TileColor } from '../../enums/game.enums';
 import { CoreLogic } from '../../util/core-logic.util';
 //import { AiService } from '../../services/ai/ai.service';
 
@@ -12,6 +12,8 @@ import { LocalStorageService } from '../../../../shared/services/local-storage/l
 import { GameNetworkingService } from '../../../networking/game-networking.service';
 import { NetworkGameSettings } from '../../../../../../backend/NetworkGameSettings';
 import { AiMethods } from '../../interfaces/worker.interface';
+import { SoundService } from '../../../../shared/components/sound-controller/services/sound.service';
+import { SoundEndAction } from '../../../../shared/components/sound-controller/interfaces/sound-controller.interface';
 import { SnackbarService } from '../../../../shared/components/snackbar/services/snackbar.service';
 
 @Injectable({
@@ -68,11 +70,12 @@ export class ManagerService {
   constructor(
     // UI integration
     private readonly storageService: LocalStorageService,
+    private readonly soundService: SoundService,
     private readonly snackbarService: SnackbarService,
     //private readonly networkingService: GameNetworkingService
-  ) {}
+  ) { }
 
-  Initialize():  void {
+  Initialize(): void {
     // begin initializing ManagerService fields
     this.currentPlayer = Owner.PLAYERONE;
     this.gameBoard = new GameBoard();
@@ -82,7 +85,7 @@ export class ManagerService {
     this.tradedResources = [];
     this.stack = [];
     this.listeners = new Array<Subscription>();
-    this.netSettings = {board: "", background: "", isHostFirst: true};
+    this.netSettings = { board: "", background: "", playerOneTheme: "", isHostFirst: true };
 
     // getting/setting data via UI
     this.storageService.setContext('game');
@@ -109,13 +112,12 @@ export class ManagerService {
         this.playerOne.type = PlayerType.AI;
         this.playerTwo.type = PlayerType.HUMAN;
       }
-    } 
+    }
     else {
       this.currentGameMode = GameType.NETWORK;
       this.networkingService = new GameNetworkingService();
-      
-      if(this.isHost === 'true')
-      {
+
+      if (this.isHost === 'true') {
         this.networkingService.createTCPServer();
         this.netSettings.background = background;
 
@@ -130,8 +132,7 @@ export class ManagerService {
           this.netSettings.isHostFirst = false;
         }
       }
-      else
-      {
+      else {
         const IP = this.storageService.fetch('oppAddress');
         this.networkingService.connectTCPserver(IP);
 
@@ -151,26 +152,44 @@ export class ManagerService {
       }));
     }
 
+    // Player theme setup
+    // Defaults
+    if (gameMode === 'pva') {
+      if (this.firstPlayer === 1) {
+        this.playerOne.theme = PlayerTheme.MINER;
+        this.playerTwo.theme = PlayerTheme.MACHINE;
+      } else {
+        this.playerOne.theme = PlayerTheme.MACHINE;
+        this.playerTwo.theme = PlayerTheme.MINER;
+      }
+    } else if (gameMode === 'pvp') {
+      this.playerOne.theme = this.storageService.fetch('playeronetheme') === 'miner' ? PlayerTheme.MINER : PlayerTheme.MACHINE;
+      this.playerTwo.theme = this.playerOne.theme === PlayerTheme.MINER ? PlayerTheme.MACHINE : PlayerTheme.MINER;
+    }
+    else {
+      this.playerOne.theme = this.storageService.fetch('playeronetheme') === 'miner' ? PlayerTheme.MINER : PlayerTheme.MACHINE;
+      this.playerTwo.theme = this.playerOne.theme === PlayerTheme.MINER ? PlayerTheme.MACHINE : PlayerTheme.MINER;
+      this.netSettings.playerOneTheme = this.storageService.fetch('playeronetheme');
+    }
+
     // instantiating AiService, calling its contructor w/ gameBoard and both players
     // Web worker magic
     this.aiWorker = new Worker('../../workers/monte-carlo.worker', { type: 'module' });
 
-
-
     if (this.currentGameMode === GameType.AI) {
-      
+
       const aiDifficulty = this.storageService.fetch('ai-difficulty');
-      let timeAlottedToAI:number;
-      let explorationParameter:number;
-      if(aiDifficulty === 'hard'){
+      let timeAlottedToAI: number;
+      let explorationParameter: number;
+      if (aiDifficulty === 'hard') {
         timeAlottedToAI = 5500;
         explorationParameter = 4.5;
       }
-      else if(aiDifficulty === 'medium'){
+      else if (aiDifficulty === 'medium') {
         timeAlottedToAI = 3500;
         explorationParameter = 1.5;
       }
-      else{
+      else {
         timeAlottedToAI = 1500;
         explorationParameter = 1;
       }
@@ -183,7 +202,7 @@ export class ManagerService {
         }
       };
 
-      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, explorationParameter,timeAlottedToAI] });
+      this.aiWorker.postMessage({ method: AiMethods.INIT_SERVICE, data: [this.gameBoard, this.playerOne, this.playerTwo, explorationParameter, timeAlottedToAI] });
     }
 
     // setting board as random or manually setting tiles
@@ -291,11 +310,9 @@ export class ManagerService {
     }
     this.serializeBoard();
 
-    if(this.currentGameMode === GameType.NETWORK)
-    {
+    if (this.currentGameMode === GameType.NETWORK) {
       this.netSettings.board = this.boardString;
-      if(this.isHost === 'true')
-      {
+      if (this.isHost === 'true') {
         console.log("We are sending the board!");
         this.networkingService.setGame(this.netSettings);
       }
@@ -346,7 +363,7 @@ export class ManagerService {
     console.log(this.boardString);
   }
 
-  sleep(ms:number) {
+  sleep(ms: number): Promise<any> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
@@ -359,7 +376,7 @@ export class ManagerService {
       currentPlayer = this.playerOne;
     }
 
-    
+
 
     // using CoreLogic stringToMove function
     // creates a "Move" to be used for placing opponent's move
@@ -374,16 +391,16 @@ export class ManagerService {
       for (let i = 0; i < moveToPlace.tradedIn.length; i++) {
         this.decrementResourceByOne(currentPlayer, moveToPlace.tradedIn[i]);
 
-        if(moveToPlace.tradedIn[i] === 'R'){
+        if (moveToPlace.tradedIn[i] === 'R') {
           tradeHTMLString += '<p><img src="/assets/game/Resource-Red.png"></p>';
         }
-        else if(moveToPlace.tradedIn[i] === 'B'){
+        else if (moveToPlace.tradedIn[i] === 'B') {
           tradeHTMLString += '<p><img src="/assets/game/Resource-Blue.png"></p>';
         }
-        else if(moveToPlace.tradedIn[i] === 'G'){
+        else if (moveToPlace.tradedIn[i] === 'G') {
           tradeHTMLString += '<p><img src="/assets/game/Resource-Green.png"></p>';
         }
-        else if(moveToPlace.tradedIn[i] === 'Y'){
+        else if (moveToPlace.tradedIn[i] === 'Y') {
           tradeHTMLString += '<p><img src="/assets/game/Resource-Yellow.png"></p>';
         }
 
@@ -392,54 +409,105 @@ export class ManagerService {
       // increment resource traded for 
       this.incrementResourceByOne(currentPlayer, moveToPlace.received);
 
-      if(moveToPlace.received === 'R'){
+      if (moveToPlace.received === 'R') {
         tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Red.png"></p></p>';
       }
-      else if(moveToPlace.received === 'B'){
+      else if (moveToPlace.received === 'B') {
         tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Blue.png"></p></p>';
       }
-      else if(moveToPlace.received === 'G'){
+      else if (moveToPlace.received === 'G') {
         tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Green.png"></p></p>';
       }
-      else if(moveToPlace.received === 'Y'){
+      else if (moveToPlace.received === 'Y') {
         tradeHTMLString += '<p>for<p><img src="/assets/game/Resource-Yellow.png"></p></p>';
       }
 
-      this.snackbarService.add({message:`<div class="flex space-x-4 items-center"><p>Machine<p>Traded:</p></p>${tradeHTMLString}</div>`});
+      this.snackbarService.add({ message: `<div class="flex space-x-4 items-center"><p>Machine<p>Traded:</p></p>${tradeHTMLString}</div>` });
     }
 
-    
+
 
     // initial placements
     if (currentPlayer.ownedBranches.length < 2) {
       this.initialNodePlacements(moveToPlace.nodesPlaced[0], currentPlayer);
+      this.soundService.add('/assets/sound/fx/drill.wav', SoundEndAction.DIE);
       this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
 
       //pause between placing pieces
       await this.sleep(1000);
 
       this.initialBranchPlacements(moveToPlace.nodesPlaced[0], moveToPlace.branchesPlaced[0], currentPlayer);
+      this.soundService.add('/assets/sound/fx/tank.wav', SoundEndAction.DIE);
       this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
     } else {
       // process general branch placements
       for (let i = 0; i < moveToPlace.branchesPlaced.length; i++) {
-        this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer); 
+        this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
+        this.soundService.add('/assets/sound/fx/tank.wav', SoundEndAction.DIE);
         this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
 
         //pause between placing pieces
-        await this.sleep(1000);       
+        await this.sleep(1000);
+      }
+
+      // process general node placements
+      for (let i = 0; i < moveToPlace.nodesPlaced.length; i++) {
+        this.generalNodePlacement(moveToPlace.nodesPlaced[i], currentPlayer);
+        this.soundService.add('/assets/sound/fx/drill.wav', SoundEndAction.DIE);
+        this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+        if (i < moveToPlace.nodesPlaced.length - 1) {
+          //pause between placing pieces
+          await this.sleep(1000);
+        }
+      }
+
+    }
+
+    this.endTurn(currentPlayer);
+  }
+
+  GTApplyMove(moveString: string): void {
+    let currentPlayer;
+    if (this.playerOne.type === PlayerType.HUMAN) {
+      currentPlayer = this.playerTwo;
+    } else {
+      currentPlayer = this.playerOne;
+    }
+
+    // using CoreLogic stringToMove function
+    // creates a "Move" to be used for placing opponent's move
+    const moveToPlace = CoreLogic.stringToMove(moveString);
+
+    // process trade
+    if (moveToPlace.tradedIn.length > 0) {
+      // decrement the 3 resources the player traded in 
+      for (let i = 0; i < moveToPlace.tradedIn.length; i++) {
+        this.decrementResourceByOne(currentPlayer, moveToPlace.tradedIn[i]);
+      }
+      // increment resource traded for 
+      this.incrementResourceByOne(currentPlayer, moveToPlace.received);
+    }
+
+    // initial placements
+    if (currentPlayer.ownedBranches.length < 2) {
+      this.initialNodePlacements(moveToPlace.nodesPlaced[0], currentPlayer);
+      this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+
+      this.initialBranchPlacements(moveToPlace.nodesPlaced[0], moveToPlace.branchesPlaced[0], currentPlayer);
+      this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
+    } else {
+      // process general branch placements
+      for (let i = 0; i < moveToPlace.branchesPlaced.length; i++) {
+        this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
+        this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
       }
 
       // process general node placements
       for (let i = 0; i < moveToPlace.nodesPlaced.length; i++) {
         this.generalNodePlacement(moveToPlace.nodesPlaced[i], currentPlayer);
         this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
-        if(i < moveToPlace.nodesPlaced.length-1){
-          //pause between placing pieces
-          await this.sleep(1000);
-        }
       }
-      
+
     }
 
     this.endTurn(currentPlayer);
@@ -503,17 +571,16 @@ export class ManagerService {
     //if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
     //const prevPlayerInt = this.getCurrentPlayer() === this.playerOne ? 1 : 2;
     if (currentPlayer.type === PlayerType.AI && this.storageService.fetch('guided-tutorial') === "false") {
-      
       //const prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       let prevPlayerInt;
-      if(this.playerOne.numNodesPlaced === 1 && this.playerTwo.numNodesPlaced === 1){
+      if (this.playerOne.numNodesPlaced === 1 && this.playerTwo.numNodesPlaced === 1) {
         prevPlayerInt = 2;
       }
-      else{
+      else {
         prevPlayerInt = this.getIdlePlayer() === this.playerOne ? 1 : 2;
       }
-      
-      
+
+
 
 
       this.aiWorker.onmessage = ({ data }) => {
@@ -529,7 +596,7 @@ export class ManagerService {
 
       };
 
-      
+
       this.aiWorker.postMessage({ method: AiMethods.GET_AI_MOVE, data: [this.gameBoard, this.playerOne, this.playerTwo, prevPlayerInt, pastMoveString] });
 
 
@@ -644,8 +711,7 @@ export class ManagerService {
     const currentOwner = endPlayer === this.playerOne ? Owner.PLAYERONE : Owner.PLAYERTWO;
 
     //Sends move in network game
-    if (this.currentGameMode === GameType.NETWORK && endPlayer.type === PlayerType.HUMAN)
-    {
+    if (this.currentGameMode === GameType.NETWORK && endPlayer.type === PlayerType.HUMAN) {
       console.log(this.serializeStack());
       this.networkingService.sendMove(this.serializeStack());
     }
@@ -2042,8 +2108,11 @@ export class ManagerService {
     return captured;
   }
 
-  public unsubListeners(): void 
-  {
+  getCurrentGameMode(): GameType {
+    return this.currentGameMode;
+  }
+
+  public unsubListeners(): void {
     this.listeners.forEach(listener => listener.unsubscribe());
   }
 }

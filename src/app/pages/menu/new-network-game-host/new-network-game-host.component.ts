@@ -14,28 +14,31 @@ import { SoundService } from '../../../shared/components/sound-controller/servic
 })
 export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
   private isHostFirst: boolean;
-  private username: string;
   private subscription: Subscription;
+  private username: string;
   public advancedOpts = false;
   public boardSeed: string;
+  public explainationPopUp: boolean;
   public firstPlayer: string;
   public isSettingUpGame = true;
   public isWaitingForPlayer = false;
-  public selectedLocation: number;
   public listeners: Array<Subscription>;
+  public playerOneTheme: string;
+  public selectedLocation: number;
   public validInputCheck: ValidInputCheck;
-  public explainationPopUp: boolean;
 
 
   public readonly playerOneFirst = 'You Go First';
+  public readonly playerThemeOne = 'Host plays as Miner';
+  public readonly playerThemeTwo = 'Host plays as Machine';
   public readonly playerTwoFirst = 'Opponent Goes First';
-  
+
   constructor(
-    private readonly storageService: LocalStorageService,
-    private readonly routerService: Router,
-    private readonly networkingService: GameNetworkingService,
     private readonly matchmakingService: MatchmakingService,
-    private readonly soundService: SoundService
+    private readonly networkingService: GameNetworkingService,
+    private readonly routerService: Router,
+    private readonly soundService: SoundService,
+    private readonly storageService: LocalStorageService
   ) {
     this.listeners = new Array<Subscription>();
     this.firstPlayer = this.playerOneFirst;
@@ -46,7 +49,8 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.storageService.setContext('game');
     //this.storageService.store('firstPlayer', this.firstPlayer);
     this.username = this.storageService.fetch('username');
-    
+    this.playerOneTheme = this.storageService.fetch('playeronetheme');
+
     const storedLocation = this.storageService.fetch('location');
     if (storedLocation === 'bg3') {
       this.selectedLocation = 3;
@@ -61,7 +65,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     this.matchmakingService.initialize(this.username);
     this.networkingService.createTCPServer();
 
-    this.listeners.push(this.networkingService.listen('opponent-connected').subscribe((oppUsername:string) => {
+    this.listeners.push(this.networkingService.listen('opponent-connected').subscribe((oppUsername: string) => {
       console.log("A opponent has connected");
       this.storageService.update('oppUsername', oppUsername);
       this.isWaitingForPlayer = false;
@@ -73,8 +77,7 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.listeners.forEach(listener => listener.unsubscribe());
-    if(this.isWaitingForPlayer)
-    {
+    if (this.isWaitingForPlayer) {
       this.subscription.unsubscribe();
       this.networkingService.cancelGame();
     }
@@ -92,11 +95,19 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     //this.storageService.update('firstPlayer', this.firstPlayer);
   }
 
+  changePlayerTheme(): void {
+    // Update UI
+    this.playerOneTheme = this.playerOneTheme === 'miner' ? 'machine' : 'miner';
+
+    // Update datastore
+    this.playerOneTheme === 'miner' ? this.storageService.update('playeronetheme', 'miner') : this.storageService.update('playeronetheme', 'machine');
+  }
+
   startHosting(): void {
     // Set board seed before hosting begins
-    if(this.boardSeed !== undefined && this.boardSeed !== ''){
+    if (this.boardSeed !== undefined && this.boardSeed !== '') {
       const boardString = this.validInputCheck.checkBoardSeed(this.boardSeed);
-      if(boardString !== '0') {
+      if (boardString !== '0') {
         this.storageService.update('board-seed', boardString);
       }
       else {
@@ -112,16 +123,16 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     //this.storageService.update('board-seed', this.boardSeed);
     this.isWaitingForPlayer = true;
     this.isSettingUpGame = false;
-    
+
     this.networkingService.resetRoom();
 
-    if(this.isHostFirst)
-    {
+    if (this.isHostFirst) {
       this.storageService.update('isHostFirst', 'true');
+      this.playerOneTheme === 'miner' ? this.storageService.update('playeronetheme', 'miner') : this.storageService.update('playeronetheme', 'machine');
     }
-    else
-    {
+    else {
       this.storageService.update('isHostFirst', 'false');
+      this.playerOneTheme === 'miner' ? this.storageService.update('playeronetheme', 'machine') : this.storageService.update('playeronetheme', 'miner');
     }
 
     // host ye ol game
@@ -154,12 +165,12 @@ export class NewNetworkGameHostComponent implements OnInit, OnDestroy {
     }
   }
 
-  explainBoardSeed():void {
+  explainBoardSeed(): void {
     this.explainationPopUp = true;
   }
 
-  dynamicClass():string {
-    if (this.validInputCheck.validBoard === false && this.boardSeed===''){
+  dynamicClass(): string {
+    if (this.validInputCheck.validBoard === false && this.boardSeed === '') {
       return 'boardSeed-error';
     }
     this.validInputCheck.validBoard = true;

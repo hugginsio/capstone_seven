@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { Player } from '../classes/gamecore/game.class.Player';
 import { CommPackage } from '../interfaces/game.interface';
 import { CommCode } from '../interfaces/game.enum';
-import { PlayerType } from '../enums/game.enums';
+import { Owner, PlayerTheme, PlayerType } from '../enums/game.enums';
 import { GuidedTutorialService } from '../services/guided-tutorial/guided-tutorial.service';
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 
@@ -20,6 +20,7 @@ export class PlayerShardComponent implements OnInit {
   @Input() currentPlayer: boolean;
   @Input() actionSubject: Subject<CommPackage>;
   @Input() isConnected: boolean;
+  @Input() playerEnum: string;
   @Input() stackLength: number;
   @Input() canTrade: boolean;
 
@@ -82,5 +83,11 @@ export class PlayerShardComponent implements OnInit {
 
   triggerUndo(): void {
     this.actionSubject.next(this.generateMessage(CommCode.UNDO));
+  }
+
+  getPlayerImage(): string {
+    return `/assets/game/nodes/${
+      this.playerEnum === 'PLAYERONE' ? 'Orange-Node-' : 'Purple-Node-'
+    }${this.playerDetail?.theme === PlayerTheme.MINER ? 'Pickaxe' : 'Drill'}.png`;
   }
 }

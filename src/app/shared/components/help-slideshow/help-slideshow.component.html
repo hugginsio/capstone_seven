@@ -1,10 +1,12 @@
-<div class="flex space-between w-full justify-center h-full flex-grow" id="help-slideshow-container">
-  <div class="flex justify-center items-center w-full h-full px-4 space-x-4 flex-grow">
-    <div class="flex menu-btn" [ngClass]="dynamicClass('prev')" (click)="decrementSlides()">
-      Prev
+<div class="flex space-between w-screen justify-center h-full flex-grow" id="help-slideshow-container">
+  <div class="flex items-center w-full h-full px-4 space-x-4">
+  <!--<div class="flex justify-center items-center w-full h-full px-4 space-x-4 flex-grow">-->
+    <div class="flex menu-btn text-4xl" [ngClass]="dynamicClass('prev')" (click)="decrementSlides()" boombox="button">
+      &larr;
     </div>
 
-    <div class="flex px-4 h-full w-full flex-grow" id="actual-slides">
+   <div class="flex w-full" id="actual-slides">
+    <!-- <div class="flex px-4 h-full w-full flex-grow" id="actual-slides">-->
       <div class="flex flex-col space-y-4 h-full w-full flex-grow">
         <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 0">
           <h1>Help Manual Table of Contents</h1>
@@ -69,10 +71,10 @@
               <div class="GT-btn inline-block align-middle flex-grow" (click)="startGuidedTutorial($event)" *ngIf="this.inGame === 'false'">Start Guided Tutorial</div>
             </div>
             <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
+              <img style = "image-rendering: pixelated;" class="p-4 w-11/12 h-full" src="/assets/help/machine.png" />
             </div>
             <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
+              <img style = "image-rendering: pixelated;" class="p-4 w-11/12 h-full" src="/assets/help/miner 2.png" />
             </div>
           </div>
         </div>
@@ -126,7 +128,7 @@
             <div class="flex-1 space-y-4">
               <div class="flex flex-col space-y-4 items-center">
                 <div>
-                  <img src="/assets/game/tiles/Green-2.png" />
+                  <img src="/assets/help/blueTile3.PNG" />
                 </div>
                 <div>
                   <p>
@@ -139,7 +141,7 @@
             <div class="flex-1 space-y-4">
               <div class="flex flex-col space-y-4 items-center">
                 <div>
-                  <img src="/assets/game/Blank-Branch.png" />
+                  <img src="/assets/game/branches/Vertical-Track-Orange-Miner.png">
                 </div>
                 <div>
                   <p>
@@ -152,7 +154,7 @@
             <div class="flex-1 space-y-4">
               <div class="flex flex-col space-y-4 items-center">
                 <div>
-                  <img src="/assets/game/Blank-Node.png" />
+                  <img src="/assets/game/nodes/Orange-Node-Pickaxe.png" />
                 </div>
                 <div>
                   <p>
@@ -169,56 +171,16 @@
 
         <div class="flex flex-col space-y-4 h-full w-full flex-grow" *ngIf="currentSlide === 3">
           <h1>Buyin' Tools and Paths</h1>
-          <div class="flex-1 flex-col space-y-4 items-center p-20">
-            <!-- branches addition images -->
-            <div class="flex space-x-4 w-full">
-              <div>
-                <img src="/assets/game/Resource-Red.png" />
-              </div>
-              <div>
-                <img src="/assets/help/plus.png" />
-              </div>
-              <div>
-                <img src="/assets/game/Resource-Blue.png" />
-              </div>
-              <div>
-                <img src="/assets/help/equal.png" />
-              </div>
-              <div>
-                <img src="/assets/game/Purple-Branch.png" />
-              </div>
-              <p> OR </p>
-              <div>
-                <img src="/assets/game/Orange-Branch-Horizontal.png" />
-              </div>
+          <div class="flex space-x-4 w-full items-center justify-center">
+            <div class="flex-1 flex-col space-y-4 w-full items-center justify-center">
+              <p>
+                This here "Price Card" shows our fair prices for Tools and Paths in the mine.
+              </p>
+              <p>
+                This'll be sittin' on your screen through the whole game, so ya can make informed decisions for your moves.
+              </p>
             </div>
-
-            <!-- marker addition image -->
-            <div class="flex space-x-4 w-full">
-              <div>
-                <img src="/assets/game/Resource-Yellow.png" />
-              </div>
-              <div>
-                <img src="/assets/game/Resource-Yellow.png" />
-              </div>
-              <div>
-                <img src="/assets/help/plus.png" />
-              </div>
-              <div>
-                <img src="/assets/game/Resource-Green.png" />
-              </div>
-              <div>
-                <img src="/assets/game/Resource-Green.png" />
-              </div>
-              <div>
-                <img src="/assets/help/equal.png" />
-              </div>
-              <div>
-                <img src="/assets/game/Orange-Node.png" />
-                <p> OR </p>
-                <img src="/assets/game/Purple-Node.png" />
-              </div>
-            </div>
+            <img src="/assets/help/priceCard.PNG" />
           </div>
         </div>
 
@@ -237,7 +199,7 @@
               </p>
             </div>
             <div class="flex-1">
-              <img src="/assets/help/testBoard.png" />
+              <img class="boardImg" src="/assets/help/firstMoves.PNG" />
             </div>
           </div>
         </div>
@@ -256,53 +218,14 @@
                 Once you’ve settled your mind, hit “End Turn” to let your opponent have a go.
               </p>
             </div>
-            <div class="flex-1">
-              <img src="/assets/help/testBoard.png" />
+            <div>
+              <img style = "image-rendering: pixelated;" src="/assets/help/p1PlayerShard.PNG" />
+            </div>
+            <div>
+              <img style = "image-rendering: pixelated;" src="/assets/help/p2playerShard.PNG" />
             </div>
           </div>
         </div>
-
-        <!--
-        <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 6">
-          <h1>Start of Each Turn</h1>
-          <div class="flex space-x-4 items-center w-full">
-            <div class="flex-1 flex-col space-y-4">
-              <p>
-                Let the games begin!
-              </p>
-              <p>
-                Now, before you start making moves on your turn, your hard work will start to pay off.
-                At the start of each turn you get your earnings of one gem from each site you have a mining marker touchin’.
-              </p>
-            </div>
-            <div class="flex-1">
-              <img src="/assets/help/testBoard.png" />
-            </div>
-          </div>
-          <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
-        </div>
-      -->
-
-      <!--
-        <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 7">
-          <h1>Buildin' Your Operation</h1>
-          <div class="flex space-x-4 items-center w-full">
-            <div class="flex flex-col space-y-4 flex-grow">
-              <p>
-                Now that y’all got two startin’ points to your mining operation
-                you can build rails and place mining markers off either of your startin’ points.
-              </p>
-              <p>
-                Other miners can place their mining markers in your path but your rails’ve gotta connect.
-              </p>
-            </div>
-            <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
-            </div>
-          </div>
-          <div class="pt-4">{{currentSlide}}/{{maxSlides}}</div>
-        </div>
-      -->
 
         <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 6">
           <h1>All Tuckered Out</h1>
@@ -313,8 +236,8 @@
                 If ya do, that Site is gonna get "Tuckered Out" and ain't nobody gettin' Gems from it, no matter how many Tools they got on its corners.
               </p>
             </div>
-            <div class="flex flex-grow justify-center items-center">
-              <img class="boardImg" src="/assets/game/tiles/Yellow-Exhausted.png" />
+            <div class="flex-1 flex-grow">
+              <img class="boardImg" src="/assets/help/exhaustedLarger.PNG" />
             </div>
           </div>
         </div>
@@ -333,8 +256,8 @@
                 Best of all, a surrounded Site can't be Tuckered Out!
               </p>
             </div>
-            <div class="flex flex-grow justify-center items-center">
-              <img class="boardImg" src="/assets/game/tiles/Blue-Capture-Orange.png" />
+            <div class="flex-1 flex-grow">
+              <img class="boardImg" src="/assets/help/captured.PNG" />
             </div>
           </div>
         </div>
@@ -346,7 +269,7 @@
           <div class="flex space-x-4 w-full items-center">
             <div class="flex-1 flex-col space-y-4">
               <p>
-                Missin' the right Gems? Head on down to the Trading Post!
+                Missin' the right Gems? Head on down to the Tradin' Post!
               </p>
               <p>
                 Trade any combination of 3 Gems for 1 Gem of any other type.
@@ -356,7 +279,7 @@
               </p>
             </div>
             <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
+              <img class="boardImg" src="/assets/help/trade.PNG" />
             </div>
           </div>
         </div>
@@ -372,14 +295,14 @@
                 Ya get 1 point for each Tool placed.
               </p>
               <p>
-                Ya get 1 point for each Site you surround.
+                Ya get 1 point for each Site ya surround.
               </p>
               <p>
                 Ya get 2 points if ya have the longest set of connectin' Paths.
               </p>
             </div>
             <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
+              <img class="boardImg" src="/assets/help/victoryScreen.PNG" />
             </div>
           </div>
         </div>
@@ -402,7 +325,7 @@
               </p>
             </div>
             <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
+              <img class="border-4 border-gray-900" src="/assets/help/boardSeed.PNG" />
             </div>
           </div>
         </div>
@@ -420,7 +343,7 @@
               </p>
             </div>
             <div class="flex-1">
-              <img src="/assets/help/testBoard.png" />
+              <img class="border-4 border-gray-900" src="/assets/help/networking.PNG" />
             </div>
           </div>
         </div>
@@ -430,12 +353,12 @@
           <div class="flex space-x-4 items-center w-full">
             <div class="flex-1 flex-col space-y-4">
               <p>
-                Go here to look at all our nifty features, where you can change the look
+                Visit the "Menu" during a duel to look at all our nifty features, where ya can change the look
                 and sound of your mine, free of charge!
               </p>
               <p>
                 Forget how somethin' works in the middle of a duel?
-                Mosey on down to the "How to Play" button in the Pause menu.
+                Mosey on down to the "Help" button in the top left corner of your screen.
               </p>
               <p>
                 Giving up already?
@@ -447,7 +370,7 @@
               </p>
             </div>
             <div class="flex-1">
-              <img class="boardImg" src="/assets/help/testBoard.png" />
+              <img src="/assets/help/Pause.png" />
             </div>
           </div>
         </div>
@@ -469,8 +392,8 @@
       </div>
     </div>
 
-    <div class="flex menu-btn" [ngClass]="dynamicClass('next')" (click)="incrementSlides()">
-      Next
+    <div class="flex menu-btn text-4xl" [ngClass]="dynamicClass('next')" (click)="incrementSlides()" boombox="button">
+      &rarr;
     </div>
   </div>
 </div>

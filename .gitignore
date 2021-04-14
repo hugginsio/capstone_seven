@@ -247,3 +247,6 @@ backend/**.js
 
 # Vercel
 .vercel
+backend/GameServer.js
+backend/MatchmakingServer.js
+backend/UDPWrapper.js

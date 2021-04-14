@@ -1,162 +1,381 @@
 //
 // Dynamic Classes
-// The preceding slash for background images must be removed for production builds.
-// It will work fine in the browser, but fail to load when packaged in Electron.
-// This is likely an issue with webpack.
 //
 
-// Regular Tiles
+// Tiles
 
-.tile-red-1 {
-  background: url('/assets/game/tiles/Red-1.png') no-repeat center;
+.tile-blank {
+  background: url('/assets/game/tiles/Blank-Tile.png') no-repeat center;
 }
 
-.tile-red-2 {
-  background: url('/assets/game/tiles/Red-2.png') no-repeat center;
+.tile-blank-capture-purple-miner {
+  background: url('/assets/game/tiles/Blank-Tile-Capture-Purple-Miner.png') no-repeat center;
 }
 
-.tile-red-3 {
-  background: url('/assets/game/tiles/Red-3.png') no-repeat center;
+.tile-blank-capture-orange-machine {
+  background: url('/assets/game/tiles/Blank-Tile-Capture-Orange-Machine.png') no-repeat center;
 }
 
-.tile-green-1 {
-  background: url('/assets/game/tiles/Green-1.png') no-repeat center;
+.tile-blank-capture-orange-miner {
+  background: url('/assets/game/tiles/Blank-Tile-Capture-Orange-Miner.png') no-repeat center;
 }
 
-.tile-green-2 {
-  background: url('/assets/game/tiles/Green-2.png') no-repeat center;
+.tile-blank-capture-purple-machine {
+  background: url('/assets/game/tiles/Blank-Tile-Capture-Purple-Machine.png') no-repeat center;
 }
 
-.tile-green-3 {
-  background: url('/assets/game/tiles/Green-3.png') no-repeat center;
+.tile-blue-capture-orange-machine-1 {
+  background: url('/assets/game/tiles/One-Tile-Blue-Capture-Orange-Machine.png') no-repeat center;
+}
+
+.tile-blue-capture-orange-miner-1 {
+  background: url('/assets/game/tiles/One-Tile-Blue-Capture-Orange-Miner.png') no-repeat center;
+}
+
+.tile-blue-capture-purple-machine-1 {
+  background: url('/assets/game/tiles/One-Tile-Blue-Capture-Purple-Machine.png') no-repeat center;
+}
+
+.tile-blue-capture-purple-miner-1 {
+  background: url('/assets/game/tiles/One-Tile-Blue-Capture-Purple-Miner.png') no-repeat center;
+}
+
+.tile-blue-exhausted-1 {
+  background: url('/assets/game/tiles/One-Tile-Blue-Exhausted.png') no-repeat center;
 }
 
 .tile-blue-1 {
-  background: url('/assets/game/tiles/Blue-1.png') no-repeat center;
+  background: url('/assets/game/tiles/One-Tile-Blue.png') no-repeat center;
 }
 
-.tile-blue-2 {
-  background: url('/assets/game/tiles/Blue-2.png') no-repeat center;
+.tile-green-exhausted-1 {
+  background: url('/assets/game/tiles/One-Tile-Green-Exhausted.png') no-repeat center;
 }
 
-.tile-blue-3 {
-  background: url('/assets/game/tiles/Blue-3.png') no-repeat center;
+.tile-green-1 {
+  background: url('/assets/game/tiles/One-Tile-Green.png') no-repeat center;
+}
+
+.tile-red-exhausted-1 {
+  background: url('/assets/game/tiles/One-Tile-Red-Exhausted.png') no-repeat center;
+}
+
+.tile-red-1 {
+  background: url('/assets/game/tiles/One-Tile-Red.png') no-repeat center;
+}
+
+.tile-yellow-exhausted-1 {
+  background: url('/assets/game/tiles/One-Tile-Yellow-Exhausted.png') no-repeat center;
 }
 
 .tile-yellow-1 {
-  background: url('/assets/game/tiles/Yellow-1.png') no-repeat center;
+  background: url('/assets/game/tiles/One-Tile-Yellow.png') no-repeat center;
 }
 
-.tile-yellow-2 {
-  background: url('/assets/game/tiles/Yellow-2.png') no-repeat center;
+.tile-blue-exhausted-3 {
+  background: url('/assets/game/tiles/Three-Tile-Blue-Exhausted.png') no-repeat center;
+}
+
+.tile-blue-3 {
+  background: url('/assets/game/tiles/Three-Tile-Blue.png') no-repeat center;
+}
+
+.tile-green-exhausted-3 {
+  background: url('/assets/game/tiles/Three-Tile-Green-Exhausted.png') no-repeat center;
+}
+
+.tile-green-3 {
+  background: url('/assets/game/tiles/Three-Tile-Green.png') no-repeat center;
+}
+
+.tile-red-exhausted-3 {
+  background: url('/assets/game/tiles/Three-Tile-Red-Exhausted.png') no-repeat center;
+}
+
+.tile-red-3 {
+  background: url('/assets/game/tiles/Three-Tile-Red.png') no-repeat center;
+}
+
+.tile-yellow-exhausted-3 {
+  background: url('/assets/game/tiles/Three-Tile-Yellow-Exhausted.png') no-repeat center;
 }
 
 .tile-yellow-3 {
-  background: url('/assets/game/tiles/Yellow-3.png') no-repeat center;
+  background: url('/assets/game/tiles/Three-Tile-Yellow.png') no-repeat center;
 }
 
-.tile-blank {
-  background: url('/assets/game/tiles/Blank.png') no-repeat center;
+.tile-blue-exhausted-2 {
+  background: url('/assets/game/tiles/Two-Tile-Blue-Exhausted.png') no-repeat center;
 }
 
-.tile-blank-capture-orange {
-  background: url('/assets/game/tiles/Blank-Capture-Orange.png') no-repeat center;
+.tile-blue-2 {
+  background: url('/assets/game/tiles/Two-Tile-Blue.png') no-repeat center;
 }
 
-.tile-blank-capture-purple {
-  background: url('/assets/game/tiles/Blank-Capture-Purple.png') no-repeat center;
+.tile-green-exhausted-2 {
+  background: url('/assets/game/tiles/Two-Tile-Green-Exhausted.png') no-repeat center;
 }
 
-// Captured Tiles
-
-.tile-red-capture-orange {
-  background: url('/assets/game/tiles/Red-Capture-Orange.png') no-repeat center;
+.tile-green-2 {
+  background: url('/assets/game/tiles/Two-Tile-Green.png') no-repeat center;
 }
 
-.tile-red-capture-purple {
-  background: url('/assets/game/tiles/Red-Capture-Purple.png') no-repeat center;
+.tile-red-exhausted-2 {
+  background: url('/assets/game/tiles/Two-Tile-Red-Exhausted.png') no-repeat center;
 }
 
-.tile-green-capture-orange {
-  background: url('/assets/game/tiles/Green-Capture-Orange.png') no-repeat center;
+.tile-red-2 {
+  background: url('/assets/game/tiles/Two-Tile-Red.png') no-repeat center;
 }
 
-.tile-green-capture-purple {
-  background: url('/assets/game/tiles/Green-Capture-Purple.png') no-repeat center;
+.tile-yellow-exhausted-2 {
+  background: url('/assets/game/tiles/Two-Tile-Yellow-Exhausted.png') no-repeat center;
 }
 
-.tile-blue-capture-orange {
-  background: url('/assets/game/tiles/Blue-Capture-Orange.png') no-repeat center;
+.tile-yellow-2 {
+  background: url('/assets/game/tiles/Two-Tile-Yellow.png') no-repeat center;
 }
 
-.tile-blue-capture-purple {
-  background: url('/assets/game/tiles/Blue-Capture-Purple.png') no-repeat center;
+.tile-green-captured-orange-machine-1 {
+  background: url('/assets/game/tiles/One-Tile-Green-Capture-Orange-Machine.png') no-repeat center;
 }
 
-.tile-yellow-capture-orange {
-  background: url('/assets/game/tiles/Yellow-Capture-Orange.png') no-repeat center;
+.tile-green-captured-orange-miner-1 {
+  background: url('/assets/game/tiles/One-Tile-Green-Capture-Orange-Miner.png') no-repeat center;
 }
 
-.tile-yellow-capture-purple {
-  background: url('/assets/game/tiles/Yellow-Capture-Purple.png') no-repeat center;
+.tile-green-captured-purple-machine-1 {
+  background: url('/assets/game/tiles/One-Tile-Green-Capture-Purple-Machine.png') no-repeat center;
 }
 
-// Exhausted Tiles
-
-.tile-red-exhausted {
-  background: url('/assets/game/tiles/Red-Exhausted.png') no-repeat center;
+.tile-green-captured-purple-miner-1 {
+  background: url('/assets/game/tiles/One-Tile-Green-Capture-Purple-Miner.png') no-repeat center;
 }
 
-.tile-green-exhausted {
-  background: url('/assets/game/tiles/Green-Exhausted.png') no-repeat center;
+.tile-red-captured-orange-machine-1 {
+  background: url('/assets/game/tiles/One-Tile-Red-Capture-Orange-Machine.png') no-repeat center;
 }
 
-.tile-blue-exhausted {
-  background: url('/assets/game/tiles/Blue-Exhausted.png') no-repeat center;
+.tile-red-captured-orange-miner-1 {
+  background: url('/assets/game/tiles/One-Tile-Red-Capture-Orange-Miner.png') no-repeat center;
 }
 
-.tile-yellow-exhausted {
-  background: url('/assets/game/tiles/Yellow-Exhausted.png') no-repeat center;
+.tile-red-captured-purple-machine-1 {
+  background: url('/assets/game/tiles/One-Tile-Red-Capture-Purple-Machine.png') no-repeat center;
 }
+
+.tile-red-captured-purple-miner-1 {
+  background: url('/assets/game/tiles/One-Tile-Red-Capture-Purple-Miner.png') no-repeat center;
+}
+
+.tile-yellow-captured-orange-machine-1 {
+  background: url('/assets/game/tiles/One-Tile-Yellow-Capture-Orange-Machine.png') no-repeat center;
+}
+
+.tile-yellow-captured-orange-miner-1 {
+  background: url('/assets/game/tiles/One-Tile-Yellow-Capture-Orange-Miner.png') no-repeat center;
+}
+
+.tile-yellow-captured-purple-machine-1 {
+  background: url('/assets/game/tiles/One-Tile-Yellow-Capture-Purple-Machine.png') no-repeat center;
+}
+
+.tile-yellow-captured-purple-miner-1 {
+  background: url('/assets/game/tiles/One-Tile-Yellow-Capture-Purple-Miner.png') no-repeat center;
+}
+
+.tile-blue-captured-orange-machine-3 {
+  background: url('/assets/game/tiles/Three-Tile-Blue-Capture-Orange-Machine.png') no-repeat center;
+}
+
+.tile-blue-captured-orange-miner-3 {
+  background: url('/assets/game/tiles/Three-Tile-Blue-Capture-Orange-Miner.png') no-repeat center;
+}
+
+.tile-blue-captured-purple-machine-3 {
+  background: url('/assets/game/tiles/Three-Tile-Blue-Capture-Purple-Machine.png') no-repeat center;
+}
+
+.tile-blue-captured-purple-miner-3 {
+  background: url('/assets/game/tiles/Three-Tile-Blue-Capture-Purple-Miner.png') no-repeat center;
+}
+
+.tile-green-captured-orange-machine-3 {
+  background: url('/assets/game/tiles/Three-Tile-Green-Capture-Orange-Machine.png') no-repeat center;
+}
+
+.tile-green-captured-orange-miner-3 {
+  background: url('/assets/game/tiles/Three-Tile-Green-Capture-Orange-Miner.png') no-repeat center;
+}
+
+.tile-green-captured-purple-machine-3 {
+  background: url('/assets/game/tiles/Three-Tile-Green-Capture-Purple-Machine.png') no-repeat center;
+}
+
+.tile-green-captured-purple-miner-3 {
+  background: url('/assets/game/tiles/Three-Tile-Green-Capture-Purple-Miner.png') no-repeat center;
+}
+
+.tile-red-captured-orange-machine-3 {
+  background: url('/assets/game/tiles/Three-Tile-Red-Capture-Orange-Machine.png') no-repeat center;
+}
+
+.tile-red-captured-orange-miner-3 {
+  background: url('/assets/game/tiles/Three-Tile-Red-Capture-Orange-Miner.png') no-repeat center;
+}
+
+.tile-red-captured-purple-machine-3 {
+  background: url('/assets/game/tiles/Three-Tile-Red-Capture-Purple-Machine.png') no-repeat center;
+}
+
+.tile-red-captured-purple-miner-3 {
+  background: url('/assets/game/tiles/Three-Tile-Red-Capture-Purple-Miner.png') no-repeat center;
+}
+
+.tile-yellow-captured-orange-machine-3 {
+  background: url('/assets/game/tiles/Three-Tile-Yellow-Capture-Orange-Machine.png') no-repeat center;
+}
+
+.tile-yellow-captured-orange-miner-3 {
+  background: url('/assets/game/tiles/Three-Tile-Yellow-Capture-Orange-Miner.png') no-repeat center;
+}
+
+.tile-yellow-captured-purple-machine-3 {
+  background: url('/assets/game/tiles/Three-Tile-Yellow-Capture-Purple-Machine.png') no-repeat center;
+}
+
+.tile-yellow-captured-purple-miner-3 {
+  background: url('/assets/game/tiles/Three-Tile-Yellow-Capture-Purple-Miner.png') no-repeat center;
+}
+
+.tile-blue-captured-orange-machine-2 {
+  background: url('/assets/game/tiles/Two-Tile-Blue-Capture-Orange-Machine.png') no-repeat center;
+}
+
+.tile-blue-captured-orange-miner-2 {
+  background: url('/assets/game/tiles/Two-Tile-Blue-Capture-Orange-Miner.png') no-repeat center;
+}
+
+.tile-blue-captured-purple-machine-2 {
+  background: url('/assets/game/tiles/Two-Tile-Blue-Capture-Purple-Machine.png') no-repeat center;
+}
+
+.tile-blue-captured-purple-machine-2 {
+  background: url('/assets/game/tiles/Two-Tile-Blue-Capture-Purple-Miner.png') no-repeat center;
+}
+
+.tile-green-captured-orange-machine-2 {
+  background: url('/assets/game/tiles/Two-Tile-Green-Capture-Orange-Machine.png') no-repeat center;
+}
+
+.tile-green-captured-orange-miner-2 {
+  background: url('/assets/game/tiles/Two-Tile-Green-Capture-Orange-Miner.png') no-repeat center;
+}
+
+.tile-green-captured-purple-machine-2 {
+  background: url('/assets/game/tiles/Two-Tile-Green-Capture-Purple-Machine.png') no-repeat center;
+}
+
+.tile-green-captured-purple-miner-2 {
+  background: url('/assets/game/tiles/Two-Tile-Green-Capture-Purple-Miner.png') no-repeat center;
+}
+
+.tile-red-captured-orange-machine-2 {
+  background: url('/assets/game/tiles/Two-Tile-Red-Capture-Orange-Machine.png') no-repeat center;
+}
+
+.tile-red-captured-orange-miner-2 {
+  background: url('/assets/game/tiles/Two-Tile-Red-Capture-Orange-Miner.png') no-repeat center;
+}
+
+.tile-red-captured-purple-machine-2 {
+  background: url('/assets/game/tiles/Two-Tile-Red-Capture-Purple-Machine.png') no-repeat center;
+}
+
+.tile-red-captured-purple-miner-2 {
+  background: url('/assets/game/tiles/Two-Tile-Red-Capture-Purple-Miner.png') no-repeat center;
+}
+
+.tile-yellow-captured-orange-machine-2 {
+  background: url('/assets/game/tiles/Two-Tile-Yellow-Capture-Orange-Machine.png') no-repeat center;
+}
+
+.tile-yellow-captured-orange-miner-2 {
+  background: url('/assets/game/tiles/Two-Tile-Yellow-Capture-Orange-Miner.png') no-repeat center;
+}
+
+.tile-yellow-captured-purple-machine-2 {
+  background: url('/assets/game/tiles/Two-Tile-Yellow-Capture-Purple-Machine.png') no-repeat center;
+}
+
+.tile-yellow-captured-purple-miner-2 {
+  background: url('/assets/game/tiles/Two-Tile-Yellow-Capture-Purple-Miner.png') no-repeat center;
+}
+
 
 // Branches
 
-.branch-orange-x {
-  background: url('/assets/game/Orange-Branch-Horizontal.png') no-repeat center;
+.branch-orange-x-machine {
+  background: url('/assets/game/branches/Horizontal-Track-Orange-Machine.png') no-repeat center;
 }
 
-.branch-orange-y {
-  background: url('/assets/game/Orange-Branch.png') no-repeat center;
+.branch-orange-x-miner {
+  background: url('/assets/game/branches/Horizontal-Track-Orange-Miner.png') no-repeat center;
 }
 
-.branch-purple-x {
-  background: url('/assets/game/Purple-Branch-Horizontal.png') no-repeat center;
+.branch-purple-x-machine {
+  background: url('/assets/game/branches/Horizontal-Track-Purple-Machine.png') no-repeat center;
 }
 
-.branch-purple-y {
-  background: url('/assets/game/Purple-Branch.png') no-repeat center;
+.branch-purple-x-miner {
+  background: url('/assets/game/branches/Horizontal-Track-Purple-Miner.png') no-repeat center;
+}
+
+.branch-orange-y-machine {
+  background: url('/assets/game/branches/Vertical-Track-Orange-Machine.png') no-repeat center;
+}
+
+.branch-orange-y-miner {
+  background: url('/assets/game/branches/Vertical-Track-Orange-Miner.png') no-repeat center;
+}
+
+.branch-purple-y-machine {
+  background: url('/assets/game/branches/Vertical-Track-Purple-Machine.png') no-repeat center;
+}
+
+.branch-purple-y-miner {
+  background: url('/assets/game/branches/Vertical-Track-Purple-Miner.png') no-repeat center;
 }
 
 .branch-blank-x {
-  background: url('/assets/game/Blank-Branch-Horizontal.png') no-repeat center;
+  background: url('/assets/game/branches/Horizontal-Track-Blank.png') no-repeat center;
 }
 
 .branch-blank-y {
-  background: url('/assets/game/Blank-Branch.png') no-repeat center;
+  background: url('/assets/game/branches/Vertical-Track-Blank.png') no-repeat center;
 }
 
 // Nodes
 
-.node-orange {
-  background: url('/assets/game/Orange-Node.png') no-repeat center;
+.node-orange-machine {
+  background: url('/assets/game/nodes/Orange-Node-Drill.png') no-repeat center;
 }
 
-.node-purple {
-  background: url('/assets/game/Purple-Node.png') no-repeat center;
+.node-orange-miner {
+  background: url('/assets/game/nodes/Orange-Node-Pickaxe.png') no-repeat center;
 }
+
+.node-purple-machine {
+  background: url('/assets/game/nodes/Purple-Node-Drill.png') no-repeat center;
+}
+
+.node-purple-miner {
+  background: url('/assets/game/nodes/Purple-Node-Pickaxe.png') no-repeat center;
+}
+
 
 .node-blank {
-  background: url('/assets/game/Blank-Node.png') no-repeat center;
+  background: url('/assets/game/nodes/Blank-Node.png') no-repeat center;
 }
 
 // Utilities
