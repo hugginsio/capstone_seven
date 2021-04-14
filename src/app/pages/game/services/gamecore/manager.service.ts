@@ -14,6 +14,7 @@ import { NetworkGameSettings } from '../../../../../../backend/NetworkGameSettin
 import { AiMethods } from '../../interfaces/worker.interface';
 import { SoundService } from '../../../../shared/components/sound-controller/services/sound.service';
 import { SoundEndAction } from '../../../../shared/components/sound-controller/interfaces/sound-controller.interface';
+import { SnackbarService } from '../../../../shared/components/snackbar/services/snackbar.service';
 
 @Injectable({
   providedIn: 'root'
