@@ -392,16 +392,16 @@ export class ManagerService {
         this.decrementResourceByOne(currentPlayer, moveToPlace.tradedIn[i]);
 
         if (moveToPlace.tradedIn[i] === 'R') {
-          tradeHTMLString += '<p><img src="/assets/game/Resource-Red.png"></p>';
+          tradeHTMLString += '<p><img src="/assets/game/resources/Red-Resource-Tile.png"></p>';
         }
         else if (moveToPlace.tradedIn[i] === 'B') {
-          tradeHTMLString += '<p><img src="/assets/game/Resource-Blue.png"></p>';
+          tradeHTMLString += '<p><img src="/assets/game/resources/Blue-Resource-Tile.png"></p>';
         }
         else if (moveToPlace.tradedIn[i] === 'G') {
-          tradeHTMLString += '<p><img src="/assets/game/Resource-Green.png"></p>';
+          tradeHTMLString += '<p><img src="/assets/game/resources/Green-Resource-Tile.png"></p>';
         }
         else if (moveToPlace.tradedIn[i] === 'Y') {
-          tradeHTMLString += '<p><img src="/assets/game/Resource-Yellow.png"></p>';
+          tradeHTMLString += '<p><img src="/assets/game/resources/Yellow-Resource-Tile.png"></p>';
         }
 
 
@@ -422,7 +422,7 @@ export class ManagerService {
         tradeHTMLString += '<p>for<p><img src="/assets/game/resources/Yellow-Resource-Tile.png"></p></p>';
       }
 
-      this.snackbarService.add({ message: `<div class="flex space-x-4 items-center"><p>Machine<p>Traded:</p></p>${tradeHTMLString}</div>` });
+      this.snackbarService.add({ message: `<div class="flex space-x-4 items-center"><p>Opponent<p>Traded:</p></p>${tradeHTMLString}</div>` });
     }
 
 
