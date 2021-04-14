@@ -1,60 +1,51 @@
 /// <reference lib="webworker" />
 
-import { AiMethods, WorkerPayload } from '../interfaces/worker.interface';
+import { AiMethods, WorkerPayload } from "../interfaces/worker.interface";
 import { AI } from "../classes/ai/ai.class.ai";
-import { CoreLogic } from '../util/core-logic.util';
-import { State } from '../classes/ai/ai.class.State';
+import { CoreLogic } from "../util/core-logic.util";
+import { State } from "../classes/ai/ai.class.State";
 
 interface PayloadWrapper {
-  data: WorkerPayload
+  data: WorkerPayload;
 }
 
-
-
 let ai: AI;
-let workers:Array<Worker>;
-let currentState:State;
-let start:number;
+let workers: Array<Worker>;
+let currentState: State;
+let start: number;
 
-addEventListener('message', ({ data }: PayloadWrapper) => {
+addEventListener("message", ({ data }: PayloadWrapper) => {
   let response: boolean | string;
-  
+
   if (data.method === AiMethods.INIT_SERVICE) {
     response = initAiService(data);
     postMessage(response);
   } else if (data.method === AiMethods.GET_AI_MOVE) {
     start = Date.now();
     startAITurn(data);
-  }
-  else {
+  } else {
     response = false;
     postMessage(response);
   }
-
-  
 });
 
 function initAiService(data: WorkerPayload): boolean {
   const gameBoard = CoreLogic.workerCloneGameBoard(data.data[0]);
   const player1 = CoreLogic.workerClonePlayer(data.data[1]);
   const player2 = CoreLogic.workerClonePlayer(data.data[2]);
-  
-  ai = new AI(gameBoard,player1,player2,data.data[3]);
+
+  ai = new AI(gameBoard, player1, player2, data.data[3]);
   const numWorkers = ai.mcts.NUMWORKERS;
   workers = [];
-  for(let i = 0; i < numWorkers; i++){
-    workers.push(new Worker('./simulation.worker.ts', { type: 'module' }));
-    workers[i].postMessage({method:AiMethods.INIT_SERVICE,data:[ai.mcts,data.data[4]]});
+  for (let i = 0; i < numWorkers; i++) {
+    workers.push(new Worker("./simulation.worker.ts", { type: "module" }));
+    workers[i].postMessage({ method: AiMethods.INIT_SERVICE, data: [ai.mcts, data.data[4]] });
   }
 
   return true;
 }
 
-
-
-
-
-function startAITurn(payload:WorkerPayload){
+function startAITurn(payload: WorkerPayload) {
   const board = payload.data[0];
   const player1 = payload.data[1];
   const player2 = payload.data[2];
@@ -69,28 +60,32 @@ function startAITurn(payload:WorkerPayload){
 
   const promises = [];
   const numWorkers = ai.mcts.NUMWORKERS;
-  for(let i = 0; i < numWorkers; i++){
-    promises.push(new Promise((resolve)=>{
-      workers[i].postMessage({method:AiMethods.GET_AI_MOVE, data:[board,player1,player2,payload.data[3],payload.data[4]]});
-      workers[i].onmessage = ({data})=>{
-        resolve(data);
-      };
-    }));
+  for (let i = 0; i < numWorkers; i++) {
+    promises.push(
+      new Promise((resolve) => {
+        workers[i].postMessage({
+          method: AiMethods.GET_AI_MOVE,
+          data: [board, player1, player2, payload.data[3], payload.data[4]],
+        });
+        workers[i].onmessage = ({ data }) => {
+          resolve(data);
+        };
+      })
+    );
 
     //workers[i].postMessage({method:AiMethods.GET_AI_MOVE, data:[board,player1,player2,payload.data[3],payload.data[4]]});
   }
 
-  Promise.all(promises).then((data) =>{
-    console.log('inside promise');
-    
-    
+  Promise.all(promises).then((data) => {
+    console.log("inside promise");
+
     const response = getBestMove(data as string[]);
     console.warn(`AI Time = ${Date.now() - start}ms`);
     postMessage(response);
   });
 }
 
-function getBestMove(moves:string[]):string{
+function getBestMove(moves: string[]): string {
   console.log(moves);
   const scores = [];
   const len = moves.length;
@@ -101,7 +96,7 @@ function getBestMove(moves:string[]):string{
   let maxScore = firstMoveState.getHeuristicValue();
   let maxMove = moves[0];
   scores.push(maxScore);
-  for(let i = 1; i < len; i++){
+  for (let i = 1; i < len; i++) {
     const moveState = currentState.cloneState();
     moveState.togglePlayer();
     moveState.applyMove(moves[i]);
@@ -109,14 +104,13 @@ function getBestMove(moves:string[]):string{
 
     const score = moveState.getHeuristicValue();
     scores.push(score);
-    if(moveState.playerNumber === 1){
-      if(score >= maxScore){
+    if (moveState.playerNumber === 1) {
+      if (score >= maxScore) {
         maxScore = score;
         maxMove = moves[i];
       }
-    }
-    else{
-      if(score <= maxScore){
+    } else {
+      if (score <= maxScore) {
         maxScore = score;
         maxMove = moves[i];
       }

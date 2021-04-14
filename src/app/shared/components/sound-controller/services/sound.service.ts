@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { SoundAction, SoundEndAction, SoundSubject, SoundType } from '../interfaces/sound-controller.interface';
+import { Injectable } from "@angular/core";
+import { Observable, Subject } from "rxjs";
+import { SoundAction, SoundEndAction, SoundSubject, SoundType } from "../interfaces/sound-controller.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class SoundService {
   private readonly soundService = new Subject<SoundSubject>();
@@ -18,38 +18,38 @@ export class SoundService {
       action: SoundAction.ADD,
       track: track,
       onEnd: onEnd,
-      id: '',
-      type: type
+      id: "",
+      type: type,
     });
   }
 
   remove(id: string): void {
     this.soundService.next({
       action: SoundAction.REMOVE,
-      track: '',
+      track: "",
       onEnd: SoundEndAction.DIE,
       id: id,
-      type: SoundType.FX
+      type: SoundType.FX,
     });
   }
 
   clear(): void {
     this.soundService.next({
       action: SoundAction.CLEAR,
-      track: '',
+      track: "",
       onEnd: SoundEndAction.DIE,
-      id: '',
-      type: SoundType.FX
+      id: "",
+      type: SoundType.FX,
     });
   }
 
   update(): void {
     this.soundService.next({
       action: SoundAction.UPDATE,
-      track: '',
+      track: "",
       onEnd: SoundEndAction.DIE,
-      id: '',
-      type: SoundType.FX
+      id: "",
+      type: SoundType.FX,
     });
   }
 }

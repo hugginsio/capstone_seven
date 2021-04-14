@@ -2,30 +2,30 @@ export enum SoundAction {
   ADD,
   REMOVE,
   CLEAR,
-  UPDATE
+  UPDATE,
 }
 
 export enum SoundEndAction {
   LOOP,
-  DIE
+  DIE,
 }
 
 export enum SoundType {
   MUSIC,
-  FX
+  FX,
 }
 
 export interface SoundSubject {
-  action: SoundAction,
-  track: string,
-  onEnd: SoundEndAction,
-  id: string,
-  type: SoundType
+  action: SoundAction;
+  track: string;
+  onEnd: SoundEndAction;
+  id: string;
+  type: SoundType;
 }
 
 export interface SoundObject {
-  track: string,
-  id: string,
-  onEnd: SoundEndAction,
-  type: SoundType
+  track: string;
+  id: string;
+  onEnd: SoundEndAction;
+  type: SoundType;
 }

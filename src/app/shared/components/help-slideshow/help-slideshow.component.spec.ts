@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 
-import { HelpSlideshowComponent } from './help-slideshow.component';
+import { HelpSlideshowComponent } from "./help-slideshow.component";
 
-describe('HelpSlideshowComponent', () => {
+describe("HelpSlideshowComponent", () => {
   let component: HelpSlideshowComponent;
   let fixture: ComponentFixture<HelpSlideshowComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      declarations: [ HelpSlideshowComponent ]
+      imports: [RouterTestingModule],
+      declarations: [HelpSlideshowComponent],
     }).compileComponents();
   });
 
@@ -20,7 +20,7 @@ describe('HelpSlideshowComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,9 +1,8 @@
-import { GameBoard } from '../gamecore/game.class.GameBoard';
-import { Tree, MCTSNode } from './ai.class.MCTSNode';
-import { State } from './ai.class.State';
-import { CoreLogic } from '../../util/core-logic.util';
-import { Player } from '../gamecore/game.class.Player';
-
+import { GameBoard } from "../gamecore/game.class.GameBoard";
+import { Tree, MCTSNode } from "./ai.class.MCTSNode";
+import { State } from "./ai.class.State";
+import { CoreLogic } from "../../util/core-logic.util";
+import { Player } from "../gamecore/game.class.Player";
 
 export class MonteCarlo {
   WINSCORE = 10;
@@ -14,8 +13,6 @@ export class MonteCarlo {
   NUMWORKERS = 16;
   workers: Array<Worker>;
 
-
-
   constructor(gameBoard: GameBoard, player1: Player, player2: Player, explorationParameter: number) {
     this.explorationParameter = explorationParameter;
     this.tree = new Tree();
@@ -24,11 +21,9 @@ export class MonteCarlo {
     this.tree.setRoot(startingRoot);
   }
 
-
   findNextMove(gameState: State, time: number): string {
     // define an end time in milliseconds which will act as a terminating condition
     const end = Date.now() + time;
-
 
     const newNode = new MCTSNode(gameState);
     //this.tree.setRoot(newNode);
@@ -59,7 +54,7 @@ export class MonteCarlo {
       if (CoreLogic.getWinner(promisingNode.getState()) === 0) {
         this.expandNode(promisingNode);
       }
-      
+
       let nodeToExplore = promisingNode;
       if (promisingNode.getChildArray().length > 0) {
         nodeToExplore = promisingNode.getRandomChildNode();
@@ -69,15 +64,14 @@ export class MonteCarlo {
       //this.simulateRandomPlayout(nodeToExplore);
       simNum++;
     }
-    
+
     console.log(`Number of Simulations = ${simNum}`);
     if (rootNode.getChildArray().length > 0) {
       const winnerNode = rootNode.getChildWithMaxScore();
       this.tree.setRoot(winnerNode);
       return winnerNode.getState().getMove();
-    }
-    else {
-      return ';;';
+    } else {
+      return ";;";
     }
   }
 
@@ -124,7 +118,7 @@ export class MonteCarlo {
     const tempState = tempNode.getState();
     let boardStatus = CoreLogic.getWinner(tempState);
     //let result = {playerNumber:boardStatus,multiplier:1};
-    if (boardStatus == (3-tempState.playerNumber)) {
+    if (boardStatus == 3 - tempState.playerNumber) {
       const tempParent = tempNode.getParent();
       if (tempParent !== null) {
         tempParent.getState().setWinScore(Number.MIN_VALUE);
@@ -132,7 +126,6 @@ export class MonteCarlo {
       //this.backPropogation(node, boardStatus);
       return boardStatus;
     }
-
 
     let counter = 0; //decrease counter and assign winner based on score if game not finished
     while (boardStatus === 0 && counter < 3) {
@@ -153,42 +146,43 @@ export class MonteCarlo {
     if (boardStatus === 0) {
       if (tempState.getHeuristicValue() > 0) {
         boardStatus = 1;
-      }
-      else {
+      } else {
         boardStatus = 2;
       }
-
     }
-
 
     return boardStatus;
   }
-
-
-
-
-
 }
-
 
 export class UCT {
   static uctValue(totalVisit: number, nodeWinScore: number, nodeVisit: number, explorationParameter: number): number {
     if (nodeVisit == 0) {
       return Number.MAX_VALUE;
     }
-    return (nodeWinScore / nodeVisit) + explorationParameter * Math.sqrt(2 * (Math.log(totalVisit)) / nodeVisit);
+    return nodeWinScore / nodeVisit + explorationParameter * Math.sqrt((2 * Math.log(totalVisit)) / nodeVisit);
   }
 
   static findBestNodeWithUCT(node: MCTSNode, explorationParameter: number): MCTSNode {
     const parentVisit = node.getState().getVisitCount();
 
-    let maxUctValue = this.uctValue(parentVisit, node.getChildArray()[0].getState().getWinScore(), node.getChildArray()[0].getState().getVisitCount(), explorationParameter);
+    let maxUctValue = this.uctValue(
+      parentVisit,
+      node.getChildArray()[0].getState().getWinScore(),
+      node.getChildArray()[0].getState().getVisitCount(),
+      explorationParameter
+    );
     let maxNode = node.getChildArray()[0];
     const len = node.getChildArray().length;
-    for(let i = 1; i < len; i++){
-      if(node.getChildArray()[i].getState().visitCount >= 5){
-        const uctValue = this.uctValue(parentVisit,node.getChildArray()[i].getState().getWinScore(),node.getChildArray()[i].getState().getVisitCount(),explorationParameter);
-        if(uctValue >= maxUctValue){
+    for (let i = 1; i < len; i++) {
+      if (node.getChildArray()[i].getState().visitCount >= 5) {
+        const uctValue = this.uctValue(
+          parentVisit,
+          node.getChildArray()[i].getState().getWinScore(),
+          node.getChildArray()[i].getState().getVisitCount(),
+          explorationParameter
+        );
+        if (uctValue >= maxUctValue) {
           maxUctValue = uctValue;
           maxNode = node.getChildArray()[i];
         }

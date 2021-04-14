@@ -1,15 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NewLocalGameComponent } from './new-local-game.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NewLocalGameComponent } from "./new-local-game.component";
 
-describe('NewLocalGameComponent', () => {
+describe("NewLocalGameComponent", () => {
   let component: NewLocalGameComponent;
   let fixture: ComponentFixture<NewLocalGameComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      declarations: [ NewLocalGameComponent ]
+      imports: [RouterTestingModule],
+      declarations: [NewLocalGameComponent],
     }).compileComponents();
   });
 
@@ -19,11 +19,11 @@ describe('NewLocalGameComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  it('changeGameMode should flip game modes', () => {
+  it("changeGameMode should flip game modes", () => {
     component.gameModeString = component.pva;
     component.changeGameMode();
 
@@ -33,7 +33,7 @@ describe('NewLocalGameComponent', () => {
     expect(component.gameModeString).toEqual(component.pva);
   });
 
-  it('changeAiDifficulty should modify AI difficulty', () => {
+  it("changeAiDifficulty should modify AI difficulty", () => {
     component.aiDifficultyString = component.aiEasy;
     component.changeAiDifficulty();
 
@@ -42,8 +42,7 @@ describe('NewLocalGameComponent', () => {
 
     expect(component.aiDifficultyString).toEqual(component.aiHard);
     component.changeAiDifficulty();
-    
+
     expect(component.aiDifficultyString).toEqual(component.aiEasy);
   });
 });
-

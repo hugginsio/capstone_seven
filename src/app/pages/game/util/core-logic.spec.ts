@@ -132,7 +132,6 @@
 //     });
 //   });
 
-
 //   //Check for captures test
 //   xdescribe('check for 0 captures', ()=>{
 //     it('should identify that no tile has been captured',()=>{
@@ -146,16 +145,13 @@
 
 //       const player1 = new Player();
 //       const player2 = new Player();
-      
-//       const state = new State(gameBoard, player1, player2);
 
+//       const state = new State(gameBoard, player1, player2);
 
 //       const answer = CoreLogic.checkForCaptures(state,state.player1, 12);
 
-//       expect(answer).toBeFalse();  
-      
-      
-      
+//       expect(answer).toBeFalse();
+
 //     });
 //   });
 
@@ -169,13 +165,13 @@
 
 //       const player1 = new Player();
 //       const player2 = new Player();
-      
+
 //       const state = new State([],gameBoard,1,player1,player2, false);
 
 //       const answer = CoreLogic.checkForCaptures(state,state.player1,6);
 
 //       expect(answer).toBeTrue();
-      
+
 //     });
 //   });
 
@@ -191,7 +187,7 @@
 
 //       const player1 = new Player();
 //       const player2 = new Player();
-      
+
 //       const state = new State([],gameBoard,1,player1,player2, false);
 
 //       const answer1 = CoreLogic.checkForCaptures(state,state.player1,6);
@@ -199,7 +195,7 @@
 
 //       expect(answer1).toBeTrue();
 //       expect(answer2).toBeTrue();
-      
+
 //     });
 //   });
 
@@ -219,7 +215,7 @@
 
 //       const player1 = new Player();
 //       const player2 = new Player();
-      
+
 //       player1.ownedBranches.push(12);
 //       player1.ownedBranches.push(13);
 //       player1.ownedBranches.push(19);
@@ -230,8 +226,6 @@
 //       player2.ownedBranches.push(22);
 //       player2.ownedBranches.push(29);
 
-
-
 //       const state = new State([],gameBoard,1,player1,player2, false);
 
 //       const affectedPlayer = state.player1;
@@ -241,8 +235,6 @@
 //         CoreLogic.checkForLongest(state,affectedPlayer, affectedPlayer.ownedBranches[i]);
 //       }
 
-
-    
 //       if ((state.player1.currentLongest > state.player2.currentLongest) && state.player1.hasLongestNetwork === false) {
 //         state.player1.hasLongestNetwork = true;
 //         state.player1.currentScore += 2;
@@ -251,7 +243,7 @@
 //           state.player2.currentScore -= 2;
 //         }
 //       }
-  
+
 //       else if ((state.player2.currentLongest > state.player1.currentLongest) && state.player2.hasLongestNetwork === false) {
 //         state.player2.hasLongestNetwork = true;
 //         state.player2.currentScore += 2;
@@ -270,19 +262,17 @@
 //           state.player2.currentScore -= 2;
 //         }
 //       }
-      
 
 //       expect(state.player1.hasLongestNetwork).toBeTrue();
 //       expect(state.player1.currentLongest).toEqual(3);
 //       console.log(state.player1.ownedBranches);
-      
+
 //     });
 //   });
 
 //   xdescribe('detemine if winner', ()=>{
 //     it('should identify that player 1 is the winner',()=>{
 //       const gameBoard = new GameBoard();
-      
 
 //       const player1 = new Player();
 //       const player2 = new Player();
@@ -295,14 +285,13 @@
 //       const answer = CoreLogic.determineIfWinner(state);
 
 //       expect(answer).toEqual(1);
-      
+
 //     });
 //   });
 
 //   xdescribe('detemine if winner', ()=>{
 //     it('should identify that player 2 is the winner',()=>{
 //       const gameBoard = new GameBoard();
-      
 
 //       const player1 = new Player();
 //       const player2 = new Player();
@@ -315,14 +304,13 @@
 //       const answer = CoreLogic.determineIfWinner(state);
 
 //       expect(answer).toEqual(-1);
-      
+
 //     });
 //   });
 
 //   xdescribe('detemine if winner', ()=>{
 //     it('should identify that the game is not over yet',()=>{
 //       const gameBoard = new GameBoard();
-      
 
 //       const player1 = new Player();
 //       const player2 = new Player();
@@ -335,7 +323,7 @@
 //       const answer = CoreLogic.determineIfWinner(state);
 
 //       expect(answer).toEqual(0);
-      
+
 //     });
 //   });
 
@@ -355,7 +343,7 @@
 //       expect(answer).toContain(17);
 //       expect(answer).toContain(13);
 //       expect(answer).toContain(18);
-      
+
 //     });
 //   });
 
@@ -367,7 +355,6 @@
 
 //       const answer = CoreLogic.getValidNodeIndices(Owner.PLAYERONE,gameBoard);
 
-      
 //       expect(answer).toContain(8);
 //       expect(answer).toContain(9);
 //       expect(answer).toContain(10);
@@ -416,7 +403,6 @@
 //       expect(state.player1.numTilesCaptured).toEqual(0);
 //       console.log(state.player1.redPerTurn,state.player1.bluePerTurn,state.player1.greenPerTurn,state.player1.yellowPerTurn);
 
-      
 //     });
 //   });
 
@@ -429,7 +415,6 @@
 //       gameBoard.branches[23].setOwner(Owner.PLAYERONE);
 //       gameBoard.branches[18].setOwner(Owner.PLAYERONE);
 
-      
 //       gameBoard.nodes[9].setOwner(Owner.PLAYERONE);
 //       gameBoard.branches[19].setOwner(Owner.PLAYERTWO);
 
@@ -464,8 +449,6 @@
 //       expect(state.player1.hasLongestNetwork).toBeTrue();
 //       expect(state.player1.currentLongest).toEqual(6);
 
-
-      
 //     });
 //   });
 
@@ -517,12 +500,10 @@
 //       expect(afterFinalInitialTurn.player1.currentLongest).toEqual(2);
 //       expect(afterFinalInitialTurn.player2.currentLongest).toEqual(1);
 
-
 //       console.log(player1);
 //       console.log(afterFinalInitialTurn.player1);
 //       console.log(player2);
 //       console.log(afterFinalInitialTurn.player2);
-
 
 //     });
 //   });
@@ -550,7 +531,6 @@
 //       expect(turn1.gameBoard.branches[28].getOwner()).toEqual(Owner.PLAYERONE);
 //       expect(turn1.currentPlayer).toEqual(-1);
 //       expect(turn1.player1.ownedBranches).toContain(18);
-      
 
 //       turn1.player2.redResources = 2;
 //       turn1.player2.blueResources = 1;
@@ -592,7 +572,6 @@
 //       console.log(`TIME: ${Date.now() - start}`);
 //       console.log(moves);
 
-
 //     });
 //   });
 
@@ -605,12 +584,10 @@
 //       gameBoard.nodes[3].setOwner(Owner.PLAYERONE);
 //       gameBoard.branches[4].setOwner(Owner.PLAYERONE);
 
-
 //       const state = new State([],gameBoard,-1,player1,player2,true);
 
 //       const moves = CoreLogic.getLegalMoves(state);
 //       //console.log(moves);
-
 
 //     });
 //   });
@@ -631,9 +608,6 @@
 
 //       const clonedMoves = CoreLogic.getLegalMoves(clonedState);
 //       console.log(clonedMoves);
-
-      
-
 
 //     });
 //   });
@@ -698,7 +672,6 @@
 
 //       // expect(gameBoard.nodes[0]).not.toEqual(clonedGameBoard.nodes[0]);
 //       // expect(gameBoard.nodes[1]).toEqual(clonedGameBoard.nodes[1]);
-
 
 //       // console.log(gameBoard.nodes);
 //       // console.log(clonedGameBoard.nodes);

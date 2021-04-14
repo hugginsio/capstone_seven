@@ -1,5 +1,4 @@
-import { Owner } from '../../enums/game.enums';
-
+import { Owner } from "../../enums/game.enums";
 
 export class Node {
   ownedBy: Owner;
@@ -22,10 +21,7 @@ export class Node {
   bottomLeftTile: number;
   bottomRightTile: number;
 
-  constructor(tb = -1, rb = -1,
-              bb = -1, lb = -1,
-              tlt = -1, trt = -1,
-              blt = -1, brt = -1) {
+  constructor(tb = -1, rb = -1, bb = -1, lb = -1, tlt = -1, trt = -1, blt = -1, brt = -1) {
     this.ownedBy = Owner.NONE;
 
     this.redProvided = 0;

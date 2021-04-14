@@ -1,9 +1,9 @@
-import { app, BrowserWindow, dialog, webFrame } from 'electron';
-import { protocol } from 'electron';
-import * as path from 'path';
-import * as url from 'url';
-import * as ms from '../backend/MatchmakingServer';
-import * as gs from '../backend/GameServer';
+import { app, BrowserWindow, dialog, webFrame } from "electron";
+import { protocol } from "electron";
+import * as path from "path";
+import * as url from "url";
+import * as ms from "../backend/MatchmakingServer";
+import * as gs from "../backend/GameServer";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const matchmakingServer = new ms.MatchmakingServer();
@@ -12,12 +12,12 @@ const gameServer = new gs.GameServer();
 
 let window: BrowserWindow;
 const args = process.argv.slice(1);
-const serve = args.some(val => val === '--serve');
+const serve = args.some((val) => val === "--serve");
 const isDev = !app.isPackaged;
 
 function createWindow(): BrowserWindow {
-  const WEB_FOLDER = '../dist/';
-  const PROTOCOL = 'file';
+  const WEB_FOLDER = "../dist/";
+  const PROTOCOL = "file";
 
   protocol.interceptFileProtocol(PROTOCOL, (req: Electron.ProtocolRequest, callback: any) => {
     let url = req.url.substr(PROTOCOL.length + 1);
@@ -36,12 +36,12 @@ function createWindow(): BrowserWindow {
     resizable: true,
     width: 1280,
     webPreferences: {
-      allowRunningInsecureContent: (serve) ? true : false,
+      allowRunningInsecureContent: serve ? true : false,
       contextIsolation: false,
       devTools: isDev,
-      enableRemoteModule : true,
+      enableRemoteModule: true,
       nodeIntegration: true,
-      zoomFactor: 1
+      zoomFactor: 1,
     },
   });
 
@@ -50,42 +50,45 @@ function createWindow(): BrowserWindow {
       window.webContents.openDevTools();
     }
 
-    require('electron-reload')(__dirname, {
-      electron: require(`${__dirname}/../node_modules/electron`)
+    require("electron-reload")(__dirname, {
+      electron: require(`${__dirname}/../node_modules/electron`),
     });
 
-    window.loadURL('http://localhost:4200');
-
+    window.loadURL("http://localhost:4200");
   } else {
-    window.loadURL(url.format({
-      pathname: 'index.html',
-      protocol: PROTOCOL,
-      slashes: true
-    }));
+    window.loadURL(
+      url.format({
+        pathname: "index.html",
+        protocol: PROTOCOL,
+        slashes: true,
+      })
+    );
   }
 
-  if (process.platform !== 'darwin' || !isDev) {
+  if (process.platform !== "darwin" || !isDev) {
     window.removeMenu();
   }
 
-  window.on('close', (event) => {
+  window.on("close", (event) => {
     event.preventDefault();
-    dialog.showMessageBox(window, {
-      type: 'warning',
-      buttons: ['Cancel', 'Quit'],
-      title: 'Warning',
-      message: 'Are you sure you want to quit?',
-      cancelId: 0,
-      defaultId: 1,
-      noLink: true
-    }).then((val) => {
-      if (val.response === 1) {
-        app.exit();
-      }
-    });
+    dialog
+      .showMessageBox(window, {
+        type: "warning",
+        buttons: ["Cancel", "Quit"],
+        title: "Warning",
+        message: "Are you sure you want to quit?",
+        cancelId: 0,
+        defaultId: 1,
+        noLink: true,
+      })
+      .then((val) => {
+        if (val.response === 1) {
+          app.exit();
+        }
+      });
   });
 
-  window.on('closed', () => {
+  window.on("closed", () => {
     app.quit();
   });
 
@@ -95,15 +98,15 @@ function createWindow(): BrowserWindow {
   return window;
 }
 
-app.commandLine.appendSwitch('disable-autoplay-policy', 'no-user-gesture-required');
+app.commandLine.appendSwitch("disable-autoplay-policy", "no-user-gesture-required");
 
-app.on('ready', () => setTimeout(createWindow, 400));
+app.on("ready", () => setTimeout(createWindow, 400));
 
-app.on('window-all-closed', () => {
+app.on("window-all-closed", () => {
   app.quit();
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
   createWindow();
   webFrame.setZoomFactor(1);
   webFrame.setVisualZoomLevelLimits(1, 1);

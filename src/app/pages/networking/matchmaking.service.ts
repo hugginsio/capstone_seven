@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { io } from 'socket.io-client';
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { io } from "socket.io-client";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class MatchmakingService {
-
   private socket: any;
   private username: string;
 
@@ -17,7 +16,7 @@ export class MatchmakingService {
     this.socket = io("http://localhost:3000");
     this.username = name;
 
-    this.socket.emit('set-username', this.username);
+    this.socket.emit("set-username", this.username);
   }
 
   //https://www.youtube.com/watch?v=66T2A2dvplY
@@ -37,7 +36,7 @@ export class MatchmakingService {
   */
 
   broadcastGame(): void {
-    this.socket.emit('broadcast-game');
+    this.socket.emit("broadcast-game");
   }
 
   disconnectSocket(): void {

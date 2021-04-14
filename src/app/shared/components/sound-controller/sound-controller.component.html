@@ -1,7 +1,7 @@
 <div id="sound_controller_container" class="absolute top-0 right-0 pointer-events-none z-inf opacity-0">
   <div id="noisemaker" *ngFor="let track of sounds">
-    <audio id={{track.id}} autoplay [loop]="trackShouldLoop(track.id)" (ended)="trackEnded(track.id)" controls>
-      <source src={{track.track}}/>
+    <audio id="{{ track.id }}" autoplay [loop]="trackShouldLoop(track.id)" (ended)="trackEnded(track.id)" controls>
+      <source src="{{ track.track }}" />
       {{ setVolume(track.id) }}
       {{ forcePlay(track.id) }}
     </audio>

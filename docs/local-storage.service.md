@@ -4,12 +4,12 @@
 
 The LocalStorageService sets several key values upon app startup, located in `app.component.ts`. These defaults match the default menu options presented in the UI. The default keys and values are:
 
-Key                   | Value
---------------------- | -----
-game__mode            | pva
-game__ai-difficulty   | easy
-game__guided-tutorial | false
-game__board-seed      | random
+| Key                     | Value  |
+| ----------------------- | ------ |
+| game\_\_mode            | pva    |
+| game\_\_ai-difficulty   | easy   |
+| game\_\_guided-tutorial | false  |
+| game\_\_board-seed      | random |
 
 ### Storage Context
 
@@ -18,11 +18,11 @@ Note that each key is prefixed by `game__`. This is the storage context, which i
 For example, to fetch the value of `game__mode`, assuming your context was set to `game`, simply use:
 
 ```javascript
-fetch('mode');
+fetch("mode");
 ```
 
 Similarily, to set `game__mode`, assuming your context was set to `game`, simply use:
 
 ```javascript
-store('mode', 'ez');
+store("mode", "ez");
 ```

@@ -9,8 +9,6 @@
 
 // import { AiService } from './ai.service';
 
-
-
 // // eslint-disable-next-line jasmine/no-disabled-tests
 // xdescribe('AiService', () => {
 //   // const gameBoard = new GameBoard();
@@ -38,7 +36,7 @@
 
 //         console.log({
 //           player1:{
-//             score:ai.currentState.player1.currentScore, 
+//             score:ai.currentState.player1.currentScore,
 //             nodes:ai.currentState.player1.numNodesPlaced,
 //             hasLongestNetwork:ai.currentState.player1.hasLongestNetwork,
 //             playersLongestNetwork:ai.currentState.player1.currentLongest,
@@ -52,7 +50,7 @@
 //             greenPerTurn: ai.currentState.player1.greenPerTurn,
 //             yellowPerTurn: ai.currentState.player1.yellowPerTurn},
 //           player2:{
-//             score:ai.currentState.player2.currentScore, 
+//             score:ai.currentState.player2.currentScore,
 //             nodes:ai.currentState.player2.numNodesPlaced,
 //             hasLongestNetwork:ai.currentState.player2.hasLongestNetwork,
 //             playersLongestNetwork:ai.currentState.player2.currentLongest,
@@ -67,8 +65,7 @@
 //             yellowPerTurn: ai.currentState.player2.yellowPerTurn},
 //           moveJustplayed:chosenMove,
 //           nextPlayer:ai.currentState.currentPlayer});
-        
-      
+
 //         const winner = CoreLogic.determineIfWinner(ai.currentState);
 //         //console.log(`current winner state ${winner}`);
 
@@ -119,7 +116,7 @@
 //       const ai = new AiService(gameBoard,player1,player2);
 
 //       const start = Date.now();
-      
+
 //       const chosenMove = ai.randomAIFirstMove();
 
 //       console.log(`TIME: ${Date.now() - start}ms`);
@@ -129,8 +126,6 @@
 
 //   describe('Get First Monte Carlo Move', ()=>{
 //     it('should get a move chosen by the Monte Carlo Search Tree for the first move',()=>{
-
-      
 
 //       const gameBoard = new GameBoard();
 //       gameBoard.randomizeColorsAndMaxNodes();
@@ -194,20 +189,18 @@
 
 //         console.log({
 //           player1:{
-//             score:player1.currentScore, 
+//             score:player1.currentScore,
 //             nodes:player1.numNodesPlaced,
 //             hasLongestNetwork:player1.hasLongestNetwork,
 //             playersLongestNetwork:player1.currentLongest,
 //             numberOfTilesCaptured:player1.numTilesCaptured},
 //           player2:{
-//             score:player2.currentScore, 
+//             score:player2.currentScore,
 //             nodes:player2.numNodesPlaced,
 //             hasLongestNetwork:player2.hasLongestNetwork,
 //             playersLongestNetwork:player2.currentLongest,
 //             numberOfTilesCaptured:player2.numTilesCaptured},
 //           moveJustplayed:chosenMove});
-        
-      
 
 //         if(ai.currentState.player1.currentScore >= 10){
 //           console.log('Player 1 Wins!');
@@ -221,7 +214,6 @@
 
 //       console.log('time elapsed',Date.now() - start);
 
-
 //     });
 //   });
 
@@ -233,7 +225,5 @@
 //   // it('should be created', () => {
 //   //   expect(ai).toBeTruthy();
 //   // });
-
-
 
 // });

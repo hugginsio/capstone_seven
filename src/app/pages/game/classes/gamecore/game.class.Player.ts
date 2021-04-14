@@ -1,9 +1,9 @@
-import { PlayerTheme, PlayerType } from '../../enums/game.enums';
+import { PlayerTheme, PlayerType } from "../../enums/game.enums";
 
 export class Player {
   type: PlayerType;
   theme: PlayerTheme;
-  
+
   // resources availble to spend
   redResources: number;
   blueResources: number;
@@ -15,7 +15,7 @@ export class Player {
   bluePerTurn: number;
   greenPerTurn: number;
   yellowPerTurn: number;
-   
+
   hasTraded: boolean;
 
   // used for longestNetwork()
@@ -25,13 +25,12 @@ export class Player {
   currentLength: number;
   currentLongest: number;
   hasLongestNetwork: boolean;
-  
+
   numTilesCaptured: number;
   capturedTiles: Array<number>;
 
-
   numNodesPlaced: number;
-  
+
   currentScore: number;
 
   constructor() {

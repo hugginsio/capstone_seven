@@ -1,20 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
-import { Player } from '../classes/gamecore/game.class.Player';
-import { CommPackage } from '../interfaces/game.interface';
-import { CommCode } from '../interfaces/game.enum';
-import { Owner, PlayerTheme, PlayerType } from '../enums/game.enums';
-import { GuidedTutorialService } from '../services/guided-tutorial/guided-tutorial.service';
-import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
-
+import { Component, Input, OnInit } from "@angular/core";
+import { Subject } from "rxjs";
+import { Player } from "../classes/gamecore/game.class.Player";
+import { CommPackage } from "../interfaces/game.interface";
+import { CommCode } from "../interfaces/game.enum";
+import { Owner, PlayerTheme, PlayerType } from "../enums/game.enums";
+import { GuidedTutorialService } from "../services/guided-tutorial/guided-tutorial.service";
+import { LocalStorageService } from "../../../shared/services/local-storage/local-storage.service";
 
 @Component({
-  selector: 'app-player-shard',
-  templateUrl: './player-shard.component.html',
-  styleUrls: ['./player-shard.component.scss']
+  selector: "app-player-shard",
+  templateUrl: "./player-shard.component.html",
+  styleUrls: ["./player-shard.component.scss"],
 })
 export class PlayerShardComponent implements OnInit {
-
   @Input() playerDetail: Player;
   @Input() playerName: string;
   @Input() currentPlayer: boolean;
@@ -24,28 +22,24 @@ export class PlayerShardComponent implements OnInit {
   @Input() stackLength: number;
   @Input() canTrade: boolean;
 
-  constructor(
-    public guidedTutorial: GuidedTutorialService,
-    private readonly storageService: LocalStorageService
-  ) { }
+  constructor(public guidedTutorial: GuidedTutorialService, private readonly storageService: LocalStorageService) {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   getDynamicClass(btn: string): string {
     let btnClass = "";
     if (this.playerDetail?.type !== PlayerType.HUMAN) {
       btnClass = "button-hidden";
-    }
-    else if (this.storageService.fetch('guided-tutorial') === "true" && btn === this.guidedTutorial.playerShardBtn) 
-    {
+    } else if (this.storageService.fetch("guided-tutorial") === "true" && btn === this.guidedTutorial.playerShardBtn) {
       btnClass = "selected-GT";
-    }
-    else if(!this.currentPlayer || (btn === 'endTurnBtn' && !this.isConnected) || (btn === 'undoBtn' && this.stackLength === 0)
-    || (btn === 'tradeBtn' && !this.canTrade))
-    {
+    } else if (
+      !this.currentPlayer ||
+      (btn === "endTurnBtn" && !this.isConnected) ||
+      (btn === "undoBtn" && this.stackLength === 0) ||
+      (btn === "tradeBtn" && !this.canTrade)
+    ) {
       btnClass = "button-disabled";
-    }
-    else if (this.currentPlayer) {
+    } else if (this.currentPlayer) {
       btnClass = "button-std";
     }
     return btnClass;
@@ -69,7 +63,7 @@ export class PlayerShardComponent implements OnInit {
   generateMessage(action: CommCode): CommPackage {
     return {
       code: action,
-      player: this.playerDetail
+      player: this.playerDetail,
     };
   }
 
@@ -86,8 +80,8 @@ export class PlayerShardComponent implements OnInit {
   }
 
   getPlayerImage(): string {
-    return `/assets/game/nodes/${
-      this.playerEnum === 'PLAYERONE' ? 'Orange-Node-' : 'Purple-Node-'
-    }${this.playerDetail?.theme === PlayerTheme.MINER ? 'Pickaxe' : 'Drill'}.png`;
+    return `/assets/game/nodes/${this.playerEnum === "PLAYERONE" ? "Orange-Node-" : "Purple-Node-"}${
+      this.playerDetail?.theme === PlayerTheme.MINER ? "Pickaxe" : "Drill"
+    }.png`;
   }
 }

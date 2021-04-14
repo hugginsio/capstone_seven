@@ -1,13 +1,12 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { io } from 'socket.io-client';
-import { NetworkGameSettings } from '../../../../backend/NetworkGameSettings';
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { io } from "socket.io-client";
+import { NetworkGameSettings } from "../../../../backend/NetworkGameSettings";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class GameNetworkingService {
-
   private socket: any;
   private isGameSocket = false;
 
@@ -24,7 +23,7 @@ export class GameNetworkingService {
 
   listenReconnect(): Observable<any> {
     return new Observable((subscriber) => {
-      this.socket.io.on('reconnect', (data: any) => {
+      this.socket.io.on("reconnect", (data: any) => {
         subscriber.next(data);
       });
     });
@@ -49,7 +48,7 @@ export class GameNetworkingService {
   }
 
   public setGame(settings: NetworkGameSettings): void {
-    this.socket.emit('create-lobby', settings);
+    this.socket.emit("create-lobby", settings);
   }
 
   public connectTCPserver(serverIP: string): void {
@@ -58,8 +57,7 @@ export class GameNetworkingService {
     this.setListners();
   }
 
-  private setListners()
-  {
+  private setListners() {
     /*
     this.socket.io.on('reconnect', () => {
       this.socket.emit('reconnection');
@@ -72,36 +70,32 @@ export class GameNetworkingService {
   }
 
   public resetRoom(): void {
-    this.socket.emit('reset-lobby');
+    this.socket.emit("reset-lobby");
   }
 
-  public setIsGameSocket(): void
-  {
+  public setIsGameSocket(): void {
     this.isGameSocket = true;
-    this.socket.emit('join-room');
+    this.socket.emit("join-room");
   }
 
   public sendMove(move: string): void {
-    this.socket.emit('send-move', move);
+    this.socket.emit("send-move", move);
   }
 
   public sendChatMessage(message: string): void {
-    this.socket.emit('send-chat-message', message);
+    this.socket.emit("send-chat-message", message);
   }
 
-  public getNetGameSettings(): void
-  {
-    this.socket.emit('ask-game-settings');
+  public getNetGameSettings(): void {
+    this.socket.emit("ask-game-settings");
   }
 
-  public requestJoin(username:string): void
-  {
-    this.socket.emit('request-join', username);
+  public requestJoin(username: string): void {
+    this.socket.emit("request-join", username);
   }
 
-  public leaveGame(): void
-  {
-    this.socket.emit('leave-game');
+  public leaveGame(): void {
+    this.socket.emit("leave-game");
   }
 
   public disconnectSocket(): void {
@@ -109,11 +103,11 @@ export class GameNetworkingService {
   }
 
   public cancelGame(): void {
-    this.socket.emit('cancel-game');
+    this.socket.emit("cancel-game");
     this.socket.disconnect();
   }
 
   public notifyReconnect(): void {
-    this.socket.emit('reconnection');
+    this.socket.emit("reconnection");
   }
 }

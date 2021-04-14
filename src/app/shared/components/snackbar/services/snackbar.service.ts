@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { BasicSnack, SnackAction, SnackSubject } from '../interfaces/snackbar.interface';
+import { Injectable } from "@angular/core";
+import { Observable, Subject } from "rxjs";
+import { BasicSnack, SnackAction, SnackSubject } from "../interfaces/snackbar.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class SnackbarService {
   private snackService = new Subject<SnackSubject>();
@@ -15,7 +15,7 @@ export class SnackbarService {
   add(snack: BasicSnack): void {
     this.snackService.next({
       action: SnackAction.ADD,
-      data: snack
+      data: snack,
     });
   }
 

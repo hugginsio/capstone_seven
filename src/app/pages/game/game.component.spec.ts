@@ -1,14 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { GameComponent } from './game.component';
+import { GameComponent } from "./game.component";
 
-xdescribe('LandingComponent', () => {
+xdescribe("LandingComponent", () => {
   let component: GameComponent;
   let fixture: ComponentFixture<GameComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GameComponent ]
+      declarations: [GameComponent],
     }).compileComponents();
   });
 
@@ -18,7 +18,7 @@ xdescribe('LandingComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

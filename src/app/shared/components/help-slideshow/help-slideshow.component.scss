@@ -11,12 +11,11 @@
 
   .GT-btn {
     @apply p-5 bg-gray-600 border-4 border-gray-900 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100;
-
   }
 
   .disabled {
     @apply bg-gray-800 cursor-auto hover:border-gray-900 opacity-60;
-  }  
+  }
 
   .slideList {
     @apply p-2 border-4 border-transparent text-3xl cursor-pointer hover:border-gray-400;
@@ -33,11 +32,8 @@
   .boardImg {
     @apply w-3/4;
   }
-
 }
 
 h1 {
   font-size: 40px;
 }
-
-

@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 
-import { NewNetworkGameHostComponent } from './new-network-game-host.component';
+import { NewNetworkGameHostComponent } from "./new-network-game-host.component";
 
-xdescribe('NewNetworkGameHostComponent', () => {
+xdescribe("NewNetworkGameHostComponent", () => {
   let component: NewNetworkGameHostComponent;
   let fixture: ComponentFixture<NewNetworkGameHostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ NewNetworkGameHostComponent ]
+      declarations: [NewNetworkGameHostComponent],
     }).compileComponents();
   });
 
@@ -20,7 +20,7 @@ xdescribe('NewNetworkGameHostComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

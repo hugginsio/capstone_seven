@@ -3,5 +3,5 @@ export enum CommCode {
   END_TURN,
   END_GAME,
   UNDO,
-  AI_Move
+  AI_Move,
 }

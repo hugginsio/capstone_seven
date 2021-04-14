@@ -1,5 +1,7 @@
-<main [@fadeAnimation]="outlet.isActivated ? outlet.activatedRoute : ''"
-  class="font-bold tracking-wider leading-none align-middle text-xl select-none font-display">
+<main
+  [@fadeAnimation]="outlet.isActivated ? outlet.activatedRoute : ''"
+  class="font-bold tracking-wider leading-none align-middle text-xl select-none font-display"
+>
   <router-outlet #outlet="outlet">
     <!-- Snacks Container -->
     <app-snackbar class="z-inf" [timeout]="5000" position="top"></app-snackbar>

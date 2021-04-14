@@ -18,7 +18,7 @@
   .button-hidden {
     @apply bg-transparent text-transparent border-transparent hover:border-transparent cursor-default pointer-events-none;
   }
-  
+
   .selected-GT {
     @apply bg-gray-600 border-gray-300 hover:border-gray-300 cursor-pointer;
   }

@@ -3,7 +3,7 @@
     <img [src]="getPlayerImage()" class="h-8 w-8" />
   </div>
   <p>{{ playerName }}</p>
-  <p class="text-sm leading-none">{{ playerDetail?.theme === "MINER" ? 'MINER' : 'MACHINE' }}</p>
+  <p class="text-sm leading-none">{{ playerDetail?.theme === "MINER" ? "MINER" : "MACHINE" }}</p>
   <div class="p-3">
     <p>Score: {{ playerDetail?.currentScore }}</p>
     <p>Longest Path: {{ playerDetail?.currentLength }}</p>
@@ -31,17 +31,28 @@
     </div>
   </div>
   <!-- These should only be visible if the player is both local and human -->
-  <div class="flex flex-col space-y-3 pt-3 text-center"
-    *ngIf="true">
+  <div class="flex flex-col space-y-3 pt-3 text-center" *ngIf="true">
     <div class="flex space-x-3">
       <div id="undoBtn" class="button" [ngClass]="getDynamicClass('undoBtn')" (click)="triggerUndo()" boombox="button">
         Undo
       </div>
-      <div id="tradeBtn" class="button" [ngClass]="getDynamicClass('tradeBtn')" (click)="triggerTrading()" boombox="button">
+      <div
+        id="tradeBtn"
+        class="button"
+        [ngClass]="getDynamicClass('tradeBtn')"
+        (click)="triggerTrading()"
+        boombox="button"
+      >
         Trade
       </div>
     </div>
-    <div id="endTurnBtn" class="button" [ngClass]="getDynamicClass('endTurnBtn')" (click)="triggerEndTurn()" boombox="button">
+    <div
+      id="endTurnBtn"
+      class="button"
+      [ngClass]="getDynamicClass('endTurnBtn')"
+      (click)="triggerEndTurn()"
+      boombox="button"
+    >
       End Turn
     </div>
   </div>

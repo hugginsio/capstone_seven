@@ -1,20 +1,20 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Snack } from './interfaces/snackbar.interface';
-import { SnackbarService } from './services/snackbar.service';
+import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { Snack } from "./interfaces/snackbar.interface";
+import { SnackbarService } from "./services/snackbar.service";
 
-import { SnackbarComponent } from './snackbar.component';
+import { SnackbarComponent } from "./snackbar.component";
 
-describe('SnackbarComponent', () => {
+describe("SnackbarComponent", () => {
   let component: SnackbarComponent;
   let fixture: ComponentFixture<SnackbarComponent>;
   let service: SnackbarService;
-  const demoSnack: Snack  ={
-    message: 'I live for pretzel day.'
+  const demoSnack: Snack = {
+    message: "I live for pretzel day.",
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SnackbarComponent ]
+      declarations: [SnackbarComponent],
     }).compileComponents();
 
     service = TestBed.inject(SnackbarService);
@@ -26,21 +26,21 @@ describe('SnackbarComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initially be empty', () => {
+  it("should initially be empty", () => {
     expect(component.snacks.length).toEqual(0);
   });
 
-  it('should allow adding snacks', () => {
+  it("should allow adding snacks", () => {
     service.add(demoSnack);
 
     expect(component.snacks.length).toEqual(1);
   });
 
-  it('should only allow adding a set number of snacks', () => {
+  it("should only allow adding a set number of snacks", () => {
     for (let index = 0; index < 4; index++) {
       service.add(demoSnack);
     }
@@ -48,13 +48,13 @@ describe('SnackbarComponent', () => {
     expect(component.snacks.length).toEqual(3);
   });
 
-  it('should allow clearing all snacks', () => {
+  it("should allow clearing all snacks", () => {
     service.clear();
 
     expect(component.snacks.length).toEqual(0);
   });
 
-  it('should allow removing a snack', () => {
+  it("should allow removing a snack", () => {
     service.add(demoSnack);
 
     expect(component.snacks.length).toEqual(1);
@@ -63,7 +63,7 @@ describe('SnackbarComponent', () => {
     expect(component.snacks.length).toEqual(0);
   });
 
-  it('should do nothing when removing a snack that does not exist', () => {
+  it("should do nothing when removing a snack that does not exist", () => {
     service.add(demoSnack);
 
     expect(component.snacks.length).toEqual(1);
@@ -72,7 +72,7 @@ describe('SnackbarComponent', () => {
     expect(component.snacks.length).toEqual(1);
   });
 
-  it('max snacks should be adjustable', () => {
+  it("max snacks should be adjustable", () => {
     service.clear();
     component.max = 5;
     for (let index = 0; index < 5; index++) {
@@ -85,7 +85,7 @@ describe('SnackbarComponent', () => {
     expect(component.snacks.length).toEqual(5);
   });
 
-  it('timeout should remove snacks', fakeAsync(() => {
+  it("timeout should remove snacks", fakeAsync(() => {
     service.clear();
     component.timeout = 500;
     for (let index = 0; index < 3; index++) {

@@ -11,15 +11,8 @@
     "strictNullChecks": true,
     "types": []
   },
-  "include": [
-    "**/*.d.ts",
-    "main.ts",
-    "polyfills.ts"
-  ],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.worker.ts"
-  ],
+  "include": ["**/*.d.ts", "main.ts", "polyfills.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.worker.ts"],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "preserveWhitespaces": true,

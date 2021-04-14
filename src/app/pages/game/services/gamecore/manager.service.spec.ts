@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { ManagerService } from './manager.service';
+import { ManagerService } from "./manager.service";
 
-describe('ManagerService', () => {
+describe("ManagerService", () => {
   let service: ManagerService;
 
   beforeEach(() => {
@@ -10,22 +10,22 @@ describe('ManagerService', () => {
     service = TestBed.inject(ManagerService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 
-  it('serializeStack should translate the stack into a string', () => {
+  it("serializeStack should translate the stack into a string", () => {
     service.Initialize();
-    const expectedString = 'R,G,B,Y;1,2,3;4,5,6';
-    service.tradedResources = ['R', 'G', 'B'];
-    service.selectedTrade = 'Y';
+    const expectedString = "R,G,B,Y;1,2,3;4,5,6";
+    service.tradedResources = ["R", "G", "B"];
+    service.selectedTrade = "Y";
     service.stack = [
-      ['N', 1],
-      ['N', 2],
-      ['N', 3],
-      ['B', 4],
-      ['B', 5],
-      ['B', 6],
+      ["N", 1],
+      ["N", 2],
+      ["N", 3],
+      ["B", 4],
+      ["B", 5],
+      ["B", 6],
     ];
 
     service.getCurrentPlayer().hasTraded = true;

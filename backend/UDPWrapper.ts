@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import * as dgram from 'dgram';
-import * as os from 'os';
-import * as broadcastAddress from 'broadcast-address';
+import * as dgram from "dgram";
+import * as os from "os";
+import * as broadcastAddress from "broadcast-address";
 
 export class UDPWrapper {
-
   //private netInfo: any;
   //private IP: string;
   private broadcastIP: string;
@@ -16,22 +15,22 @@ export class UDPWrapper {
   public gameFound?: (msg: string, oppAddress: string) => void;
 
   constructor() {
-    this.server = dgram.createSocket('udp4');
+    this.server = dgram.createSocket("udp4");
     this.server.bind(41234);
     //this.netInfo = os.networkInterfaces();
     //this.IP = this.netInfo['Wi-Fi'][3].address;
     this.netInterface = this.getNetworkInterface();
     this.broadcastIP = broadcastAddress(this.netInterface);
     //this.broadcast = "This is a test broadcast, please remain calm.";
-    this.username = 'Person McHuman';
+    this.username = "Person McHuman";
 
-    this.server.on('error', (err: Error) => {
+    this.server.on("error", (err: Error) => {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.log(`server error:\n${err.stack}`);
       this.server.close();
     });
 
-    this.server.on('message', (msg: any, rinfo: any) => {
+    this.server.on("message", (msg: any, rinfo: any) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.gameFound!(msg.toString(), rinfo.address);
       //console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
@@ -42,7 +41,6 @@ export class UDPWrapper {
       const address = this.server.address();
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.log(`server listening ${address.address}:${address.port}`);
-
     });
   }
 
@@ -60,29 +58,23 @@ export class UDPWrapper {
     const platform = os.platform();
     console.log(netInfo);
 
-    if (platform === 'win32') {
-      if (interfaces.includes('Ethernet')) {
-        return 'Ethernet';
+    if (platform === "win32") {
+      if (interfaces.includes("Ethernet")) {
+        return "Ethernet";
+      } else if (interfaces.includes("Wi-Fi")) {
+        return "Wi-Fi";
       }
-      else if (interfaces.includes('Wi-Fi')) {
-        return 'Wi-Fi';
+    } else if (platform === "darwin") {
+      if (interfaces.includes("Ethernet")) {
+        return "Ethernet";
+      } else if (interfaces.includes("Wi-Fi")) {
+        return "Wi-Fi";
+      } else if (interfaces.includes("en0")) {
+        return "en0";
+      } else if (interfaces.includes("en9")) {
+        return "en9";
       }
-    }
-    else if (platform === 'darwin') {
-      if (interfaces.includes('Ethernet')) {
-        return 'Ethernet';
-      }
-      else if (interfaces.includes('Wi-Fi')) {
-        return 'Wi-Fi';
-      }
-      else if (interfaces.includes('en0')) {
-        return 'en0';
-      }
-      else if (interfaces.includes('en9')) {
-        return 'en9';
-      }
-    }
-    else {
+    } else {
       throw new Error("No viable OS found.");
     }
 

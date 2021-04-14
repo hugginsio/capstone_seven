@@ -1,14 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { PlayerShardComponent } from './player-shard.component';
+import { PlayerShardComponent } from "./player-shard.component";
 
-describe('PlayerShardComponent', () => {
+describe("PlayerShardComponent", () => {
   let component: PlayerShardComponent;
   let fixture: ComponentFixture<PlayerShardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PlayerShardComponent ]
+      declarations: [PlayerShardComponent],
     }).compileComponents();
   });
 
@@ -18,7 +18,7 @@ describe('PlayerShardComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

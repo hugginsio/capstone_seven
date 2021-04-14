@@ -1,31 +1,31 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class LocalStorageService {
   private currentContext: string;
 
   // Initializes the default context and runs preflight check.
   constructor() {
-    this.currentContext = 'default';
+    this.currentContext = "default";
     if (this.preflight() === -1) {
-      console.error('Could not initialize datastore.');
+      console.error("Could not initialize datastore.");
     }
   }
 
   // Checks to ensure local storage can be accessed.
   private preflight(): number {
-    this.store('proc', 'nge');
-    const value = this.fetch('proc');
-    this.delete('proc');
-    return value === 'nge' ? 1 : -1;
+    this.store("proc", "nge");
+    const value = this.fetch("proc");
+    this.delete("proc");
+    return value === "nge" ? 1 : -1;
   }
 
   // Sets the "context", a string prefix for all values.
   // We use contexts to help avoid key collisions.
   setContext(context: string): void {
-    this.currentContext  = context;
+    this.currentContext = context;
   }
 
   // Retrieves the current context.
@@ -46,22 +46,22 @@ export class LocalStorageService {
       return value;
     } else {
       console.warn(`Key "${key}" does not exist in datastore.`);
-      return 'ERR';
+      return "ERR";
     }
   }
 
   // If key exists, deletes and creates a new one.
   // If it doesn't exist, warn and create anyway.
   update(key: string, value: string): void {
-    if (this.fetch(key) === 'ERR') {
-      console.warn('Update called on item that does not exist!');
+    if (this.fetch(key) === "ERR") {
+      console.warn("Update called on item that does not exist!");
     }
 
     this.store(key, value);
   }
 
   // Deletes a key from the current context.
-  delete(key:string): void {
+  delete(key: string): void {
     localStorage.removeItem(`${this.getContext()}__${key}`);
   }
 

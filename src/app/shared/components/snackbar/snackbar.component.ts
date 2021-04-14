@@ -1,25 +1,22 @@
-import { Component, Input } from '@angular/core';
-import { BasicSnack, Snack, SnackAction } from './interfaces/snackbar.interface';
-import { SnackbarService } from './services/snackbar.service';
+import { Component, Input } from "@angular/core";
+import { BasicSnack, Snack, SnackAction } from "./interfaces/snackbar.interface";
+import { SnackbarService } from "./services/snackbar.service";
 
 @Component({
-  selector: 'app-snackbar',
-  templateUrl: './snackbar.component.html',
-  styleUrls: ['./snackbar.component.scss']
+  selector: "app-snackbar",
+  templateUrl: "./snackbar.component.html",
+  styleUrls: ["./snackbar.component.scss"],
 })
 export class SnackbarComponent {
-
   @Input() max = 3;
   @Input() timeout: number;
-  @Input() position: 'top' | 'bottom';
+  @Input() position: "top" | "bottom";
 
   public snacks: Array<Snack> = [];
 
-  constructor(
-    private readonly snackbarService: SnackbarService
-  ) {
-    this.position ?? 'bottom';
-    this.snackbarService.get().subscribe(snack => {
+  constructor(private readonly snackbarService: SnackbarService) {
+    this.position ?? "bottom";
+    this.snackbarService.get().subscribe((snack) => {
       if (snack.action === SnackAction.ADD) {
         this.add(snack.data);
       } else if (snack.action === SnackAction.REMOVE) {
@@ -36,7 +33,11 @@ export class SnackbarComponent {
       this.snacks.push({
         message: data.message,
         id: newId,
-        timer: this.timeout ? setTimeout(() => { this.remove(newId); }, this.timeout) : null
+        timer: this.timeout
+          ? setTimeout(() => {
+              this.remove(newId);
+            }, this.timeout)
+          : null,
       });
     } else {
       console.error(`Too many snacks. Max of ${this.max}.`);
@@ -44,7 +45,7 @@ export class SnackbarComponent {
   }
 
   remove(id: string): void {
-    const snack = this.snacks.find(object => object.id === id);
+    const snack = this.snacks.find((object) => object.id === id);
     if (snack) {
       if (snack.timer) {
         clearInterval(snack.timer);
@@ -53,7 +54,7 @@ export class SnackbarComponent {
       console.error(`Snack with UUID "${id}" does not exist.`);
     }
 
-    this.snacks = this.snacks.filter(object => object.id !== id);
+    this.snacks = this.snacks.filter((object) => object.id !== id);
   }
 
   clear(): void {
@@ -63,13 +64,14 @@ export class SnackbarComponent {
   // CC BY-SA 4.0
   // https://stackoverflow.com/a/2117523
   private uuidv4(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+      const r = (Math.random() * 16) | 0,
+        v = c == "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
   }
 
   getPositioning(): string {
-    return this.position === 'top' ? 'top-0 pt-4' : 'bottom-24 pb-4';
+    return this.position === "top" ? "top-0 pt-4" : "bottom-24 pb-4";
   }
 }

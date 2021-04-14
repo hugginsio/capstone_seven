@@ -1,18 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 
-import { IntroGameComponent } from './intro-game.component';
+import { IntroGameComponent } from "./intro-game.component";
 
-describe('IntroGameComponent', () => {
+describe("IntroGameComponent", () => {
   let component: IntroGameComponent;
   let fixture: ComponentFixture<IntroGameComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      declarations: [ IntroGameComponent ]
-    })
-      .compileComponents();
+      imports: [RouterTestingModule],
+      declarations: [IntroGameComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -21,7 +20,7 @@ describe('IntroGameComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

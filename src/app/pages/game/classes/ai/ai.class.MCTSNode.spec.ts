@@ -1,6 +1,3 @@
-import { MCTSNode } from './ai.class.MCTSNode';
+import { MCTSNode } from "./ai.class.MCTSNode";
 
-describe('MCTSNode', () =>{
-
-    
-});
+describe("MCTSNode", () => {});

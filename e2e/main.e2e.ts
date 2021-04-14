@@ -1,19 +1,18 @@
-import { expect } from 'chai';
-import { SpectronClient } from 'spectron';
+import { expect } from "chai";
+import { SpectronClient } from "spectron";
 
-import commonSetup from './common-setup';
+import commonSetup from "./common-setup";
 
-describe('angular-electron App', function () {
-
+describe("angular-electron App", function () {
   commonSetup.apply(this);
 
   let client: SpectronClient;
 
-  beforeEach(function() {
+  beforeEach(function () {
     client = this.app.client;
   });
 
-  it('creates initial windows', async function () {
+  it("creates initial windows", async function () {
     const count = await client.getWindowCount();
 
     expect(count).to.equal(1);
@@ -24,5 +23,4 @@ describe('angular-electron App', function () {
   //   const text = await elem.getText();
   //   expect(text).to.equal('App works !');
   // });
-
 });

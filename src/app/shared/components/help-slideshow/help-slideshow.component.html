@@ -1,80 +1,59 @@
 <div class="flex space-between w-screen justify-center h-full flex-grow" id="help-slideshow-container">
   <div class="flex items-center w-full h-full px-4 space-x-4">
-  <!--<div class="flex justify-center items-center w-full h-full px-4 space-x-4 flex-grow">-->
+    <!--<div class="flex justify-center items-center w-full h-full px-4 space-x-4 flex-grow">-->
     <div class="flex menu-btn text-4xl" [ngClass]="dynamicClass('prev')" (click)="decrementSlides()" boombox="button">
       &larr;
     </div>
 
-   <div class="flex w-full" id="actual-slides">
-    <!-- <div class="flex px-4 h-full w-full flex-grow" id="actual-slides">-->
+    <div class="flex w-full" id="actual-slides">
+      <!-- <div class="flex px-4 h-full w-full flex-grow" id="actual-slides">-->
       <div class="flex flex-col space-y-4 h-full w-full flex-grow">
         <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 0">
           <h1>Help Manual Table of Contents</h1>
           <div class="flex space-x-4 w-full items-center">
             <div class="flex-1 flex-col space-y-4">
-              <div class="table-of-contents" (click)=tableOfContents(1)>
-                1. Introduction
-              </div>
-              <div class="table-of-contents" (click)=tableOfContents(2)>
-                2. Game Pieces
-              </div>
-              <div class="table-of-contents" (click)=tableOfContents(3)>
-                3. Buyin' Tools and Paths
-              </div>
-              <div class="table-of-contents" (click)=tableOfContents(4)>
-                4. Startin' the Game
-              </div>
-              <div class="table-of-contents" (click)=tableOfContents(5)>
-                5. Helpful Hints
-              </div>
-              <div class="table-of-contents" (click)=tableOfContents(6)>
-                6. Tuckered Out Sites
-              </div>
+              <div class="table-of-contents" (click)="tableOfContents(1)">1. Introduction</div>
+              <div class="table-of-contents" (click)="tableOfContents(2)">2. Game Pieces</div>
+              <div class="table-of-contents" (click)="tableOfContents(3)">3. Buyin' Tools and Paths</div>
+              <div class="table-of-contents" (click)="tableOfContents(4)">4. Startin' the Game</div>
+              <div class="table-of-contents" (click)="tableOfContents(5)">5. Helpful Hints</div>
+              <div class="table-of-contents" (click)="tableOfContents(6)">6. Tuckered Out Sites</div>
             </div>
 
             <div class="flex-1 flex-col space-y-4">
-              <div class="table-of-contents" (click)=tableOfContents(7)>
-                7. Claimin' a Site
-              </div>
-              <div class="table-of-contents" (click)=tableOfContents(8)>
-                8. Tradin' Post
-              </div>
-              <div class="table-of-contents" (click)=tableOfContents(9)>
-                9. How To Win
-              </div>
-              <div class="table-of-contents" (click)=tableOfContents(10)>
-                10. Settin' Up a Competition
-              </div>
-              <div class="table-of-contents" (click)=tableOfContents(11)>
-                11. "On The Line" Technology
-              </div>
-              <div class="table-of-contents" (click)=tableOfContents(12)>
-                12. Options Menu
-              </div>
+              <div class="table-of-contents" (click)="tableOfContents(7)">7. Claimin' a Site</div>
+              <div class="table-of-contents" (click)="tableOfContents(8)">8. Tradin' Post</div>
+              <div class="table-of-contents" (click)="tableOfContents(9)">9. How To Win</div>
+              <div class="table-of-contents" (click)="tableOfContents(10)">10. Settin' Up a Competition</div>
+              <div class="table-of-contents" (click)="tableOfContents(11)">11. "On The Line" Technology</div>
+              <div class="table-of-contents" (click)="tableOfContents(12)">12. Options Menu</div>
             </div>
           </div>
-      </div>
+        </div>
 
         <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 1">
           <h1>MasterMine</h1>
           <div class="flex space-x-4 w-full items-center">
             <div class="flex-1 flex-col space-y-4">
-              <p>
-                Howdy, pardners! Welcome to the MasterMines.
-              </p>
-              <p>
-                Miner and Machine are facin' off to get rich quick by makin' Paths and pickin' Sites full of Gems.
-              </p>
+              <p>Howdy, pardners! Welcome to the MasterMines.</p>
+              <p>Miner and Machine are facin' off to get rich quick by makin' Paths and pickin' Sites full of Gems.</p>
               <p *ngIf="this.inGame === 'false'">
-                Click on this here "Guided Tutorial" button to join a duel and learn the ropes while ya play, or click "Next" to just keep on readin'.
+                Click on this here "Guided Tutorial" button to join a duel and learn the ropes while ya play, or click
+                "Next" to just keep on readin'.
               </p>
-              <div class="GT-btn inline-block align-middle flex-grow" (click)="startGuidedTutorial($event)" *ngIf="this.inGame === 'false'">Start Guided Tutorial</div>
+              <div
+                class="GT-btn inline-block align-middle flex-grow"
+                (click)="startGuidedTutorial($event)"
+                *ngIf="this.inGame === 'false'"
+              >
+                Start Guided Tutorial
+              </div>
             </div>
             <div class="flex-1">
-              <img style = "image-rendering: pixelated;" class="p-4 w-11/12 h-full" src="/assets/help/machine.png" />
+              <img style="image-rendering: pixelated" class="p-4 w-11/12 h-full" src="/assets/help/machine.png" />
             </div>
             <div class="flex-1">
-              <img style = "image-rendering: pixelated;" class="p-4 w-11/12 h-full" src="/assets/help/miner2.png" />
+              <img style="image-rendering: pixelated" class="p-4 w-11/12 h-full" src="/assets/help/miner2.png" />
             </div>
           </div>
         </div>
@@ -132,8 +111,8 @@
                 </div>
                 <div>
                   <p>
-                    Sites are all over the mine and tell ya which of them Gems can be mined there.
-                    Each Site'll also tell ya how many Tools it can have on its corners.
+                    Sites are all over the mine and tell ya which of them Gems can be mined there. Each Site'll also
+                    tell ya how many Tools it can have on its corners.
                   </p>
                 </div>
               </div>
@@ -141,12 +120,12 @@
             <div class="flex-1 space-y-4">
               <div class="flex flex-col space-y-4 items-center">
                 <div>
-                  <img src="/assets/game/branches/Vertical-Track-Orange-Miner.png">
+                  <img src="/assets/game/branches/Vertical-Track-Orange-Miner.png" />
                 </div>
                 <div>
                   <p>
-                    These here Paths are how y’all traverse the mine.
-                    Ya can only lay down a Path if it's next to a Path ya already placed.
+                    These here Paths are how y’all traverse the mine. Ya can only lay down a Path if it's next to a Path
+                    ya already placed.
                   </p>
                 </div>
               </div>
@@ -157,11 +136,10 @@
                   <img src="/assets/game/nodes/Orange-Node-Pickaxe.png" />
                 </div>
                 <div>
+                  <p>Tools are placed on a Site's corners and must be connectin' to one of your Paths.</p>
                   <p>
-                    Tools are placed on a Site's corners and must be connectin' to one of your Paths.
-                  </p>
-                  <p>
-                    For each of them Tools you got on a Site's corners, you'll nab one of its Gems at the start of each turn.
+                    For each of them Tools you got on a Site's corners, you'll nab one of its Gems at the start of each
+                    turn.
                   </p>
                 </div>
               </div>
@@ -173,11 +151,10 @@
           <h1>Buyin' Tools and Paths</h1>
           <div class="flex space-x-4 w-full items-center justify-center">
             <div class="flex-1 flex-col space-y-4 w-full items-center justify-center">
+              <p>This here "Price Card" shows our fair prices for Tools and Paths in the mine.</p>
               <p>
-                This here "Price Card" shows our fair prices for Tools and Paths in the mine.
-              </p>
-              <p>
-                This'll be sittin' on your screen through the whole game, so ya can make informed decisions for your moves.
+                This'll be sittin' on your screen through the whole game, so ya can make informed decisions for your
+                moves.
               </p>
             </div>
             <img src="/assets/help/priceCard.PNG" />
@@ -188,14 +165,11 @@
           <h1>Startin' the Game</h1>
           <div class="flex space-x-4 w-full items-center">
             <div class="flex-1 flex-col space-y-4">
+              <p>Each of y’all gonna get 2 sets of Tools and Paths at the start of a duel.</p>
+              <p>Player 1 places a Tool and a connecting Path anywhere they want to start us off.</p>
               <p>
-                Each of y’all gonna get 2 sets of Tools and Paths at the start of a duel.
-              </p>
-              <p>
-                Player 1 places a Tool and a connecting Path anywhere they want to start us off.
-              </p>
-              <p>
-                After that, to keep things fair and square, we do a little do-si-do where Player 2 takes two turns before Player 1 gets to go again.
+                After that, to keep things fair and square, we do a little do-si-do where Player 2 takes two turns
+                before Player 1 gets to go again.
               </p>
             </div>
             <div class="flex-1">
@@ -208,21 +182,15 @@
           <h1>Helpful Hints</h1>
           <div class="flex space-x-4 w-full items-center">
             <div class="flex-1 flex-col space-y-4">
-              <p>
-                Only in these startin’ turns can your Tools and Paths not be connectin' with other Tools and Paths.
-              </p>
-              <p>
-                If y’all ever be regrettin’ your turn, just hit "Undo!"
-              </p>
-              <p>
-                Once you’ve settled your mind, hit “End Turn” to let your opponent have a go.
-              </p>
+              <p>Only in these startin’ turns can your Tools and Paths not be connectin' with other Tools and Paths.</p>
+              <p>If y’all ever be regrettin’ your turn, just hit "Undo!"</p>
+              <p>Once you’ve settled your mind, hit “End Turn” to let your opponent have a go.</p>
             </div>
             <div>
-              <img style = "image-rendering: pixelated;" src="/assets/help/p1PlayerShard.PNG" />
+              <img style="image-rendering: pixelated" src="/assets/help/p1PlayerShard.PNG" />
             </div>
             <div>
-              <img style = "image-rendering: pixelated;" src="/assets/help/p2playerShard.PNG" />
+              <img style="image-rendering: pixelated" src="/assets/help/p2playerShard.PNG" />
             </div>
           </div>
         </div>
@@ -232,8 +200,8 @@
           <div class="flex space-x-4 items-center w-full">
             <div class="flex-1 flex-col space-y-4">
               <p>
-                Now ya can't be havin' more Tools on a Site than there are Gems.
-                If ya do, that Site is gonna get "Tuckered Out" and ain't nobody gettin' Gems from it, no matter how many Tools they got on its corners.
+                Now ya can't be havin' more Tools on a Site than there are Gems. If ya do, that Site is gonna get
+                "Tuckered Out" and ain't nobody gettin' Gems from it, no matter how many Tools they got on its corners.
               </p>
             </div>
             <div class="flex-1 flex-grow">
@@ -246,15 +214,12 @@
           <h1>Claimin' a Site</h1>
           <div class="flex space-x-4 items-center w-full">
             <div class="flex-1 flex-col space-y-4">
+              <p>Stake your claim for exclusive minin’ rights by surroundin' Sites with your Paths!</p>
               <p>
-                Stake your claim for exclusive minin’ rights by surroundin' Sites with your Paths!
+                If you surround a Site, only you can mine it. Others can put their Tools to work there, but they won't
+                be gettin' any Gems.
               </p>
-              <p>
-                If you surround a Site, only you can mine it. Others can put their Tools to work there, but they won't be gettin' any Gems.
-              </p>
-              <p>
-                Best of all, a surrounded Site can't be Tuckered Out!
-              </p>
+              <p>Best of all, a surrounded Site can't be Tuckered Out!</p>
             </div>
             <div class="flex-1 flex-grow">
               <img class="boardImg" src="/assets/help/captured.PNG" />
@@ -262,21 +227,13 @@
           </div>
         </div>
 
-      
-
         <div class="flex flex-col space-y-4 h-full flex-grow" *ngIf="currentSlide === 8">
           <h1>Tradin' Post</h1>
           <div class="flex space-x-4 w-full items-center">
             <div class="flex-1 flex-col space-y-4">
-              <p>
-                Missin' the right Gems? Head on down to the Tradin' Post!
-              </p>
-              <p>
-                Trade any combination of 3 Gems for 1 Gem of any other type.
-              </p>
-              <p>
-                Now don't get too greedy! You can only make 1 Trade per turn. 
-              </p>
+              <p>Missin' the right Gems? Head on down to the Tradin' Post!</p>
+              <p>Trade any combination of 3 Gems for 1 Gem of any other type.</p>
+              <p>Now don't get too greedy! You can only make 1 Trade per turn.</p>
             </div>
             <div class="flex-1">
               <img class="boardImg" src="/assets/help/trade.PNG" />
@@ -288,18 +245,10 @@
           <h1>How To Win</h1>
           <div class="flex space-x-4 items-center w-full">
             <div class="flex-1 flex-col space-y-4">
-              <p>
-                The first of y'all to 10 points wins!
-              </p>
-              <p>
-                Ya get 1 point for each Tool placed.
-              </p>
-              <p>
-                Ya get 1 point for each Site ya surround.
-              </p>
-              <p>
-                Ya get 2 points if ya have the longest set of connectin' Paths.
-              </p>
+              <p>The first of y'all to 10 points wins!</p>
+              <p>Ya get 1 point for each Tool placed.</p>
+              <p>Ya get 1 point for each Site ya surround.</p>
+              <p>Ya get 2 points if ya have the longest set of connectin' Paths.</p>
             </div>
             <div class="flex-1">
               <img class="boardImg" src="/assets/help/victoryScreen.PNG" />
@@ -311,18 +260,14 @@
           <h1>Settin' Up a Competition</h1>
           <div class="flex space-x-4 w-full items-center">
             <div class="flex-1 flex-col space-y-4">
-              <p>Pick your Minin' Background<br></p>
+              <p>Pick your Minin' Background<br /></p>
               <p>Click on the buttons to sort between all our nifty options for your duel.</p>
+              <p>Want to make your own mine?</p>
               <p>
-                Want to make your own mine?
+                Enter some blueprints just like the ones below, separated by commas, and make sure each o’ them
+                letter/number pairings come up just once in the list.
               </p>
-              <p>
-                Enter some blueprints just like the ones below, separated by commas, and make sure each o’
-                them letter/number pairings come up just once in the list.
-              </p>
-              <p>
-                R1, R2, R3, B1, B2, B3, G1, G2, G3, Y1, Y2, Y3, 00
-              </p>
+              <p>R1, R2, R3, B1, B2, B3, G1, G2, G3, Y1, Y2, Y3, 00</p>
             </div>
             <div class="flex-1">
               <img class="border-4 border-gray-900" src="/assets/help/boardSeed.PNG" />
@@ -335,12 +280,10 @@
           <div class="flex space-x-4 w-full items-center">
             <div class="flex-1">
               <p>Here y'all get to duel with folks from all over.</p>
-              <p>Want to start the duel yourself? Click "Host Game" and pick them there settings
-                like you'd normally do.</p>
-                <p>
-                  Now just sit back and wait 'til somebody comes along
-                  to accept your challenge.
+              <p>
+                Want to start the duel yourself? Click "Host Game" and pick them there settings like you'd normally do.
               </p>
+              <p>Now just sit back and wait 'til somebody comes along to accept your challenge.</p>
             </div>
             <div class="flex-1">
               <img class="border-4 border-gray-900" src="/assets/help/networking.PNG" />
@@ -353,21 +296,16 @@
           <div class="flex space-x-4 items-center w-full">
             <div class="flex-1 flex-col space-y-4">
               <p>
-                Visit the "Menu" during a duel to look at all our nifty features, where ya can change the look
-                and sound of your mine, free of charge!
+                Visit the "Menu" during a duel to look at all our nifty features, where ya can change the look and sound
+                of your mine, free of charge!
               </p>
               <p>
-                Forget how somethin' works in the middle of a duel?
-                Mosey on down to the "Help" button in the top left corner of your screen.
+                Forget how somethin' works in the middle of a duel? Mosey on down to the "Help" button in the top left
+                corner of your screen.
               </p>
-              <p>
-                Giving up already?
-                Go on an' git via this here emergency exit shaft.
-              </p>
+              <p>Giving up already? Go on an' git via this here emergency exit shaft.</p>
 
-              <p>
-                Looks like you're all ready to go! Good luck, pardner!
-              </p>
+              <p>Looks like you're all ready to go! Good luck, pardner!</p>
             </div>
             <div class="flex-1">
               <img src="/assets/help/Pause.png" />
@@ -375,19 +313,19 @@
           </div>
         </div>
         <div class="flex space-x-2 w-full items-center justify justify-center">
-          <div [ngClass]=tableClass(0) class="slideList pt-4" (click)=tableOfContents(0)>0</div>
-          <div [ngClass]=tableClass(1) class="slideList pt-4" (click)=tableOfContents(1)>1</div>
-          <div [ngClass]=tableClass(2) class="slideList pt-4" (click)=tableOfContents(2)>2</div>
-          <div [ngClass]=tableClass(3) class="slideList pt-4" (click)=tableOfContents(3)>3</div>
-          <div [ngClass]=tableClass(4) class="slideList pt-4" (click)=tableOfContents(4)>4</div>
-          <div [ngClass]=tableClass(5) class="slideList pt-4" (click)=tableOfContents(5)>5</div>
-          <div [ngClass]=tableClass(6) class="slideList pt-4" (click)=tableOfContents(6)>6</div>
-          <div [ngClass]=tableClass(7) class="slideList pt-4" (click)=tableOfContents(7)>7</div>
-          <div [ngClass]=tableClass(8) class="slideList pt-4" (click)=tableOfContents(8)>8</div>
-          <div [ngClass]=tableClass(9) class="slideList pt-4" (click)=tableOfContents(9)>9</div>
-          <div [ngClass]=tableClass(10) class="slideList pt-4" (click)=tableOfContents(10)>10</div>
-          <div [ngClass]=tableClass(11) class="slideList pt-4" (click)=tableOfContents(11)>11</div>
-          <div [ngClass]=tableClass(12) class="slideList pt-4" (click)=tableOfContents(12)>12</div>
+          <div [ngClass]="tableClass(0)" class="slideList pt-4" (click)="tableOfContents(0)">0</div>
+          <div [ngClass]="tableClass(1)" class="slideList pt-4" (click)="tableOfContents(1)">1</div>
+          <div [ngClass]="tableClass(2)" class="slideList pt-4" (click)="tableOfContents(2)">2</div>
+          <div [ngClass]="tableClass(3)" class="slideList pt-4" (click)="tableOfContents(3)">3</div>
+          <div [ngClass]="tableClass(4)" class="slideList pt-4" (click)="tableOfContents(4)">4</div>
+          <div [ngClass]="tableClass(5)" class="slideList pt-4" (click)="tableOfContents(5)">5</div>
+          <div [ngClass]="tableClass(6)" class="slideList pt-4" (click)="tableOfContents(6)">6</div>
+          <div [ngClass]="tableClass(7)" class="slideList pt-4" (click)="tableOfContents(7)">7</div>
+          <div [ngClass]="tableClass(8)" class="slideList pt-4" (click)="tableOfContents(8)">8</div>
+          <div [ngClass]="tableClass(9)" class="slideList pt-4" (click)="tableOfContents(9)">9</div>
+          <div [ngClass]="tableClass(10)" class="slideList pt-4" (click)="tableOfContents(10)">10</div>
+          <div [ngClass]="tableClass(11)" class="slideList pt-4" (click)="tableOfContents(11)">11</div>
+          <div [ngClass]="tableClass(12)" class="slideList pt-4" (click)="tableOfContents(12)">12</div>
         </div>
       </div>
     </div>

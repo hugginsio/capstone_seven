@@ -1,35 +1,33 @@
 module.exports = (isProd) => ({
-  prefix: '',
+  prefix: "",
   future: {
     removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true
+    purgeLayersByDefault: true,
   },
   purge: {
     enabled: isProd,
-    content: ['**/*.html', '**/*.component.ts', '**/*.service.ts', '**/*.model.ts', '**/*.component.scss']
+    content: ["**/*.html", "**/*.component.ts", "**/*.service.ts", "**/*.model.ts", "**/*.component.scss"],
   },
   theme: {
     extend: {
       animation: {
-        wiggle: 'wiggle 1s ease-in-out infinite'
+        wiggle: "wiggle 1s ease-in-out infinite",
       },
       fontFamily: {
-        display: 'Pixel Operator'
+        display: "Pixel Operator",
       },
       keyframes: {
         wiggle: {
-            '0%, 100%': { transform: 'rotate(-3deg)' },
-            '50%': { transform: 'rotate(3deg)' }
-        }
-      }
-    }
+          "0%, 100%": { transform: "rotate(-3deg)" },
+          "50%": { transform: "rotate(3deg)" },
+        },
+      },
+    },
   },
   variants: {
     extend: {
-      animation: ['hover']
-    }
+      animation: ["hover"],
+    },
   },
-  plugins: [
-    require('@tailwindcss/forms')
-  ],
+  plugins: [require("@tailwindcss/forms")],
 });

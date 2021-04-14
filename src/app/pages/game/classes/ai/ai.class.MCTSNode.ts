@@ -1,4 +1,4 @@
-import { State } from './ai.class.State';
+import { State } from "./ai.class.State";
 
 export class Tree {
   root: MCTSNode;
@@ -30,14 +30,11 @@ export class MCTSNode {
     newNode.childArray = node.childArray;
 
     return newNode;
-
   }
 
   getRandomChildNode(): MCTSNode {
     return this.chooseWeightedChildren();
     //return this.childArray[Math.floor(Math.random() * this.childArray.length)];
-
-
   }
 
   getChildWithMaxScore(): MCTSNode {
@@ -45,8 +42,8 @@ export class MCTSNode {
     let maxScore = this.childArray[0].getState().getWinScore();
     let maxVisitRatio = maxScore / this.childArray[0].getState().visitCount;
 
-    const method = 'RATIO';
-    if (method === 'RATIO') {
+    const method = "RATIO";
+    if (method === "RATIO") {
       for (let i = 1; i < this.childArray.length; i++) {
         const tempScore = this.childArray[i].getState().getWinScore();
         const visits = this.childArray[i].getState().visitCount;
@@ -56,8 +53,7 @@ export class MCTSNode {
           maxChild = this.childArray[i];
         }
       }
-    }
-    else {
+    } else {
       for (let i = 1; i < this.childArray.length; i++) {
         const tempScore = this.childArray[i].getState().getWinScore();
 
@@ -67,7 +63,6 @@ export class MCTSNode {
         }
       }
     }
-
 
     return maxChild;
   }
@@ -103,8 +98,7 @@ export class MCTSNode {
           chosenPlayerOneValue = value;
           chosenIndex = this.childArray.indexOf(child);
         }
-      }
-      else {
+      } else {
         if (value <= chosenPlayerTwoValue) {
           chosenPlayerTwoValue = value;
           chosenIndex = this.childArray.indexOf(child);
@@ -113,8 +107,6 @@ export class MCTSNode {
     }
 
     //const index = this.childArray.indexOf(weights[Math.floor(Math.random() * weights.length)]);
-
-
 
     return this.childArray[chosenIndex];
   }

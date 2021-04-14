@@ -82,6 +82,7 @@
     "postcss-import": "14.0.0",
     "postcss-loader": "4.2.0",
     "postcss-scss": "3.0.4",
+    "prettier": "2.2.1",
     "puppeteer": "5.5.0",
     "rxjs": "6.6.3",
     "spectron": "13.0.0",

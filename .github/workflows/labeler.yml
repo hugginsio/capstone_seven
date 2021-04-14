@@ -6,11 +6,9 @@ jobs:
   repository_maintenance:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      -
-        name: Run Labeler
+      - name: Run Labeler
         if: success()
         uses: crazy-max/ghaction-github-labeler@v3
         with:

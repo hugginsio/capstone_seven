@@ -1,18 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
-import { MonteCarlo } from '../..//classes/ai/ai.class.MonteCarlo';
-import { State } from '../../classes/ai/ai.class.State';
-import { GameBoard } from '../../classes/gamecore/game.class.GameBoard';
-import { Player } from '../../classes/gamecore/game.class.Player';
-import { Owner } from '../../enums/game.enums';
-import { CoreLogic } from '../../util/core-logic.util';
-
+import { MonteCarlo } from "../..//classes/ai/ai.class.MonteCarlo";
+import { State } from "../../classes/ai/ai.class.State";
+import { GameBoard } from "../../classes/gamecore/game.class.GameBoard";
+import { Player } from "../../classes/gamecore/game.class.Player";
+import { Owner } from "../../enums/game.enums";
+import { CoreLogic } from "../../util/core-logic.util";
 
 interface Resources {
-  red: number,
-  blue: number,
-  green: number,
-  yellow: number,
+  red: number;
+  blue: number;
+  green: number;
+  yellow: number;
 }
 
 // export class AiService {
@@ -20,7 +19,7 @@ interface Resources {
 //   mcts: MonteCarlo;
 
 //   constructor(gameBoard:GameBoard, player1:Player,player2:Player) {
-//     this.mcts = new MonteCarlo(gameBoard, player1, player2); 
+//     this.mcts = new MonteCarlo(gameBoard, player1, player2);
 //   }
 
 //   getAIMove(gameboard:GameBoard,player1:Player,player2:Player,previousPlayerNo:number,pastMoveString:string):string{
@@ -36,16 +35,12 @@ interface Resources {
 //     return result;
 //   }
 
-
 // randomAIFirstMove():string{
 
 //   const moves = CoreLogic.getLegalMoves(this.currentState);
 
-
-
 //   const resultIndex = this.weightMoves(moves);
 //   let result = moves[resultIndex];
-
 
 //   if(result === undefined){
 //     result = ';;';
@@ -165,7 +160,6 @@ interface Resources {
 //       weights.push(moves[i]);
 //     }
 
-
 //     const cornerNodes = [2,0,1,5,6,12,11,17,18,21,22,23];
 //     if(moveObj.nodesPlaced.length > 0){
 
@@ -173,53 +167,53 @@ interface Resources {
 
 //         if(this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile()].getMaxNodes() === 3){
 //           weights.push(moves[i]);
-//           weights.push(moves[i]);  
-//           weights.push(moves[i]);        
-//         }
-//         else if(this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile()].getMaxNodes() === 2){ 
 //           weights.push(moves[i]);
 //           weights.push(moves[i]);
 //         }
-//         else if(this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile()].getMaxNodes() === 1){ 
+//         else if(this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile()].getMaxNodes() === 2){
+//           weights.push(moves[i]);
+//           weights.push(moves[i]);
+//         }
+//         else if(this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopRightTile()].getMaxNodes() === 1){
 //           weights.push(moves[i]);
 //         }
 
 //         if(this.currentState.gameBoard.nodes[nodeIndex].getBottomRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getBottomRightTile()].getMaxNodes() === 3){
 //           weights.push(moves[i]);
-//           weights.push(moves[i]);  
-//           weights.push(moves[i]);        
-//         }
-//         else if(this.currentState.gameBoard.nodes[nodeIndex].getBottomRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getBottomRightTile()].getMaxNodes() === 2){ 
 //           weights.push(moves[i]);
 //           weights.push(moves[i]);
 //         }
-//         else if(this.currentState.gameBoard.nodes[nodeIndex].getBottomRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getBottomRightTile()].getMaxNodes() === 1){ 
+//         else if(this.currentState.gameBoard.nodes[nodeIndex].getBottomRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getBottomRightTile()].getMaxNodes() === 2){
+//           weights.push(moves[i]);
+//           weights.push(moves[i]);
+//         }
+//         else if(this.currentState.gameBoard.nodes[nodeIndex].getBottomRightTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getBottomRightTile()].getMaxNodes() === 1){
 //           weights.push(moves[i]);
 //         }
 
 //         if(this.currentState.gameBoard.nodes[nodeIndex].getBottomLeftTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getBottomLeftTile()].getMaxNodes() === 3){
 //           weights.push(moves[i]);
-//           weights.push(moves[i]);  
-//           weights.push(moves[i]);        
-//         }
-//         else if(this.currentState.gameBoard.nodes[nodeIndex].getBottomLeftTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getBottomLeftTile()].getMaxNodes() === 2){ 
 //           weights.push(moves[i]);
 //           weights.push(moves[i]);
 //         }
-//         else if(this.currentState.gameBoard.nodes[nodeIndex].getBottomLeftTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getBottomLeftTile()].getMaxNodes() === 1){ 
+//         else if(this.currentState.gameBoard.nodes[nodeIndex].getBottomLeftTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getBottomLeftTile()].getMaxNodes() === 2){
+//           weights.push(moves[i]);
+//           weights.push(moves[i]);
+//         }
+//         else if(this.currentState.gameBoard.nodes[nodeIndex].getBottomLeftTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getBottomLeftTile()].getMaxNodes() === 1){
 //           weights.push(moves[i]);
 //         }
 
 //         if(this.currentState.gameBoard.nodes[nodeIndex].getTopLeftTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopLeftTile()].getMaxNodes() === 3){
 //           weights.push(moves[i]);
-//           weights.push(moves[i]);  
-//           weights.push(moves[i]);        
-//         }
-//         else if(this.currentState.gameBoard.nodes[nodeIndex].getTopLeftTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopLeftTile()].getMaxNodes() === 2){ 
 //           weights.push(moves[i]);
 //           weights.push(moves[i]);
 //         }
-//         else if(this.currentState.gameBoard.nodes[nodeIndex].getTopLeftTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopLeftTile()].getMaxNodes() === 1){ 
+//         else if(this.currentState.gameBoard.nodes[nodeIndex].getTopLeftTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopLeftTile()].getMaxNodes() === 2){
+//           weights.push(moves[i]);
+//           weights.push(moves[i]);
+//         }
+//         else if(this.currentState.gameBoard.nodes[nodeIndex].getTopLeftTile() !== -1 && this.currentState.gameBoard.tiles[this.currentState.gameBoard.nodes[nodeIndex].getTopLeftTile()].getMaxNodes() === 1){
 //           weights.push(moves[i]);
 //         }
 //         if(cornerNodes.includes(nodeIndex)){
@@ -230,10 +224,7 @@ interface Resources {
 //         weights.push(moves[i]);
 //       }
 
-
-
 //     }
-
 
 //     if(moveObj.branchesPlaced.length > 0){
 //       weights.push(moves[i]);
@@ -311,21 +302,13 @@ interface Resources {
 //       }
 //     }
 
-
-
 //     if(moveObj.tradedIn.length === 0 && moveObj.nodesPlaced.length === 0 && moveObj.branchesPlaced.length === 0){
 //       weights.push(moves[i]);
 //     }
 //   }
 
-
 //   console.log(weights.length, weights);
 //   return moves.indexOf(weights[Math.floor(Math.random()*weights.length)]);
 // }
 
-
 //}
-
-
-
-

@@ -57,28 +57,28 @@
 }
 
 .bg-caves {
-  background: url('/assets/menu/bg_cave.png');
+  background: url("/assets/menu/bg_cave.png");
   opacity: 0.3;
 }
 
 .bg-mountains {
-  background: url('/assets/menu/bg_main.png') fixed repeat-x bottom;
+  background: url("/assets/menu/bg_main.png") fixed repeat-x bottom;
   background-size: cover;
   opacity: 0.9;
 }
 
 // Custom range style props
 
-input[type=range] {
+input[type="range"] {
   -webkit-appearance: none;
   height: 3.8rem;
   width: 100%;
 }
-input[type=range]:focus {
+input[type="range"]:focus {
   outline: none;
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   @apply bg-gray-300;
   height: 3.8rem;
   width: 1rem;

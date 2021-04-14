@@ -1,4 +1,4 @@
-import { TileColor, Owner } from '../../enums/game.enums';
+import { TileColor, Owner } from "../../enums/game.enums";
 
 export class Tile {
   color: TileColor;
@@ -26,13 +26,20 @@ export class Tile {
   bottomTile: number;
   leftTile: number;
 
-
-  constructor(tln = -1, trn = -1,
-              bln = -1, brn = -1,
-              tb = -1, rb = -1,
-              bb = -1, lb = -1,
-              tt = -1, rt = -1,
-              bt = -1, lt = -1) {
+  constructor(
+    tln = -1,
+    trn = -1,
+    bln = -1,
+    brn = -1,
+    tb = -1,
+    rb = -1,
+    bb = -1,
+    lb = -1,
+    tt = -1,
+    rt = -1,
+    bt = -1,
+    lt = -1
+  ) {
     this.color = TileColor.BLANK;
     this.nodeCount = 0;
     this.maxNodes = 0;
@@ -102,7 +109,6 @@ export class Tile {
     this.topRightNode = n;
   }
 
-
   getBottomLeftNode(): number {
     return this.bottomLeftNode;
   }
@@ -116,7 +122,6 @@ export class Tile {
   setBottomRightNode(n: number): void {
     this.bottomRightNode = n;
   }
-
 
   // Branch Relationships
   getTopBranch(): number {

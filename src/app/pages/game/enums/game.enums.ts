@@ -1,12 +1,12 @@
 export enum PlayerType {
-  HUMAN = 'HUMAN',
-  NETWORK = 'NETWORK',
-  AI = 'AI'
+  HUMAN = "HUMAN",
+  NETWORK = "NETWORK",
+  AI = "AI",
 }
 
 export enum PlayerTheme {
-  MINER = 'MINER',
-  MACHINE = 'MACHINE'
+  MINER = "MINER",
+  MACHINE = "MACHINE",
 }
 
 export enum TileColor {
@@ -14,17 +14,17 @@ export enum TileColor {
   BLUE = "BLUE",
   YELLOW = "YELLOW",
   RED = "RED",
-  BLANK = "BLANK"
+  BLANK = "BLANK",
 }
 
 export enum Owner {
   NONE = "NONE",
   PLAYERONE = "PLAYERONE",
-  PLAYERTWO = "PLAYERTWO"
+  PLAYERTWO = "PLAYERTWO",
 }
 
 export enum GameType {
   NETWORK = "NETWORK",
   AI = "AI",
-  HUMAN = "LOCAL"
+  HUMAN = "LOCAL",
 }

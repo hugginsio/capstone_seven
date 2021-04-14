@@ -1,4 +1,4 @@
 export interface NetworkGameInfo {
-  host: string,
-  address: string
+  host: string;
+  address: string;
 }

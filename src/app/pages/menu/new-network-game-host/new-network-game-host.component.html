@@ -7,12 +7,18 @@
     <div class="flex flex-col space-y-4 w-1/3 items-center" id="waiting_for_player" *ngIf="isWaitingForPlayer">
       <p>Waiting for player to join</p>
       <div class="animate-bounce">
-        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-          viewBox="0 0 24 24">
+        <svg
+          class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-          </path>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
         </svg>
       </div>
     </div>
@@ -20,7 +26,10 @@
       <div class="flex w-full space-x-4">
         <div
           class="border-4 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100 relative bg-gray-900 border-transparent"
-          [ngClass]="isLocSelected(1)" (click)="selectLocation(1)" boombox="button">
+          [ngClass]="isLocSelected(1)"
+          (click)="selectLocation(1)"
+          boombox="button"
+        >
           <img src="/assets/menu/thumbs/bg1.png" class="opacity-90" />
           <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
             <p>Cavernous Caves</p>
@@ -28,7 +37,10 @@
         </div>
         <div
           class="border-4 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100 relative bg-gray-900 border-transparent"
-          [ngClass]="isLocSelected(2)" (click)="selectLocation(2)" boombox="button">
+          [ngClass]="isLocSelected(2)"
+          (click)="selectLocation(2)"
+          boombox="button"
+        >
           <img src="/assets/menu/thumbs/bg2.png" class="opacity-90" />
           <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
             <p>Lava Lakes</p>
@@ -36,7 +48,10 @@
         </div>
         <div
           class="border-4 cursor-pointer hover:border-gray-300 focus:outline-none transition-colors duration-100 relative bg-gray-900 border-transparent"
-          [ngClass]="isLocSelected(3)" (click)="selectLocation(3)" boombox="button">
+          [ngClass]="isLocSelected(3)"
+          (click)="selectLocation(3)"
+          boombox="button"
+        >
           <img src="/assets/menu/thumbs/bg3.png" class="opacity-90" />
           <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
             <p>Oceanic Opportunity</p>
@@ -48,11 +63,11 @@
           <p>{{ this.firstPlayer }}</p>
         </div>
       </div>
-          <div class="menu-btn w-full" (click)="changePlayerTheme()" boombox="button">
-            <div>
-              <p>{{ this.playerOneTheme === 'miner' ? this.playerThemeOne : this.playerThemeTwo }}</p>
-            </div>
-          </div>
+      <div class="menu-btn w-full" (click)="changePlayerTheme()" boombox="button">
+        <div>
+          <p>{{ this.playerOneTheme === "miner" ? this.playerThemeOne : this.playerThemeTwo }}</p>
+        </div>
+      </div>
       <div class="menu-btn w-full" (click)="this.advancedOpts = !this.advancedOpts" boombox="button">
         <div>
           <p>Advanced Options...</p>
@@ -61,19 +76,27 @@
       <div class="flex space-x-2" *ngIf="this.advancedOpts">
         <div class="flex menu-input w-full" [ngClass]="dynamicClass()">
           <!-- oninput all uppercase credit to https://stackoverflow.com/users/5476516/yehuda-schwartz -->
-          <input type="text" class="input-text" [(ngModel)]="boardSeed" placeholder="Board Seed"
-            oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
+          <input
+            type="text"
+            class="input-text"
+            [(ngModel)]="boardSeed"
+            placeholder="Board Seed"
+            oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);"
+          />
         </div>
         <div class="menu-btn w-1/6" (click)="explainBoardSeed()">?</div>
       </div>
-      <p class="leading-none text-base font-normal text-red-600" *ngIf="this.advancedOpts && !this.validInputCheck.validBoard">
+      <p
+        class="leading-none text-base font-normal text-red-600"
+        *ngIf="this.advancedOpts && !this.validInputCheck.validBoard"
+      >
         Invalid Board Seed Input!
       </p>
       <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts && this.explainationPopUp">
-        Assign the order of your Sites.<br>Use the format R1,R2,R3,B1,B2,B3,G1,G2,G3,Y1,Y2,Y3,00<br>Make sure to include each individual Site in your input.
+        Assign the order of your Sites.<br />Use the format R1,R2,R3,B1,B2,B3,G1,G2,G3,Y1,Y2,Y3,00<br />Make sure to
+        include each individual Site in your input.
       </p>
-      <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts">Leave blank for random
-        seed</p>
+      <p class="leading-none text-base font-normal" *ngIf="this.advancedOpts">Leave blank for random seed</p>
     </div>
   </div>
   <div class="submenu-footer">

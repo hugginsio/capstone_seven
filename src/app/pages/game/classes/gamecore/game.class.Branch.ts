@@ -1,5 +1,5 @@
-import { Owner } from '../../enums/game.enums';
-import { BranchesInterface } from '../../interfaces/game.interface';
+import { Owner } from "../../enums/game.enums";
+import { BranchesInterface } from "../../interfaces/game.interface";
 
 export class Branch {
   ownedBy: Owner;
@@ -7,7 +7,7 @@ export class Branch {
   // branch1-branch6 for associations
   branches: BranchesInterface;
 
-  // NOTE: 
+  // NOTE:
   // branches are counted in a clockwise fashion
   // vertical: count begins at top branch
   // horizontal: count begins at top-right branch

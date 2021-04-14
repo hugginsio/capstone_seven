@@ -1,17 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MenuLandingComponent } from './menu-landing.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { MenuLandingComponent } from "./menu-landing.component";
 
-describe('MenuLandingComponent', () => {
+describe("MenuLandingComponent", () => {
   let component: MenuLandingComponent;
   let fixture: ComponentFixture<MenuLandingComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      declarations: [ MenuLandingComponent ]
-    })
-      .compileComponents();
+      imports: [RouterTestingModule],
+      declarations: [MenuLandingComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -20,7 +19,7 @@ describe('MenuLandingComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

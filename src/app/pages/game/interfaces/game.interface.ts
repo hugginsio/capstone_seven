@@ -1,5 +1,5 @@
 import { Player } from "../classes/gamecore/game.class.Player";
-import { CommCode } from './game.enum';
+import { CommCode } from "./game.enum";
 
 export interface ClickEvent {
   altKey: boolean;
@@ -9,7 +9,7 @@ export interface ClickEvent {
   target: {
     className: string;
     id: string;
-  }
+  };
 }
 export interface BranchesInterface {
   branch1: number;
@@ -21,9 +21,9 @@ export interface BranchesInterface {
 }
 
 export interface CommPackage<T = string> {
-  code: CommCode,
-  player?: Player,
-  magic?: T
+  code: CommCode;
+  player?: Player;
+  magic?: T;
 }
 
 export interface ResourceMap {
@@ -33,7 +33,7 @@ export interface ResourceMap {
   yellow: number;
 }
 
-export interface GuidedTutorialInterface{
+export interface GuidedTutorialInterface {
   message: string;
   move?: string;
 }
