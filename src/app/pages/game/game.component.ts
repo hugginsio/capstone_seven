@@ -182,7 +182,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         this.gameOverText = `${magic} Won!`;
         this.winningPlayer = player;
         this.gameOver = true;
-        this.changeDetector.detectChanges();
       }
       else if (status === CommCode.AI_Move && player) {
         this.changeDetector.detectChanges();

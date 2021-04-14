@@ -416,7 +416,7 @@ export class ManagerService {
         tradeHTMLString += '<p>for<p><img src="/assets/game/resources/Blue-Resource-Tile.png"></p></p>';
       }
       else if (moveToPlace.received === 'G') {
-        tradeHTMLString += '<p>for<p><img src="/assets/game/resources/Green-Resource-Green.png"></p></p>';
+        tradeHTMLString += '<p>for<p><img src="/assets/game/resources/Blue-Resource-Green.png"></p></p>';
       }
       else if (moveToPlace.received === 'Y') {
         tradeHTMLString += '<p>for<p><img src="/assets/game/resources/Yellow-Resource-Tile.png"></p></p>';
