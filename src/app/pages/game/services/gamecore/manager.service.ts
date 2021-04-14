@@ -12,6 +12,8 @@ import { LocalStorageService } from '../../../../shared/services/local-storage/l
 import { GameNetworkingService } from '../../../networking/game-networking.service';
 import { NetworkGameSettings } from '../../../../../../backend/NetworkGameSettings';
 import { AiMethods } from '../../interfaces/worker.interface';
+import { SoundService } from '../../../../shared/components/sound-controller/services/sound.service';
+import { SoundEndAction } from '../../../../shared/components/sound-controller/interfaces/sound-controller.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +69,7 @@ export class ManagerService {
   constructor(
     // UI integration
     private readonly storageService: LocalStorageService,
+    private readonly soundService:SoundService
     //private readonly networkingService: GameNetworkingService
   ) { }
 
@@ -78,6 +81,7 @@ export class ManagerService {
     this.playerTwo = new Player();
     this.tilesBeingChecked = [];
     this.tradedResources = [];
+    this.stack = [];
     this.listeners = new Array<Subscription>();
     this.netSettings = { board: "", background: "", isHostFirst: true };
 
@@ -153,8 +157,8 @@ export class ManagerService {
         this.playerOne.theme = PlayerTheme.MINER;
         this.playerTwo.theme = PlayerTheme.MACHINE;
       } else {
-        this.playerOne.theme = PlayerTheme.MINER;
-        this.playerTwo.theme = PlayerTheme.MACHINE;
+        this.playerOne.theme = PlayerTheme.MACHINE;
+        this.playerTwo.theme = PlayerTheme.MINER;
       }
     } else if (gameMode === 'pvp') {
       this.playerOne.theme = this.storageService.fetch('playeronetheme') === 'miner' ? PlayerTheme.MINER : PlayerTheme.MACHINE;
@@ -382,17 +386,20 @@ export class ManagerService {
     // initial placements
     if (currentPlayer.ownedBranches.length < 2) {
       this.initialNodePlacements(moveToPlace.nodesPlaced[0], currentPlayer);
+      this.soundService.add('/assets/sound/fx/drill.wav',SoundEndAction.DIE);
       this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
 
       //pause between placing pieces
       await this.sleep(1000);
 
       this.initialBranchPlacements(moveToPlace.nodesPlaced[0], moveToPlace.branchesPlaced[0], currentPlayer);
+      this.soundService.add('/assets/sound/fx/tank.wav',SoundEndAction.DIE);
       this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
     } else {
       // process general branch placements
       for (let i = 0; i < moveToPlace.branchesPlaced.length; i++) {
         this.generalBranchPlacement(moveToPlace.branchesPlaced[i], currentPlayer);
+        this.soundService.add('/assets/sound/fx/tank.wav',SoundEndAction.DIE);
         this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
 
         //pause between placing pieces
@@ -402,6 +409,7 @@ export class ManagerService {
       // process general node placements
       for (let i = 0; i < moveToPlace.nodesPlaced.length; i++) {
         this.generalNodePlacement(moveToPlace.nodesPlaced[i], currentPlayer);
+        this.soundService.add('/assets/sound/fx/drill.wav',SoundEndAction.DIE);
         this.commLink.next({ code: CommCode.AI_Move, player: currentPlayer, magic: '' });
         if (i < moveToPlace.nodesPlaced.length - 1) {
           //pause between placing pieces
