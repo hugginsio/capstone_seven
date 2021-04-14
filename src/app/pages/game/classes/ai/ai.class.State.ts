@@ -413,8 +413,11 @@ export class State {
         }
       }
     }
+    else{
+      //
 
-    //exhausted tiles 
+    }
+ 
     
     const branchesValue = (3*(player1BranchesInInnerBranches - player2BranchesInInnerBranches)) + (2.50*(player1MiddleBranches - player2MiddleBranches)) + (2.25*(player1OuterBranches-player2OuterBranches));
     const numNodesDiff = this.player1.numNodesPlaced - this.player2.numNodesPlaced;

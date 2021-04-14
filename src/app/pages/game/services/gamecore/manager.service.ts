@@ -161,15 +161,15 @@ export class ManagerService {
       let explorationParameter:number;
       if(aiDifficulty === 'hard'){
         timeAlottedToAI = 5500;
-        explorationParameter = 4;
+        explorationParameter = 4.5;
       }
       else if(aiDifficulty === 'medium'){
         timeAlottedToAI = 3500;
-        explorationParameter = 2.25;
+        explorationParameter = 1.5;
       }
       else{
-        timeAlottedToAI = 2000;
-        explorationParameter = 0.75;
+        timeAlottedToAI = 1500;
+        explorationParameter = 1;
       }
 
       this.aiWorker.onmessage = ({ data }) => {
