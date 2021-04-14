@@ -58,7 +58,7 @@ export class ManagerService {
   public tradedResources: string[];
 
   // keeps track of human player's moves (used for AI & Networking)
-  public stack: Array<Array<string | number>>;
+  public stack: Array<Array<string | number>> = [];
 
   public readonly commLink = new Subject<CommPackage>();
 
@@ -78,7 +78,7 @@ export class ManagerService {
     this.playerTwo = new Player();
     this.tilesBeingChecked = [];
     this.tradedResources = [];
-    this.stack = new Array<Array<string | number>>();
+    this.stack = [];
     this.listeners = new Array<Subscription>();
     this.netSettings = {board: "", background: "", isHostFirst: true};
 
