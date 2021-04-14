@@ -1,7 +1,7 @@
 import { ResourceMap } from "../interfaces/game.interface";
 import { LocalStorageService } from '../../../shared/services/local-storage/local-storage.service';
 import { GuidedTutorialService } from '../services/guided-tutorial/guided-tutorial.service';
-
+import * as _ from 'lodash';
 
 export class TradingModel {
   redResources: number;
@@ -11,6 +11,7 @@ export class TradingModel {
 
   selectedResource: number;
   currentResources: ResourceMap;
+  resourceMap: ResourceMap;
 
   constructor(
     private readonly storageService: LocalStorageService,
@@ -37,7 +38,11 @@ export class TradingModel {
               return;
             }
           }
-          if (this.currentResources.red > 0) {
+
+          if (this.currentResources.red >= 0 && this.redResources === this.resourceMap.red) {
+            this.redResources = 0;
+            this.currentResources.red = this.resourceMap.red;
+          } else if (this.currentResources.red > 0) {
             this.redResources++;
             this.currentResources.red--;
           }
@@ -45,7 +50,10 @@ export class TradingModel {
           break;
 
         case 2:
-          if (this.currentResources.green > 0) {
+          if (this.currentResources.green >= 0 && this.greenResources === this.resourceMap.green) {
+            this.greenResources = 0;
+            this.currentResources.green = this.resourceMap.green;
+          } else if (this.currentResources.green > 0) {
             this.greenResources++;
             this.currentResources.green--;
           }
@@ -53,7 +61,10 @@ export class TradingModel {
           break;
 
         case 3:
-          if (this.currentResources.blue > 0) {
+          if (this.currentResources.blue >= 0 && this.blueResources === this.resourceMap.blue) {
+            this.blueResources = 0;
+            this.currentResources.blue = this.resourceMap.blue;
+          } else if (this.currentResources.blue > 0) {
             this.blueResources++;
             this.currentResources.blue--;
           }
@@ -67,7 +78,11 @@ export class TradingModel {
               return;
             }
           }
-          if (this.currentResources.yellow > 0) {
+
+          if (this.currentResources.yellow >= 0 && this.yellowResources === this.resourceMap.yellow) {
+            this.yellowResources = 0;
+            this.currentResources.yellow = this.resourceMap.yellow;
+          } else if (this.currentResources.yellow > 0) {
             this.yellowResources++;
             this.currentResources.yellow--;
           }
@@ -76,6 +91,31 @@ export class TradingModel {
       }
     } else {
       console.warn('three resources already selected');
+      switch (num) {
+        case 1:
+          this.redResources = 0;
+          this.currentResources.red == this.resourceMap.red;
+
+          break;
+
+        case 2:
+          this.greenResources = 0;
+          this.currentResources.green == this.resourceMap.green;
+
+          break;
+
+        case 3:
+          this.blueResources = 0;
+          this.currentResources.blue == this.resourceMap.blue;
+
+          break;
+
+        case 4:
+          this.yellowResources = 0;
+          this.currentResources.yellow == this.resourceMap.yellow;
+
+          break;
+      }
     }
   }
 
@@ -179,6 +219,7 @@ export class TradingModel {
 
   setCurrentResources(resources: ResourceMap): void {
     this.currentResources = resources;
+    this.resourceMap = _.cloneDeep(resources);
   }
 
   reset(): void {
